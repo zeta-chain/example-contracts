@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 import { getHardhatConfigNetworks } from "@zetachain/addresses-tools/dist/networks";
 
 import "./tasks/deploy";
-// import "./tasks/withdraw";
+import "./tasks/withdraw";
 
 dotenv.config();
 const PRIVATE_KEYS =

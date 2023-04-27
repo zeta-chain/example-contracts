@@ -15,8 +15,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const withdraw = await contract.deploy();
   await withdraw.deployed();
 
-  console.log(`
-🚀 Successfully deployed contract on ZetaChain.
+  console.log(`🚀 Successfully deployed contract on ZetaChain.
 📜 Contract address: ${withdraw.address}
 🌍 Explorer: https://explorer.zetachain.com/address/${withdraw.address}
 `);
