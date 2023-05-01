@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const contractName = "Withdraw";
+const contractName = "HelloZeta";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   if (hre.network.name !== "athens") {

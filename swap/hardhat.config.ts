@@ -3,6 +3,9 @@ import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from "dotenv";
 import { getHardhatConfigNetworks } from "@zetachain/addresses-tools/dist/networks";
 
+import "./tasks/account";
+import "./tasks/faucet";
+
 dotenv.config();
 const PRIVATE_KEYS =
   process.env.PRIVATE_KEY !== undefined ? [`0x${process.env.PRIVATE_KEY}`] : [];
