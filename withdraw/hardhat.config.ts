@@ -5,6 +5,8 @@ import { getHardhatConfigNetworks } from "@zetachain/addresses-tools/dist/networ
 
 import "./tasks/deploy";
 import "./tasks/withdraw";
+import "./tasks/account";
+import "./tasks/faucet";
 
 dotenv.config();
 const PRIVATE_KEYS =
