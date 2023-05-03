@@ -38,7 +38,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const network = hre.network.name;
   const data = prepareData(
     args.contract,
-    signer.address,
+    args.recipient || signer.address,
     destinationToken,
     BigNumber.from("0")
   );
@@ -64,7 +64,8 @@ for updates on the progress of the cross-chain transaction.
 };
 
 task("swap", "Swap tokens")
-  .addParam("contract", "The address of the swap contract on ZetaChain")
+  .addParam("contract", "Address of the swap contract on ZetaChain")
   .addParam("amount", "Amount to send to the recipient")
   .addParam("destination", "Destination network, like 'goerli'")
+  .addOptionalParam("recipient", "Address of the recipient, defaults to signer")
   .setAction(main);
