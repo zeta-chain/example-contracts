@@ -11,6 +11,8 @@ import "@zetachain/zevm-protocol-contracts/contracts/interfaces/zContract.sol";
 contract Withdraw is zContract {
     error WrongGasContract();
     error NotEnoughToPayGasFee();
+    error InvalidZRC20Address();
+    error ZeroAmount();
 
     /**
      * @dev Internal function that handles the withdrawal of ZRC20 tokens.
@@ -47,8 +49,8 @@ contract Withdraw is zContract {
         uint256 amount,
         bytes calldata message
     ) external virtual override {
-        require(zrc20 != address(0), "Invalid ZRC20 address");
-        require(amount > 0, "Amount must be greater than 0");
+        if (zrc20 == address(0)) revert InvalidZRC20Address();
+        if (amount == 0) revert ZeroAmount();
 
         bytes32 recipient = abi.decode(message, (bytes32));
         doWithdrawal(zrc20, amount, recipient);
