@@ -1,5 +1,10 @@
 # Example ZetaChain contracts
 
+> Please, note that code from this repository is referenced in
+> [the documentation](https://github.com/zeta-chain/zeta-apps/tree/main/apps/frontend/docs-site/docs).
+> When making changes to the code especially when moving files, make sure to
+> update the documentation as well.
+
 ## Overview
 
 Welcome to the ZetaChain example contracts repository! This collection of smart
@@ -18,9 +23,9 @@ free to open an issue or submit a pull request. Happy coding!
 ## Tutorials
 
 If you are new to ZetaChain and would like to learn how to use these example
-contracts, check out [the tutorial section in our
-documentation](https://www.zetachain.com/docs/developers/overview/). The
-tutorials provide step-by-step instructions on setting up your development
+contracts, check out
+[the tutorial section in our documentation](https://www.zetachain.com/docs/developers/overview/).
+The tutorials provide step-by-step instructions on setting up your development
 environment, deploying contracts, and interacting with the ZetaChain network.
 
 ## Contributing
