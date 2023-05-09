@@ -7,6 +7,7 @@ import "./tasks/account";
 import "./tasks/faucet";
 import "./tasks/deploy";
 import "./tasks/message";
+import "./tasks/interactor";
 
 dotenv.config();
 const PRIVATE_KEYS =

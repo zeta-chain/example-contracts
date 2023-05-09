@@ -8,11 +8,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const { ethers } = hre;
   const { contract, destination } = args;
 
   // Get the CrossChainMessage contract instance
-  const CrossChainMessage = await ethers.getContractFactory(
+  const CrossChainMessage = await hre.ethers.getContractFactory(
     "CrossChainMessage"
   );
   const crossChainMessage = CrossChainMessage.attach(contract);
@@ -20,7 +19,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   // Call sendHelloWorld function
   const tx = await crossChainMessage
     .connect(signer)
-    .sendHelloWorld(5, { value: parseEther("0.1") });
+    .sendHelloWorld(97, { value: parseEther("0.1") });
 
   // Wait for the transaction to be mined
   const receipt = await tx.wait();
