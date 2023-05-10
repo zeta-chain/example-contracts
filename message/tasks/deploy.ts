@@ -18,7 +18,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     networkName: hre.network.name,
     zetaNetwork: "athens",
   });
-  const zetaTokenConsumer = "0xa67b03930eb53d0462dCc0835e97964C062042fb";
+  const zetaTokenConsumer = "0xCa7185cA7AB06fA60060d4D65C50b6883cc70419";
   const factory = await hre.ethers.getContractFactory(contractName);
   const contract = await factory.deploy(
     connectorAddress,
@@ -26,17 +26,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     zetaTokenConsumer
   );
   await contract.deployed();
-
-  // const encodedCrossChainAddress = hre.ethers.utils.solidityPack(
-  //   ["address"],
-  //   [THE_SAME_CONTRACT_ON_OTHER_CHAIN]
-  // );
-  // await (
-  //   await contract.setInteractorByChainId(
-  //     5,
-  //     encodedCrossChainAddress
-  //   )
-  // ).wait();
 
   console.log(`🚀 Successfully deployed contract.
 📜 Contract address: ${contract.address}

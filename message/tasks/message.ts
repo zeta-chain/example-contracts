@@ -19,7 +19,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   // Call sendHelloWorld function
   const tx = await crossChainMessage
     .connect(signer)
-    .sendHelloWorld(97, { value: parseEther("0.1") });
+    .sendHelloWorld(97, { value: parseEther("50") });
 
   // Wait for the transaction to be mined
   const receipt = await tx.wait();

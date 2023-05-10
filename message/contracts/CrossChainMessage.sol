@@ -52,7 +52,7 @@ contract CrossChainMessage is
             ZetaInterfaces.SendInput({
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
-                destinationGasLimit: 2500000,
+                destinationGasLimit: 300000,
                 message: abi.encode(
                     HELLO_WORLD_MESSAGE_TYPE,
                     "Hello, Cross-Chain World!"
