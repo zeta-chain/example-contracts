@@ -18,12 +18,21 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     networkName: hre.network.name,
     zetaNetwork: "athens",
   });
-  const zetaTokenConsumer = "0xCa7185cA7AB06fA60060d4D65C50b6883cc70419";
+  const zetaTokenConsumerV2 = getAddress({
+    address: "zetaTokenConsumerUniV2",
+    networkName: hre.network.name,
+    zetaNetwork: "athens",
+  });
+  const zetaTokenConsumerV3 = getAddress({
+    address: "zetaTokenConsumerUniV3",
+    networkName: hre.network.name,
+    zetaNetwork: "athens",
+  });
   const factory = await hre.ethers.getContractFactory(contractName);
   const contract = await factory.deploy(
     connectorAddress,
     zetaTokenAddress,
-    zetaTokenConsumer
+    zetaTokenConsumerV2 || zetaTokenConsumerV3
   );
   await contract.deployed();
 

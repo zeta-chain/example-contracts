@@ -16,10 +16,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const crossChainMessage = CrossChainMessage.attach(contract);
   const encodedCrossChainAddress = hre.ethers.utils.solidityPack(
     ["address"],
-    ["0x2cD3D070aE1BD365909dD859d29F387AA96911e1"]
+    ["0x65Fe20C8612844831e15232182361ED1616371D4"]
   );
   await (
-    await crossChainMessage.setInteractorByChainId(97, encodedCrossChainAddress)
+    await crossChainMessage.setInteractorByChainId(
+      80001,
+      encodedCrossChainAddress
+    )
   ).wait();
 };
 
