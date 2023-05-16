@@ -4,7 +4,7 @@ pragma solidity 0.8.7;
 import "@zetachain/zevm-protocol-contracts/contracts/system/SystemContract.sol";
 import "@zetachain/zevm-protocol-contracts/contracts/interfaces/zContract.sol";
 
-import "@zetachain/zevm-example-contracts/contracts/shared/SwapHelperLib.sol";
+import "./SwapHelperLib.sol";
 
 contract ZetaSwapV2 is zContract {
     SystemContract public immutable systemContract;
