@@ -7,6 +7,7 @@ const contractName = "CrossChainMessage";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const networks = args.networks.split(",");
+  // A mapping between network names and deployed contract addresses.
   const contracts: { [key: string]: string } = {};
   await Promise.all(
     networks.map(async (networkName: string) => {
@@ -19,6 +20,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
+// Initialize a wallet using a network configuration and a private key from
+// environment variables.
 const initWallet = (hre: HardhatRuntimeEnvironment, networkName: string) => {
   const { url } = hre.config.networks[networkName];
   const provider = new ethers.providers.JsonRpcProvider(url);
@@ -27,6 +30,9 @@ const initWallet = (hre: HardhatRuntimeEnvironment, networkName: string) => {
   return wallet;
 };
 
+// Deploy the contract on the specified network. deployContract reads the
+// contract artifact, creates a contract factory, and deploys the contract using
+// that factory.
 const deployContract = async (
   hre: HardhatRuntimeEnvironment,
   networkName: string
@@ -70,6 +76,9 @@ const deployContract = async (
   return contract.address;
 };
 
+// Set interactors for a contract. setInteractors attaches to the contract
+// deployed at the specified address, and for every other network, sets the
+// deployed contract's address as an interactor.
 const setInteractors = async (
   hre: HardhatRuntimeEnvironment,
   source: string,
@@ -77,25 +86,33 @@ const setInteractors = async (
 ) => {
   console.log(`
 🔗 Setting interactors for a contract on ${source}`);
-  const sourceContractAddress = contracts[source];
   const wallet = initWallet(hre, source);
+
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
-  const contract = factory.attach(sourceContractAddress);
-  for (const destination in contracts) {
-    if (destination === source) continue;
-    const destinationContract = hre.ethers.utils.solidityPack(
+  const contract = factory.attach(contracts[source]);
+
+  for (const counterparty in contracts) {
+    // Skip the destination network if it's the same as the source network.
+    // For example, we don't need to set an interactor for a contract on
+    // Goerli if the destination network is also Goerli.
+    if (counterparty === source) continue;
+
+    const counterpartyContract = hre.ethers.utils.solidityPack(
       ["address"],
-      [contracts[destination]]
+      [contracts[counterparty]]
     );
-    const chainId = getChainId(destination as any);
+    const chainId = getChainId(counterparty as any);
     await (
-      await contract.setInteractorByChainId(chainId, destinationContract)
+      await contract.setInteractorByChainId(chainId, counterpartyContract)
     ).wait();
     console.log(
-      `✅ Interactor address for ${chainId} (${destination}) is set to ${destinationContract}`
+      `✅ Interactor address for ${chainId} (${counterparty}) is set to ${counterpartyContract}`
     );
   }
 };
 
-task("deploy", "Deploy the contract").addParam("networks").setAction(main);
+const descTask = `Deploy the contract`;
+const descNetworksFlag = `Comma separated list of networks to deploy to`;
+
+task("deploy", descTask).addParam("networks", descNetworksFlag).setAction(main);
