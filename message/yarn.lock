@@ -1352,6 +1352,11 @@
   resolved "https://registry.yarnpkg.com/@zetachain/addresses/-/addresses-0.0.9.tgz#d8ad93242590c0a6d028be8f515ad9f84fd588c2"
   integrity sha512-MA/kD8a2NY5xJMFjwPj1oph6P3O7l0g23QB3QTgcBs4DdmwubvTVH6S6/e8CWzLFojTP5qBiqIWBsU0iHP/HFg==
 
+"@zetachain/interfaces@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@zetachain/interfaces/-/interfaces-0.0.1.tgz#dbbb7b1abcb63d9297a3d320178036a4aa8026b1"
+  integrity sha512-50Ecu1FeBOFbKyLwZ2yu/9fe8JwdXhGtrISmwuChLswKWQxqATmmex2kzoFhUywXrVKGOh/q4Jyn0kzWxXH/wQ==
+
 "@zetachain/protocol-contracts@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-0.0.3.tgz#769084b96b3d9796786e41280a567c8c502f7e13"
