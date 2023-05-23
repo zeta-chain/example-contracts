@@ -2,20 +2,18 @@ import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
 
+const contractName = "CrossChainMessage";
+
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const { contract, destination } = args;
+  const factory = await hre.ethers.getContractFactory(contractName);
+  const contract = factory.attach(args.contract);
 
-  const CrossChainMessage = await hre.ethers.getContractFactory(
-    "CrossChainMessage"
-  );
-  const crossChainMessage = CrossChainMessage.attach(contract);
-
-  const tx = await crossChainMessage
+  const tx = await contract
     .connect(signer)
-    .sendHelloWorld(destination, { value: parseEther("50") });
+    .sendHelloWorld(args.destination, { value: parseEther("50") });
 
   const receipt = await tx.wait();
   console.log("sendHelloWorld transaction mined:", receipt.transactionHash);
