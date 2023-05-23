@@ -7,6 +7,7 @@ import "./tasks/account";
 import "./tasks/faucet";
 import "./tasks/balances";
 import "./tasks/deploy";
+import "./tasks/verify";
 import "./tasks/withdraw";
 
 dotenv.config();
