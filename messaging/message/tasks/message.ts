@@ -1,6 +1,7 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
+import { getChainId } from "@zetachain/addresses";
 
 const contractName = "CrossChainMessage";
 
@@ -19,7 +20,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   console.log("sendHelloWorld transaction mined:", receipt.transactionHash);
 };
 
-task("message", "Send tokens to the recipient address")
-  .addParam("contract")
-  .addParam("destination")
-  .setAction(main);
+task("message", "Send a message from one chain to another", main)
+  .addParam("contract", "Contract address")
+  .addParam("destination", "Destination chain ID (integer)");
