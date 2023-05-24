@@ -3,10 +3,12 @@ import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from "dotenv";
 import { getHardhatConfigNetworks } from "@zetachain/addresses-tools/dist/networks";
 
-import "./tasks/deploy";
-import "./tasks/withdraw";
 import "./tasks/account";
 import "./tasks/faucet";
+import "./tasks/balances";
+import "./tasks/deploy";
+import "./tasks/verify";
+import "./tasks/withdraw";
 
 dotenv.config();
 const PRIVATE_KEYS =
