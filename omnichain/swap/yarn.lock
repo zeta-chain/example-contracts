@@ -1444,6 +1444,11 @@
   resolved "https://registry.yarnpkg.com/@zetachain/interfaces/-/interfaces-0.0.1.tgz#dbbb7b1abcb63d9297a3d320178036a4aa8026b1"
   integrity sha512-50Ecu1FeBOFbKyLwZ2yu/9fe8JwdXhGtrISmwuChLswKWQxqATmmex2kzoFhUywXrVKGOh/q4Jyn0kzWxXH/wQ==
 
+"@zetachain/protocol-contracts@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-0.0.7.tgz#a095cb440069fdb5e3832e3a72e1144da6b8dec4"
+  integrity sha512-NC9GdVkld7BwpMiPNXpS3fV4zWe6cfRvtDJmlWXCOwgRitqOe3uq4/ou98zM8rgSQhxDS5wrKrvJrVhyJP3clA==
+
 "@zetachain/protocol-contracts@workspace:^":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-0.0.3.tgz#769084b96b3d9796786e41280a567c8c502f7e13"
@@ -1467,7 +1472,7 @@
     "@zetachain/zevm-protocol-contracts" "workspace:^"
     ethers "5.6.8"
 
-"@zetachain/zevm-protocol-contracts@^0.0.1", "@zetachain/zevm-protocol-contracts@workspace:^":
+"@zetachain/zevm-protocol-contracts@workspace:^":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@zetachain/zevm-protocol-contracts/-/zevm-protocol-contracts-0.0.1.tgz#8877c70ca472643bd269ee0f4d724b8fe2c4d16c"
   integrity sha512-MMoqxp/nwtGzfJqkMPLvupGzpGC4itwVy56pmyTo/nRAInljQwjn+NXclIW7gMxB5MsaUOqlnbtj904BWrecmw==
