@@ -12,19 +12,26 @@ contract projects is written using Hardhat and Solidity, specifically for the
 ZetaChain blockchain. Each project showcases different functionalities and use
 cases that can be implemented on the ZetaChain platform.
 
-These example contracts cover various aspects of ZetaChain development,
-including token contracts, smart contract testing, and deploying contracts to a
-ZetaChain network.
+### Omnichain Contracts
 
-Our goal is to provide helpful resources to get you started with building dApps
-on the ZetaChain blockchain. If you have any questions or feedback, please feel
-free to open an issue or submit a pull request. Happy coding!
+The `omnichain` directory contains omnichain contracts. Omnichain is a unique
+interoperability feature of ZetaChain that allows you to write and deploy a
+single contract that can manage assets on all connected blockchains. Learn more
+about
+[omnichain contracts in the docs](https://www.zetachain.com/docs/developers/concepts/architecture/).
+
+### Cross-Chain Messaging
+
+The `messaging` directory contains contracts that demonstrate the ability to
+send data and value between blockchains using cross-chain transactions, without
+the need for warpped assets and bridges. Learn more about
+[cross-chain messaging in the docs](https://www.zetachain.com/docs/developers/cross-chain-messaging/overview/).
 
 ## Tutorials
 
 If you are new to ZetaChain and would like to learn how to use these example
 contracts, check out
-[the tutorial section in our documentation](https://www.zetachain.com/docs/developers/overview/).
+[the developer section in the docs](https://www.zetachain.com/docs/developers/overview/).
 The tutorials provide step-by-step instructions on setting up your development
 environment, deploying contracts, and interacting with the ZetaChain network.
 
