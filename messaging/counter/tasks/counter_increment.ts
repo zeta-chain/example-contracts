@@ -16,7 +16,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     .crossChainCount(args.destination, { value: parseEther(args.amount) });
 
   const receipt = await tx.wait();
-  console.log(`✅ "sendHelloWorld" transaction has been broadcasted to ${hre.network.name}
+  console.log(`✅ "crossChainCount" transaction has been broadcasted to ${hre.network.name}
 📝 Transaction hash: ${receipt.transactionHash}
 
 Please, refer to ZetaChain's explorer for updates on the progress of the cross-chain transaction.

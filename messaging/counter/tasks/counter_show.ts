@@ -12,9 +12,9 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const counter = await contract.counter(signer.address);
 
-  console.log(
-    `🔢 The counter for ${signer.address} is: ${counter.toString()}\n`
-  );
+  console.log(`
+🔢 The counter for ${signer.address} is: ${counter.toString()}
+`);
 };
 
 const descTask = `Sends a message from one chain to another.`;
