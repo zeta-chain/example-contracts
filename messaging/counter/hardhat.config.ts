@@ -7,6 +7,9 @@ import "./tasks/account";
 import "./tasks/faucet";
 import "./tasks/balances";
 import "./tasks/verify";
+import "./tasks/deploy";
+import "./tasks/counter_increment";
+import "./tasks/counter_show";
 
 dotenv.config();
 const PRIVATE_KEYS =
