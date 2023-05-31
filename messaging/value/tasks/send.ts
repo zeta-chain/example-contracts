@@ -27,11 +27,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const receipt = await tx.wait();
   console.log(`✅ "sendHelloWorld" transaction has been broadcasted to ${hre.network.name}
-  📝 Transaction hash: ${receipt.transactionHash}
+📝 Transaction hash: ${receipt.transactionHash}
 
-  Please, refer to ZetaChain's explorer for updates on the progress of the cross-chain transaction.
+Please, refer to ZetaChain's explorer for updates on the progress of the cross-chain transaction.
 
-  🌍 Explorer: https://explorer.zetachain.com/cc/tx/${receipt.transactionHash}
+🌍 Explorer: https://explorer.zetachain.com/address/${args.contract}
   `);
 };
 
