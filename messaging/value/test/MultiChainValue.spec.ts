@@ -45,68 +45,84 @@ describe("MultiChainValue tests", () => {
 
   describe("addAvailableChainId", () => {
     it("Should prevent enabling a chainId that's already enabled", async () => {
-      await (await multiChainValueContractA.addAvailableChainId(1)).wait();
+      await (
+        await multiChainValueContractA.addAvailableChainId(chainAId)
+      ).wait();
 
       expect(
-        multiChainValueContractA.addAvailableChainId(1)
+        multiChainValueContractA.addAvailableChainId(chainAId)
       ).to.be.revertedWith("ChainIdAlreadyAvailable");
     });
 
     it("Should enable the provided chainId", async () => {
-      await (await multiChainValueContractA.addAvailableChainId(1)).wait();
+      await (
+        await multiChainValueContractA.addAvailableChainId(chainAId)
+      ).wait();
 
-      expect(await multiChainValueContractA.availableChainIds(1)).to.equal(
-        true
-      );
+      expect(
+        await multiChainValueContractA.availableChainIds(chainAId)
+      ).to.equal(true);
     });
   });
 
   describe("removeAvailableChainId", () => {
     it("Should prevent disabling a chainId that's already disabled", async () => {
       expect(
-        multiChainValueContractA.removeAvailableChainId(1)
+        multiChainValueContractA.removeAvailableChainId(chainAId)
       ).to.be.revertedWith("ChainIdNotAvailable");
     });
 
     it("Should disable the provided chainId", async () => {
-      await (await multiChainValueContractA.addAvailableChainId(1)).wait();
-      expect(await multiChainValueContractA.availableChainIds(1)).to.equal(
-        true
-      );
+      await (
+        await multiChainValueContractA.addAvailableChainId(chainAId)
+      ).wait();
+      expect(
+        await multiChainValueContractA.availableChainIds(chainAId)
+      ).to.equal(true);
 
-      await (await multiChainValueContractA.removeAvailableChainId(1)).wait();
-      expect(await multiChainValueContractA.availableChainIds(1)).to.equal(
-        false
-      );
+      await (
+        await multiChainValueContractA.removeAvailableChainId(chainAId)
+      ).wait();
+      expect(
+        await multiChainValueContractA.availableChainIds(chainAId)
+      ).to.equal(false);
     });
   });
 
   describe("send", () => {
     it("Should prevent sending value to a disabled chainId", async () => {
       expect(
-        multiChainValueContractA.send(1, account1Address, 100_000)
+        multiChainValueContractA.send(chainAId, account1Address, 100_000)
       ).to.be.revertedWith("InvalidDestinationChainId");
     });
 
     it("Should prevent sending 0 value", async () => {
-      await (await multiChainValueContractA.addAvailableChainId(1)).wait();
+      await (
+        await multiChainValueContractA.addAvailableChainId(chainAId)
+      ).wait();
 
       expect(
-        multiChainValueContractA.send(1, account1Address, 0)
+        multiChainValueContractA.send(chainAId, account1Address, 0)
       ).to.be.revertedWith("InvalidZetaValueAndGas");
     });
 
     it("Should prevent sending if the account has no Zeta balance", async () => {
-      await (await multiChainValueContractA.addAvailableChainId(1)).wait();
+      await (
+        await multiChainValueContractA.addAvailableChainId(chainAId)
+      ).wait();
     });
 
     it("Should prevent sending value to an invalid address", async () => {
-      await (await multiChainValueContractA.addAvailableChainId(1)).wait();
+      await (
+        await multiChainValueContractA.addAvailableChainId(chainAId)
+      ).wait();
     });
 
     describe("Given a valid input", () => {
       it("Should send value", async () => {
-        await (await multiChainValueContractA.addAvailableChainId(1)).wait();
+        await (
+          await multiChainValueContractA.addAvailableChainId(chainAId)
+        ).wait();
       });
     });
   });
