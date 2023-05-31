@@ -19,10 +19,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   console.log(`✅ "mint" transaction has been broadcasted to ${hre.network.name}
 📝 Transaction hash: ${receipt.transactionHash}
 🌠 Minted NFT ID: ${nftId}
-
-Please, refer to ZetaChain's explorer for updates on the progress of the cross-chain transaction.
-
-🌍 Explorer: https://explorer.zetachain.com/cc/tx/${receipt.transactionHash}
 `);
 };
 
