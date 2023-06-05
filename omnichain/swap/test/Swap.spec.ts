@@ -4,15 +4,9 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { getAddress as getAddressLib } from "@zetachain/addresses";
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
-
-import { getSwapParams } from "./helpers";
-import {
-  TestSystemContract,
-  TestZRC20,
-  ZetaSwapV2,
-  ZetaSwapV2__factory,
-} from "../typechain-types";
-import { evmSetup } from "./test.helpers";
+import { ZetaSwapV2, ZetaSwapV2__factory } from "../typechain-types";
+import { TestSystemContract, TestZRC20 } from "toolkit/typechain-types";
+import { evmSetup, getSwapParams } from "toolkit/helpers";
 
 describe("ZetaSwap tests", () => {
   let zetaSwapV2Contract: ZetaSwapV2;
