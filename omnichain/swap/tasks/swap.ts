@@ -3,6 +3,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
 import { getAddress } from "@zetachain/addresses";
 import { BigNumber } from "@ethersproject/bignumber";
+import { prepareData } from "toolkit/helpers";
 
 const ZRC20Addresses = {
   goerli: "0x91d18e54DAf4F677cB28167158d6dd21F6aB3921",
@@ -15,32 +16,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const prepareData = (
-    zetaSwapContract: string,
-    recipient: string,
-    destinationToken: string,
-    minOutput: BigNumber
-  ) => {
-    const paddedRecipient = hre.ethers.utils.hexlify(
-      hre.ethers.utils.zeroPad(recipient, 32)
-    );
-    const abiCoder = hre.ethers.utils.defaultAbiCoder;
-    const params = abiCoder.encode(
-      ["address", "bytes32", "uint256"],
-      [destinationToken, paddedRecipient, minOutput]
-    );
-    return `${zetaSwapContract}${params.slice(2)}`;
-  };
-
   const destinationToken =
     ZRC20Addresses[args.destination as keyof typeof ZRC20Addresses];
-
   const network = hre.network.name;
   const data = prepareData(
     args.contract,
-    args.recipient || signer.address,
-    destinationToken,
-    BigNumber.from("0")
+    ["address", "address", "uint256"],
+    [args.recipient || signer.address, destinationToken, BigNumber.from("0")]
   );
   const to = getAddress({
     address: "tss",
