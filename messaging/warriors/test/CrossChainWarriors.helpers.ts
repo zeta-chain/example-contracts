@@ -10,8 +10,8 @@ import {
   CrossChainWarriorsZetaConnectorMock,
   CrossChainWarriorsZetaConnectorMock__factory as CrossChainWarriorsZetaConnectorMockFactory,
 } from "../typechain-types";
-import { getAddress } from "./address.helpers";
-import { isNetworkName } from "./network.constants";
+import { getAddress } from "toolkit/helpers/address.helpers";
+import { isNetworkName } from "toolkit/helpers/network.constants";
 
 export type GetContractParams<Factory extends ContractFactory> =
   | {

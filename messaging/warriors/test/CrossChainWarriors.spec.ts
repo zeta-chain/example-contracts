@@ -7,8 +7,11 @@ import {
   deployCrossChainWarriorsMock,
   deployZetaConnectorMock,
 } from "./CrossChainWarriors.helpers";
-import { getAddress } from "./address.helpers";
-import { deployZetaTokenConsumerUniV2, getZetaMock } from "./deploy.helpers";
+import { getAddress } from "toolkit/helpers/address.helpers";
+import {
+  deployZetaTokenConsumerUniV2,
+  getZetaMock,
+} from "toolkit/helpers/deploy.helpers";
 import {
   CrossChainWarriorsMock,
   CrossChainWarriorsZetaConnectorMock,
@@ -16,7 +19,10 @@ import {
 import { ZetaEthMock } from "toolkit/typechain-types";
 
 import { ZetaTokenConsumerUniV2 } from "@zetachain/protocol-contracts/dist/typechain-types";
-import { addZetaEthLiquidityTest, getMintTokenId } from "./test.helpers";
+import {
+  addZetaEthLiquidityTest,
+  getMintTokenId,
+} from "toolkit/helpers/test.helpers";
 
 describe("CrossChainWarriors tests", () => {
   let zetaConnectorMockContract: CrossChainWarriorsZetaConnectorMock;
