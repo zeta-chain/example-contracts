@@ -6,7 +6,7 @@ import { expect } from "chai";
 import { ethers, network } from "hardhat";
 import { ZetaSwapV2, ZetaSwapV2__factory } from "../typechain-types";
 import { TestSystemContract, TestZRC20 } from "toolkit/typechain-types";
-import { evmSetup, getSwapParams } from "toolkit/helpers";
+import { evmSetup, prepareParams } from "toolkit/helpers";
 
 describe("ZetaSwap tests", () => {
   let zetaSwapV2Contract: ZetaSwapV2;
@@ -66,10 +66,9 @@ describe("ZetaSwap tests", () => {
       await ZRC20Contracts[0].transfer(zetaSwapV2Contract.address, amount);
       const initBalance = await ZRC20Contracts[1].balanceOf(deployer.address);
 
-      const params = getSwapParams(
-        deployer.address,
-        ZRC20Contracts[1].address,
-        BigNumber.from(0)
+      const params = prepareParams(
+        ["address", "bytes32", "uint256"],
+        [ZRC20Contracts[1].address, deployer.address, BigNumber.from(0)]
       );
 
       await zetaSwapV2Contract.onCrossChainCall(
