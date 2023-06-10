@@ -1,6 +1,6 @@
+import { parseEther } from "@ethersproject/units";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { parseEther } from "@ethersproject/units";
 
 const contractName = "CrossChainCounter";
 

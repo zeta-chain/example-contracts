@@ -1,7 +1,7 @@
-import { task } from "hardhat/config";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getAddress, getChainId } from "@zetachain/addresses";
 import { ethers } from "ethers";
+import { task } from "hardhat/config";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const contractName = "CrossChainCounter";
 
