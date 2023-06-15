@@ -3,7 +3,6 @@ import assert from "assert";
 import { ethers, network } from "hardhat";
 
 import {
-  MultiChainValue__factory as MultiChainValueFactory,
   MultiChainValueMock,
   MultiChainValueMock__factory as MultiChainValueMockFactory,
   ZetaConnectorMockValue,
