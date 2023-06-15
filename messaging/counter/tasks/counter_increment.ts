@@ -25,12 +25,7 @@ Please, refer to ZetaChain's explorer for updates on the progress of the cross-c
 `);
 };
 
-const descTask = `Sends a message from one chain to another.`;
-const descContractFlag = `Contract address`;
-const descDestinationFlag = `Destination chain ID (integer)`;
-const descAmountFlag = `Token amount to send`;
-
-task("counter:increment", descTask, main)
-  .addParam("contract", descContractFlag)
-  .addParam("amount", descAmountFlag)
-  .addParam("destination", descDestinationFlag);
+task("counter:increment", "Sends a message from one chain to another.", main)
+  .addParam("contract", "Contract address")
+  .addParam("amount", "Token amount to send")
+  .addParam("destination", "Destination chain ID (integer)");

@@ -1,8 +1,8 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { getAddress } from "@zetachain/protocol-contracts/lib";
 
 const contractName = "ZetaSwapV2";
-const SYSTEM_CONTRACT = "0x239e96c8f17C85c30100AC26F635Ea15f23E9c67";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   if (hre.network.name !== "athens") {
@@ -13,6 +13,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
+
+  const SYSTEM_CONTRACT = getAddress("systemContract", hre.network.name);
 
   const factory = await hre.ethers.getContractFactory(contractName);
   const contract = await factory.deploy(SYSTEM_CONTRACT);

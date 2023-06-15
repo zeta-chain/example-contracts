@@ -15,9 +15,9 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     })
   );
 
-  // for (const source in contracts) {
-  //   await setInteractors(hre, source, contracts);
-  // }
+  for (const source in contracts) {
+    await setInteractors(hre, source, contracts);
+  }
 };
 
 // Initialize a wallet using a network configuration and a private key from

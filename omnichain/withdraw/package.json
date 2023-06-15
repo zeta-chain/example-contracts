@@ -28,6 +28,7 @@
     "@zetachain/faucet-cli": "^2.0.1",
     "@zetachain/interfaces": "^0.0.1",
     "@zetachain/protocol-contracts": "^0.0.7",
+    "@zetachain/toolkit": "^1.0.2",
     "@zetachain/zevm-protocol-contracts": "^0.0.1",
     "axios": "^1.4.0",
     "chai": "^4.2.0",

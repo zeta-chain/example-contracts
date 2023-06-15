@@ -17,7 +17,4 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 `);
 };
 
-const descTask = `Sends a message from one chain to another.`;
-const descContractFlag = `Contract address`;
-
-task("counter:show", descTask, main).addParam("contract", descContractFlag);
+task("counter:show", "Sends a message from one chain to another.", main).addParam("contract", "Contract address");
