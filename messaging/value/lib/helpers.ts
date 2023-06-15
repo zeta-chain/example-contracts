@@ -1,7 +1,4 @@
-import {
-  ZetaEth,
-  ZetaEth__factory as ZetaEthFactory,
-} from "@zetachain/interfaces/typechain-types";
+import { ZetaEth } from "@zetachain/protocol-contracts/dist/typechain-types/contracts/evm/Zeta.eth.sol";
 import assert from "assert";
 import { ethers, network } from "hardhat";
 
