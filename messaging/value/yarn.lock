@@ -1506,7 +1506,7 @@
   resolved "https://registry.yarnpkg.com/@zetachain/addresses/-/addresses-0.0.10.tgz#12174031f29b801ebc97fd7098f4f2aa4577d5e2"
   integrity sha512-G4OqEdAQwHrXP1YoNtEyFUCU4Nv3UQy9OCcv9Xn3g395EjLz3EqZQVHUcxsjZ5OkLMSJG08enWvCNuBINfAZEg==
 
-"@zetachain/faucet-cli@1.3.5", "@zetachain/faucet-cli@^2.0.1":
+"@zetachain/faucet-cli@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@zetachain/faucet-cli/-/faucet-cli-2.0.1.tgz#94b4316a6a62b0df781df40c6223a054338d46b6"
   integrity sha512-OS5RF+oLoRgQFQ3ZokXMQa6Bfdcrrzh8KBmnVIdT3FEJAfSPi9TCBfC6nNghvvDnjniIF31qsPlwlBwA9cioww==
@@ -1524,10 +1524,10 @@
   resolved "https://registry.yarnpkg.com/@zetachain/interfaces/-/interfaces-0.0.1.tgz#dbbb7b1abcb63d9297a3d320178036a4aa8026b1"
   integrity sha512-50Ecu1FeBOFbKyLwZ2yu/9fe8JwdXhGtrISmwuChLswKWQxqATmmex2kzoFhUywXrVKGOh/q4Jyn0kzWxXH/wQ==
 
-"@zetachain/networks@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-0.1.0.tgz#0af15bd09ddfa924410e5dc5aae9101ac1d1ae11"
-  integrity sha512-T0a2Ko/7++KeC08oukT6ggHA0nE3eVemqhQ2N0LRL27rIZDILB1l9rBrAm7H6F4X2Mei0tJBOjOQX1XNYXD3QA==
+"@zetachain/networks@^2.0.0-athens3":
+  version "2.0.0-athens3"
+  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-2.0.0-athens3.tgz#2ba214148fcd2f4218bc9da7c662ce28c4254b5b"
+  integrity sha512-XEdhnC+uAQkign7dhkVulO1W6XB1FimiHbXYXmwV0p+jON7mdqbZ60ehugguTKqX+jsvfDxFnlnuv6XFysm9bQ==
   dependencies:
     dotenv "^16.1.4"
 
