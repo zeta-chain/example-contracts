@@ -6,10 +6,9 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { prepareData } from "@zetachain/toolkit/helpers";
 
 const ZRC20Addresses = {
-  goerli: "0x91d18e54DAf4F677cB28167158d6dd21F6aB3921",
-  "bsc-testnet": "0x13A0c5930C028511Dc02665E7285134B6d11A5f4",
-  "bitcoin-testnet": "0x48f80608B672DC30DC7e3dbBd0343c5F02C738Eb",
-  "polygon-mumbai": "0xd97B1de3619ed2c6BEb3860147E30cA8A7dC9891",
+  goerli_testnet: "0x13A0c5930C028511Dc02665E7285134B6d11A5f4",
+  mumbai_testnet: "0x48f80608B672DC30DC7e3dbBd0343c5F02C738Eb",
+  bsc_testnet: "0xd97B1de3619ed2c6BEb3860147E30cA8A7dC9891",
 };
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
@@ -27,7 +26,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const to = getAddress("tss", network as any);
   const value = parseEther(args.amount);
   const tx = await signer.sendTransaction({ data, to, value });
-
   console.log(`
 🚀 Successfully broadcasted a token transfer transaction on ${network} network.
 📝 Transaction hash: ${tx.hash}
