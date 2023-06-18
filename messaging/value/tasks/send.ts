@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
-import { getAddress } from "@zetachain/addresses";
+import { getAddress } from "@zetachain/protocol-contracts/lib";
 
 const contractName = "MultiChainValue";
 
@@ -12,11 +12,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const factory = await hre.ethers.getContractFactory(contractName);
   const contract = factory.attach(args.contract);
 
-  const zetaTokenAddress = getAddress({
-    address: "zetaToken",
-    networkName: hre.network.name,
-    zetaNetwork: "athens",
-  });
+  const zetaTokenAddress = getAddress("zetaToken", hre.network.name as any);
   const zetaFactory = await hre.ethers.getContractFactory("ZetaEth");
   const zetaToken = zetaFactory.attach(zetaTokenAddress);
   await zetaToken.approve(args.contract, parseEther(args.amount));

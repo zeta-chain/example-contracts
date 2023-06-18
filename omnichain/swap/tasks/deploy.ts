@@ -5,16 +5,17 @@ import { getAddress } from "@zetachain/protocol-contracts/lib";
 const contractName = "ZetaSwapV2";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
-  if (hre.network.name !== "athens") {
+  if (hre.network.name !== "zeta_testnet") {
     throw new Error(
-      '🚨 Please use the "athens" network to deploy to ZetaChain.'
+      '🚨 Please use the "zeta_testnet" network to deploy to ZetaChain.'
     );
   }
 
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const SYSTEM_CONTRACT = getAddress("systemContract", hre.network.name);
+  // const SYSTEM_CONTRACT = getAddress("systemContract", hre.network.name);
+  const SYSTEM_CONTRACT = "0x91d18e54DAf4F677cB28167158d6dd21F6aB3921";
 
   const factory = await hre.ethers.getContractFactory(contractName);
   const contract = await factory.deploy(SYSTEM_CONTRACT);
