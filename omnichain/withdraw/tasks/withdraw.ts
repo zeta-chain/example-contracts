@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
-import { getAddress } from "@zetachain/addresses";
+import { getAddress } from "@zetachain/protocol-contracts/lib";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -16,11 +16,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const network = hre.network.name;
   const data = prepareData(args.contract, args.recipient);
-  const to = getAddress({
-    address: "tss",
-    networkName: network,
-    zetaNetwork: "athens",
-  });
+  const to = getAddress("tss", network as any);
   const value = parseEther(args.amount);
 
   const tx = await signer.sendTransaction({ data, to, value });

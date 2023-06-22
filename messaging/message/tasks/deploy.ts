@@ -38,15 +38,14 @@ const deployContract = async (
   networkName: string
 ) => {
   const wallet = initWallet(hre, networkName);
-  const zetaNetwork = "athens";
   const connectorAddress = getAddress("connector", networkName as any);
   const zetaTokenAddress = getAddress("zetaToken", networkName as any);
   const zetaTokenConsumerUniV2 = getAddress(
     "zetaTokenConsumerUniV2",
     networkName as any
   );
-  const zetaTokenConsumerV3 = getAddress(
-    "zetaTokenConsumerV3",
+  const zetaTokenConsumerUniV3 = getAddress(
+    "zetaTokenConsumerUniV3",
     networkName as any
   );
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
@@ -54,7 +53,7 @@ const deployContract = async (
   const contract = await factory.deploy(
     connectorAddress,
     zetaTokenAddress,
-    zetaTokenConsumerUniV2 || zetaTokenConsumerV3
+    zetaTokenConsumerUniV2 || zetaTokenConsumerUniV3
   );
 
   await contract.deployed();

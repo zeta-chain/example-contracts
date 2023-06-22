@@ -41,15 +41,21 @@ const deployContract = async (
 
   const connector = getAddress("connector", networkName as any);
   const zetaToken = getAddress("zetaToken", networkName as any);
-  const consumerV2 = getAddress("zetaTokenConsumerUniV2", networkName as any);
-  const consumerV3 = getAddress("zetaTokenConsumerUniV3", networkName as any);
+  const zetaTokenConsumerUniV2 = getAddress(
+    "zetaTokenConsumerUniV2",
+    networkName as any
+  );
+  const zetaTokenConsumerUniV3 = getAddress(
+    "zetaTokenConsumerUniV3",
+    networkName as any
+  );
 
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
   const contract = await factory.deploy(
     connector,
     zetaToken,
-    consumerV2 || consumerV3
+    zetaTokenConsumerUniV2 || zetaTokenConsumerUniV3
   );
 
   await contract.deployed();
