@@ -36,8 +36,7 @@ for updates on the progress of the cross-chain transaction.
 `);
 };
 
-task("withdraw", "Send tokens to the recipient address")
+task("withdraw", "Send tokens to the recipient address", main)
   .addParam("contract", "The address of the withdraw contract on ZetaChain")
   .addParam("recipient", "Address of the recipient on the target network")
-  .addParam("amount", "Amount to send to the recipient")
-  .setAction(main);
+  .addParam("amount", "Amount to send to the recipient");

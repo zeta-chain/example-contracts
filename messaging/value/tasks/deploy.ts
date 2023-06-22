@@ -92,7 +92,7 @@ const setInteractors = async (
   }
 };
 
-const descTask = `Deploy the contract`;
-const descNetworksFlag = `Comma separated list of networks to deploy to`;
-
-task("deploy", descTask).addParam("networks", descNetworksFlag).setAction(main);
+task("deploy", "Deploy the contract", main).addParam(
+  "networks",
+  "Comma separated list of networks to deploy to"
+);

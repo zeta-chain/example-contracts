@@ -100,6 +100,7 @@ const setInteractors = async (
   }
 };
 
-task("deploy", "Deploy the contract")
-  .addParam("networks", "Comma separated list of networks to deploy to")
-  .setAction(main);
+task("deploy", "Deploy the contract", main).addParam(
+  "networks",
+  "Comma separated list of networks to deploy to"
+);
