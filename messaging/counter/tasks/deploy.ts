@@ -38,23 +38,24 @@ const deployContract = async (
   networkName: string
 ) => {
   const wallet = initWallet(hre, networkName);
-  const connectorAddress = getAddress("connector", networkName as any);
-  const zetaTokenAddress = getAddress("zetaToken", networkName as any);
 
+  const connector = getAddress("connector", networkName as any);
+  const zetaToken = getAddress("zetaToken", networkName as any);
+  const consumerV2 = getAddress("zetaTokenConsumerUniV2", networkName as any);
+  const consumerV3 = getAddress("zetaTokenConsumerUniV3", networkName as any);
 
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
   const contract = await factory.deploy(
-    connectorAddress,
-    zetaTokenAddress,
-    zetaTokenConsumerV2 || zetaTokenConsumerV3
+    connector,
+    zetaToken,
+    consumerV2 || consumerV3
   );
 
   await contract.deployed();
   console.log(`
 🚀 Successfully deployed contract on ${networkName}.
-📜 Contract address: ${contract.address}
-`);
+📜 Contract address: ${contract.address}`);
   return contract.address;
 };
 
@@ -66,8 +67,7 @@ const setInteractors = async (
   source: string,
   contracts: { [key: string]: string }
 ) => {
-  console.log(`
-🔗 Setting interactors for a contract on ${source}`);
+  console.log(`🔗 Setting interactors for a contract on ${source}`);
   const wallet = initWallet(hre, source);
 
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
@@ -94,4 +94,6 @@ const setInteractors = async (
   }
 };
 
-task("deploy", "Deploy the contract").addParam("networks", "Comma separated list of networks to deploy to").setAction(main);
+task("deploy", "Deploy the contract")
+  .addParam("networks", "Comma separated list of networks to deploy to")
+  .setAction(main);
