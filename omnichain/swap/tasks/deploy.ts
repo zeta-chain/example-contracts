@@ -14,8 +14,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  // const SYSTEM_CONTRACT = getAddress("systemContract", hre.network.name);
-  const SYSTEM_CONTRACT = "0x91d18e54DAf4F677cB28167158d6dd21F6aB3921";
+  const SYSTEM_CONTRACT = getAddress("systemContract", hre.network.name);
 
   const factory = await hre.ethers.getContractFactory(contractName);
   const contract = await factory.deploy(SYSTEM_CONTRACT);
