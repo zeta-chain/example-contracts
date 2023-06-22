@@ -23,7 +23,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 // Initialize a wallet using a network configuration and a private key from
 // environment variables.
 const initWallet = (hre: HardhatRuntimeEnvironment, networkName: string) => {
-  const { url } = hre.config.networks[networkName];
+  const { url } = hre.config.networks[networkName] as any;
   const provider = new ethers.providers.JsonRpcProvider(url);
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY as string, provider);
 
