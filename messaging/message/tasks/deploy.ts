@@ -48,10 +48,6 @@ const deployContract = async (
     "zetaTokenConsumerUniV3",
     networkName as any
   );
-  console.log(networkName);
-  console.log(`zetaTokenConsumerUniV2: ${zetaTokenConsumerUniV2}`);
-  console.log(`zetaTokenConsumerUniV3: ${zetaTokenConsumerUniV3}`);
-  console.log(zetaTokenConsumerUniV3 || zetaTokenConsumerUniV2);
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
   const contract = await factory.deploy(
