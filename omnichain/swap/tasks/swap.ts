@@ -5,19 +5,12 @@ import { getAddress } from "@zetachain/protocol-contracts/lib";
 import { BigNumber } from "@ethersproject/bignumber";
 import { prepareData } from "@zetachain/toolkit/helpers";
 
-const ZRC20Addresses = {
-  goerli_testnet: "0x13A0c5930C028511Dc02665E7285134B6d11A5f4",
-  mumbai_testnet: "0x48f80608B672DC30DC7e3dbBd0343c5F02C738Eb",
-  bsc_testnet: "0xd97B1de3619ed2c6BEb3860147E30cA8A7dC9891",
-};
-
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const destinationToken =
-    ZRC20Addresses[args.destination as keyof typeof ZRC20Addresses];
   const network = hre.network.name;
+  const destinationToken = getAddress("zrc20" as any, args.destination as any);
   const data = prepareData(
     args.contract,
     ["address", "bytes32", "uint256"],
@@ -43,4 +36,4 @@ task("swap", "Swap tokens", main)
   .addOptionalParam("recipient", "Address of the recipient, defaults to signer")
   .addParam("contract", "Address of the swap contract on ZetaChain")
   .addParam("amount", "Amount to send to the recipient")
-  .addParam("destination", "Destination network, like 'goerli'");
+  .addParam("destination", "Destination network, like 'goerli_testnet'");
