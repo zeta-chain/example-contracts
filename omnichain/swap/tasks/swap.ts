@@ -20,8 +20,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const network = hre.network.name;
   const data = prepareData(
     args.contract,
-    ["address", "address", "uint256"],
-    [args.recipient || signer.address, destinationToken, BigNumber.from("0")]
+    ["address", "bytes32", "uint256"],
+    [destinationToken, args.recipient || signer.address, BigNumber.from("0")]
   );
   const to = getAddress("tss", network as any);
   const value = parseEther(args.amount);
