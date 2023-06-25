@@ -49,8 +49,7 @@ const deployContract = async (
   await contract.deployed();
   console.log(`
 🚀 Successfully deployed contract on ${networkName}.
-📜 Contract address: ${contract.address}
-`);
+📜 Contract address: ${contract.address}`);
   return contract.address;
 };
 
