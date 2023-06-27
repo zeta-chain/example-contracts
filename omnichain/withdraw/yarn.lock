@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@adraffy/ens-normalize@1.9.2":
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.9.2.tgz#60111a5d9db45b2e5cbb6231b0bb8d97e8659316"
-  integrity sha512-0h+FrQDqe2Wn+IIGFkTCd4aAwTJ+7834Ek1COohCyV26AXhwQ7WQaz+4F/nLOeVl/3BtWHOHLPsq46V8YB46Eg==
-
 "@chainsafe/as-sha256@^0.3.1":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/as-sha256/-/as-sha256-0.3.1.tgz#3639df0e1435cab03f4d9870cc3ac079e57a6fc9"
@@ -638,7 +633,7 @@
     "@ethersproject/constants" "^5.6.1"
     "@ethersproject/logger" "^5.6.0"
 
-"@ethersproject/units@5.7.0", "@ethersproject/units@^5.7.0":
+"@ethersproject/units@5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/units/-/units-5.7.0.tgz#637b563d7e14f42deeee39245275d477aae1d8b1"
   integrity sha512-pD3xLMy3SJu9kG5xDGI7+xhTEmGXlEqXU4OfNapmfnxLVY4EMSSRp7j1k7eezutBPH7RBN/7QPnwR7hzNlEFeg==
@@ -917,11 +912,6 @@
   dependencies:
     lodash "^4.17.16"
     uuid "^7.0.3"
-
-"@noble/hashes@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.1.2.tgz#e9e035b9b166ca0af657a7848eb2718f0f22f183"
-  integrity sha512-KYRCASVTv6aeUi1tsF8/vpyR7zpfs3FUzy2Jqm+MU+LmUKhQ0y2FpfwqkCcxSg2ua4GALJd8k2R76WxwZGbQpA==
 
 "@noble/hashes@1.2.0", "@noble/hashes@~1.2.0":
   version "1.2.0"
@@ -1452,11 +1442,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.16.1.tgz#5db121e9c5352925bb1f1b892c4ae620e3526799"
   integrity sha512-DZxSZWXxFfOlx7k7Rv4LAyiMroaxa3Ly/7OOzZO8cBNho0YzAi4qlbrx8W27JGqG57IgR/6J7r+nOJWw6kcvZA==
 
-"@types/node@18.15.13":
-  version "18.15.13"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.13.tgz#f64277c341150c979e42b00e4ac289290c9df469"
-  integrity sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==
-
 "@types/node@^10.0.3":
   version "10.17.60"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.60.tgz#35f3d6213daed95da7f0f73e75bcc6980e90597b"
@@ -1589,17 +1574,17 @@
   resolved "https://registry.yarnpkg.com/@zetachain/interfaces/-/interfaces-0.0.1.tgz#dbbb7b1abcb63d9297a3d320178036a4aa8026b1"
   integrity sha512-50Ecu1FeBOFbKyLwZ2yu/9fe8JwdXhGtrISmwuChLswKWQxqATmmex2kzoFhUywXrVKGOh/q4Jyn0kzWxXH/wQ==
 
-"@zetachain/networks@^2.1.0-athens3":
-  version "2.1.0-athens3"
-  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-2.1.0-athens3.tgz#450a49d5122ad788050da3dcfe95c0da5869a162"
-  integrity sha512-LfOIJDiDAQp8XZPB6ADzoSwSrVdzRNJhiaHSiL6k/mRkfne4Y0TGiruGRNn7WTEbUN8+4PFsgFoMlXVNyGFEEA==
+"@zetachain/networks@^2.2.0-athens3":
+  version "2.2.0-athens3"
+  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-2.2.0-athens3.tgz#321246fb97970ef6e6c8acf0c5f3405d3a4c21f0"
+  integrity sha512-9BYgjbOzOXvH9R8lyyk+voHV27+ClYsJh0lMovMBI1BdqWOBaFUJn/JRSmk39Qkcrc7/Nsb5eQd85VBLmOWmgQ==
   dependencies:
     dotenv "^16.1.4"
 
-"@zetachain/protocol-contracts@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-0.0.7.tgz#a095cb440069fdb5e3832e3a72e1144da6b8dec4"
-  integrity sha512-NC9GdVkld7BwpMiPNXpS3fV4zWe6cfRvtDJmlWXCOwgRitqOe3uq4/ou98zM8rgSQhxDS5wrKrvJrVhyJP3clA==
+"@zetachain/protocol-contracts@^1.0.0-athens3":
+  version "1.0.0-athens3"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-1.0.0-athens3.tgz#032a2884219b27bdbb3cef8162b7cbe5def9761f"
+  integrity sha512-jZSUm2zYi7kOVXTdHKfGOVSZUD8SzSgNwK9Fz1+Uz9jRWNBsIGELnloBoS8DzD1EoUR99Dycwe9O6TP7t82avw==
 
 "@zetachain/protocol-contracts@workspace:^":
   version "0.0.3"
@@ -1611,20 +1596,19 @@
     "@uniswap/v3-periphery" "1.1.0"
     ethers "5.6.8"
 
-"@zetachain/toolkit@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-1.0.2.tgz#b78b0d06d500eba6ff7e8c11c780c3848390c1dd"
-  integrity sha512-hu1ednLYXMBPNTuHQt/IUt6z82eql1UTF96GxUd6uf0/P8ItnfLvIUmuv87W7k6OsfBz+XFVOcEMugfdrjqV7Q==
+"@zetachain/toolkit@^1.0.2-athens3":
+  version "1.0.2-athens3"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-1.0.2-athens3.tgz#6fabfdc8f9b06d02453ef218357e923e60725710"
+  integrity sha512-jHyvJYQGUPZdM5k4W+WouaR4nuUZmij2SNk4aZxJ9R+x5N/e5+I/BZUQVQ7uAHEs7mswhOioQm7XmZE310doKw==
   dependencies:
-    "@ethersproject/constants" "^5.7.0"
-    "@ethersproject/units" "^5.7.0"
     "@inquirer/prompts" "^2.1.1"
     "@nomiclabs/hardhat-ethers" "^2.2.3"
     "@zetachain/faucet-cli" "^2.0.1"
+    "@zetachain/protocol-contracts" "^1.0.0-athens3"
     axios "^1.4.0"
     bech32 "^2.0.0"
     bip39 "^3.1.0"
-    ethers "^6.6.0"
+    ethers "^5.4.7"
     form-data "^4.0.0"
     hardhat "^2.15.0"
 
@@ -1695,11 +1679,6 @@ aes-js@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-3.0.0.tgz#e21df10ad6c2053295bcbb8dab40b09dbea87e4d"
   integrity sha512-H7wUZRn8WpTq9jocdxQ2c8x2sKo9ZVmzfRE13GiNJXfp7NcKYEdvl3vspKjXox6RIG2VtaRe4JFvxG4rqp2Zuw==
-
-aes-js@4.0.0-beta.5:
-  version "4.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-4.0.0-beta.5.tgz#8d2452c52adedebc3a3e28465d858c11ca315873"
-  integrity sha512-G965FqalsNyrPqgEGON7nIx1e/OVENSgiEIzyC63haUMuvNnwIgIjMs52hlTCKhkBny7A2ORNlfY9Zu+jmGk1Q==
 
 agent-base@6:
   version "6.0.2"
@@ -2928,19 +2907,6 @@ ethers@^5.4.7, ethers@^5.7.1:
     "@ethersproject/wallet" "5.7.0"
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
-
-ethers@^6.6.0:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.6.0.tgz#596e512cd91ef86b04f95f2e6be58a22ec4f2ce6"
-  integrity sha512-7D2U+n8eZYmh592VZqap9vBu50jN7YUDHqAmwBYTMntmUKC9RVgcqcFbd+3DTCOQ1jMyK6QHv1usbcfgiGaHOA==
-  dependencies:
-    "@adraffy/ens-normalize" "1.9.2"
-    "@noble/hashes" "1.1.2"
-    "@noble/secp256k1" "1.7.1"
-    "@types/node" "18.15.13"
-    aes-js "4.0.0-beta.5"
-    tslib "2.4.0"
-    ws "8.5.0"
 
 ethjs-unit@0.1.6:
   version "0.1.6"
@@ -5655,11 +5621,6 @@ ts-node@>=8.0.0:
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
 
-tslib@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
-  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
-
 tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
@@ -5983,11 +5944,6 @@ ws@7.4.6:
   version "7.4.6"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.6.tgz#5654ca8ecdeee47c33a9a4bf6d28e2be2980377c"
   integrity sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==
-
-ws@8.5.0:
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.5.0.tgz#bfb4be96600757fe5382de12c670dab984a1ed4f"
-  integrity sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==
 
 ws@^7.4.6:
   version "7.5.9"

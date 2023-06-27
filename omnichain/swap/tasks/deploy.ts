@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { getAddress } from "@zetachain/protocol-contracts/lib";
+import { getAddress } from "@zetachain/protocol-contracts";
 
 const contractName = "ZetaSwapV2";
 

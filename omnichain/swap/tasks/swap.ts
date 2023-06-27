@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
-import { getAddress } from "@zetachain/protocol-contracts/lib";
+import { getAddress } from "@zetachain/protocol-contracts";
 import { BigNumber } from "@ethersproject/bignumber";
 import { prepareData } from "@zetachain/toolkit/helpers";
 
