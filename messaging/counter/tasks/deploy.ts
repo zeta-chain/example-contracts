@@ -73,7 +73,8 @@ const setInteractors = async (
   source: string,
   contracts: { [key: string]: string }
 ) => {
-  console.log(`🔗 Setting interactors for a contract on ${source}`);
+  console.log(`
+🔗 Setting interactors for a contract on ${source}`);
   const wallet = initWallet(hre, source);
 
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
