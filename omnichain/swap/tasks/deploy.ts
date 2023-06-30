@@ -22,7 +22,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   console.log(`🚀 Successfully deployed contract on ZetaChain.
 📜 Contract address: ${contract.address}
-🌍 Explorer: https://explorer.zetachain.com/address/${contract.address}
+🌍 Explorer: https://athens3.explorer.zetachain.com/address/${contract.address}
 `);
 };
 

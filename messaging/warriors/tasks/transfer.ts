@@ -23,7 +23,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 Please, refer to ZetaChain's explorer for updates on the progress of the cross-chain transaction.
 
-🌍 Explorer: https://explorer.zetachain.com/address/${args.contract}
+🌍 Explorer: https://athens3.explorer.zetachain.com/address/${args.contract}
 `);
 };
 

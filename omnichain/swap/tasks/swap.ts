@@ -28,7 +28,7 @@ This transaction has been submitted to ${network}, but it may take some time
 for it to be processed on ZetaChain. Please refer to ZetaChain's explorer
 for updates on the progress of the cross-chain transaction.
 
-🌍 Explorer: https://explorer.zetachain.com/address/${args.contract}?tab=ccTxs
+🌍 Explorer: https://athens3.explorer.zetachain.com/address/${args.contract}?tab=ccTxs
 `);
 };
 
