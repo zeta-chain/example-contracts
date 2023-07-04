@@ -4,7 +4,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 const contractName = "HelloZeta";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
-  if (hre.network.name !== "athens") {
+  if (hre.network.name !== "zeta_testnet") {
     throw new Error(
       '🚨 Please use the "athens" network to deploy to ZetaChain.'
     );
