@@ -1,6 +1,8 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
+import ZRC20 from "@zetachain/protocol-contracts/abi/zevm/ZRC20.sol/ZRC20.json";
+import { getAddress } from "@zetachain/protocol-contracts";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -13,11 +15,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const contract = factory.attach(args.contract);
   const recipient = hre.ethers.utils.hexZeroPad(args.recipient, 32);
 
-  const tx = await contract.withdraw(
-    args.zrc20,
-    parseEther(args.amount),
-    recipient
-  );
+  const zrc20Address = getAddress("zrc20", args.destination);
+  const token = new hre.ethers.Contract(zrc20Address, ZRC20.abi, signer);
+  await token.transfer(args.contract, value);
+  await token.approve(args.contract, value);
+  const tx = await contract.withdraw(zrc20Address, value, recipient);
+
   console.log(tx);
   console.log(`
 🚀 Successfully broadcasted a token withdrawal transaction on ${network} network.
@@ -33,7 +36,7 @@ for updates on the progress of the cross-chain transaction.
 };
 
 task("withdraw", "Withdraw ZRC20 tokens to a recipient address", main)
-  .addParam("zrc20", "The address of the ZRC20 token to be withdrawn")
+  .addParam("destination", "Destination chain")
   .addParam("contract", "Contract address")
   .addParam("recipient", "Address of the recipient on the target network")
   .addParam("amount", "Amount to withdraw to the recipient");
