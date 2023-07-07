@@ -21,7 +21,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   await token.approve(args.contract, value);
   const tx = await contract.withdraw(zrc20Address, value, recipient);
 
-  console.log(tx);
   console.log(`
 🚀 Successfully broadcasted a token withdrawal transaction on ${network} network.
 📝 Transaction hash: ${tx.hash}
