@@ -39,6 +39,24 @@ contract Withdraw is zContract {
     }
 
     /**
+     * @dev External function that is called by the zContract.
+     * @param zrc20 The address of the ZRC20 token to be withdrawn.
+     * @param amount The amount of tokens to be withdrawn.
+     * @param message The encoded recipient address for the withdrawn tokens.
+     */
+    function onCrossChainCall(
+        address zrc20,
+        uint256 amount,
+        bytes calldata message
+    ) external virtual override {
+        if (zrc20 == address(0)) revert InvalidZRC20Address();
+        if (amount == 0) revert ZeroAmount();
+
+        bytes32 recipient = abi.decode(message, (bytes32));
+        doWithdrawal(zrc20, amount, recipient);
+    }
+
+    /**
      * @dev Public function to initiate the withdrawal of ZRC20 tokens.
      * @param zrc20 The address of the ZRC20 token to be withdrawn.
      * @param amount The amount of tokens to be withdrawn.
