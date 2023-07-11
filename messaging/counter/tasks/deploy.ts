@@ -2,6 +2,7 @@ import { getAddress } from "@zetachain/protocol-contracts";
 import { ethers } from "ethers";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { getSupportedNetworks } from "@zetachain/networks";
 
 const contractName = "CrossChainCounter";
 
@@ -103,5 +104,7 @@ const setInteractors = async (
 
 task("deploy", "Deploy the contract", main).addParam(
   "networks",
-  "Comma separated list of networks to deploy to"
+  `Comma separated list of networks to deploy to (e.g. ${getSupportedNetworks(
+    "ccm"
+  )})`
 );
