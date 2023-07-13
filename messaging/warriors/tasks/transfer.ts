@@ -23,20 +23,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 Please, refer to ZetaChain's explorer for updates on the progress of the cross-chain transaction.
 
-🌍 Explorer: https://explorer.zetachain.com/address/${args.contract}
+🌍 Explorer: https://athens3.explorer.zetachain.com/address/${args.contract}
 `);
 };
 
-const descTask = `Sends a message from one chain to another.`;
-const descContractFlag = `Contract address`;
-const descDestinationFlag = `Destination chain ID (integer)`;
-const descAddressFlag = `Recipient address`;
-const descTokenFlag = `Token ID`;
-const descAmountFlag = `Token amount to send`;
-
-task("transfer", descTask, main)
-  .addParam("contract", descContractFlag)
-  .addParam("address", descAddressFlag)
-  .addParam("destination", descDestinationFlag)
-  .addParam("token", descTokenFlag)
-  .addParam("amount", descAmountFlag);
+task("transfer", "Sends a message from one chain to another.", main)
+  .addParam("contract", "Contract address")
+  .addParam("address", "Recipient address")
+  .addParam("destination", "Destination chain ID (integer)")
+  .addParam("token", "Token ID")
+  .addParam("amount", "Token amount to send");

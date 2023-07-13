@@ -1,7 +1,8 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { getAddress, getChainId } from "@zetachain/addresses";
+import { getAddress } from "@zetachain/protocol-contracts";
 import { ethers } from "ethers";
+import { getSupportedNetworks } from "@zetachain/networks";
 
 const contractName = "CrossChainMessage";
 
@@ -38,41 +39,28 @@ const deployContract = async (
   networkName: string
 ) => {
   const wallet = initWallet(hre, networkName);
-  const zetaNetwork = "athens";
-  const connectorAddress = getAddress({
-    address: "connector",
-    networkName,
-    zetaNetwork,
-  });
-  const zetaTokenAddress = getAddress({
-    address: "zetaToken",
-    networkName,
-    zetaNetwork,
-  });
-  const zetaTokenConsumerV2 = getAddress({
-    address: "zetaTokenConsumerUniV2",
-    networkName,
-    zetaNetwork,
-  });
-  const zetaTokenConsumerV3 = getAddress({
-    address: "zetaTokenConsumerUniV3",
-    networkName,
-    zetaNetwork,
-  });
-
+  const connectorAddress = getAddress("connector", networkName as any);
+  const zetaTokenAddress = getAddress("zetaToken", networkName as any);
+  const zetaTokenConsumerUniV2 = getAddress(
+    "zetaTokenConsumerUniV2",
+    networkName as any
+  );
+  const zetaTokenConsumerUniV3 = getAddress(
+    "zetaTokenConsumerUniV3",
+    networkName as any
+  );
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
   const contract = await factory.deploy(
     connectorAddress,
     zetaTokenAddress,
-    zetaTokenConsumerV2 || zetaTokenConsumerV3
+    zetaTokenConsumerUniV3 || zetaTokenConsumerUniV2
   );
 
   await contract.deployed();
   console.log(`
 🚀 Successfully deployed contract on ${networkName}.
-📜 Contract address: ${contract.address}
-`);
+📜 Contract address: ${contract.address}`);
   return contract.address;
 };
 
@@ -102,7 +90,7 @@ const setInteractors = async (
       ["address"],
       [contracts[counterparty]]
     );
-    const chainId = getChainId(counterparty as any);
+    const chainId = hre.config.networks[counterparty].chainId;
     await (
       await contract.setInteractorByChainId(chainId, counterpartyContract)
     ).wait();
@@ -112,7 +100,11 @@ const setInteractors = async (
   }
 };
 
-const descTask = `Deploy the contract`;
-const descNetworksFlag = `Comma separated list of networks to deploy to`;
-
-task("deploy", descTask).addParam("networks", descNetworksFlag).setAction(main);
+task("deploy", "Deploy the contract")
+  .addParam(
+    "networks",
+    `Comma separated list of networks to deploy to (e.g. ${getSupportedNetworks(
+      "ccm"
+    )})`
+  )
+  .setAction(main);

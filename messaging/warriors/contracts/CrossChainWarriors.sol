@@ -95,7 +95,7 @@ contract CrossChainWarriors is
         if (!_isApprovedOrOwner(_msgSender(), tokenId))
             revert InvalidTransferCaller();
 
-        uint256 crossChainGas = 18 * (10 ** 18);
+        uint256 crossChainGas = 2 * (10 ** 18);
         uint256 zetaValueAndGas = _zetaConsumer.getZetaFromEth{
             value: msg.value
         }(address(this), crossChainGas);

@@ -4,9 +4,9 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 const contractName = "HelloZeta";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
-  if (hre.network.name !== "athens") {
+  if (hre.network.name !== "zeta_testnet") {
     throw new Error(
-      '🚨 Please use the "athens" network to deploy to ZetaChain.'
+      '🚨 Please use the "zeta_testnet" network to deploy to ZetaChain.'
     );
   }
 
@@ -19,8 +19,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   console.log(`🚀 Successfully deployed contract on ZetaChain.
 📜 Contract address: ${contract.address}
-🌍 Explorer: https://explorer.zetachain.com/address/${contract.address}
+🌍 Explorer: https://athens3.explorer.zetachain.com/address/${contract.address}
 `);
 };
 
-task("deploy", "Deploy the contract").setAction(main);
+task("deploy", "Deploy the contract", main);

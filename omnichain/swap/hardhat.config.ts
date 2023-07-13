@@ -1,17 +1,10 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import * as dotenv from "dotenv";
-import { getHardhatConfigNetworks } from "@zetachain/addresses-tools/dist/networks";
+import { getHardhatConfigNetworks } from "@zetachain/networks";
+import "@zetachain/toolkit/tasks";
 
-import "./tasks/account";
-import "./tasks/faucet";
-import "./tasks/balances";
 import "./tasks/deploy";
 import "./tasks/swap";
-
-dotenv.config();
-const PRIVATE_KEYS =
-  process.env.PRIVATE_KEY !== undefined ? [`0x${process.env.PRIVATE_KEY}`] : [];
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -21,7 +14,7 @@ const config: HardhatUserConfig = {
     ],
   },
   networks: {
-    ...getHardhatConfigNetworks(PRIVATE_KEYS),
+    ...getHardhatConfigNetworks(),
   },
 };
 
