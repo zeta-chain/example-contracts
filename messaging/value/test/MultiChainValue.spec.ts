@@ -1,13 +1,13 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { ZetaEth } from "@zetachain/interfaces/typechain-types";
+import { ZetaEth } from "@zetachain/protocol-contracts/dist/typechain-types/contracts/evm/Zeta.eth.sol";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
+import { deployMultiChainValueMock } from "./helpers";
 import {
-  deployMultiChainValueMock,
   deployZetaConnectorMock,
   deployZetaEthMock,
-} from "../lib/helpers";
+} from "@zetachain/toolkit/helpers";
 import {
   MultiChainValueMock,
   ZetaConnectorMockValue,

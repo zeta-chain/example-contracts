@@ -12,12 +12,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const counter = await contract.counter(signer.address);
 
-  console.log(`
-🔢 The counter for ${signer.address} is: ${counter.toString()}
+  console.log(`🔢 The counter for ${signer.address} is: ${counter.toString()}
 `);
 };
 
-const descTask = `Sends a message from one chain to another.`;
-const descContractFlag = `Contract address`;
-
-task("counter:show", descTask, main).addParam("contract", descContractFlag);
+task(
+  "counter:show",
+  "Sends a message from one chain to another.",
+  main
+).addParam("contract", "Contract address");
