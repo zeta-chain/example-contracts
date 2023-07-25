@@ -3,14 +3,10 @@ pragma solidity 0.8.7;
 
 import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
-// highlight-start
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-// highlight-end
-
-// highlight-start
 contract MultiOutput is zContract, Ownable {
     error NoAvailableTransfers();
 
@@ -18,14 +14,12 @@ contract MultiOutput is zContract, Ownable {
     event Withdrawal(address, uint256, address);
 
     address[] public destinationTokens;
-    // highlight-end
     SystemContract public immutable systemContract;
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
     }
 
-    // highlight-start
     function registerDestinationToken(
         address destinationToken
     ) external onlyOwner {
@@ -43,15 +37,12 @@ contract MultiOutput is zContract, Ownable {
         return total;
     }
 
-    // highlight-end
-
     function onCrossChainCall(
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external virtual override {
         address recipient = abi.decode(message, (address));
-        // highlight-start
         if (_getTotalTransfers(zrc20) == 0) revert NoAvailableTransfers();
 
         uint256 amountToTransfer = amount / _getTotalTransfers(zrc20);
@@ -89,6 +80,5 @@ contract MultiOutput is zContract, Ownable {
             );
             emit Withdrawal(targetZRC20, outputAmount, recipient);
         }
-        // highlight-end
     }
 }
