@@ -2,15 +2,13 @@ import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getAddress } from "@zetachain/protocol-contracts";
 
-const contractName = "ZetaMultiOutput";
-
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
   const destinationToken = getAddress("zrc20" as any, args.destination as any);
-  const ZetaMultiOutput = await ethers.getContractAt(
-    contractName,
+  const ZetaMultiOutput = await hre.ethers.getContractAt(
+    "MultiOutput",
     args.contract
   );
 
