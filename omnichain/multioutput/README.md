@@ -56,18 +56,10 @@ npx hardhat balances --address <address>
 
 ### Requesting Tokens from the Faucet
 
-To request tokens from ZetaChain's faucet using the account from the `.env`
-file, run the following command in your terminal:
+To install a faucet, run the following command in your terminal:
 
 ```
-npx hardhat faucet
-```
-
-Alternatively, you can install a standalone faucet, run the following command in
-your terminal:
-
-```
-yarn global add @zetachain/faucet-cli
+yarn global add @zetachain/faucet-cli@athens3
 ```
 
 You can then use it with the following command:

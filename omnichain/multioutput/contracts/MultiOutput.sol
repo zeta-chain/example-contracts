@@ -1,21 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.7;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
+import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-interface ZetaMultiOutputErrors {
+contract MultiOutput is zContract, Ownable {
     error NoAvailableTransfers();
-}
-
-contract ZetaMultiOutput is zContract, Ownable, ZetaMultiOutputErrors {
-    SystemContract public immutable systemContract;
-    address[] public destinationTokens;
 
     event DestinationRegistered(address);
     event Withdrawal(address, uint256, address);
+
+    address[] public destinationTokens;
+    SystemContract public immutable systemContract;
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
@@ -43,9 +42,9 @@ contract ZetaMultiOutput is zContract, Ownable, ZetaMultiOutputErrors {
         uint256 amount,
         bytes calldata message
     ) external virtual override {
+        address recipient = abi.decode(message, (address));
         if (_getTotalTransfers(zrc20) == 0) revert NoAvailableTransfers();
 
-        address receipient = BytesHelperLib.bytesToAddress(message, 0);
         uint256 amountToTransfer = amount / _getTotalTransfers(zrc20);
         uint256 leftOver = amount -
             amountToTransfer *
@@ -77,9 +76,9 @@ contract ZetaMultiOutput is zContract, Ownable, ZetaMultiOutputErrors {
             SwapHelperLib._doWithdrawal(
                 targetZRC20,
                 outputAmount,
-                BytesHelperLib.addressToBytes(receipient)
+                BytesHelperLib.addressToBytes(recipient)
             );
-            emit Withdrawal(targetZRC20, outputAmount, receipient);
+            emit Withdrawal(targetZRC20, outputAmount, recipient);
         }
     }
 }
