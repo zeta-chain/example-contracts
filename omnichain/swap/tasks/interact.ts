@@ -9,7 +9,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const targetZRC20 = getAddress("zrc20" as any, args.destination as any);
+  const targetZRC20 = getAddress("zrc20", args.destination);
   const minAmountOut = BigNumber.from("0");
 
   const data = prepareData(
@@ -17,7 +17,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ["address", "bytes32", "uint256"],
     [targetZRC20, args.recipient, minAmountOut]
   );
-  const to = getAddress("tss", hre.network.name);
+  const to = getAddress("tss", hre.network.name as any);
   const value = parseEther(args.amount);
 
   const tx = await signer.sendTransaction({ data, to, value });
