@@ -6,7 +6,7 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 
-contract ZetaSwapV2 is zContract {
+contract Swap is zContract {
     SystemContract public immutable systemContract;
 
     constructor(address systemContractAddress) {
@@ -18,7 +18,7 @@ contract ZetaSwapV2 is zContract {
         uint256 amount,
         bytes calldata message
     ) external virtual override {
-        (address targetZRC20, bytes32 receipient, uint256 minAmountOut) = abi
+        (address targetZRC20, bytes32 recipient, uint256 minAmountOut) = abi
             .decode(message, (address, bytes32, uint256));
         uint256 outputAmount = SwapHelperLib._doSwap(
             systemContract.wZetaContractAddress(),
@@ -29,6 +29,6 @@ contract ZetaSwapV2 is zContract {
             targetZRC20,
             minAmountOut
         );
-        SwapHelperLib._doWithdrawal(targetZRC20, outputAmount, receipient);
+        SwapHelperLib._doWithdrawal(targetZRC20, outputAmount, recipient);
     }
 }
