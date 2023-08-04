@@ -1327,17 +1327,17 @@
     "@uniswap/lib" "1.1.1"
     "@uniswap/v2-core" "1.0.0"
 
-"@zetachain/faucet-cli@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@zetachain/faucet-cli/-/faucet-cli-2.0.1.tgz#94b4316a6a62b0df781df40c6223a054338d46b6"
-  integrity sha512-OS5RF+oLoRgQFQ3ZokXMQa6Bfdcrrzh8KBmnVIdT3FEJAfSPi9TCBfC6nNghvvDnjniIF31qsPlwlBwA9cioww==
+"@zetachain/faucet-cli@^2.0.1-beta.2":
+  version "2.0.1-beta.2"
+  resolved "https://registry.yarnpkg.com/@zetachain/faucet-cli/-/faucet-cli-2.0.1-beta.2.tgz#32c143d849163844037f7bf0602355d557f11353"
+  integrity sha512-d9nlW5lHquWVZmSwJ+VuGB/TlkaMiP7J0arorKyDt3Rw6hjQ3twaGTlK+nOTqJAxo2gwyGNrZVECmX6dWBY7rw==
   dependencies:
     commander "10.0.1"
     figlet "1.6.0"
     got "11.8.5"
     launchdarkly-node-client-sdk "3.0.2"
     readline "1.3.0"
-    typescript "4.7.4"
+    typescript "5.0.4"
     zod "3.19.1"
 
 "@zetachain/interfaces@^0.0.1":
@@ -1357,16 +1357,16 @@
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-1.0.1-athens3.tgz#50625f9cd493adf5c34215e671e141bdc47afc04"
   integrity sha512-qSf636dDBFZQWragbdphoQR1tH/SxKgzgXZWqBRGf16lavoMvcNMIlDerDIP81qK8ftV7el//adgOLvzXi8QFg==
 
-"@zetachain/toolkit@^1.0.5-athens3":
-  version "1.0.5-athens3"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-1.0.5-athens3.tgz#fa6616ea521945f856397fcca77d6df6c29e9e4a"
-  integrity sha512-ZaJth8KIienkSkWx+7ZyWX6GlxtUZPbcPLgSYWiYbw4+t9gayqpkHxHkC7kBbaPvJa6x5zAnP0z96QUA6dIQkg==
+"@zetachain/toolkit@^1.0.8-athens3":
+  version "1.0.8-athens3"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-1.0.8-athens3.tgz#6434450163db3d0a0977af2b6b8ba13dd92918c9"
+  integrity sha512-iSxo6hTmcYn9wVEsj+zZtrdySvASTpH/oGRBAaSW6aaIWPiU5fjVwxqOM/DsQhnne2Lgqr+xAUddRy4rFNlJDQ==
   dependencies:
     "@inquirer/prompts" "^2.1.1"
     "@nomiclabs/hardhat-ethers" "^2.2.3"
     "@openzeppelin/contracts" "^4.9.2"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/faucet-cli" "^2.0.1"
+    "@zetachain/faucet-cli" "^2.0.1-beta.2"
     "@zetachain/networks" "^2.3.0-athens3"
     "@zetachain/protocol-contracts" "^1.0.1-athens3"
     axios "^1.4.0"
@@ -6317,12 +6317,7 @@ typeforce@^1.11.3, typeforce@^1.18.0:
   resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.18.0.tgz#d7416a2c5845e085034d70fcc5b6cc4a90edbfdc"
   integrity sha512-7uc1O8h1M1g0rArakJdf0uLRSSgFcYexrVoKo+bzJd32gd4gDy2L/Z+8/FjPnU9ydY3pEnVPtr9FyscYY60K1g==
 
-typescript@4.7.4:
-  version "4.7.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
-  integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
-
-typescript@>=4.5.0:
+typescript@5.0.4, typescript@>=4.5.0:
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.0.4.tgz#b217fd20119bd61a94d4011274e0ab369058da3b"
   integrity sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==
