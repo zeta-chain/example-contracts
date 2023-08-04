@@ -5,8 +5,6 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 
 contract Minter is zContract {
-    error WrongChain();
-
     SystemContract public immutable systemContract;
 
     constructor(address systemContractAddress) {
