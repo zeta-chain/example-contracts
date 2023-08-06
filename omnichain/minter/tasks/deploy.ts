@@ -15,7 +15,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const systemContract = getAddress("systemContract", "zeta_testnet");
 
   const factory = await hre.ethers.getContractFactory("Minter");
-  const contract = await factory.deploy(systemContract);
+  const contract = await factory.deploy(
+    "Wrapped tBTC",
+    "WTBTC",
+    18332,
+    systemContract
+  );
   await contract.deployed();
 
   console.log(`🚀 Successfully deployed contract on ZetaChain.
