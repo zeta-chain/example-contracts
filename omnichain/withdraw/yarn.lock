@@ -1357,6 +1357,11 @@
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-1.0.1-athens3.tgz#50625f9cd493adf5c34215e671e141bdc47afc04"
   integrity sha512-qSf636dDBFZQWragbdphoQR1tH/SxKgzgXZWqBRGf16lavoMvcNMIlDerDIP81qK8ftV7el//adgOLvzXi8QFg==
 
+"@zetachain/protocol-contracts@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-2.0.1.tgz#46101ca06115bcd43cbfc7b9437e1d3ecc91eac3"
+  integrity sha512-XvtITedZ+3odIzO9wArnGE3yI0zHQOvumFydUgLeNDsAR+QeKloF7MUdN1toD6hYB3SgF4na/fpj+x6AdJe2Bg==
+
 "@zetachain/toolkit@^1.0.8-athens3":
   version "1.0.8-athens3"
   resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-1.0.8-athens3.tgz#6434450163db3d0a0977af2b6b8ba13dd92918c9"

@@ -17,6 +17,7 @@ contract Withdraw is zContract {
     }
 
     function onCrossChainCall(
+        zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
