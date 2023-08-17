@@ -7,8 +7,8 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 
 contract Minter is ERC20, zContract {
-    error WrongChain();
     error SenderNotSystemContract();
+    error WrongChain();
 
     SystemContract public immutable systemContract;
     uint256 public immutable chain;
