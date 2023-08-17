@@ -6,11 +6,10 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 
-interface MinterErrors {
+contract Minter is ERC20, zContract {
     error WrongChain();
-}
+    error SenderNotSystemContract();
 
-contract Minter is ERC20, zContract, MinterErrors {
     SystemContract public immutable systemContract;
     uint256 public immutable chain;
 
@@ -30,6 +29,9 @@ contract Minter is ERC20, zContract, MinterErrors {
         uint256 amount,
         bytes calldata message
     ) external override {
+        if (msg.sender != address(systemContract)) {
+            revert SenderNotSystemContract();
+        }
         address acceptedZRC20 = systemContract.gasCoinZRC20ByChainId(chain);
         if (zrc20 != acceptedZRC20) revert WrongChain();
 

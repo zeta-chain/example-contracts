@@ -5,6 +5,7 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 
 contract Withdraw is zContract {
+    error SenderNotSystemContract();
     error WrongGasContract();
     error NotEnoughToPayGasFee();
     error InvalidZRC20Address();
@@ -22,6 +23,9 @@ contract Withdraw is zContract {
         uint256 amount,
         bytes calldata message
     ) external virtual override {
+        if (msg.sender != address(systemContract)) {
+            revert SenderNotSystemContract();
+        }
         bytes32 recipient = abi.decode(message, (bytes32));
         if (zrc20 == address(0)) revert InvalidZRC20Address();
         if (amount == 0) revert ZeroAmount();
