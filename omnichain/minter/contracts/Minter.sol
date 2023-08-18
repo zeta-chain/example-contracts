@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity 0.8.7;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
-import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
+import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Minter is ERC20, zContract {
     error SenderNotSystemContract();
@@ -32,10 +31,9 @@ contract Minter is ERC20, zContract {
         if (msg.sender != address(systemContract)) {
             revert SenderNotSystemContract();
         }
+        address recipient = abi.decode(message, (address));
         address acceptedZRC20 = systemContract.gasCoinZRC20ByChainId(chain);
         if (zrc20 != acceptedZRC20) revert WrongChain();
-
-        address recipient = BytesHelperLib.bytesToAddress(message, 0);
 
         _mint(recipient, amount);
     }

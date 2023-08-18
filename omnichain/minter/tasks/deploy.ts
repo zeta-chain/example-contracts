@@ -1,8 +1,6 @@
+import { getAddress } from "@zetachain/protocol-contracts";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { getAddress } from "@zetachain/protocol-contracts";
-
-const contractName = "Minter";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   if (hre.network.name !== "zeta_testnet") {
@@ -14,21 +12,20 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const SYSTEM_CONTRACT = getAddress("systemContract", hre.network.name);
-  const bitcoinChainID = 18332;
+  const systemContract = getAddress("systemContract", "zeta_testnet");
 
-  const factory = await hre.ethers.getContractFactory(contractName);
+  const factory = await hre.ethers.getContractFactory("Minter");
+  const bitcoinChainId = 18332;
   const contract = await factory.deploy(
     "Wrapped tBTC",
     "WTBTC",
-    bitcoinChainID,
-    SYSTEM_CONTRACT
+    bitcoinChainId,
+    systemContract
   );
   await contract.deployed();
 
   console.log(`🚀 Successfully deployed contract on ZetaChain.
 📜 Contract address: ${contract.address}
-
 🌍 Explorer: https://athens3.explorer.zetachain.com/address/${contract.address}
 `);
 };
