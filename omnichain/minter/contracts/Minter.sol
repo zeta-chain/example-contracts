@@ -1,16 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity 0.8.7;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
-import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
+import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-interface MinterErrors {
+contract Minter is zContract, ERC20 {
     error WrongChain();
-}
 
-contract Minter is ERC20, zContract, MinterErrors {
     SystemContract public immutable systemContract;
     uint256 public immutable chain;
 
@@ -28,11 +25,10 @@ contract Minter is ERC20, zContract, MinterErrors {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override {
+    ) external virtual override {
+        address recipient = abi.decode(message, (address));
         address acceptedZRC20 = systemContract.gasCoinZRC20ByChainId(chain);
         if (zrc20 != acceptedZRC20) revert WrongChain();
-
-        address recipient = BytesHelperLib.bytesToAddress(message, 0);
 
         _mint(recipient, amount);
     }
