@@ -5,7 +5,8 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract Minter is zContract, ERC20 {
+contract Minter is ERC20, zContract {
+    error SenderNotSystemContract();
     error WrongChain();
 
     SystemContract public immutable systemContract;
@@ -22,10 +23,14 @@ contract Minter is zContract, ERC20 {
     }
 
     function onCrossChainCall(
+        zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external virtual override {
+    ) external override {
+        if (msg.sender != address(systemContract)) {
+            revert SenderNotSystemContract();
+        }
         address recipient = abi.decode(message, (address));
         address acceptedZRC20 = systemContract.gasCoinZRC20ByChainId(chain);
         if (zrc20 != acceptedZRC20) revert WrongChain();

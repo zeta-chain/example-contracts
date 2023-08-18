@@ -1357,6 +1357,11 @@
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-1.0.1-athens3.tgz#50625f9cd493adf5c34215e671e141bdc47afc04"
   integrity sha512-qSf636dDBFZQWragbdphoQR1tH/SxKgzgXZWqBRGf16lavoMvcNMIlDerDIP81qK8ftV7el//adgOLvzXi8QFg==
 
+"@zetachain/protocol-contracts@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-2.0.1.tgz#46101ca06115bcd43cbfc7b9437e1d3ecc91eac3"
+  integrity sha512-XvtITedZ+3odIzO9wArnGE3yI0zHQOvumFydUgLeNDsAR+QeKloF7MUdN1toD6hYB3SgF4na/fpj+x6AdJe2Bg==
+
 "@zetachain/toolkit@^1.0.8-athens3":
   version "1.0.8-athens3"
   resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-1.0.8-athens3.tgz#6434450163db3d0a0977af2b6b8ba13dd92918c9"
@@ -6316,11 +6321,6 @@ typeforce@^1.11.3, typeforce@^1.18.0:
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.18.0.tgz#d7416a2c5845e085034d70fcc5b6cc4a90edbfdc"
   integrity sha512-7uc1O8h1M1g0rArakJdf0uLRSSgFcYexrVoKo+bzJd32gd4gDy2L/Z+8/FjPnU9ydY3pEnVPtr9FyscYY60K1g==
-
-typescript@4.7.4:
-  version "4.7.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
-  integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
 
 typescript@5.0.4, typescript@>=4.5.0:
   version "5.0.4"

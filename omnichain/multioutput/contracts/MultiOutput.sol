@@ -8,6 +8,7 @@ import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MultiOutput is zContract, Ownable {
+    error SenderNotSystemContract();
     error NoAvailableTransfers();
 
     event DestinationRegistered(address);
@@ -38,10 +39,14 @@ contract MultiOutput is zContract, Ownable {
     }
 
     function onCrossChainCall(
+        zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external virtual override {
+        if (msg.sender != address(systemContract)) {
+            revert SenderNotSystemContract();
+        }
         address recipient = abi.decode(message, (address));
         if (_getTotalTransfers(zrc20) == 0) revert NoAvailableTransfers();
 
