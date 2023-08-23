@@ -18,8 +18,8 @@ contract CrossChainMessage is
     bytes32 public constant CROSS_CHAIN_MESSAGE_MESSAGE_TYPE =
         keccak256("CROSS_CHAIN_CROSS_CHAIN_MESSAGE");
 
-    event CrossChainMessageEvent(bytes32);
-    event CrossChainMessageRevertedEvent(bytes32);
+    event CrossChainMessageEvent(string);
+    event CrossChainMessageRevertedEvent(string);
 
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
@@ -33,7 +33,10 @@ contract CrossChainMessage is
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
     }
 
-    function sendMessage(uint256 destinationChainId, bytes32 message) external payable {
+    function sendMessage(
+        uint256 destinationChainId,
+        string memory message
+    ) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -58,8 +61,9 @@ contract CrossChainMessage is
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
-        (bytes32 messageType, bytes32 message) = abi.decode(
-            zetaMessage.message, (bytes32, bytes32)
+        (bytes32 messageType, string memory message) = abi.decode(
+            zetaMessage.message,
+            (bytes32, string)
         );
 
         if (messageType != CROSS_CHAIN_MESSAGE_MESSAGE_TYPE)
@@ -71,9 +75,9 @@ contract CrossChainMessage is
     function onZetaRevert(
         ZetaInterfaces.ZetaRevert calldata zetaRevert
     ) external override isValidRevertCall(zetaRevert) {
-        (bytes32 messageType, bytes32 message) = abi.decode(
+        (bytes32 messageType, string memory message) = abi.decode(
             zetaRevert.message,
-            (bytes32, bytes32)
+            (bytes32, string)
         );
 
         if (messageType != CROSS_CHAIN_MESSAGE_MESSAGE_TYPE)
