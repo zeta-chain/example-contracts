@@ -1340,6 +1340,18 @@
     typescript "5.0.4"
     zod "3.19.1"
 
+"@zetachain/faucet-cli@^2.0.2-athens3.1":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@zetachain/faucet-cli/-/faucet-cli-2.0.2.tgz#1d68f13fe42e727981ed88ea21e93302a3bf55d0"
+  integrity sha512-LQEtcBtOvdBGIBN8cTQc1gcZlLix/o51ljVS1gGEPAlqhEf7J6UVBVRFT6KLP39TnVp0fCRNs1oiofaMrMjMUw==
+  dependencies:
+    commander "10.0.1"
+    figlet "1.6.0"
+    got "11.8.5"
+    launchdarkly-node-client-sdk "3.0.2"
+    typescript "5.0.4"
+    zod "3.19.1"
+
 "@zetachain/interfaces@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@zetachain/interfaces/-/interfaces-0.0.1.tgz#dbbb7b1abcb63d9297a3d320178036a4aa8026b1"
@@ -1352,28 +1364,23 @@
   dependencies:
     dotenv "^16.1.4"
 
-"@zetachain/protocol-contracts@^1.0.1-athens3":
-  version "1.0.1-athens3"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-1.0.1-athens3.tgz#50625f9cd493adf5c34215e671e141bdc47afc04"
-  integrity sha512-qSf636dDBFZQWragbdphoQR1tH/SxKgzgXZWqBRGf16lavoMvcNMIlDerDIP81qK8ftV7el//adgOLvzXi8QFg==
-
 "@zetachain/protocol-contracts@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-2.1.0.tgz#775b4eee7c85d115232dece121cbfc798fde6b63"
   integrity sha512-xmG6p8DizIk0h7Tr8Lt6UMG0ejrfRrPx0qH9ze3enwblo7W+eGP12oQ7djanYu50B0pNhh9z7xy/IYxKa9wD0Q==
 
-"@zetachain/toolkit@^1.0.5-athens3":
-  version "1.0.5-athens3"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-1.0.5-athens3.tgz#fa6616ea521945f856397fcca77d6df6c29e9e4a"
-  integrity sha512-ZaJth8KIienkSkWx+7ZyWX6GlxtUZPbcPLgSYWiYbw4+t9gayqpkHxHkC7kBbaPvJa6x5zAnP0z96QUA6dIQkg==
+"@zetachain/toolkit@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-2.1.0.tgz#735401fea14c268e78b990e47a0485c57971766d"
+  integrity sha512-O8lnJ4vgymIQt14dAPktyw5CQZqAKjExYH5z5+YhvqtQXMzPtdGGpP775H+LSjpZHNmTeRS8jaNFAOqBI7x+tg==
   dependencies:
     "@inquirer/prompts" "^2.1.1"
     "@nomiclabs/hardhat-ethers" "^2.2.3"
     "@openzeppelin/contracts" "^4.9.2"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/faucet-cli" "^2.0.1"
+    "@zetachain/faucet-cli" "^2.0.2-athens3.1"
     "@zetachain/networks" "^2.3.0-athens3"
-    "@zetachain/protocol-contracts" "^1.0.1-athens3"
+    "@zetachain/protocol-contracts" "^2.1.0"
     axios "^1.4.0"
     bech32 "^2.0.0"
     bip39 "^3.1.0"
@@ -1384,6 +1391,7 @@
     hardhat "^2.15.0"
     moment "^2.29.4"
     ora "5.4.1"
+    readline "^1.3.0"
     tiny-secp256k1 "^2.2.3"
     ws "^8.13.0"
 
@@ -5351,7 +5359,7 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-readline@1.3.0:
+readline@1.3.0, readline@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/readline/-/readline-1.3.0.tgz#c580d77ef2cfc8752b132498060dc9793a7ac01c"
   integrity sha512-k2d6ACCkiNYz222Fs/iNze30rRJ1iIicW7JuX/7/cozvih6YCkFZH+J6mAFDVgv0dRBaAyr4jDqC95R2y4IADg==
