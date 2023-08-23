@@ -1327,20 +1327,7 @@
     "@uniswap/lib" "1.1.1"
     "@uniswap/v2-core" "1.0.0"
 
-"@zetachain/faucet-cli@^2.0.1-beta.2":
-  version "2.0.1-beta.2"
-  resolved "https://registry.yarnpkg.com/@zetachain/faucet-cli/-/faucet-cli-2.0.1-beta.2.tgz#32c143d849163844037f7bf0602355d557f11353"
-  integrity sha512-d9nlW5lHquWVZmSwJ+VuGB/TlkaMiP7J0arorKyDt3Rw6hjQ3twaGTlK+nOTqJAxo2gwyGNrZVECmX6dWBY7rw==
-  dependencies:
-    commander "10.0.1"
-    figlet "1.6.0"
-    got "11.8.5"
-    launchdarkly-node-client-sdk "3.0.2"
-    readline "1.3.0"
-    typescript "5.0.4"
-    zod "3.19.1"
-
-"@zetachain/faucet-cli@^2.0.2-athens3.1":
+"@zetachain/faucet-cli@^2.0.2", "@zetachain/faucet-cli@^2.0.2-athens3.1":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@zetachain/faucet-cli/-/faucet-cli-2.0.2.tgz#1d68f13fe42e727981ed88ea21e93302a3bf55d0"
   integrity sha512-LQEtcBtOvdBGIBN8cTQc1gcZlLix/o51ljVS1gGEPAlqhEf7J6UVBVRFT6KLP39TnVp0fCRNs1oiofaMrMjMUw==
@@ -1356,6 +1343,13 @@
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@zetachain/interfaces/-/interfaces-0.0.1.tgz#dbbb7b1abcb63d9297a3d320178036a4aa8026b1"
   integrity sha512-50Ecu1FeBOFbKyLwZ2yu/9fe8JwdXhGtrISmwuChLswKWQxqATmmex2kzoFhUywXrVKGOh/q4Jyn0kzWxXH/wQ==
+
+"@zetachain/networks@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-2.3.0.tgz#ef268fd318456dc2d5f19d4a8a9f9b7eabf613a4"
+  integrity sha512-+rP1GDA64fpyG0KKJdJFbmSaUIY2WG84J2yDsmPPgMhpXb/MkT1jZAFwlrTSmT+H0k2loIqtta6jk4pPDlSADg==
+  dependencies:
+    dotenv "^16.1.4"
 
 "@zetachain/networks@^2.3.0-athens3":
   version "2.3.0-athens3"
@@ -5359,7 +5353,7 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-readline@1.3.0, readline@^1.3.0:
+readline@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/readline/-/readline-1.3.0.tgz#c580d77ef2cfc8752b132498060dc9793a7ac01c"
   integrity sha512-k2d6ACCkiNYz222Fs/iNze30rRJ1iIicW7JuX/7/cozvih6YCkFZH+J6mAFDVgv0dRBaAyr4jDqC95R2y4IADg==
