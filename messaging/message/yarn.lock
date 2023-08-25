@@ -1364,12 +1364,6 @@
     "@uniswap/lib" "1.1.1"
     "@uniswap/v2-core" "1.0.0"
 
-<<<<<<< HEAD
-"@zetachain/faucet-cli@^2.0.2-athens3.1":
-  version "2.0.2-athens3.1"
-  resolved "https://registry.yarnpkg.com/@zetachain/faucet-cli/-/faucet-cli-2.0.2-athens3.1.tgz#e4d2224097b7620f46ec9a985b45625d350340e3"
-  integrity sha512-BDtpQF7XpYc49BQsPRfi6kcRBKjs2UESPzzK7jTcjRRxsFjMQ9tLnY3cx65U/WjFaS2O0APE4vo96j6lQry7PQ==
-=======
 "@zetachain/addresses-tools@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@zetachain/addresses-tools/-/addresses-tools-0.0.8.tgz#fe0728a41197434856b940126562518cd77327cd"
@@ -1384,7 +1378,6 @@
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@zetachain/faucet-cli/-/faucet-cli-2.0.2.tgz#1d68f13fe42e727981ed88ea21e93302a3bf55d0"
   integrity sha512-LQEtcBtOvdBGIBN8cTQc1gcZlLix/o51ljVS1gGEPAlqhEf7J6UVBVRFT6KLP39TnVp0fCRNs1oiofaMrMjMUw==
->>>>>>> main
   dependencies:
     commander "10.0.1"
     figlet "1.6.0"
@@ -1412,17 +1405,6 @@
   dependencies:
     dotenv "^16.1.4"
 
-<<<<<<< HEAD
-"@zetachain/protocol-contracts@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-2.0.1.tgz#46101ca06115bcd43cbfc7b9437e1d3ecc91eac3"
-  integrity sha512-XvtITedZ+3odIzO9wArnGE3yI0zHQOvumFydUgLeNDsAR+QeKloF7MUdN1toD6hYB3SgF4na/fpj+x6AdJe2Bg==
-
-"@zetachain/toolkit@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-2.0.1.tgz#a84146c82b462fb9cafc28ee48682b03d2ae7fa7"
-  integrity sha512-wDMCuN++CgHOWQvAwqlWG0erhjgvO/dxLYJpmotj3lO+47VVlLs8Iy6CoAQ9/zceSGJtiR6l9xMOTtQ1MmFDQw==
-=======
 "@zetachain/protocol-contracts@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-2.1.0.tgz#775b4eee7c85d115232dece121cbfc798fde6b63"
@@ -1432,7 +1414,6 @@
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-2.1.0.tgz#735401fea14c268e78b990e47a0485c57971766d"
   integrity sha512-O8lnJ4vgymIQt14dAPktyw5CQZqAKjExYH5z5+YhvqtQXMzPtdGGpP775H+LSjpZHNmTeRS8jaNFAOqBI7x+tg==
->>>>>>> main
   dependencies:
     "@inquirer/prompts" "^2.1.1"
     "@nomiclabs/hardhat-ethers" "^2.2.3"
@@ -1440,11 +1421,7 @@
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
     "@zetachain/faucet-cli" "^2.0.2-athens3.1"
     "@zetachain/networks" "^2.3.0-athens3"
-<<<<<<< HEAD
-    "@zetachain/protocol-contracts" "^2.0.1"
-=======
     "@zetachain/protocol-contracts" "^2.1.0"
->>>>>>> main
     axios "^1.4.0"
     bech32 "^2.0.0"
     bip39 "^3.1.0"
@@ -2203,11 +2180,7 @@ cli-cursor@^3.1.0:
   dependencies:
     restore-cursor "^3.1.0"
 
-<<<<<<< HEAD
-cli-spinners@^2.5.0, cli-spinners@^2.8.0, cli-spinners@^2.9.0:
-=======
 cli-spinners@^2.5.0, cli-spinners@^2.8.0:
->>>>>>> main
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/cli-spinners/-/cli-spinners-2.9.0.tgz#5881d0ad96381e117bbe07ad91f2008fe6ffd8db"
   integrity sha512-4/aL9X3Wh0yiMQlE+eeRhWP6vclO3QRtw1JHKIT0FFUs5FjpFmESqtMvYZ0+lbzBw900b95mS0hohy+qn2VK/g==
@@ -4907,21 +4880,6 @@ optionator@^0.8.1:
     type-check "~0.3.2"
     word-wrap "~1.2.3"
 
-<<<<<<< HEAD
-optionator@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.9.3.tgz#007397d44ed1872fdc6ed31360190f81814e2c64"
-  integrity sha512-JjCoypp+jKn1ttEFExxhetCKeJt9zhAgAve5FXHixTvFDW/5aEktX9bufBKLRRMdU7bNtpLfcGu94B3cdEJgjg==
-  dependencies:
-    "@aashutoshrathi/word-wrap" "^1.2.3"
-    deep-is "^0.1.3"
-    fast-levenshtein "^2.0.6"
-    levn "^0.4.1"
-    prelude-ls "^1.2.1"
-    type-check "^0.4.0"
-
-=======
->>>>>>> main
 ora@5.4.1:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/ora/-/ora-5.4.1.tgz#1b2678426af4ac4a509008e5e4ac9e9959db9e18"
@@ -6308,8 +6266,6 @@ wcwidth@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/wcwidth/-/wcwidth-1.0.1.tgz#f0b0dcf915bc5ff1528afadb2c0e17b532da2fe8"
   integrity sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==
-<<<<<<< HEAD
-=======
   dependencies:
     defaults "^1.0.3"
 
@@ -6317,7 +6273,6 @@ web3-utils@^1.3.6:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.10.0.tgz#ca4c1b431a765c14ac7f773e92e0fd9377ccf578"
   integrity sha512-kSaCM0uMcZTNUSmn5vMEhlo02RObGNRRCkdX0V9UTAU0+lrvn0HSaudyCo6CQzuXUsnuY2ERJGCGPfeWmv19Rg==
->>>>>>> main
   dependencies:
     defaults "^1.0.3"
 
