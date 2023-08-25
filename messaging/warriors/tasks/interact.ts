@@ -18,12 +18,14 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 
   const paramTokenId = hre.ethers.BigNumber.from(args.tokenId);
-const paramSender = hre.ethers.utils.getAddress(args.sender);
-const paramTo = hre.ethers.utils.getAddress(args.to);
+  const paramSender = hre.ethers.utils.getAddress(args.sender);
+  const paramTo = hre.ethers.utils.getAddress(args.to);
 
   const tx = await contract
     .connect(signer)
-    .sendMessage(destination,  paramTokenId,  paramSender,  paramTo,  { value: parseEther(args.amount) });
+    .sendMessage(destination, paramTokenId, paramSender, paramTo, {
+      value: parseEther(args.amount),
+    });
 
   const receipt = await tx.wait();
   console.log(`✅ The transaction has been broadcasted to ${hre.network.name}
@@ -38,4 +40,4 @@ task("interact", "Sends a message from one chain to another.", main)
   .addParam("destination", "Destination chain")
   .addParam("tokenId", "uint256")
   .addParam("sender", "address")
-  .addParam("to", "address")
+  .addParam("to", "address");
