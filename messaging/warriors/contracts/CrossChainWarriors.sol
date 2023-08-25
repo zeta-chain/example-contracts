@@ -3,10 +3,8 @@ pragma solidity 0.8.7;
 
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-// highlight-start
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-// highlight-end
 import "@zetachain/protocol-contracts/contracts/evm/tools/ZetaInteractor.sol";
 import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
 
@@ -17,12 +15,9 @@ interface CrossChainWarriorsErrors {
 contract CrossChainWarriors is
     ZetaInteractor,
     ZetaReceiver,
-    // highlight-start
     CrossChainWarriorsErrors,
     ERC721("CrossChainWarriors", "CCWAR")
-    // highlight-end
 {
-    // highlight-next-line
     using Counters for Counters.Counter;
     bytes32 public constant CROSS_CHAIN_WARRIORS_MESSAGE_TYPE =
         keccak256("CROSS_CHAIN_CROSS_CHAIN_WARRIORS");
@@ -32,7 +27,6 @@ contract CrossChainWarriors is
 
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
-    // highlight-next-line
     Counters.Counter public tokenIds;
 
     constructor(
@@ -43,13 +37,10 @@ contract CrossChainWarriors is
         _zetaToken = IERC20(zetaTokenAddress);
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
 
-        // highlight-start
         tokenIds.increment();
         tokenIds.increment();
-        // highlight-end
     }
 
-    // highlight-start
     function mint(address to) public returns (uint256) {
         uint256 newWarriorId = tokenIds.current();
 
@@ -68,8 +59,6 @@ contract CrossChainWarriors is
         _burn(burnedWarriorId);
     }
 
-    // highlight-end
-
     function sendMessage(
         uint256 destinationChainId,
         uint256 token,
@@ -84,18 +73,16 @@ contract CrossChainWarriors is
         }(address(this), crossChainGas);
         _zetaToken.approve(address(connector), zetaValueAndGas);
 
-        // highlight-next-line
         _burnWarrior(token);
 
         connector.send(
             ZetaInterfaces.SendInput({
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
-                destinationGasLimit: 500000,
+                destinationGasLimit: 300000,
                 message: abi.encode(
                     CROSS_CHAIN_WARRIORS_MESSAGE_TYPE,
                     token,
-                    // highlight-next-line
                     msg.sender,
                     to
                 ),
@@ -114,7 +101,6 @@ contract CrossChainWarriors is
         if (messageType != CROSS_CHAIN_WARRIORS_MESSAGE_TYPE)
             revert InvalidMessageType();
 
-        // highlight-next-line
         _mintId(to, token);
 
         emit CrossChainWarriorsEvent(token, sender, to);
@@ -129,7 +115,6 @@ contract CrossChainWarriors is
         if (messageType != CROSS_CHAIN_WARRIORS_MESSAGE_TYPE)
             revert InvalidMessageType();
 
-        // highlight-next-line
         _mintId(to, token);
 
         emit CrossChainWarriorsRevertedEvent(token, sender, to);
