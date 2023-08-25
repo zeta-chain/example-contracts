@@ -10,21 +10,16 @@ interface CrossChainMessageErrors {
     error InvalidMessageType();
 }
 
-/**
- * @dev A simple contract able to send and receive Hello World messages from other chains.
- * Emits a HelloWorldEvent on successful messages
- * Emits a RevertedHelloWorldEvent on failed messages
- */
 contract CrossChainMessage is
     ZetaInteractor,
     ZetaReceiver,
     CrossChainMessageErrors
 {
-    bytes32 public constant HELLO_WORLD_MESSAGE_TYPE =
-        keccak256("CROSS_CHAIN_HELLO_WORLD");
+    bytes32 public constant CROSS_CHAIN_MESSAGE_MESSAGE_TYPE =
+        keccak256("CROSS_CHAIN_CROSS_CHAIN_MESSAGE");
 
-    event HelloWorldEvent(string messageData);
-    event RevertedHelloWorldEvent(string messageData);
+    event CrossChainMessageEvent(string);
+    event CrossChainMessageRevertedEvent(string);
 
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
@@ -38,7 +33,10 @@ contract CrossChainMessage is
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
     }
 
-    function sendHelloWorld(uint256 destinationChainId) external payable {
+    function sendMessage(
+        uint256 destinationChainId,
+        string memory message
+    ) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -53,10 +51,7 @@ contract CrossChainMessage is
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
                 destinationGasLimit: 300000,
-                message: abi.encode(
-                    HELLO_WORLD_MESSAGE_TYPE,
-                    "Hello, Cross-Chain World!"
-                ),
+                message: abi.encode(CROSS_CHAIN_MESSAGE_MESSAGE_TYPE, message),
                 zetaValueAndGas: zetaValueAndGas,
                 zetaParams: abi.encode("")
             })
@@ -66,39 +61,28 @@ contract CrossChainMessage is
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
-        /**
-         * @dev Decode should follow the signature of the message provided to zeta.send.
-         */
-        (bytes32 messageType, string memory helloWorldMessage) = abi.decode(
+        (bytes32 messageType, string memory message) = abi.decode(
             zetaMessage.message,
             (bytes32, string)
         );
 
-        /**
-         * @dev Setting a message type is a useful pattern to distinguish between different messages.
-         */
-        if (messageType != HELLO_WORLD_MESSAGE_TYPE)
+        if (messageType != CROSS_CHAIN_MESSAGE_MESSAGE_TYPE)
             revert InvalidMessageType();
 
-        emit HelloWorldEvent(helloWorldMessage);
+        emit CrossChainMessageEvent(message);
     }
 
-    /**
-     * @dev Called by the Zeta Connector contract when the message fails to be sent.
-     * Useful to cleanup and leave the application on its initial state.
-     * Note that the require statements and the functionality are similar to onZetaMessage.
-     */
     function onZetaRevert(
         ZetaInterfaces.ZetaRevert calldata zetaRevert
     ) external override isValidRevertCall(zetaRevert) {
-        (bytes32 messageType, string memory helloWorldMessage) = abi.decode(
+        (bytes32 messageType, string memory message) = abi.decode(
             zetaRevert.message,
             (bytes32, string)
         );
 
-        if (messageType != HELLO_WORLD_MESSAGE_TYPE)
+        if (messageType != CROSS_CHAIN_MESSAGE_MESSAGE_TYPE)
             revert InvalidMessageType();
 
-        emit RevertedHelloWorldEvent(helloWorldMessage);
+        emit CrossChainMessageRevertedEvent(message);
     }
 }

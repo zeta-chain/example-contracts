@@ -1,7 +1,7 @@
-import { task } from "hardhat/config";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getAddress } from "@zetachain/protocol-contracts";
 import { ethers } from "ethers";
+import { task } from "hardhat/config";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getSupportedNetworks } from "@zetachain/networks";
 
 const contractName = "CrossChainMessage";
@@ -24,7 +24,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 // Initialize a wallet using a network configuration and a private key from
 // environment variables.
 const initWallet = (hre: HardhatRuntimeEnvironment, networkName: string) => {
-  const { url } = hre.config.networks[networkName];
+  const { url } = hre.config.networks[networkName] as any;
   const provider = new ethers.providers.JsonRpcProvider(url);
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY as string, provider);
 
@@ -39,8 +39,9 @@ const deployContract = async (
   networkName: string
 ) => {
   const wallet = initWallet(hre, networkName);
-  const connectorAddress = getAddress("connector", networkName as any);
-  const zetaTokenAddress = getAddress("zetaToken", networkName as any);
+
+  const connector = getAddress("connector", networkName as any);
+  const zetaToken = getAddress("zetaToken", networkName as any);
   const zetaTokenConsumerUniV2 = getAddress(
     "zetaTokenConsumerUniV2",
     networkName as any
@@ -49,12 +50,13 @@ const deployContract = async (
     "zetaTokenConsumerUniV3",
     networkName as any
   );
+
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
   const contract = await factory.deploy(
-    connectorAddress,
-    zetaTokenAddress,
-    zetaTokenConsumerUniV3 || zetaTokenConsumerUniV2
+    connector,
+    zetaToken,
+    zetaTokenConsumerUniV2 || zetaTokenConsumerUniV3
   );
 
   await contract.deployed();
@@ -100,11 +102,9 @@ const setInteractors = async (
   }
 };
 
-task("deploy", "Deploy the contract")
-  .addParam(
-    "networks",
-    `Comma separated list of networks to deploy to (e.g. ${getSupportedNetworks(
-      "ccm"
-    )})`
-  )
-  .setAction(main);
+task("deploy", "Deploy the contract", main).addParam(
+  "networks",
+  `Comma separated list of networks to deploy to (e.g. ${getSupportedNetworks(
+    "ccm"
+  )})`
+);
