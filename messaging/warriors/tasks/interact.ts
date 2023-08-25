@@ -17,13 +17,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     throw new Error(`${args.destination} is not a valid destination chain`);
   }
 
-  const paramTokenId = hre.ethers.BigNumber.from(args.tokenId);
-  const paramSender = hre.ethers.utils.getAddress(args.sender);
+  const paramToken = hre.ethers.BigNumber.from(args.token);
   const paramTo = hre.ethers.utils.getAddress(args.to);
 
   const tx = await contract
     .connect(signer)
-    .sendMessage(destination, paramTokenId, paramSender, paramTo, {
+    .sendMessage(destination, paramToken, paramTo, {
       value: parseEther(args.amount),
     });
 
@@ -38,6 +37,5 @@ task("interact", "Sends a message from one chain to another.", main)
   .addParam("contract", "Contract address")
   .addParam("amount", "Token amount to send")
   .addParam("destination", "Destination chain")
-  .addParam("tokenId", "uint256")
-  .addParam("sender", "address")
+  .addParam("token", "uint256")
   .addParam("to", "address");
