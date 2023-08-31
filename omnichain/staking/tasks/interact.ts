@@ -8,11 +8,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const data = prepareData(
-    args.contract,
-    ["address", ],
-    [args.beneficiary, ]
-  );
+  const data = prepareData(args.contract, ["address"], [args.beneficiary]);
   const to = getAddress("tss", hre.network.name);
   const value = parseEther(args.amount);
 
@@ -28,4 +24,4 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 task("interact", "Interact with the contract", main)
   .addParam("contract", "The address of the withdraw contract on ZetaChain")
   .addParam("amount", "Amount of tokens to send")
-  .addParam("beneficiary")
+  .addParam("beneficiary");
