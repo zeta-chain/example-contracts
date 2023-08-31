@@ -53,18 +53,19 @@ contract Staking is ERC20, zContract {
         address beneficiary,
         uint256 amount
     ) internal {
-        updateRewards(staker, beneficiary);
-
         stakes[staker] += amount;
         beneficiaries[staker] = beneficiary;
         lastStakeTime[staker] = block.timestamp;
+
+        updateRewards(staker);
     }
 
-    function updateRewards(address staker, address recipient) internal {
+    function updateRewards(address staker) internal {
         uint256 timeDifference = block.timestamp - lastStakeTime[staker];
         uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
 
-        _mint(recipient, rewardAmount);
+        _mint(beneficiaries[staker], rewardAmount);
+        lastStakeTime[staker] = block.timestamp;
     }
 
     function claimRewards(address staker) external {
@@ -72,12 +73,11 @@ contract Staking is ERC20, zContract {
             revert NotAuthorizedToClaim();
         }
 
-        updateRewards(staker, msg.sender);
-        lastStakeTime[msg.sender] = block.timestamp;
+        updateRewards(staker);
     }
 
     function unstakeZRC(uint256 amount) external {
-        updateRewards(msg.sender, msg.sender);
+        updateRewards(msg.sender);
 
         require(stakes[msg.sender] >= amount, "Insufficient staked balance");
 
