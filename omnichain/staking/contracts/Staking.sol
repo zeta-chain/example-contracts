@@ -54,7 +54,9 @@ contract Staking is ERC20, zContract {
         uint256 amount
     ) internal {
         stakes[staker] += amount;
-        beneficiaries[staker] = beneficiary;
+        if (beneficiaries[staker] == address(0)) {
+            beneficiaries[staker] = beneficiary;
+        }
         lastStakeTime[staker] = block.timestamp;
 
         updateRewards(staker);
