@@ -1,5 +1,7 @@
 import "./tasks/interact";
 import "./tasks/deploy";
+import "./tasks/rewards";
+import "./tasks/claim";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
 
