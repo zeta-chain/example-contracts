@@ -22,8 +22,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const factory = await hre.ethers.getContractFactory("Staking");
 
-  const chainId = hre.config.networks[args.chain]?.chainId;
-  if (chainId === undefined) {
+  const chainID = hre.config.networks[args.chain]?.chainId;
+  if (chainID === undefined) {
     throw new Error(`🚨 Chain ${args.chain} not found in hardhat config.`);
   }
 
@@ -39,7 +39,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const contract = await factory.deploy(
     `Staking rewards for ${symbol}`,
     `R${symbol.toUpperCase()}`,
-    chainId,
+    chainID,
     systemContract
   );
   await contract.deployed();

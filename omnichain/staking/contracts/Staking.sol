@@ -12,7 +12,7 @@ contract Staking is ERC20, zContract {
     error NotAuthorizedToClaim();
 
     SystemContract public immutable systemContract;
-    uint256 public immutable chain;
+    uint256 public immutable chainID;
 
     mapping(address => uint256) public stakes;
     mapping(address => address) public beneficiaries;
@@ -20,13 +20,13 @@ contract Staking is ERC20, zContract {
     uint256 public rewardRate = 1;
 
     constructor(
-        string memory name,
-        string memory symbol,
-        uint256 chainID,
+        string memory name_,
+        string memory symbol_,
+        uint256 chainID_,
         address systemContractAddress
-    ) ERC20(name, symbol) {
+    ) ERC20(name_, symbol_) {
         systemContract = SystemContract(systemContractAddress);
-        chain = chainID;
+        chainID = chainID_;
     }
 
     function onCrossChainCall(
@@ -39,7 +39,7 @@ contract Staking is ERC20, zContract {
             revert SenderNotSystemContract();
         }
 
-        address acceptedZRC20 = systemContract.gasCoinZRC20ByChainId(chain);
+        address acceptedZRC20 = systemContract.gasCoinZRC20ByChainId(chainID);
         if (zrc20 != acceptedZRC20) revert WrongChain();
 
         address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
@@ -83,7 +83,7 @@ contract Staking is ERC20, zContract {
 
         require(stakes[msg.sender] >= amount, "Insufficient staked balance");
 
-        address zrc20 = systemContract.gasCoinZRC20ByChainId(chain);
+        address zrc20 = systemContract.gasCoinZRC20ByChainId(chainID);
 
         (address gasZRC20, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
 
