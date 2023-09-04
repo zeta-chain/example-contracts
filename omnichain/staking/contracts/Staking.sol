@@ -43,7 +43,13 @@ contract Staking is ERC20, zContract {
         if (zrc20 != acceptedZRC20) revert WrongChain();
 
         address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
-        address beneficiary = abi.decode(message, (address));
+        address beneficiary;
+
+        if (context.chainID == 18832) {
+            beneficiary = BytesHelperLib.bytesToAddress(message, 0);
+        } else {
+            beneficiary = abi.decode(message, (address));
+        }
 
         stakeZRC(staker, beneficiary, amount);
     }
@@ -88,7 +94,18 @@ contract Staking is ERC20, zContract {
         (address gasZRC20, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
 
         IZRC20(zrc20).approve(zrc20, gasFee);
-        IZRC20(zrc20).withdraw(abi.encodePacked(msg.sender), amount - gasFee);
+
+        bytes memory recipient;
+
+        if (chainID == 18332) {
+            recipient = abi.encodePacked(
+                BytesHelperLib.addressToBytes(msg.sender)
+            );
+        } else {
+            recipient = abi.encodePacked(msg.sender);
+        }
+
+        IZRC20(zrc20).withdraw(recipient, amount - gasFee);
 
         stakes[msg.sender] -= amount;
         lastStakeTime[msg.sender] = block.timestamp;
