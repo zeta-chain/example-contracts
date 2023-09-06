@@ -32,13 +32,14 @@ contract CrossChainWarriors is
     constructor(
         address connectorAddress,
         address zetaTokenAddress,
-        address zetaConsumerAddress
+        address zetaConsumerAddress,
+        bool useEven
     ) ZetaInteractor(connectorAddress) {
         _zetaToken = IERC20(zetaTokenAddress);
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
 
         tokenIds.increment();
-        tokenIds.increment();
+        if (useEven) tokenIds.increment();
     }
 
     function mint(address to) public returns (uint256) {

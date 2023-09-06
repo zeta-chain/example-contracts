@@ -11,8 +11,9 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   // A mapping between network names and deployed contract addresses.
   const contracts: { [key: string]: string } = {};
   await Promise.all(
-    networks.map(async (networkName: string) => {
-      contracts[networkName] = await deployContract(hre, networkName);
+    networks.map(async (networkName: string, i: number) => {
+      const parity = i % 2 == 0;
+      contracts[networkName] = await deployContract(hre, networkName, parity);
     })
   );
 
@@ -36,7 +37,8 @@ const initWallet = (hre: HardhatRuntimeEnvironment, networkName: string) => {
 // that factory.
 const deployContract = async (
   hre: HardhatRuntimeEnvironment,
-  networkName: string
+  networkName: string,
+  parity: boolean
 ) => {
   const wallet = initWallet(hre, networkName);
 
@@ -56,7 +58,8 @@ const deployContract = async (
   const contract = await factory.deploy(
     connector,
     zetaToken,
-    zetaTokenConsumerUniV2 || zetaTokenConsumerUniV3
+    zetaTokenConsumerUniV2 || zetaTokenConsumerUniV3,
+    parity
   );
 
   await contract.deployed();
