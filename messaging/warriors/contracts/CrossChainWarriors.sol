@@ -2,39 +2,32 @@
 pragma solidity 0.8.7;
 
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
 import "@zetachain/protocol-contracts/contracts/evm/tools/ZetaInteractor.sol";
+import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
 
 interface CrossChainWarriorsErrors {
     error InvalidMessageType();
-
-    error InvalidTransferCaller();
-
-    error ErrorApprovingZeta();
 }
 
 contract CrossChainWarriors is
-    ERC721("CrossChainWarriors", "CCWAR"),
     ZetaInteractor,
     ZetaReceiver,
-    CrossChainWarriorsErrors
+    CrossChainWarriorsErrors,
+    ERC721("CrossChainWarriors", "CCWAR")
 {
     using Counters for Counters.Counter;
-    using Strings for uint256;
+    bytes32 public constant CROSS_CHAIN_WARRIORS_MESSAGE_TYPE =
+        keccak256("CROSS_CHAIN_CROSS_CHAIN_WARRIORS");
 
-    bytes32 public constant CROSS_CHAIN_TRANSFER_MESSAGE =
-        keccak256("CROSS_CHAIN_TRANSFER");
-
-    IERC20 internal immutable _zetaToken;
-
-    string public baseURI;
-
-    Counters.Counter public tokenIds;
+    event CrossChainWarriorsEvent(uint256, address, address);
+    event CrossChainWarriorsRevertedEvent(uint256, address, address);
 
     ZetaTokenConsumer private immutable _zetaConsumer;
+    IERC20 internal immutable _zetaToken;
+    Counters.Counter public tokenIds;
 
     constructor(
         address connectorAddress,
@@ -45,25 +38,13 @@ contract CrossChainWarriors is
         _zetaToken = IERC20(zetaTokenAddress);
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
 
-        /**
-         * @dev A simple way to prevent collisions between cross-chain token ids
-         * As you can see below, the mint function should increase the counter by two
-         */
         tokenIds.increment();
         if (useEven) tokenIds.increment();
-    }
-
-    function setBaseURI(string memory baseURIParam) public onlyOwner {
-        baseURI = baseURIParam;
     }
 
     function mint(address to) public returns (uint256) {
         uint256 newWarriorId = tokenIds.current();
 
-        /**
-         * @dev Always increment by two to keep ids even/odd (depending on the chain)
-         * Check the constructor for further reference
-         */
         tokenIds.increment();
         tokenIds.increment();
 
@@ -71,9 +52,6 @@ contract CrossChainWarriors is
         return newWarriorId;
     }
 
-    /**
-     * @dev Useful for cross-chain minting
-     */
     function _mintId(address to, uint256 tokenId) internal {
         _safeMint(to, tokenId);
     }
@@ -82,18 +60,13 @@ contract CrossChainWarriors is
         _burn(burnedWarriorId);
     }
 
-    /**
-     * @dev Cross-chain functions
-     */
-
-    function crossChainTransfer(
-        uint256 crossChainId,
-        address to,
-        uint256 tokenId
+    function sendMessage(
+        uint256 destinationChainId,
+        uint256 token,
+        address to
     ) external payable {
-        if (!_isValidChainId(crossChainId)) revert InvalidDestinationChainId();
-        if (!_isApprovedOrOwner(_msgSender(), tokenId))
-            revert InvalidTransferCaller();
+        if (!_isValidChainId(destinationChainId))
+            revert InvalidDestinationChainId();
 
         uint256 crossChainGas = 2 * (10 ** 18);
         uint256 zetaValueAndGas = _zetaConsumer.getZetaFromEth{
@@ -101,16 +74,16 @@ contract CrossChainWarriors is
         }(address(this), crossChainGas);
         _zetaToken.approve(address(connector), zetaValueAndGas);
 
-        _burnWarrior(tokenId);
+        _burnWarrior(token);
 
         connector.send(
             ZetaInterfaces.SendInput({
-                destinationChainId: crossChainId,
-                destinationAddress: interactorsByChainId[crossChainId],
-                destinationGasLimit: 500000,
+                destinationChainId: destinationChainId,
+                destinationAddress: interactorsByChainId[destinationChainId],
+                destinationGasLimit: 300000,
                 message: abi.encode(
-                    CROSS_CHAIN_TRANSFER_MESSAGE,
-                    tokenId,
+                    CROSS_CHAIN_WARRIORS_MESSAGE_TYPE,
+                    token,
                     msg.sender,
                     to
                 ),
@@ -123,36 +96,28 @@ contract CrossChainWarriors is
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
-        (
-            bytes32 messageType,
-            uint256 tokenId,
-            ,
-            /**
-             * @dev this extra comma corresponds to address from
-             */
-            address to
-        ) = abi.decode(
-                zetaMessage.message,
-                (bytes32, uint256, address, address)
-            );
+        (bytes32 messageType, uint256 token, address sender, address to) = abi
+            .decode(zetaMessage.message, (bytes32, uint256, address, address));
 
-        if (messageType != CROSS_CHAIN_TRANSFER_MESSAGE)
+        if (messageType != CROSS_CHAIN_WARRIORS_MESSAGE_TYPE)
             revert InvalidMessageType();
 
-        _mintId(to, tokenId);
+        _mintId(to, token);
+
+        emit CrossChainWarriorsEvent(token, sender, to);
     }
 
     function onZetaRevert(
         ZetaInterfaces.ZetaRevert calldata zetaRevert
     ) external override isValidRevertCall(zetaRevert) {
-        (bytes32 messageType, uint256 tokenId, address from) = abi.decode(
-            zetaRevert.message,
-            (bytes32, uint256, address)
-        );
+        (bytes32 messageType, uint256 token, address sender, address to) = abi
+            .decode(zetaRevert.message, (bytes32, uint256, address, address));
 
-        if (messageType != CROSS_CHAIN_TRANSFER_MESSAGE)
+        if (messageType != CROSS_CHAIN_WARRIORS_MESSAGE_TYPE)
             revert InvalidMessageType();
 
-        _mintId(from, tokenId);
+        _mintId(to, token);
+
+        emit CrossChainWarriorsRevertedEvent(token, sender, to);
     }
 }
