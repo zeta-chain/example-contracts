@@ -45,7 +45,7 @@ contract Staking is ERC20, zContract {
         address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
         address beneficiary;
 
-        if (context.chainID == 18832) {
+        if (context.chainID == 18332) {
             beneficiary = BytesHelperLib.bytesToAddress(message, 0);
         } else {
             beneficiary = abi.decode(message, (address));
