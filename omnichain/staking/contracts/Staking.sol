@@ -19,6 +19,14 @@ contract Staking is ERC20, zContract {
     mapping(address => uint256) public lastStakeTime;
     uint256 public rewardRate = 1;
 
+    event Staked(
+        address indexed staker,
+        address indexed beneficiary,
+        uint256 amount
+    );
+    event RewardsClaimed(address indexed staker, uint256 rewardAmount);
+    event Unstaked(address indexed staker, uint256 amount);
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -60,43 +68,54 @@ contract Staking is ERC20, zContract {
         uint256 amount
     ) internal {
         stakes[staker] += amount;
+        require(stakes[staker] >= amount, "Overflow detected"); // Check for overflows
+
         if (beneficiaries[staker] == address(0)) {
             beneficiaries[staker] = beneficiary;
         }
-        lastStakeTime[staker] = block.timestamp;
 
+        lastStakeTime[staker] = block.timestamp;
         updateRewards(staker);
+
+        emit Staked(staker, beneficiary, amount); // Emitting Staked event
     }
 
     function updateRewards(address staker) internal {
         uint256 timeDifference = block.timestamp - lastStakeTime[staker];
         uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
+        require(rewardAmount >= timeDifference, "Overflow detected"); // Check for overflows
 
         _mint(beneficiaries[staker], rewardAmount);
         lastStakeTime[staker] = block.timestamp;
     }
 
     function claimRewards(address staker) external {
-        if (beneficiaries[staker] != msg.sender) {
-            revert NotAuthorizedToClaim();
-        }
+        require(
+            beneficiaries[staker] == msg.sender,
+            "Not authorized to claim rewards"
+        );
+
+        uint256 rewardAmount = queryRewards(staker);
+        require(rewardAmount > 0, "No rewards to claim");
 
         updateRewards(staker);
+
+        emit RewardsClaimed(staker, rewardAmount); // Emitting RewardsClaimed event
     }
 
     function unstakeZRC(uint256 amount) external {
-        updateRewards(msg.sender);
-
         require(stakes[msg.sender] >= amount, "Insufficient staked balance");
 
-        address zrc20 = systemContract.gasCoinZRC20ByChainId(chainID);
+        updateRewards(msg.sender);
 
+        address zrc20 = systemContract.gasCoinZRC20ByChainId(chainID);
         (address gasZRC20, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
+
+        require(amount >= gasFee, "Amount should be greater than the gas fee");
 
         IZRC20(zrc20).approve(zrc20, gasFee);
 
         bytes memory recipient;
-
         if (chainID == 18332) {
             recipient = abi.encodePacked(
                 BytesHelperLib.addressToBytes(msg.sender)
@@ -106,9 +125,12 @@ contract Staking is ERC20, zContract {
         }
 
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
-
         stakes[msg.sender] -= amount;
+        require(stakes[msg.sender] <= amount, "Underflow detected"); // Check for underflows
+
         lastStakeTime[msg.sender] = block.timestamp;
+
+        emit Unstaked(msg.sender, amount); // Emitting Unstaked event
     }
 
     function queryRewards(address account) public view returns (uint256) {
