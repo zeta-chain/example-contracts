@@ -65,7 +65,7 @@ contract Staking is ERC20, zContract {
         if (action == 1) {
             stakeZRC(staker, beneficiary, amount);
         } else if (action == 2) {
-            unstakeZRC(staker, amount);
+            unstakeZRC(staker);
         } else {
             revert UnknownAction();
         }
@@ -112,13 +112,13 @@ contract Staking is ERC20, zContract {
         emit RewardsClaimed(staker, rewardAmount);
     }
 
-    function unstakeZRC(address staker, uint256 amount) internal {
-        require(stakes[staker] >= amount, "Insufficient staked balance");
+    function unstakeZRC(address staker) internal {
+        uint256 amount = stakes[staker];
 
         updateRewards(staker);
 
         address zrc20 = systemContract.gasCoinZRC20ByChainId(chainID);
-        (address gasZRC20, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
+        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
 
         require(amount >= gasFee, "Amount should be greater than the gas fee");
 
@@ -132,7 +132,7 @@ contract Staking is ERC20, zContract {
         }
 
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
-        stakes[staker] -= amount;
+        stakes[staker] = 0;
         require(stakes[staker] <= amount, "Underflow detected");
 
         lastStakeTime[staker] = block.timestamp;

@@ -7,7 +7,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   console.log(`🔑 Using account: ${signer.address}\n`);
 
   const staker = convertToHexAddress(args.staker);
-  console.log(staker);
 
   const factory = await hre.ethers.getContractFactory("Staking");
   const contract = factory.attach(args.contract);
