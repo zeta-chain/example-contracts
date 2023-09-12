@@ -10,6 +10,7 @@ contract Staking is ERC20, zContract {
     error SenderNotSystemContract();
     error WrongChain();
     error NotAuthorizedToClaim();
+    error UnknownAction();
 
     SystemContract public immutable systemContract;
     uint256 public immutable chainID;
@@ -52,14 +53,22 @@ contract Staking is ERC20, zContract {
 
         address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
         address beneficiary;
+        uint32 action;
 
         if (context.chainID == 18332) {
             beneficiary = BytesHelperLib.bytesToAddress(message, 0);
+            action = BytesHelperLib.bytesToUint32(message, 20);
         } else {
-            beneficiary = abi.decode(message, (address));
+            (beneficiary, action) = abi.decode(message, (address, uint32));
         }
 
-        stakeZRC(staker, beneficiary, amount);
+        if (action == 1) {
+            stakeZRC(staker, beneficiary, amount);
+        } else if (action == 2) {
+            unstakeZRC(staker, amount);
+        } else {
+            revert UnknownAction();
+        }
     }
 
     function stakeZRC(
@@ -103,10 +112,10 @@ contract Staking is ERC20, zContract {
         emit RewardsClaimed(staker, rewardAmount);
     }
 
-    function unstakeZRC(uint256 amount) external {
-        require(stakes[msg.sender] >= amount, "Insufficient staked balance");
+    function unstakeZRC(address staker, uint256 amount) internal {
+        require(stakes[staker] >= amount, "Insufficient staked balance");
 
-        updateRewards(msg.sender);
+        updateRewards(staker);
 
         address zrc20 = systemContract.gasCoinZRC20ByChainId(chainID);
         (address gasZRC20, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
@@ -117,20 +126,18 @@ contract Staking is ERC20, zContract {
 
         bytes memory recipient;
         if (chainID == 18332) {
-            recipient = abi.encodePacked(
-                BytesHelperLib.addressToBytes(msg.sender)
-            );
+            recipient = abi.encodePacked(BytesHelperLib.addressToBytes(staker));
         } else {
-            recipient = abi.encodePacked(msg.sender);
+            recipient = abi.encodePacked(staker);
         }
 
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
-        stakes[msg.sender] -= amount;
-        require(stakes[msg.sender] <= amount, "Underflow detected");
+        stakes[staker] -= amount;
+        require(stakes[staker] <= amount, "Underflow detected");
 
-        lastStakeTime[msg.sender] = block.timestamp;
+        lastStakeTime[staker] = block.timestamp;
 
-        emit Unstaked(msg.sender, amount);
+        emit Unstaked(staker, amount);
     }
 
     function queryRewards(address account) public view returns (uint256) {
