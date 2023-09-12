@@ -68,7 +68,7 @@ contract Staking is ERC20, zContract {
         uint256 amount
     ) internal {
         stakes[staker] += amount;
-        require(stakes[staker] >= amount, "Overflow detected"); // Check for overflows
+        require(stakes[staker] >= amount, "Overflow detected");
 
         if (beneficiaries[staker] == address(0)) {
             beneficiaries[staker] = beneficiary;
@@ -77,13 +77,13 @@ contract Staking is ERC20, zContract {
         lastStakeTime[staker] = block.timestamp;
         updateRewards(staker);
 
-        emit Staked(staker, beneficiary, amount); // Emitting Staked event
+        emit Staked(staker, beneficiary, amount);
     }
 
     function updateRewards(address staker) internal {
         uint256 timeDifference = block.timestamp - lastStakeTime[staker];
         uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
-        require(rewardAmount >= timeDifference, "Overflow detected"); // Check for overflows
+        require(rewardAmount >= timeDifference, "Overflow detected");
 
         _mint(beneficiaries[staker], rewardAmount);
         lastStakeTime[staker] = block.timestamp;
@@ -100,7 +100,7 @@ contract Staking is ERC20, zContract {
 
         updateRewards(staker);
 
-        emit RewardsClaimed(staker, rewardAmount); // Emitting RewardsClaimed event
+        emit RewardsClaimed(staker, rewardAmount);
     }
 
     function unstakeZRC(uint256 amount) external {
@@ -126,11 +126,11 @@ contract Staking is ERC20, zContract {
 
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
         stakes[msg.sender] -= amount;
-        require(stakes[msg.sender] <= amount, "Underflow detected"); // Check for underflows
+        require(stakes[msg.sender] <= amount, "Underflow detected");
 
         lastStakeTime[msg.sender] = block.timestamp;
 
-        emit Unstaked(msg.sender, amount); // Emitting Unstaked event
+        emit Unstaked(msg.sender, amount);
     }
 
     function queryRewards(address account) public view returns (uint256) {
