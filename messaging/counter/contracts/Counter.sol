@@ -6,20 +6,18 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@zetachain/protocol-contracts/contracts/evm/tools/ZetaInteractor.sol";
 import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
 
-interface CrossChainCounterErrors {
+interface CounterErrors {
     error InvalidMessageType();
-
+    // highlight-next-line
     error DecrementOverflow();
 }
 
-contract CrossChainCounter is
-    ZetaInteractor,
-    ZetaReceiver,
-    CrossChainCounterErrors
-{
-    bytes32 public constant CROSS_CHAIN_INCREMENT_MESSAGE =
-        keccak256("CROSS_CHAIN_INCREMENT");
+contract Counter is ZetaInteractor, ZetaReceiver, CounterErrors {
+    bytes32 public constant COUNTER_MESSAGE_TYPE =
+        keccak256("CROSS_CHAIN_COUNTER");
 
+    event CounterEvent(address);
+    event CounterRevertedEvent(address);
     mapping(address => uint256) public counter;
 
     ZetaTokenConsumer private immutable _zetaConsumer;
@@ -34,7 +32,8 @@ contract CrossChainCounter is
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
     }
 
-    function crossChainCount(uint256 destinationChainId) external payable {
+    // highlight-next-line
+    function sendMessage(uint256 destinationChainId) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -50,7 +49,8 @@ contract CrossChainCounter is
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
                 destinationGasLimit: 300000,
-                message: abi.encode(CROSS_CHAIN_INCREMENT_MESSAGE, msg.sender),
+                // highlight-next-line
+                message: abi.encode(COUNTER_MESSAGE_TYPE, msg.sender),
                 zetaValueAndGas: zetaValueAndGas,
                 zetaParams: abi.encode("")
             })
@@ -60,29 +60,32 @@ contract CrossChainCounter is
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
-        (bytes32 messageType, address messageFrom) = abi.decode(
+        (bytes32 messageType, address from) = abi.decode(
             zetaMessage.message,
             (bytes32, address)
         );
 
-        if (messageType != CROSS_CHAIN_INCREMENT_MESSAGE)
-            revert InvalidMessageType();
+        if (messageType != COUNTER_MESSAGE_TYPE) revert InvalidMessageType();
 
-        counter[messageFrom]++;
+        // highlight-next-line
+        counter[from]++;
+        emit CounterEvent(from);
     }
 
     function onZetaRevert(
         ZetaInterfaces.ZetaRevert calldata zetaRevert
     ) external override isValidRevertCall(zetaRevert) {
-        (bytes32 messageType, address messageFrom) = abi.decode(
+        (bytes32 messageType, address from) = abi.decode(
             zetaRevert.message,
             (bytes32, address)
         );
 
-        if (messageType != CROSS_CHAIN_INCREMENT_MESSAGE)
-            revert InvalidMessageType();
-        if (counter[messageFrom] <= 0) revert DecrementOverflow();
+        if (messageType != COUNTER_MESSAGE_TYPE) revert InvalidMessageType();
 
-        counter[messageFrom]--;
+        // highlight-start
+        if (counter[from] <= 0) revert DecrementOverflow();
+        counter[from]--;
+        // highlight-end
+        emit CounterRevertedEvent(from);
     }
 }
