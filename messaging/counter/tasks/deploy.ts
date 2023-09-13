@@ -4,7 +4,7 @@ import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getSupportedNetworks } from "@zetachain/networks";
 
-const contractName = "CrossChainCounter";
+const contractName = "Counter";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const networks = args.networks.split(",");
