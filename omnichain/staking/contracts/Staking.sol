@@ -16,24 +16,20 @@ contract Staking is ERC20, zContract {
     uint256 public immutable chainID;
 
     mapping(bytes => uint256) public stakes;
+    mapping(bytes => bytes) public withdraw;
     mapping(bytes => address) public beneficiaries;
     mapping(bytes => uint256) public lastStakeTime;
     uint256 public rewardRate = 1;
 
-    event Staked(
-        bytes indexed staker,
-        address indexed beneficiary,
-        uint256 amount
-    );
+    event Staked(bytes indexed staker, uint256 amount);
     event RewardsClaimed(bytes indexed staker, uint256 rewardAmount);
     event Unstaked(bytes indexed staker, uint256 amount);
-    event OnCrossChainCallEvent(
-        bytes staker,
-        address beneficiary,
-        uint32 action
-    );
+    event OnCrossChainCallEvent(bytes staker, uint32 action);
 
-    event Logging(string);
+    event StakeZRC(bytes indexed staker, uint256 amount);
+    event UnstakeZRC(bytes indexed staker);
+    event SetBeneficiary(bytes indexed staker, address beneficiaryAddress);
+    event SetWithdraw(bytes indexed staker, bytes withdrawAddress);
 
     constructor(
         string memory name_,
@@ -45,25 +41,16 @@ contract Staking is ERC20, zContract {
         chainID = chainID_;
     }
 
-    function decode(
-        bytes memory message
-    ) public pure returns (bytes memory bech32, address hexAddr, uint32 value) {
-        require(message.length == 66, "Invalid message length"); // 42 (bech32) + 20 (address) + 4 (uint32)
-
+    function bytesToBech32Bytes(
+        bytes memory data,
+        uint256 offset
+    ) public pure returns (bytes memory) {
         bytes memory bech32Bytes = new bytes(42);
-
-        for (uint256 i = 0; i < bech32Bytes.length; i++) {
-            bech32Bytes[i] = message[i];
+        for (uint i = 0; i < 42; i++) {
+            bech32Bytes[i] = data[i + offset];
         }
 
-        bech32 = bech32Bytes;
-
-        assembly {
-            hexAddr := mload(add(message, 42))
-            value := mload(add(message, 62))
-        }
-
-        return (bech32, hexAddr, value);
+        return bech32Bytes;
     }
 
     function onCrossChainCall(
@@ -72,56 +59,52 @@ contract Staking is ERC20, zContract {
         uint256 amount,
         bytes calldata message
     ) external override {
-        if (msg.sender != address(systemContract)) {
-            revert SenderNotSystemContract();
-        }
-
-        emit Logging("onCrossChainCall");
-
-        address acceptedZRC20 = systemContract.gasCoinZRC20ByChainId(chainID);
-        if (zrc20 != acceptedZRC20) revert WrongChain();
-
-        bytes memory staker;
-        address beneficiary;
-        uint32 action;
-
-        if (context.chainID == 18332) {
-            (staker, beneficiary, action) = decode(message);
-        } else {
-            (staker, beneficiary, action) = abi.decode(
-                message,
-                (bytes, address, uint32)
-            );
-        }
-
-        emit OnCrossChainCallEvent(staker, beneficiary, action);
+        bytes memory withdrawAddress;
+        bytes memory stakerAddress;
+        address beneficiaryAddress;
+        uint8 action = uint8(message[0]);
 
         if (action == 1) {
-            stakeZRC(staker, beneficiary, amount);
+            emit StakeZRC(context.origin, amount);
+            stakeZRC(context.origin, amount);
         } else if (action == 2) {
-            unstakeZRC(staker);
+            emit UnstakeZRC(context.origin);
+            unstakeZRC(context.origin);
+        } else if (action == 3) {
+            beneficiaryAddress = BytesHelperLib.bytesToAddress(message, 1);
+            emit SetBeneficiary(context.origin, beneficiaryAddress);
+            setBeneficiary(context.origin, beneficiaryAddress);
+        } else if (action == 4) {
+            withdrawAddress = bytesToBech32Bytes(message, 1);
+            emit SetWithdraw(context.origin, withdrawAddress);
+            setWithdraw(context.origin, withdrawAddress);
         } else {
             revert UnknownAction();
         }
     }
 
-    function stakeZRC(
-        bytes memory staker,
-        address beneficiary,
-        uint256 amount
+    function stakeZRC(bytes memory stakerAddress, uint256 amount) internal {
+        stakes[stakerAddress] += amount;
+        require(stakes[stakerAddress] >= amount, "Overflow detected");
+
+        lastStakeTime[stakerAddress] = block.timestamp;
+        updateRewards(stakerAddress);
+
+        emit Staked(stakerAddress, amount);
+    }
+
+    function setBeneficiary(
+        bytes memory stakerAddress,
+        address beneficiaryAddress
     ) internal {
-        emit Logging("stakeZRC");
-        stakes[staker] += amount;
-        require(stakes[staker] >= amount, "Overflow detected");
+        beneficiaries[stakerAddress] = beneficiaryAddress;
+    }
 
-        if (beneficiaries[staker] == address(0)) {
-            beneficiaries[staker] = beneficiary;
-        }
-
-        lastStakeTime[staker] = block.timestamp;
-        updateRewards(staker);
-
-        emit Staked(staker, beneficiary, amount);
+    function setWithdraw(
+        bytes memory stakerAddress,
+        bytes memory withdrawAddress
+    ) internal {
+        withdraw[stakerAddress] = withdrawAddress;
     }
 
     function updateRewards(bytes memory staker) internal {
@@ -138,12 +121,9 @@ contract Staking is ERC20, zContract {
             beneficiaries[staker] == msg.sender,
             "Not authorized to claim rewards"
         );
-
         uint256 rewardAmount = queryRewards(staker);
         require(rewardAmount > 0, "No rewards to claim");
-
         updateRewards(staker);
-
         emit RewardsClaimed(staker, rewardAmount);
     }
 
