@@ -79,14 +79,14 @@ contract Staking is ERC20, zContract {
             } else {
                 (, beneficiary) = abi.decode(message, (uint8, address));
             }
-            setBeneficiary(staker, beneficiary);
+            beneficiaries[staker] = beneficiary;
         } else if (action == 4) {
             if (chainID == 18332) {
                 withdrawAddress = bytesToBech32Bytes(message, 1);
             } else {
                 withdrawAddress = context.origin;
             }
-            setWithdraw(staker, withdrawAddress);
+            withdraw[staker] = withdrawAddress;
         } else {
             revert UnknownAction();
         }
@@ -98,14 +98,6 @@ contract Staking is ERC20, zContract {
 
         lastStakeTime[staker] = block.timestamp;
         updateRewards(staker);
-    }
-
-    function setBeneficiary(address staker, address beneficiaryAddress) public {
-        beneficiaries[staker] = beneficiaryAddress;
-    }
-
-    function setWithdraw(address staker, bytes memory withdrawAddress) public {
-        withdraw[staker] = withdrawAddress;
     }
 
     function updateRewards(address staker) public {
