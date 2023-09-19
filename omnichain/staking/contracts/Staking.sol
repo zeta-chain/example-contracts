@@ -83,7 +83,7 @@ contract Staking is ERC20, zContract {
         }
     }
 
-    function stakeZRC(bytes memory stakerAddress, uint256 amount) internal {
+    function stakeZRC(bytes memory stakerAddress, uint256 amount) public {
         stakes[stakerAddress] += amount;
         require(stakes[stakerAddress] >= amount, "Overflow detected");
 
@@ -96,18 +96,18 @@ contract Staking is ERC20, zContract {
     function setBeneficiary(
         bytes memory stakerAddress,
         address beneficiaryAddress
-    ) internal {
+    ) public {
         beneficiaries[stakerAddress] = beneficiaryAddress;
     }
 
     function setWithdraw(
         bytes memory stakerAddress,
         bytes memory withdrawAddress
-    ) internal {
+    ) public {
         withdraw[stakerAddress] = withdrawAddress;
     }
 
-    function updateRewards(bytes memory staker) internal {
+    function updateRewards(bytes memory staker) public {
         uint256 timeDifference = block.timestamp - lastStakeTime[staker];
         uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
         require(rewardAmount >= timeDifference, "Overflow detected");
@@ -127,7 +127,7 @@ contract Staking is ERC20, zContract {
         emit RewardsClaimed(staker, rewardAmount);
     }
 
-    function unstakeZRC(bytes memory staker) internal {
+    function unstakeZRC(bytes memory staker) public {
         uint256 amount = stakes[staker];
 
         updateRewards(staker);
