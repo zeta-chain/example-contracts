@@ -60,54 +60,45 @@ contract Staking is ERC20, zContract {
         bytes calldata message
     ) external override {
         bytes memory withdrawAddress;
-        address stakerAddress = BytesHelperLib.bytesToAddress(
-            context.origin,
-            0
-        );
-        address beneficiaryAddress;
+        address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
+        address beneficiary;
         uint8 action = uint8(message[0]);
 
         if (action == 1) {
-            emit StakeZRC(stakerAddress, amount);
-            stakeZRC(stakerAddress, amount);
+            emit StakeZRC(staker, amount);
+            stakeZRC(staker, amount);
         } else if (action == 2) {
-            unstakeZRC(stakerAddress);
+            unstakeZRC(staker);
         } else if (action == 3) {
-            beneficiaryAddress = BytesHelperLib.bytesToAddress(message, 1);
-            setBeneficiary(stakerAddress, beneficiaryAddress);
+            beneficiary = BytesHelperLib.bytesToAddress(message, 1);
+            setBeneficiary(staker, beneficiary);
         } else if (action == 4) {
             withdrawAddress = bytesToBech32Bytes(message, 1);
-            setWithdraw(stakerAddress, withdrawAddress);
+            setWithdraw(staker, withdrawAddress);
         } else {
             revert UnknownAction();
         }
     }
 
-    function stakeZRC(address stakerAddress, uint256 amount) public {
-        emit StakeZRC(stakerAddress, amount);
-        stakes[stakerAddress] += amount;
-        require(stakes[stakerAddress] >= amount, "Overflow detected");
+    function stakeZRC(address staker, uint256 amount) public {
+        emit StakeZRC(staker, amount);
+        stakes[staker] += amount;
+        require(stakes[staker] >= amount, "Overflow detected");
 
-        lastStakeTime[stakerAddress] = block.timestamp;
-        updateRewards(stakerAddress);
+        lastStakeTime[staker] = block.timestamp;
+        updateRewards(staker);
 
-        emit Staked(stakerAddress, amount);
+        emit Staked(staker, amount);
     }
 
-    function setBeneficiary(
-        address stakerAddress,
-        address beneficiaryAddress
-    ) public {
-        beneficiaries[stakerAddress] = beneficiaryAddress;
-        emit SetBeneficiary(stakerAddress, beneficiaryAddress);
+    function setBeneficiary(address staker, address beneficiaryAddress) public {
+        beneficiaries[staker] = beneficiaryAddress;
+        emit SetBeneficiary(staker, beneficiaryAddress);
     }
 
-    function setWithdraw(
-        address stakerAddress,
-        bytes memory withdrawAddress
-    ) public {
-        withdraw[stakerAddress] = withdrawAddress;
-        emit SetWithdraw(stakerAddress, withdrawAddress);
+    function setWithdraw(address staker, bytes memory withdrawAddress) public {
+        withdraw[staker] = withdrawAddress;
+        emit SetWithdraw(staker, withdrawAddress);
     }
 
     function updateRewards(address staker) public {
