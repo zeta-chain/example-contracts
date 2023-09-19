@@ -62,18 +62,30 @@ contract Staking is ERC20, zContract {
         bytes memory withdrawAddress;
         address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
         address beneficiary;
-        uint8 action = uint8(message[0]);
+        uint8 action;
+        if (chainID == 18332) {
+            action = uint8(message[0]);
+        } else {
+            action = abi.decode(message, (uint8));
+        }
 
         if (action == 1) {
-            emit StakeZRC(staker, amount);
             stakeZRC(staker, amount);
         } else if (action == 2) {
             unstakeZRC(staker);
         } else if (action == 3) {
-            beneficiary = BytesHelperLib.bytesToAddress(message, 1);
+            if (chainID == 18332) {
+                beneficiary = BytesHelperLib.bytesToAddress(message, 1);
+            } else {
+                (, beneficiary) = abi.decode(message, (uint8, address));
+            }
             setBeneficiary(staker, beneficiary);
         } else if (action == 4) {
-            withdrawAddress = bytesToBech32Bytes(message, 1);
+            if (chainID == 18332) {
+                withdrawAddress = bytesToBech32Bytes(message, 1);
+            } else {
+                withdrawAddress = context.origin;
+            }
             setWithdraw(staker, withdrawAddress);
         } else {
             revert UnknownAction();
@@ -81,24 +93,19 @@ contract Staking is ERC20, zContract {
     }
 
     function stakeZRC(address staker, uint256 amount) public {
-        emit StakeZRC(staker, amount);
         stakes[staker] += amount;
         require(stakes[staker] >= amount, "Overflow detected");
 
         lastStakeTime[staker] = block.timestamp;
         updateRewards(staker);
-
-        emit Staked(staker, amount);
     }
 
     function setBeneficiary(address staker, address beneficiaryAddress) public {
         beneficiaries[staker] = beneficiaryAddress;
-        emit SetBeneficiary(staker, beneficiaryAddress);
     }
 
     function setWithdraw(address staker, bytes memory withdrawAddress) public {
         withdraw[staker] = withdrawAddress;
-        emit SetWithdraw(staker, withdrawAddress);
     }
 
     function updateRewards(address staker) public {
@@ -118,7 +125,6 @@ contract Staking is ERC20, zContract {
         uint256 rewardAmount = queryRewards(staker);
         require(rewardAmount > 0, "No rewards to claim");
         updateRewards(staker);
-        emit RewardsClaimed(staker, rewardAmount);
     }
 
     function unstakeZRC(address staker) public {
@@ -136,12 +142,11 @@ contract Staking is ERC20, zContract {
         bytes memory recipient = withdraw[staker];
 
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
+
         stakes[staker] = 0;
         require(stakes[staker] <= amount, "Underflow detected");
 
         lastStakeTime[staker] = block.timestamp;
-
-        emit Unstaked(staker, amount);
     }
 
     function queryRewards(address staker) public view returns (uint256) {

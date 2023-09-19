@@ -8,7 +8,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const data = prepareData(args.contract, ["uint8"], ["2"]);
+  const data = prepareData(args.contract, ["uint8"], ["1"]);
   const to = getAddress("tss", hre.network.name);
   const value = parseEther(args.amount);
 
@@ -20,6 +20,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   await trackCCTX(tx.hash);
 };
 
-task("unstake", "Unstake tokens", main)
-  .addParam("contract", "The address of the contract on ZetaChain")
-  .addParam("amount", "Amount of tokens to unstake");
+task("stake", "Interact with the contract", main)
+  .addParam("contract", "The address of the withdraw contract on ZetaChain")
+  .addParam("amount", "Amount of tokens to send");
