@@ -3,7 +3,6 @@ import "./tasks/deploy";
 import "./tasks/rewards";
 import "./tasks/claim";
 import "./tasks/unstake";
-import "./tasks/play";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
 
