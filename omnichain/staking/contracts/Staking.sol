@@ -31,6 +31,14 @@ contract Staking is ERC20, zContract {
         chainID = chainID_;
     }
 
+    modifier onlySystem() {
+        require(
+            msg.sender == address(systemContract),
+            "Only system contract can call this function"
+        );
+        _;
+    }
+
     function bytesToBech32Bytes(
         bytes calldata data,
         uint256 offset
@@ -48,7 +56,7 @@ contract Staking is ERC20, zContract {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override {
+    ) external override onlySystem {
         if (msg.sender != address(systemContract)) {
             revert SenderNotSystemContract();
         }
@@ -85,9 +93,7 @@ contract Staking is ERC20, zContract {
     }
 
     function updateRewards(address staker) internal {
-        uint256 timeDifference = block.timestamp - lastStakeTime[staker];
-        uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
-        require(rewardAmount >= timeDifference, "Overflow detected");
+        uint256 rewardAmount = queryRewards(staker);
 
         _mint(beneficiaries[staker], rewardAmount);
         lastStakeTime[staker] = block.timestamp;
