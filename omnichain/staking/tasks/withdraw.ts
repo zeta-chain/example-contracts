@@ -20,6 +20,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   await trackCCTX(tx.hash);
 };
 
-task("withdraw", "", main)
-  .addParam("contract", "The address of the withdraw contract on ZetaChain")
+task(
+  "set-withdraw-address",
+  "Set the address on a connected chain to which unstaked tokens will be withdrawn",
+  main
+)
+  .addParam("contract", "The address of the contract on ZetaChain")
   .addParam("amount", "Amount of tokens to send");

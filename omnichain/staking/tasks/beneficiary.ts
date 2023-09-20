@@ -24,7 +24,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   await trackCCTX(tx.hash);
 };
 
-task("beneficiary", "", main)
-  .addParam("contract", "The address of the withdraw contract on ZetaChain")
+task(
+  "set-beneficiary",
+  "Set the address on ZetaChain which will be allowed to claim staking rewards",
+  main
+)
+  .addParam("contract", "The address of the contract on ZetaChain")
   .addParam("amount", "Amount of tokens to send")
   .addPositionalParam("beneficiary", "The address of the beneficiary");

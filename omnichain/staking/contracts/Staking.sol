@@ -9,27 +9,17 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 contract Staking is ERC20, zContract {
     error SenderNotSystemContract();
     error WrongChain();
-    error NotAuthorizedToClaim();
     error UnknownAction();
 
     SystemContract public immutable systemContract;
     uint256 public immutable chainID;
+    uint256 public rewardRate = 1;
+    uint256 constant BITCOIN = 18332;
 
     mapping(address => uint256) public stakes;
-    mapping(address => bytes) public withdraw;
+    mapping(address => bytes) public withdrawAddresses;
     mapping(address => address) public beneficiaries;
     mapping(address => uint256) public lastStakeTime;
-    uint256 public rewardRate = 1;
-
-    event Staked(address indexed staker, uint256 amount);
-    event RewardsClaimed(address indexed staker, uint256 rewardAmount);
-    event Unstaked(address indexed staker, uint256 amount);
-    event OnCrossChainCallEvent(address staker, uint32 action);
-
-    event StakeZRC(address indexed staker, uint256 amount);
-    event UnstakeZRC(address indexed staker);
-    event SetBeneficiary(address indexed staker, address beneficiaryAddress);
-    event SetWithdraw(address indexed staker, bytes withdrawAddress);
 
     constructor(
         string memory name_,
@@ -59,40 +49,34 @@ contract Staking is ERC20, zContract {
         uint256 amount,
         bytes calldata message
     ) external override {
-        bytes memory withdrawAddress;
-        address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
-        address beneficiary;
-        uint8 action;
-        if (chainID == 18332) {
-            action = uint8(message[0]);
-        } else {
-            action = abi.decode(message, (uint8));
+        if (msg.sender != address(systemContract)) {
+            revert SenderNotSystemContract();
         }
+
+        if (chainID != context.chainID) {
+            revert WrongChain();
+        }
+
+        address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
+
+        uint8 action = chainID == BITCOIN
+            ? uint8(message[0])
+            : abi.decode(message, (uint8));
 
         if (action == 1) {
             stakeZRC(staker, amount);
         } else if (action == 2) {
             unstakeZRC(staker);
         } else if (action == 3) {
-            if (chainID == 18332) {
-                beneficiary = BytesHelperLib.bytesToAddress(message, 1);
-            } else {
-                (, beneficiary) = abi.decode(message, (uint8, address));
-            }
-            beneficiaries[staker] = beneficiary;
+            setBeneficiary(staker, message);
         } else if (action == 4) {
-            if (chainID == 18332) {
-                withdrawAddress = bytesToBech32Bytes(message, 1);
-            } else {
-                withdrawAddress = context.origin;
-            }
-            withdraw[staker] = withdrawAddress;
+            setWithdraw(staker, message, context.origin);
         } else {
             revert UnknownAction();
         }
     }
 
-    function stakeZRC(address staker, uint256 amount) public {
+    function stakeZRC(address staker, uint256 amount) internal {
         stakes[staker] += amount;
         require(stakes[staker] >= amount, "Overflow detected");
 
@@ -100,7 +84,7 @@ contract Staking is ERC20, zContract {
         updateRewards(staker);
     }
 
-    function updateRewards(address staker) public {
+    function updateRewards(address staker) internal {
         uint256 timeDifference = block.timestamp - lastStakeTime[staker];
         uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
         require(rewardAmount >= timeDifference, "Overflow detected");
@@ -109,17 +93,7 @@ contract Staking is ERC20, zContract {
         lastStakeTime[staker] = block.timestamp;
     }
 
-    function claimRewards(address staker) external {
-        require(
-            beneficiaries[staker] == msg.sender,
-            "Not authorized to claim rewards"
-        );
-        uint256 rewardAmount = queryRewards(staker);
-        require(rewardAmount > 0, "No rewards to claim");
-        updateRewards(staker);
-    }
-
-    function unstakeZRC(address staker) public {
+    function unstakeZRC(address staker) internal {
         uint256 amount = stakes[staker];
 
         updateRewards(staker);
@@ -129,10 +103,9 @@ contract Staking is ERC20, zContract {
 
         require(amount >= gasFee, "Amount should be greater than the gas fee");
 
+        bytes memory recipient = withdrawAddresses[staker];
+
         IZRC20(zrc20).approve(zrc20, gasFee);
-
-        bytes memory recipient = withdraw[staker];
-
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
 
         stakes[staker] = 0;
@@ -141,9 +114,43 @@ contract Staking is ERC20, zContract {
         lastStakeTime[staker] = block.timestamp;
     }
 
+    function setBeneficiary(address staker, bytes calldata message) internal {
+        address beneficiary;
+        if (chainID == BITCOIN) {
+            beneficiary = BytesHelperLib.bytesToAddress(message, 1);
+        } else {
+            (, beneficiary) = abi.decode(message, (uint8, address));
+        }
+        beneficiaries[staker] = beneficiary;
+    }
+
+    function setWithdraw(
+        address staker,
+        bytes calldata message,
+        bytes memory origin
+    ) internal {
+        bytes memory withdraw;
+        if (chainID == BITCOIN) {
+            withdraw = bytesToBech32Bytes(message, 1);
+        } else {
+            withdraw = origin;
+        }
+        withdrawAddresses[staker] = withdraw;
+    }
+
     function queryRewards(address staker) public view returns (uint256) {
         uint256 timeDifference = block.timestamp - lastStakeTime[staker];
         uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
         return rewardAmount;
+    }
+
+    function claimRewards(address staker) public {
+        require(
+            beneficiaries[staker] == msg.sender,
+            "Not authorized to claim rewards"
+        );
+        uint256 rewardAmount = queryRewards(staker);
+        require(rewardAmount > 0, "No rewards to claim");
+        updateRewards(staker);
     }
 }
