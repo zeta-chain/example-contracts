@@ -10,7 +10,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const data = prepareData(args.contract, ["uint8"], ["4"]);
   const to = getAddress("tss", hre.network.name);
-  const value = parseEther(args.amount);
+  const value = parseEther("0");
 
   const tx = await signer.sendTransaction({ data, to, value });
   console.log(`
@@ -24,6 +24,4 @@ task(
   "set-withdraw-address",
   "Set the address on a connected chain to which unstaked tokens will be withdrawn",
   main
-)
-  .addParam("contract", "The address of the contract on ZetaChain")
-  .addParam("amount", "Amount of tokens to send");
+).addParam("contract", "The address of the contract on ZetaChain");

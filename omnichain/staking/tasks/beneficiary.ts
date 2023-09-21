@@ -14,7 +14,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ["3", args.beneficiary]
   );
   const to = getAddress("tss", hre.network.name);
-  const value = parseEther(args.amount);
+  const value = parseEther("0");
 
   const tx = await signer.sendTransaction({ data, to, value });
   console.log(`
@@ -30,5 +30,4 @@ task(
   main
 )
   .addParam("contract", "The address of the contract on ZetaChain")
-  .addParam("amount", "Amount of tokens to send")
   .addPositionalParam("beneficiary", "The address of the beneficiary");
