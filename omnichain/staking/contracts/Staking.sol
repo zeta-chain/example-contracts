@@ -113,10 +113,11 @@ contract Staking is ERC20, zContract {
 
         bytes memory recipient = withdraw[staker];
 
+        stake[staker] = 0;
+
         IZRC20(zrc20).approve(zrc20, gasFee);
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
 
-        stake[staker] = 0;
         if (stake[staker] > amount) revert Underflow();
 
         lastStakeTime[staker] = block.timestamp;
