@@ -12,9 +12,10 @@ contract Staking is ERC20, zContract {
     error UnknownAction();
 
     SystemContract public immutable systemContract;
+    uint256 constant BITCOIN = 18332;
+
     uint256 public immutable chainID;
     uint256 public rewardRate = 1;
-    uint256 constant BITCOIN = 18332;
 
     mapping(address => uint256) public stakes;
     mapping(address => bytes) public withdrawAddresses;
