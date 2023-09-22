@@ -43,7 +43,7 @@ contract Staking is ERC20, zContract {
     function bytesToBech32Bytes(
         bytes calldata data,
         uint256 offset
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         bytes memory bech32Bytes = new bytes(42);
         for (uint i = 0; i < 42; i++) {
             bech32Bytes[i] = data[i + offset];
