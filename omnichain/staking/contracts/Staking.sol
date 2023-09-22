@@ -8,8 +8,8 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 
 contract Staking is ERC20, zContract {
     error SenderNotSystemContract();
-    error WrongChain();
-    error UnknownAction();
+    error WrongChain(uint256 chainID);
+    error UnknownAction(uint8 action);
 
     SystemContract public immutable systemContract;
     uint256 constant BITCOIN = 18332;
@@ -63,7 +63,7 @@ contract Staking is ERC20, zContract {
         }
 
         if (chainID != context.chainID) {
-            revert WrongChain();
+            revert WrongChain(context.chainID);
         }
 
         address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
@@ -81,7 +81,7 @@ contract Staking is ERC20, zContract {
         } else if (action == 4) {
             setWithdraw(staker, message, context.origin);
         } else {
-            revert UnknownAction();
+            revert UnknownAction(action);
         }
     }
 
