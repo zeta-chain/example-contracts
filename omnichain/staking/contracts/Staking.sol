@@ -153,7 +153,7 @@ contract Staking is ERC20, zContract {
         return rewardAmount;
     }
 
-    function claimRewards(address staker) public {
+    function claimRewards(address staker) external {
         if (beneficiary[staker] != msg.sender) revert NotAuthorized();
         uint256 rewardAmount = queryRewards(staker);
         if (rewardAmount <= 0) revert NoRewardsToClaim();
