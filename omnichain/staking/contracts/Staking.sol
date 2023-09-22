@@ -17,9 +17,9 @@ contract Staking is ERC20, zContract {
     error NoRewardsToClaim();
 
     SystemContract public immutable systemContract;
+    uint256 public immutable chainID;
     uint256 constant BITCOIN = 18332;
 
-    uint256 public immutable chainID;
     uint256 public rewardRate = 1;
 
     mapping(address => uint256) public stake;

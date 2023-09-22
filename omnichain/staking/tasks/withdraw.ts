@@ -21,7 +21,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "set-withdraw-address",
+  "set-withdraw",
   "Set the address on a connected chain to which unstaked tokens will be withdrawn",
   main
 ).addParam("contract", "The address of the contract on ZetaChain");
