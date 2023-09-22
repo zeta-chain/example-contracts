@@ -8,16 +8,24 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 
 contract Staking is ERC20, zContract {
     error SenderNotSystemContract();
-    error WrongChain();
-    error NotAuthorizedToClaim();
+    error WrongChain(uint256 chainID);
+    error UnknownAction(uint8 action);
+    error Overflow();
+    error Underflow();
+    error WrongAmount();
+    error NotAuthorized();
+    error NoRewardsToClaim();
 
     SystemContract public immutable systemContract;
     uint256 public immutable chainID;
+    uint256 constant BITCOIN = 18332;
 
-    mapping(address => uint256) public stakes;
-    mapping(address => address) public beneficiaries;
-    mapping(address => uint256) public lastStakeTime;
     uint256 public rewardRate = 1;
+
+    mapping(address => uint256) public stake;
+    mapping(address => bytes) public withdraw;
+    mapping(address => address) public beneficiary;
+    mapping(address => uint256) public lastStakeTime;
 
     constructor(
         string memory name_,
@@ -29,74 +37,126 @@ contract Staking is ERC20, zContract {
         chainID = chainID_;
     }
 
+    modifier onlySystem() {
+        require(
+            msg.sender == address(systemContract),
+            "Only system contract can call this function"
+        );
+        _;
+    }
+
+    function bytesToBech32Bytes(
+        bytes calldata data,
+        uint256 offset
+    ) internal pure returns (bytes memory) {
+        bytes memory bech32Bytes = new bytes(42);
+        for (uint i = 0; i < 42; i++) {
+            bech32Bytes[i] = data[i + offset];
+        }
+
+        return bech32Bytes;
+    }
+
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override {
-        if (msg.sender != address(systemContract)) {
-            revert SenderNotSystemContract();
+    ) external override onlySystem {
+        if (chainID != context.chainID) {
+            revert WrongChain(context.chainID);
         }
-
-        address acceptedZRC20 = systemContract.gasCoinZRC20ByChainId(chainID);
-        if (zrc20 != acceptedZRC20) revert WrongChain();
 
         address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
-        address beneficiary = abi.decode(message, (address));
 
-        stakeZRC(staker, beneficiary, amount);
+        uint8 action = chainID == BITCOIN
+            ? uint8(message[0])
+            : abi.decode(message, (uint8));
+
+        if (action == 1) {
+            stakeZRC(staker, amount);
+        } else if (action == 2) {
+            unstakeZRC(staker);
+        } else if (action == 3) {
+            setBeneficiary(staker, message);
+        } else if (action == 4) {
+            setWithdraw(staker, message, context.origin);
+        } else {
+            revert UnknownAction(action);
+        }
     }
 
-    function stakeZRC(
-        address staker,
-        address beneficiary,
-        uint256 amount
-    ) internal {
-        stakes[staker] += amount;
-        if (beneficiaries[staker] == address(0)) {
-            beneficiaries[staker] = beneficiary;
-        }
-        lastStakeTime[staker] = block.timestamp;
+    function stakeZRC(address staker, uint256 amount) internal {
+        stake[staker] += amount;
+        if (stake[staker] < amount) revert Overflow();
 
+        lastStakeTime[staker] = block.timestamp;
         updateRewards(staker);
     }
 
     function updateRewards(address staker) internal {
-        uint256 timeDifference = block.timestamp - lastStakeTime[staker];
-        uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
+        uint256 rewardAmount = queryRewards(staker);
 
-        _mint(beneficiaries[staker], rewardAmount);
+        _mint(beneficiary[staker], rewardAmount);
         lastStakeTime[staker] = block.timestamp;
     }
 
-    function claimRewards(address staker) external {
-        if (beneficiaries[staker] != msg.sender) {
-            revert NotAuthorizedToClaim();
-        }
+    function unstakeZRC(address staker) internal {
+        uint256 amount = stake[staker];
 
         updateRewards(staker);
-    }
-
-    function unstakeZRC(uint256 amount) external {
-        updateRewards(msg.sender);
-
-        require(stakes[msg.sender] >= amount, "Insufficient staked balance");
 
         address zrc20 = systemContract.gasCoinZRC20ByChainId(chainID);
+        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
 
-        (address gasZRC20, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
+        if (amount < gasFee) revert WrongAmount();
+
+        bytes memory recipient = withdraw[staker];
+
+        stake[staker] = 0;
 
         IZRC20(zrc20).approve(zrc20, gasFee);
-        IZRC20(zrc20).withdraw(abi.encodePacked(msg.sender), amount - gasFee);
+        IZRC20(zrc20).withdraw(recipient, amount - gasFee);
 
-        stakes[msg.sender] -= amount;
-        lastStakeTime[msg.sender] = block.timestamp;
+        if (stake[staker] > amount) revert Underflow();
+
+        lastStakeTime[staker] = block.timestamp;
     }
 
-    function queryRewards(address account) public view returns (uint256) {
-        uint256 timeDifference = block.timestamp - lastStakeTime[account];
-        uint256 rewardAmount = timeDifference * stakes[account] * rewardRate;
+    function setBeneficiary(address staker, bytes calldata message) internal {
+        address beneficiaryAddress;
+        if (chainID == BITCOIN) {
+            beneficiaryAddress = BytesHelperLib.bytesToAddress(message, 1);
+        } else {
+            (, beneficiaryAddress) = abi.decode(message, (uint8, address));
+        }
+        beneficiary[staker] = beneficiaryAddress;
+    }
+
+    function setWithdraw(
+        address staker,
+        bytes calldata message,
+        bytes memory origin
+    ) internal {
+        bytes memory withdrawAddress;
+        if (chainID == BITCOIN) {
+            withdrawAddress = bytesToBech32Bytes(message, 1);
+        } else {
+            withdrawAddress = origin;
+        }
+        withdraw[staker] = withdrawAddress;
+    }
+
+    function queryRewards(address staker) public view returns (uint256) {
+        uint256 timeDifference = block.timestamp - lastStakeTime[staker];
+        uint256 rewardAmount = timeDifference * stake[staker] * rewardRate;
         return rewardAmount;
+    }
+
+    function claimRewards(address staker) external {
+        if (beneficiary[staker] != msg.sender) revert NotAuthorized();
+        uint256 rewardAmount = queryRewards(staker);
+        if (rewardAmount <= 0) revert NoRewardsToClaim();
+        updateRewards(staker);
     }
 }

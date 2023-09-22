@@ -22,19 +22,19 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const factory = await hre.ethers.getContractFactory("Staking");
 
-  const chainID = hre.config.networks[args.chain]?.chainId;
-  if (chainID === undefined) {
-    throw new Error(`🚨 Chain ${args.chain} not found in hardhat config.`);
+  let symbol, chainID;
+  if (args.chain === "btc_testnet") {
+    symbol = "BTC";
+    chainID = 18332;
+  } else {
+    const zrc20 = getAddress("zrc20", args.chain);
+    const contract = new hre.ethers.Contract(zrc20, ZRC20.abi, signer);
+    symbol = await contract.symbol();
+    chainID = hre.config.networks[args.chain]?.chainId;
+    if (chainID === undefined) {
+      throw new Error(`🚨 Chain ${args.chain} not found in hardhat config.`);
+    }
   }
-
-  const ZRC20Address = getAddress("zrc20", args.chain);
-  const ZRC20Contract = new hre.ethers.Contract(
-    ZRC20Address,
-    ZRC20.abi,
-    signer
-  );
-
-  const symbol = await ZRC20Contract.symbol();
 
   const contract = await factory.deploy(
     `Staking rewards for ${symbol}`,
@@ -50,4 +50,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 `);
 };
 
-task("deploy", "Deploy the contract", main).addParam("chain", "Chain name");
+task("deploy", "Deploy the contract", main).addParam(
+  "chain",
+  "Chain ID (use btc_testnet for Bitcoin Testnet)"
+);
