@@ -10,6 +10,11 @@ contract Staking is ERC20, zContract {
     error SenderNotSystemContract();
     error WrongChain(uint256 chainID);
     error UnknownAction(uint8 action);
+    error Overflow();
+    error Underflow();
+    error WrongAmount();
+    error NotAuthorized();
+    error NoRewardsToClaim();
 
     SystemContract public immutable systemContract;
     uint256 constant BITCOIN = 18332;
@@ -58,10 +63,6 @@ contract Staking is ERC20, zContract {
         uint256 amount,
         bytes calldata message
     ) external override onlySystem {
-        if (msg.sender != address(systemContract)) {
-            revert SenderNotSystemContract();
-        }
-
         if (chainID != context.chainID) {
             revert WrongChain(context.chainID);
         }
@@ -87,7 +88,7 @@ contract Staking is ERC20, zContract {
 
     function stakeZRC(address staker, uint256 amount) internal {
         stake[staker] += amount;
-        require(stake[staker] >= amount, "Overflow detected");
+        if (stake[staker] < amount) revert Overflow();
 
         lastStakeTime[staker] = block.timestamp;
         updateRewards(staker);
@@ -108,7 +109,7 @@ contract Staking is ERC20, zContract {
         address zrc20 = systemContract.gasCoinZRC20ByChainId(chainID);
         (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
 
-        require(amount >= gasFee, "Amount should be greater than the gas fee");
+        if (amount < gasFee) revert WrongAmount();
 
         bytes memory recipient = withdraw[staker];
 
@@ -116,7 +117,7 @@ contract Staking is ERC20, zContract {
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
 
         stake[staker] = 0;
-        require(stake[staker] <= amount, "Underflow detected");
+        if (stake[staker] > amount) revert Underflow();
 
         lastStakeTime[staker] = block.timestamp;
     }
@@ -152,12 +153,9 @@ contract Staking is ERC20, zContract {
     }
 
     function claimRewards(address staker) public {
-        require(
-            beneficiary[staker] == msg.sender,
-            "Not authorized to claim rewards"
-        );
+        if (beneficiary[staker] != msg.sender) revert NotAuthorized();
         uint256 rewardAmount = queryRewards(staker);
-        require(rewardAmount > 0, "No rewards to claim");
+        if (rewardAmount <= 0) revert NoRewardsToClaim();
         updateRewards(staker);
     }
 }
