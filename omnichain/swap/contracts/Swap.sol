@@ -19,18 +19,6 @@ contract Swap is zContract {
         systemContract = SystemContract(systemContractAddress);
     }
 
-    function bytesToBech32Bytes(
-        bytes calldata data,
-        uint256 offset
-    ) internal pure returns (bytes memory) {
-        bytes memory bech32Bytes = new bytes(42);
-        for (uint i = 0; i < 42; i++) {
-            bech32Bytes[i] = data[i + offset];
-        }
-
-        return bech32Bytes;
-    }
-
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
@@ -47,7 +35,7 @@ contract Swap is zContract {
 
         if (context.chainID == BITCOIN) {
             targetChainID = BytesHelperLib.bytesToUint32(message, 0);
-            recipient = bytesToBech32Bytes(message, 4);
+            recipient = BytesHelperLib.bytesToBech32Bytes(message, 4);
         } else {
             (
                 uint32 targetChainID_,
