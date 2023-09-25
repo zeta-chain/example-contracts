@@ -5,14 +5,30 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
+import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 
 contract Swap is zContract {
     error SenderNotSystemContract();
+    error WrongGasContract();
+    error NotEnoughToPayGasFee();
 
     SystemContract public immutable systemContract;
+    uint256 constant BITCOIN = 18332;
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
+    }
+
+    function bytesToBech32Bytes(
+        bytes calldata data,
+        uint256 offset
+    ) internal pure returns (bytes memory) {
+        bytes memory bech32Bytes = new bytes(42);
+        for (uint i = 0; i < 42; i++) {
+            bech32Bytes[i] = data[i + offset];
+        }
+
+        return bech32Bytes;
     }
 
     function onCrossChainCall(
@@ -24,8 +40,29 @@ contract Swap is zContract {
         if (msg.sender != address(systemContract)) {
             revert SenderNotSystemContract();
         }
-        (address targetZRC20, bytes32 recipient, uint256 minAmountOut) = abi
-            .decode(message, (address, bytes32, uint256));
+
+        uint32 targetChainID;
+        bytes memory recipient;
+        uint256 minAmountOut;
+
+        if (context.chainID == BITCOIN) {
+            targetChainID = BytesHelperLib.bytesToUint32(message, 0);
+            recipient = bytesToBech32Bytes(message, 4);
+        } else {
+            (
+                uint32 targetChainID_,
+                bytes32 recipient_,
+                uint256 minAmountOut_
+            ) = abi.decode(message, (uint32, bytes32, uint256));
+            targetChainID = targetChainID_;
+            recipient = abi.encodePacked(recipient_);
+            minAmountOut = minAmountOut_;
+        }
+
+        address targetZRC20 = systemContract.gasCoinZRC20ByChainId(
+            targetChainID
+        );
+
         uint256 outputAmount = SwapHelperLib._doSwap(
             systemContract.wZetaContractAddress(),
             systemContract.uniswapv2FactoryAddress(),
@@ -35,6 +72,14 @@ contract Swap is zContract {
             targetZRC20,
             minAmountOut
         );
-        SwapHelperLib._doWithdrawal(targetZRC20, outputAmount, recipient);
+
+        (address gasZRC20, uint256 gasFee) = IZRC20(targetZRC20)
+            .withdrawGasFee();
+
+        if (gasZRC20 != targetZRC20) revert WrongGasContract();
+        if (gasFee >= outputAmount) revert NotEnoughToPayGasFee();
+
+        IZRC20(targetZRC20).approve(targetZRC20, gasFee);
+        IZRC20(targetZRC20).withdraw(recipient, outputAmount - gasFee);
     }
 }
