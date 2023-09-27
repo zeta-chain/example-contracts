@@ -45,18 +45,6 @@ contract Staking is ERC20, zContract {
         _;
     }
 
-    function bytesToBech32Bytes(
-        bytes calldata data,
-        uint256 offset
-    ) internal pure returns (bytes memory) {
-        bytes memory bech32Bytes = new bytes(42);
-        for (uint i = 0; i < 42; i++) {
-            bech32Bytes[i] = data[i + offset];
-        }
-
-        return bech32Bytes;
-    }
-
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
@@ -140,7 +128,7 @@ contract Staking is ERC20, zContract {
     ) internal {
         bytes memory withdrawAddress;
         if (chainID == BITCOIN) {
-            withdrawAddress = bytesToBech32Bytes(message, 1);
+            withdrawAddress = BytesHelperLib.bytesToBech32Bytes(message, 1);
         } else {
             withdrawAddress = origin;
         }
