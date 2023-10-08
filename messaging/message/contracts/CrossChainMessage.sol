@@ -6,21 +6,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@zetachain/protocol-contracts/contracts/evm/tools/ZetaInteractor.sol";
 import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
 
-interface CrossChainMessageErrors {
+contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     error InvalidMessageType();
-}
-
-contract CrossChainMessage is
-    ZetaInteractor,
-    ZetaReceiver,
-    CrossChainMessageErrors
-{
-    bytes32 public constant CROSS_CHAIN_MESSAGE_MESSAGE_TYPE =
-        keccak256("CROSS_CHAIN_CROSS_CHAIN_MESSAGE");
 
     event CrossChainMessageEvent(string);
     event CrossChainMessageRevertedEvent(string);
 
+    bytes32 public constant CROSS_CHAIN_MESSAGE_MESSAGE_TYPE =
+        keccak256("CROSS_CHAIN_CROSS_CHAIN_MESSAGE");
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
 
