@@ -17,12 +17,19 @@ contract Counter is ZetaInteractor, ZetaReceiver {
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
 
-    constructor(address connectorAddress, address zetaTokenAddress, address zetaConsumerAddress) ZetaInteractor(connectorAddress) {
+    constructor(
+        address connectorAddress,
+        address zetaTokenAddress,
+        address zetaConsumerAddress
+    ) ZetaInteractor(connectorAddress) {
         _zetaToken = IERC20(zetaTokenAddress);
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
     }
 
-    function sendMessage(uint256 destinationChainId, address from) external payable {
+    function sendMessage(
+        uint256 destinationChainId,
+        address from
+    ) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -48,11 +55,11 @@ contract Counter is ZetaInteractor, ZetaReceiver {
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
         (bytes32 messageType, address from) = abi.decode(
-            zetaMessage.message, (bytes32, address)
+            zetaMessage.message,
+            (bytes32, address)
         );
 
-        if (messageType != COUNTER_MESSAGE_TYPE)
-            revert InvalidMessageType();
+        if (messageType != COUNTER_MESSAGE_TYPE) revert InvalidMessageType();
 
         emit CounterEvent(from);
     }
@@ -65,8 +72,7 @@ contract Counter is ZetaInteractor, ZetaReceiver {
             (bytes32, address)
         );
 
-        if (messageType != COUNTER_MESSAGE_TYPE)
-            revert InvalidMessageType();
+        if (messageType != COUNTER_MESSAGE_TYPE) revert InvalidMessageType();
 
         emit CounterRevertedEvent(from);
     }
