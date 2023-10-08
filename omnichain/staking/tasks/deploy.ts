@@ -54,7 +54,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("deploy", "Deploy the contract", main).addParam(
-  "chain",
-  "Chain ID (use btc_testnet for Bitcoin Testnet)"
-);
+task("deploy", "Deploy the contract", main)
+  .addParam("chain", "Chain ID (use btc_testnet for Bitcoin Testnet)")
+  .addFlag("json", "Output in JSON");
