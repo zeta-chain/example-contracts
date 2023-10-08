@@ -1,11 +1,5 @@
-import "./tasks/stake";
+import "./tasks/interact";
 import "./tasks/deploy";
-import "./tasks/claim";
-import "./tasks/unstake";
-import "./tasks/beneficiary";
-import "./tasks/withdraw";
-import "./tasks/unstake";
-import "./tasks/address";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
 
