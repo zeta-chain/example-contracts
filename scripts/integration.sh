@@ -130,7 +130,10 @@ echo "Testing CCM Value"
 
 CCM_VALUE_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet --json | jq -r '.goerli_testnet')
 echo $CCM_VALUE_CONTRACT
-CCM_FEE=$(npx hardhat fees --json | jq -r ".feesCCM.mumbai_testnet.totalFee")
+PROTOCOL_FEE=$(npx hardhat fees --json | jq -r ".feesCCM.mumbai_testnet.protocolFee")
+GAS_FEE=$(npx hardhat fees --json | jq -r ".feesCCM.mumbai_testnet.gasFee")
+# Multiply by 2 to be on the safe side
+CCM_FEE=$(echo "$PROTOCOL_FEE + $GAS_FEE * 2" | bc -l)
 CCM_VALUE_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_VALUE_CONTRACT --destination mumbai_testnet --amount $CCM_FEE --json)
 echo $CCM_VALUE_TX_OUT
 CCM_VALUE_TX=$(echo $CCM_VALUE_TX_OUT | jq -r '.hash')
