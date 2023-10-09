@@ -19,11 +19,11 @@ contract CrossChainWarriors is
     event CrossChainWarriorsRevertedEvent(uint256, address, address);
 
     using Counters for Counters.Counter;
+    Counters.Counter public tokenIds;
     bytes32 public constant CROSS_CHAIN_WARRIORS_MESSAGE_TYPE =
         keccak256("CROSS_CHAIN_CROSS_CHAIN_WARRIORS");
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
-    Counters.Counter public tokenIds;
 
     constructor(
         address connectorAddress,
