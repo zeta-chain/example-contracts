@@ -25,10 +25,7 @@ contract MultiOutput is zContract {
         uint256 amount,
         bytes calldata message
     ) external virtual override onlySystem {
-        (address recipient) = abi.decode(
-            message,
-            (address)
-        );
+        address recipient = abi.decode(message, (address));
         // TODO: implement the logic
     }
 }
