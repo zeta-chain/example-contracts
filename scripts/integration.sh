@@ -22,40 +22,66 @@ SENDER=0x2cD3D070aE1BD365909dD859d29F387AA96911e1
 
 # popd
 
-pushd "./omnichain/staking"
+# pushd "./omnichain/staking"
 
-yarn
+# yarn
 
-npx hardhat compile --force
+# npx hardhat compile --force
 
-echo "Testing omnichain Staking"
+# echo "Testing omnichain Staking"
 
-OMNI_STAKING_CONTRACT=$(npx hardhat deploy --network zeta_testnet --chain goerli_testnet --json | jq -r '.address')
+# OMNI_STAKING_CONTRACT=$(npx hardhat deploy --network zeta_testnet --chain goerli_testnet --json | jq -r '.address')
 
-echo $OMNI_STAKING_CONTRACT
+# echo $OMNI_STAKING_CONTRACT
 
-echo "Setting beneficiary"
-OMNI_STAKING_BENEFICIARY_TX=$(npx hardhat set-beneficiary $SENDER --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
-echo $OMNI_STAKING_BENEFICIARY_TX
-OMNI_STAKING_BENEFICIARY_CCTX=$(npx hardhat cctx $OMNI_STAKING_BENEFICIARY_TX --json)
-echo $OMNI_STAKING_BENEFICIARY_CCTX
+# echo "Setting beneficiary"
+# OMNI_STAKING_BENEFICIARY_TX=$(npx hardhat set-beneficiary $SENDER --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
+# echo $OMNI_STAKING_BENEFICIARY_TX
+# OMNI_STAKING_BENEFICIARY_CCTX=$(npx hardhat cctx $OMNI_STAKING_BENEFICIARY_TX --json)
+# echo $OMNI_STAKING_BENEFICIARY_CCTX
 
-echo "Setting withdraw"
-OMNI_STAKING_WITHDRAW_TX=$(npx hardhat set-withdraw --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
-echo $OMNI_STAKING_WITHDRAW_TX
-OMNI_STAKING_WITHDRAW_CCTX=$(npx hardhat cctx $OMNI_STAKING_WITHDRAW_TX --json)
-echo $OMNI_STAKING_WITHDRAW_CCTX
+# echo "Setting withdraw"
+# OMNI_STAKING_WITHDRAW_TX=$(npx hardhat set-withdraw --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
+# echo $OMNI_STAKING_WITHDRAW_TX
+# OMNI_STAKING_WITHDRAW_CCTX=$(npx hardhat cctx $OMNI_STAKING_WITHDRAW_TX --json)
+# echo $OMNI_STAKING_WITHDRAW_CCTX
 
-echo "Stake"
-OMNI_STAKING_STAKE_TX=$(npx hardhat stake --amount 0.01 --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
-echo $OMNI_STAKING_STAKE_TX
-OMNI_STAKING_STAKE_CCTX=$(npx hardhat cctx $OMNI_STAKING_STAKE_TX --json)
-echo $OMNI_STAKING_STAKE_CCTX
+# echo "Stake"
+# OMNI_STAKING_STAKE_TX=$(npx hardhat stake --amount 0.01 --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
+# echo $OMNI_STAKING_STAKE_TX
+# OMNI_STAKING_STAKE_CCTX=$(npx hardhat cctx $OMNI_STAKING_STAKE_TX --json)
+# echo $OMNI_STAKING_STAKE_CCTX
 
-echo "Unstake"
-OMNI_STAKING_UNSTAKE_TX=$(npx hardhat unstake --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
-echo $OMNI_STAKING_UNSTAKE_TX
-OMNI_STAKING_UNSTAKE_CCTX=$(npx hardhat cctx $OMNI_STAKING_UNSTAKE_TX --json)
-echo $OMNI_STAKING_UNSTAKE_CCTX
+# echo "Unstake"
+# OMNI_STAKING_UNSTAKE_TX=$(npx hardhat unstake --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
+# echo $OMNI_STAKING_UNSTAKE_TX
+# OMNI_STAKING_UNSTAKE_CCTX=$(npx hardhat cctx $OMNI_STAKING_UNSTAKE_TX --json)
+# echo $OMNI_STAKING_UNSTAKE_CCTX
 
-popd
+# popd
+
+# pushd "./messaging/message"
+
+# yarn
+
+# npx hardhat compile --force
+
+# echo "Testing CCM Message"
+
+# CCM_MESSAGE_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet --json | jq -r '.goerli_testnet')
+
+# echo $CCM_MESSAGE_CONTRACT
+
+# CCM_MESSAGE_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_MESSAGE_CONTRACT --message "Hello World" --destination mumbai_testnet --amount 0.01 --json)
+
+# echo $CCM_MESSAGE_TX_OUT
+
+# CCM_MESSAGE_TX=$(echo $CCM_MESSAGE_TX_OUT | jq -r '.hash')
+
+# echo $CCM_MESSAGE_TX
+
+# CCM_MESSAGE_CCTX=$(npx hardhat cctx $CCM_MESSAGE_TX --json)
+
+# echo $CCM_MESSAGE_CCTX
+
+# popd

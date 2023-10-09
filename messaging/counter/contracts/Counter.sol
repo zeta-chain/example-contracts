@@ -8,9 +8,11 @@ import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.so
 
 contract Counter is ZetaInteractor, ZetaReceiver {
     error InvalidMessageType();
+    error DecrementOverflow();
 
     event CounterEvent(address);
     event CounterRevertedEvent(address);
+    mapping(address => uint256) public counter;
 
     bytes32 public constant COUNTER_MESSAGE_TYPE =
         keccak256("CROSS_CHAIN_COUNTER");
@@ -26,10 +28,7 @@ contract Counter is ZetaInteractor, ZetaReceiver {
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
     }
 
-    function sendMessage(
-        uint256 destinationChainId,
-        address from
-    ) external payable {
+    function sendMessage(uint256 destinationChainId) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -44,7 +43,7 @@ contract Counter is ZetaInteractor, ZetaReceiver {
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
                 destinationGasLimit: 300000,
-                message: abi.encode(COUNTER_MESSAGE_TYPE, from),
+                message: abi.encode(COUNTER_MESSAGE_TYPE, msg.sender),
                 zetaValueAndGas: zetaValueAndGas,
                 zetaParams: abi.encode("")
             })
@@ -61,6 +60,7 @@ contract Counter is ZetaInteractor, ZetaReceiver {
 
         if (messageType != COUNTER_MESSAGE_TYPE) revert InvalidMessageType();
 
+        counter[from]++;
         emit CounterEvent(from);
     }
 
@@ -74,6 +74,8 @@ contract Counter is ZetaInteractor, ZetaReceiver {
 
         if (messageType != COUNTER_MESSAGE_TYPE) revert InvalidMessageType();
 
+        if (counter[from] <= 0) revert DecrementOverflow();
+        counter[from]--;
         emit CounterRevertedEvent(from);
     }
 }
