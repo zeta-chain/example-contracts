@@ -7,14 +7,9 @@ import "@zetachain/protocol-contracts/contracts/evm/tools/ZetaInteractor.sol";
 import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
 import "@zetachain/protocol-contracts/contracts/evm/Zeta.eth.sol";
 
-contract Value is ZetaInteractor, ZetaReceiver {
-    error InvalidMessageType();
+contract Value is ZetaInteractor {
     error ErrorTransferringZeta();
 
-    event ValueEvent();
-    event ValueRevertedEvent();
-
-    bytes32 public constant VALUE_MESSAGE_TYPE = keccak256("CROSS_CHAIN_VALUE");
     IERC20 internal immutable _zetaToken;
 
     constructor(
@@ -44,30 +39,10 @@ contract Value is ZetaInteractor, ZetaReceiver {
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
                 destinationGasLimit: 300000,
-                message: abi.encode(VALUE_MESSAGE_TYPE),
+                message: abi.encode(),
                 zetaValueAndGas: zetaValueAndGas,
                 zetaParams: abi.encode("")
             })
         );
-    }
-
-    function onZetaMessage(
-        ZetaInterfaces.ZetaMessage calldata zetaMessage
-    ) external override isValidMessageCall(zetaMessage) {
-        bytes32 messageType = abi.decode(zetaMessage.message, (bytes32));
-
-        if (messageType != VALUE_MESSAGE_TYPE) revert InvalidMessageType();
-
-        emit ValueEvent();
-    }
-
-    function onZetaRevert(
-        ZetaInterfaces.ZetaRevert calldata zetaRevert
-    ) external override isValidRevertCall(zetaRevert) {
-        bytes32 messageType = abi.decode(zetaRevert.message, (bytes32));
-
-        if (messageType != VALUE_MESSAGE_TYPE) revert InvalidMessageType();
-
-        emit ValueRevertedEvent();
     }
 }
