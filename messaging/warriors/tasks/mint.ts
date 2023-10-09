@@ -5,7 +5,6 @@ const contractName = "CrossChainWarriors";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
-  console.log(`🔑 Using account: ${signer.address}\n`);
 
   const factory = await hre.ethers.getContractFactory(contractName);
   const contract = factory.attach(args.contract);
@@ -16,13 +15,17 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const event = receipt.events?.find((event) => event.event === "Transfer");
   const nftId = event?.args?.tokenId.toString();
 
-  console.log(`✅ "mint" transaction has been broadcasted to ${hre.network.name}
+  if (args.json) {
+    console.log(nftId);
+  } else {
+    console.log(`🔑 Using account: ${signer.address}\n`);
+    console.log(`✅ "mint" transaction has been broadcasted to ${hre.network.name}
 📝 Transaction hash: ${receipt.transactionHash}
 🌠 Minted NFT ID: ${nftId}
 `);
+  }
 };
 
-task("mint", "Sends a message from one chain to another.", main).addParam(
-  "contract",
-  "Contract address"
-);
+task("mint", "Mint a new NFT.", main)
+  .addParam("contract", "Contract address")
+  .addFlag("json", "Output JSON");

@@ -69,19 +69,13 @@ SENDER=0x2cD3D070aE1BD365909dD859d29F387AA96911e1
 # echo "Testing CCM Message"
 
 # CCM_MESSAGE_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet --json | jq -r '.goerli_testnet')
-
 # echo $CCM_MESSAGE_CONTRACT
 
 # CCM_MESSAGE_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_MESSAGE_CONTRACT --message "Hello World" --destination mumbai_testnet --amount 0.01 --json)
-
 # echo $CCM_MESSAGE_TX_OUT
-
 # CCM_MESSAGE_TX=$(echo $CCM_MESSAGE_TX_OUT | jq -r '.hash')
-
 # echo $CCM_MESSAGE_TX
-
 # CCM_MESSAGE_CCTX=$(npx hardhat cctx $CCM_MESSAGE_TX --json)
-
 # echo $CCM_MESSAGE_CCTX
 
 # popd
