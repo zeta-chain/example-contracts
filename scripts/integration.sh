@@ -80,23 +80,42 @@ SENDER=0x2cD3D070aE1BD365909dD859d29F387AA96911e1
 
 # popd
 
-pushd "./messaging/warriors"
+# pushd "./messaging/warriors"
+
+# yarn
+
+# npx hardhat compile --force
+
+# echo "Testing CCM Warriors"
+
+# CCM_NFT_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet --json | jq -r '.goerli_testnet')
+# echo $CCM_NFT_CONTRACT
+
+# CCM_NFT_MINT=$(npx hardhat mint --network goerli_testnet --contract $CCM_NFT_CONTRACT --json)
+# CCM_NFT_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_NFT_CONTRACT --token $CCM_NFT_MINT --destination mumbai_testnet --amount 0.01 --to $SENDER --json)
+# echo $CCM_NFT_TX_OUT
+# CCM_NFT_TX=$(echo $CCM_NFT_TX_OUT | jq -r '.hash')
+# echo $CCM_NFT_TX
+# CCM_NFT_CCTX=$(npx hardhat cctx $CCM_NFT_TX --json)
+# echo $CCM_NFT_CCTX
+
+# popd
+
+pushd "./messaging/counter"
 
 yarn
 
 npx hardhat compile --force
 
-echo "Testing CCM Warriors"
+echo "Testing CCM Counter"
 
-CCM_NFT_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet --json | jq -r '.goerli_testnet')
-echo $CCM_NFT_CONTRACT
-
-CCM_NFT_MINT=$(npx hardhat mint --network goerli_testnet --contract $CCM_NFT_CONTRACT --json)
-CCM_NFT_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_NFT_CONTRACT --token $CCM_NFT_MINT --destination mumbai_testnet --amount 0.01 --to $SENDER --json)
-echo $CCM_NFT_TX_OUT
-CCM_NFT_TX=$(echo $CCM_NFT_TX_OUT | jq -r '.hash')
-echo $CCM_NFT_TX
-CCM_NFT_CCTX=$(npx hardhat cctx $CCM_NFT_TX --json)
-echo $CCM_NFT_CCTX
+CCM_COUNTER_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet --json | jq -r '.goerli_testnet')
+echo $CCM_COUNTER_CONTRACT
+CCM_COUNTER_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_COUNTER_CONTRACT --destination mumbai_testnet --amount 0.01 --json)
+echo $CCM_COUNTER_TX_OUT
+CCM_COUNTER_TX=$(echo $CCM_COUNTER_TX_OUT | jq -r '.hash')
+echo $CCM_COUNTER_TX
+CCM_COUNTER_CCTX=$(npx hardhat cctx $CCM_COUNTER_TX --json)
+echo $CCM_COUNTER_CCTX
 
 popd
