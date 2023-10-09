@@ -14,15 +14,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 
   const paramToken = hre.ethers.BigNumber.from(args.token);
-const paramSender = hre.ethers.utils.getAddress(args.sender);
-const paramTo = hre.ethers.utils.getAddress(args.to);
+  const paramTo = hre.ethers.utils.getAddress(args.to);
 
   const value = parseEther(args.amount);
 
-
   const tx = await contract
     .connect(signer)
-    .sendMessage(destination, paramToken, paramSender, paramTo, { value });
+    .sendMessage(destination, paramToken, paramTo, { value });
 
   const receipt = await tx.wait();
   if (args.json) {
@@ -41,5 +39,4 @@ task("interact", "Sends a message from one chain to another.", main)
   .addParam("amount", "Token amount to send")
   .addParam("destination", "Destination chain")
   .addParam("token", "uint256")
-  .addParam("sender", "address")
-  .addParam("to", "address")
+  .addParam("to", "address");
