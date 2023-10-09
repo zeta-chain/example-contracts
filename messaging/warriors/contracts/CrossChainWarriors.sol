@@ -17,12 +17,21 @@ contract CrossChainWarriors is ZetaInteractor, ZetaReceiver {
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
 
-    constructor(address connectorAddress, address zetaTokenAddress, address zetaConsumerAddress) ZetaInteractor(connectorAddress) {
+    constructor(
+        address connectorAddress,
+        address zetaTokenAddress,
+        address zetaConsumerAddress
+    ) ZetaInteractor(connectorAddress) {
         _zetaToken = IERC20(zetaTokenAddress);
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
     }
 
-    function sendMessage(uint256 destinationChainId, uint256 token, address sender, address to) external payable {
+    function sendMessage(
+        uint256 destinationChainId,
+        uint256 token,
+        address sender,
+        address to
+    ) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -37,7 +46,12 @@ contract CrossChainWarriors is ZetaInteractor, ZetaReceiver {
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
                 destinationGasLimit: 300000,
-                message: abi.encode(CROSS_CHAIN_WARRIORS_MESSAGE_TYPE, token, sender, to),
+                message: abi.encode(
+                    CROSS_CHAIN_WARRIORS_MESSAGE_TYPE,
+                    token,
+                    sender,
+                    to
+                ),
                 zetaValueAndGas: zetaValueAndGas,
                 zetaParams: abi.encode("")
             })
@@ -47,9 +61,8 @@ contract CrossChainWarriors is ZetaInteractor, ZetaReceiver {
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
-        (bytes32 messageType, uint256 token, address sender, address to) = abi.decode(
-            zetaMessage.message, (bytes32, uint256, address, address)
-        );
+        (bytes32 messageType, uint256 token, address sender, address to) = abi
+            .decode(zetaMessage.message, (bytes32, uint256, address, address));
 
         if (messageType != CROSS_CHAIN_WARRIORS_MESSAGE_TYPE)
             revert InvalidMessageType();
@@ -60,10 +73,8 @@ contract CrossChainWarriors is ZetaInteractor, ZetaReceiver {
     function onZetaRevert(
         ZetaInterfaces.ZetaRevert calldata zetaRevert
     ) external override isValidRevertCall(zetaRevert) {
-        (bytes32 messageType, uint256 token, address sender, address to) = abi.decode(
-            zetaRevert.message,
-            (bytes32, uint256, address, address)
-        );
+        (bytes32 messageType, uint256 token, address sender, address to) = abi
+            .decode(zetaRevert.message, (bytes32, uint256, address, address));
 
         if (messageType != CROSS_CHAIN_WARRIORS_MESSAGE_TYPE)
             revert InvalidMessageType();
