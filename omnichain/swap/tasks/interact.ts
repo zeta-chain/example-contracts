@@ -8,13 +8,16 @@ import { BigNumber } from "@ethersproject/bignumber";
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
 
-  const targetZRC20 = getAddress("zrc20" as any, args.destination as any);
+  const targetChainID = hre.config.networks[args.destination]?.chainId;
+  if (targetChainID === undefined) {
+    throw new Error("Invalid destination network");
+  }
   const minAmountOut = BigNumber.from("0");
 
   const data = prepareData(
     args.contract,
-    ["address", "bytes32", "uint256"],
-    [targetZRC20, args.recipient, minAmountOut]
+    ["uint32", "bytes32", "uint256"],
+    [targetChainID, args.recipient, minAmountOut]
   );
   const to = getAddress("tss", hre.network.name);
   const value = parseEther(args.amount);
