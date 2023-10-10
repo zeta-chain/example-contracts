@@ -31,20 +31,20 @@ contract Swap is zContract {
         bytes calldata message
     ) external virtual override onlySystem {
         uint32 targetChainID;
-        bytes memory recipient;
+        address recipient;
         uint256 minAmountOut;
 
         if (context.chainID == BITCOIN) {
             targetChainID = BytesHelperLib.bytesToUint32(message, 0);
-            recipient = BytesHelperLib.bytesToBech32Bytes(message, 4);
+            recipient = BytesHelperLib.bytesToAddress(message, 4);
         } else {
             (
                 uint32 targetChainID_,
-                bytes32 recipient_,
+                address recipient_,
                 uint256 minAmountOut_
-            ) = abi.decode(message, (uint32, bytes32, uint256));
+            ) = abi.decode(message, (uint32, address, uint256));
             targetChainID = targetChainID_;
-            recipient = abi.encodePacked(recipient_);
+            recipient = recipient_;
             minAmountOut = minAmountOut_;
         }
 
@@ -69,6 +69,9 @@ contract Swap is zContract {
         if (gasFee >= outputAmount) revert NotEnoughToPayGasFee();
 
         IZRC20(targetZRC20).approve(targetZRC20, gasFee);
-        IZRC20(targetZRC20).withdraw(recipient, outputAmount - gasFee);
+        IZRC20(targetZRC20).withdraw(
+            abi.encodePacked(recipient),
+            outputAmount - gasFee
+        );
     }
 }

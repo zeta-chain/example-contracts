@@ -16,7 +16,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const data = prepareData(
     args.contract,
-    ["uint32", "bytes32", "uint256"],
+    ["uint32", "address", "uint256"],
     [targetChainID, args.recipient, minAmountOut]
   );
   const to = getAddress("tss", hre.network.name);
