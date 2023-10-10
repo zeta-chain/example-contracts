@@ -3,20 +3,25 @@ pragma solidity 0.8.7;
 
 import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
-
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 
 contract Swap is zContract {
-    error SenderNotSystemContract();
+    SystemContract public immutable systemContract;
+    uint256 constant BITCOIN = 18332;
     error WrongGasContract();
     error NotEnoughToPayGasFee();
 
-    SystemContract public immutable systemContract;
-    uint256 constant BITCOIN = 18332;
-
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
+    }
+
+    modifier onlySystem() {
+        require(
+            msg.sender == address(systemContract),
+            "Only system contract can call this function"
+        );
+        _;
     }
 
     function onCrossChainCall(
@@ -24,26 +29,22 @@ contract Swap is zContract {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external virtual override {
-        if (msg.sender != address(systemContract)) {
-            revert SenderNotSystemContract();
-        }
-
+    ) external virtual override onlySystem {
         uint32 targetChainID;
-        bytes memory recipient;
+        address recipient;
         uint256 minAmountOut;
 
         if (context.chainID == BITCOIN) {
             targetChainID = BytesHelperLib.bytesToUint32(message, 0);
-            recipient = BytesHelperLib.bytesToBech32Bytes(message, 4);
+            recipient = BytesHelperLib.bytesToAddress(message, 4);
         } else {
             (
                 uint32 targetChainID_,
-                bytes32 recipient_,
+                address recipient_,
                 uint256 minAmountOut_
-            ) = abi.decode(message, (uint32, bytes32, uint256));
+            ) = abi.decode(message, (uint32, address, uint256));
             targetChainID = targetChainID_;
-            recipient = abi.encodePacked(recipient_);
+            recipient = recipient_;
             minAmountOut = minAmountOut_;
         }
 
@@ -68,6 +69,9 @@ contract Swap is zContract {
         if (gasFee >= outputAmount) revert NotEnoughToPayGasFee();
 
         IZRC20(targetZRC20).approve(targetZRC20, gasFee);
-        IZRC20(targetZRC20).withdraw(recipient, outputAmount - gasFee);
+        IZRC20(targetZRC20).withdraw(
+            abi.encodePacked(recipient),
+            outputAmount - gasFee
+        );
     }
 }

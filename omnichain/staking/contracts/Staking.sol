@@ -7,6 +7,12 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 
 contract Staking is ERC20, zContract {
+    SystemContract public immutable systemContract;
+    uint256 public immutable chainID;
+    uint256 constant BITCOIN = 18332;
+
+    uint256 public rewardRate = 1;
+
     error SenderNotSystemContract();
     error WrongChain(uint256 chainID);
     error UnknownAction(uint8 action);
@@ -15,12 +21,6 @@ contract Staking is ERC20, zContract {
     error WrongAmount();
     error NotAuthorized();
     error NoRewardsToClaim();
-
-    SystemContract public immutable systemContract;
-    uint256 public immutable chainID;
-    uint256 constant BITCOIN = 18332;
-
-    uint256 public rewardRate = 1;
 
     mapping(address => uint256) public stake;
     mapping(address => bytes) public withdraw;
@@ -45,24 +45,12 @@ contract Staking is ERC20, zContract {
         _;
     }
 
-    function bytesToBech32Bytes(
-        bytes calldata data,
-        uint256 offset
-    ) internal pure returns (bytes memory) {
-        bytes memory bech32Bytes = new bytes(42);
-        for (uint i = 0; i < 42; i++) {
-            bech32Bytes[i] = data[i + offset];
-        }
-
-        return bech32Bytes;
-    }
-
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override onlySystem {
+    ) external virtual override onlySystem {
         if (chainID != context.chainID) {
             revert WrongChain(context.chainID);
         }
@@ -99,6 +87,12 @@ contract Staking is ERC20, zContract {
 
         _mint(beneficiary[staker], rewardAmount);
         lastStakeTime[staker] = block.timestamp;
+    }
+
+    function queryRewards(address staker) public view returns (uint256) {
+        uint256 timeDifference = block.timestamp - lastStakeTime[staker];
+        uint256 rewardAmount = timeDifference * stake[staker] * rewardRate;
+        return rewardAmount;
     }
 
     function unstakeZRC(address staker) internal {
@@ -147,10 +141,16 @@ contract Staking is ERC20, zContract {
         withdraw[staker] = withdrawAddress;
     }
 
-    function queryRewards(address staker) public view returns (uint256) {
-        uint256 timeDifference = block.timestamp - lastStakeTime[staker];
-        uint256 rewardAmount = timeDifference * stake[staker] * rewardRate;
-        return rewardAmount;
+    function bytesToBech32Bytes(
+        bytes calldata data,
+        uint256 offset
+    ) internal pure returns (bytes memory) {
+        bytes memory bech32Bytes = new bytes(42);
+        for (uint i = 0; i < 42; i++) {
+            bech32Bytes[i] = data[i + offset];
+        }
+
+        return bech32Bytes;
     }
 
     function claimRewards(address staker) external {

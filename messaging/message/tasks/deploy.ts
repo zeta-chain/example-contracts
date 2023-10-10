@@ -1,6 +1,6 @@
 import { getAddress } from "@zetachain/protocol-contracts";
 import { ethers } from "ethers";
-import { task } from "hardhat/config";
+import { task, types } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getSupportedNetworks } from "@zetachain/networks";
 
@@ -8,21 +8,27 @@ const contractName = "CrossChainMessage";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const networks = args.networks.split(",");
-  // A mapping between network names and deployed contract addresses.
   const contracts: { [key: string]: string } = {};
   await Promise.all(
     networks.map(async (networkName: string) => {
-      contracts[networkName] = await deployContract(hre, networkName);
+      contracts[networkName] = await deployContract(
+        hre,
+        networkName,
+        args.json,
+        args.gasLimit
+      );
     })
   );
 
   for (const source in contracts) {
-    await setInteractors(hre, source, contracts);
+    await setInteractors(hre, source, contracts, args.json, args.gasLimit);
+  }
+
+  if (args.json) {
+    console.log(JSON.stringify(contracts, null, 2));
   }
 };
 
-// Initialize a wallet using a network configuration and a private key from
-// environment variables.
 const initWallet = (hre: HardhatRuntimeEnvironment, networkName: string) => {
   const { url } = hre.config.networks[networkName] as any;
   const provider = new ethers.providers.JsonRpcProvider(url);
@@ -31,12 +37,11 @@ const initWallet = (hre: HardhatRuntimeEnvironment, networkName: string) => {
   return wallet;
 };
 
-// Deploy the contract on the specified network. deployContract reads the
-// contract artifact, creates a contract factory, and deploys the contract using
-// that factory.
 const deployContract = async (
   hre: HardhatRuntimeEnvironment,
-  networkName: string
+  networkName: string,
+  json: boolean = false,
+  gasLimit: number
 ) => {
   const wallet = initWallet(hre, networkName);
 
@@ -56,26 +61,30 @@ const deployContract = async (
   const contract = await factory.deploy(
     connector,
     zetaToken,
-    zetaTokenConsumerUniV2 || zetaTokenConsumerUniV3
+    zetaTokenConsumerUniV2 || zetaTokenConsumerUniV3,
+    { gasLimit }
   );
 
   await contract.deployed();
-  console.log(`
+  if (!json) {
+    console.log(`
 🚀 Successfully deployed contract on ${networkName}.
 📜 Contract address: ${contract.address}`);
+  }
   return contract.address;
 };
 
-// Set interactors for a contract. setInteractors attaches to the contract
-// deployed at the specified address, and for every other network, sets the
-// deployed contract's address as an interactor.
 const setInteractors = async (
   hre: HardhatRuntimeEnvironment,
   source: string,
-  contracts: { [key: string]: string }
+  contracts: { [key: string]: string },
+  json: boolean = false,
+  gasLimit: number
 ) => {
-  console.log(`
+  if (!json) {
+    console.log(`
 🔗 Setting interactors for a contract on ${source}`);
+  }
   const wallet = initWallet(hre, source);
 
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
@@ -83,9 +92,6 @@ const setInteractors = async (
   const contract = factory.attach(contracts[source]);
 
   for (const counterparty in contracts) {
-    // Skip the destination network if it's the same as the source network.
-    // For example, we don't need to set an interactor for a contract on
-    // Goerli if the destination network is also Goerli.
     if (counterparty === source) continue;
 
     const counterpartyContract = hre.ethers.utils.solidityPack(
@@ -94,17 +100,24 @@ const setInteractors = async (
     );
     const chainId = hre.config.networks[counterparty].chainId;
     await (
-      await contract.setInteractorByChainId(chainId, counterpartyContract)
+      await contract.setInteractorByChainId(chainId, counterpartyContract, {
+        gasLimit,
+      })
     ).wait();
-    console.log(
-      `✅ Interactor address for ${chainId} (${counterparty}) is set to ${counterpartyContract}`
-    );
+    if (!json) {
+      console.log(
+        `✅ Interactor address for ${chainId} (${counterparty}) is set to ${counterpartyContract}`
+      );
+    }
   }
 };
 
-task("deploy", "Deploy the contract", main).addParam(
-  "networks",
-  `Comma separated list of networks to deploy to (e.g. ${getSupportedNetworks(
-    "ccm"
-  )})`
-);
+task("deploy", "Deploy the contract", main)
+  .addParam(
+    "networks",
+    `Comma separated list of networks to deploy to (e.g. ${getSupportedNetworks(
+      "ccm"
+    )})`
+  )
+  .addOptionalParam("gasLimit", "Gas limit", 10000000, types.int)
+  .addFlag("json", "Output JSON");

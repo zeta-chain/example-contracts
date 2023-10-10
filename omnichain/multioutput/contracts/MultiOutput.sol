@@ -21,6 +21,14 @@ contract MultiOutput is zContract, Ownable {
         systemContract = SystemContract(systemContractAddress);
     }
 
+    modifier onlySystem() {
+        require(
+            msg.sender == address(systemContract),
+            "Only system contract can call this function"
+        );
+        _;
+    }
+
     function registerDestinationToken(
         address destinationToken
     ) external onlyOwner {
@@ -43,10 +51,7 @@ contract MultiOutput is zContract, Ownable {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external virtual override {
-        if (msg.sender != address(systemContract)) {
-            revert SenderNotSystemContract();
-        }
+    ) external virtual override onlySystem {
         address recipient = abi.decode(message, (address));
         if (_getTotalTransfers(zrc20) == 0) revert NoAvailableTransfers();
 

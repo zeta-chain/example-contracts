@@ -3,31 +3,27 @@ pragma solidity 0.8.7;
 
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@zetachain/protocol-contracts/contracts/evm/tools/ZetaInteractor.sol";
 import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
-
-interface CrossChainWarriorsErrors {
-    error InvalidMessageType();
-}
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract CrossChainWarriors is
     ZetaInteractor,
     ZetaReceiver,
-    CrossChainWarriorsErrors,
     ERC721("CrossChainWarriors", "CCWAR")
 {
-    using Counters for Counters.Counter;
-    bytes32 public constant CROSS_CHAIN_WARRIORS_MESSAGE_TYPE =
-        keccak256("CROSS_CHAIN_CROSS_CHAIN_WARRIORS");
+    error InvalidMessageType();
 
     event CrossChainWarriorsEvent(uint256, address, address);
     event CrossChainWarriorsRevertedEvent(uint256, address, address);
 
+    using Counters for Counters.Counter;
+    Counters.Counter public tokenIds;
+    bytes32 public constant CROSS_CHAIN_WARRIORS_MESSAGE_TYPE =
+        keccak256("CROSS_CHAIN_CROSS_CHAIN_WARRIORS");
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
-    Counters.Counter public tokenIds;
 
     constructor(
         address connectorAddress,

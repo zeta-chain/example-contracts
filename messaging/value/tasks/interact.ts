@@ -1,11 +1,12 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
+import { getAddress } from "@zetachain/protocol-contracts";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
 
-  const factory = await hre.ethers.getContractFactory("CrossChainWarriors");
+  const factory = await hre.ethers.getContractFactory("Value");
   const contract = factory.attach(args.contract);
 
   const destination = hre.config.networks[args.destination]?.chainId;
@@ -13,14 +14,18 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     throw new Error(`${args.destination} is not a valid destination chain`);
   }
 
-  const paramToken = hre.ethers.BigNumber.from(args.token);
-  const paramTo = hre.ethers.utils.getAddress(args.to);
-
+  
   const value = parseEther(args.amount);
+
+  const zetaTokenAddress = getAddress("zetaToken", hre.network.name as any);
+  const zetaFactory = await hre.ethers.getContractFactory("ZetaEth");
+  const zetaToken = zetaFactory.attach(zetaTokenAddress);
+
+  await (await zetaToken.approve(args.contract, value)).wait();
 
   const tx = await contract
     .connect(signer)
-    .sendMessage(destination, paramToken, paramTo, { value });
+    .sendMessage(destination, value);
 
   const receipt = await tx.wait();
   if (args.json) {
@@ -38,5 +43,3 @@ task("interact", "Sends a message from one chain to another.", main)
   .addParam("contract", "Contract address")
   .addParam("amount", "Token amount to send")
   .addParam("destination", "Destination chain")
-  .addParam("token", "uint256")
-  .addParam("to", "address");

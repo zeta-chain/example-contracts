@@ -6,20 +6,24 @@ import { prepareData, trackCCTX } from "@zetachain/toolkit/helpers";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
-  console.log(`🔑 Using account: ${signer.address}\n`);
 
   const data = prepareData(args.contract, ["uint8"], ["1"]);
   const to = getAddress("tss", hre.network.name);
   const value = parseEther(args.amount);
 
   const tx = await signer.sendTransaction({ data, to, value });
-  console.log(`
-🚀 Successfully broadcasted a token transfer transaction on ${hre.network.name} network.
+  if (args.json) {
+    console.log(JSON.stringify(tx, null, 2));
+  } else {
+    console.log(`🔑 Using account: ${signer.address}\n`);
+
+    console.log(`🚀 Successfully broadcasted a token transfer transaction on ${hre.network.name} network.
 📝 Transaction hash: ${tx.hash}
 `);
-  await trackCCTX(tx.hash);
+  }
 };
 
 task("stake", "Deposit tokens to ZetaChain and stake them", main)
   .addParam("contract", "The address of the contract on ZetaChain")
-  .addParam("amount", "Amount of tokens to send");
+  .addParam("amount", "Amount of tokens to send")
+  .addFlag("json", "Output in JSON");
