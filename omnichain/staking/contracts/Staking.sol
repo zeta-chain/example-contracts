@@ -18,7 +18,7 @@ contract Staking is ERC20, zContract {
     error UnknownAction(uint8 action);
     error Overflow();
     error Underflow();
-    error WrongAmount();
+    error AmountTooLow();
     error NotAuthorized();
     error NoRewardsToClaim();
 
@@ -75,11 +75,10 @@ contract Staking is ERC20, zContract {
     }
 
     function stakeZRC(address staker, uint256 amount) internal {
+        updateRewards(staker);
+
         stake[staker] += amount;
         if (stake[staker] < amount) revert Overflow();
-
-        lastStakeTime[staker] = block.timestamp;
-        updateRewards(staker);
     }
 
     function updateRewards(address staker) internal {
@@ -90,20 +89,22 @@ contract Staking is ERC20, zContract {
     }
 
     function queryRewards(address staker) public view returns (uint256) {
+        if (lastStakeTime[staker] == 0) {
+            return 0;
+        }
         uint256 timeDifference = block.timestamp - lastStakeTime[staker];
         uint256 rewardAmount = timeDifference * stake[staker] * rewardRate;
         return rewardAmount;
     }
 
     function unstakeZRC(address staker) internal {
-        uint256 amount = stake[staker];
-
         updateRewards(staker);
 
         address zrc20 = systemContract.gasCoinZRC20ByChainId(chainID);
         (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
 
-        if (amount < gasFee) revert WrongAmount();
+        uint256 amount = stake[staker];
+        if (amount < gasFee) revert AmountTooLow();
 
         bytes memory recipient = withdraw[staker];
 
@@ -111,10 +112,6 @@ contract Staking is ERC20, zContract {
 
         IZRC20(zrc20).approve(zrc20, gasFee);
         IZRC20(zrc20).withdraw(recipient, amount - gasFee);
-
-        if (stake[staker] > amount) revert Underflow();
-
-        lastStakeTime[staker] = block.timestamp;
     }
 
     function setBeneficiary(address staker, bytes calldata message) internal {
