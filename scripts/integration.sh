@@ -13,7 +13,7 @@ npx hardhat compile --force
 echo "Testing omnichain Swap"
 
 OMNI_SWAP_CONTRACT=$(npx hardhat deploy --network zeta_testnet --json | jq -r '.address')
-OMNI_SWAP_TX=$(npx hardhat interact --contract $OMNI_SWAP_CONTRACT --network goerli_testnet --amount 0.01 --recipient $SENDER --target-token 0x48f80608B672DC30DC7e3dbBd0343c5F02C738Eb --destination mumbai_testnet --json | jq -r '.hash')
+OMNI_SWAP_TX=$(npx hardhat interact --contract $OMNI_SWAP_CONTRACT --network goerli_testnet --amount 0.01 --recipient $SENDER --target-token 0x48f80608B672DC30DC7e3dbBd0343c5F02C738Eb --json | jq -r '.hash')
 echo $OMNI_SWAP_TX
 OMNI_SWAP_CCTX=$(npx hardhat cctx $OMNI_SWAP_TX --json)
 echo $OMNI_SWAP_CCTX
