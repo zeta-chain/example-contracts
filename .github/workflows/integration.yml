@@ -56,6 +56,6 @@ jobs:
 
       - name: Run Script
         run: |
-          sh /home/runner/work/example-contracts/example-contracts/scripts/test/omnichain_swap.sh
+          sh /home/runner/work/example-contracts/scripts/test/omnichain_swap.sh
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
