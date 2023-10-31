@@ -1,24 +1,56 @@
 name: Integration Tests
 
 on:
+  workflow_dispatch:
+    inputs:
+      scriptName:
+        type: choice
+        description: "Script to run"
+        options:
+          - omnichain_swap
+          - omnichain_staking
+          - omnichain_multioutput
+          - messaging_counter
+          - messaging_message
+          - messaging_value
+          - messaging_warriors
   schedule:
     - cron: "0 0 * * *" # Runs every day at midnight
-  workflow_dispatch:
 
 jobs:
-  integration:
+  scheduled_integration_tests:
+    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Install jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Integration
-        run: ./scripts/integration.sh
+      - name: Run All Scripts in scripts/test Directory
+        run: |
+          for script in scripts/test/*; do
+            if [ -f "$script" ] && [ -x "$script" ]; then
+              echo "Running $script..."
+              ./$script
+            fi
+          done
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+
+  manual_integration_tests:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Run Script
+        run: |
+          sh ${{ github.workspace }}/scripts/test/${{ github.event.inputs.scriptName }}.sh
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
