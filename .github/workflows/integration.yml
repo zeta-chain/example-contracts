@@ -52,7 +52,7 @@ jobs:
         run: echo $(pwd)
 
       - name: List Files
-        run: ls -al scripts/test/
+        run: ls -al .
 
       - name: Run Script
         run: |
