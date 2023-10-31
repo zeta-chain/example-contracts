@@ -8,10 +8,9 @@ set -e
 
 SENDER=0x2cD3D070aE1BD365909dD859d29F387AA96911e1
 
-echo $PWD
-ls -al
+echo "$(dirname "$0")/../common.sh"
 
-# pushd "./omnichain/swap"
+cd ./omnichain/swap
 
 yarn
 
