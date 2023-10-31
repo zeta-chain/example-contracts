@@ -2,13 +2,7 @@
 
 set -e
 
-# echo "testing swap"
-
-# source "$(dirname "$0")/../common.sh"
-
-SENDER=0x2cD3D070aE1BD365909dD859d29F387AA96911e1
-
-echo "$(dirname "$0")/../common.sh"
+source "$(dirname "$0")/../common.sh"
 
 cd ./omnichain/swap
 
