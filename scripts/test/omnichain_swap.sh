@@ -24,5 +24,3 @@ OMNI_SWAP_TX=$(npx hardhat interact --contract $OMNI_SWAP_CONTRACT --network goe
 echo $OMNI_SWAP_TX
 OMNI_SWAP_CCTX=$(npx hardhat cctx $OMNI_SWAP_TX --json)
 echo $OMNI_SWAP_CCTX
-
-popd
