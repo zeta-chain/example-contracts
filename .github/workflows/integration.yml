@@ -1,20 +1,21 @@
 name: Integration Tests
 
 on:
-  schedule:
-    - cron: "0 0 * * *" # Runs every day at midnight
   workflow_dispatch:
     inputs:
       scriptName:
         type: choice
         description: "Script to run"
-        options: ${{ env.SCRIPT_NAMES }}
-
-env:
-  SCRIPT_NAMES:
-    '["omnichain_swap", "omnichain_staking", "omnichain_multioutput",
-    "messaging_counter", "messaging_message", "messaging_value",
-    "messaging_warriors"]'
+        options:
+          - omnichain_swap
+          - omnichain_staking
+          - omnichain_multioutput
+          - messaging_counter
+          - messaging_message
+          - messaging_value
+          - messaging_warriors
+  schedule:
+    - cron: "0 0 * * *" # Runs every day at midnight
 
 jobs:
   integration_tests:
@@ -22,7 +23,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        scriptName: ${{fromJson(env.SCRIPT_NAMES)}}
+        scriptName:
+          - omnichain_swap
+          - omnichain_staking
+          - omnichain_multioutput
+          - messaging_counter
+          - messaging_message
+          - messaging_value
+          - messaging_warriors
       fail-fast: false
     steps:
       - name: Checkout code
