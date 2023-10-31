@@ -49,6 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Test Script
-        run: ./scripts/test/${{ github.event.inputs.scriptName }}.sh
+        run: |
+          ${{ github.workspace }}/scripts/test/${{ github.event.inputs.scriptName }}.sh
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
