@@ -48,10 +48,14 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Run Test Script
+      - name: Print Current Directory
+        run: echo $(pwd)
+
+      - name: List Files
+        run: ls -al scripts/test/
+
+      - name: Run Script
         run: |
-          echo $PWD
-          ls
-          sh ${{ github.workspace }}/scripts/test/${{ github.event.inputs.scriptName }}.sh
+          sh /home/runner/work/example-contracts/example-contracts/scripts/test/omnichain_swap.sh
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
