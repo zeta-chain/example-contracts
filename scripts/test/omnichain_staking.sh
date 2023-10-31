@@ -2,7 +2,7 @@
 
 set -e
 
-source "$(dirname "$0")/common.sh"
+source "$(dirname "$0")/../common.sh"
 
 pushd "./omnichain/staking"
 
