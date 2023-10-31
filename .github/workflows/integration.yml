@@ -18,7 +18,8 @@ on:
     - cron: "0 0 * * *" # Runs every day at midnight
 
 jobs:
-  setup:
+  scheduled_integration_tests:
+    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,11 +28,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-  scheduled_integration_tests:
-    needs: setup
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    steps:
       - name: Run All Scripts in scripts/test Directory
         run: |
           for script in scripts/test/*; do
@@ -44,18 +40,17 @@ jobs:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
 
   manual_integration_tests:
-    needs: setup
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Print Current Directory
-        run: echo $(pwd)
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: List Files
-        run: ls -al .
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Run Script
         run: |
-          sh /home/runner/work/example-contracts/scripts/test/omnichain_swap.sh
+          sh ${{ github.workspace }}/scripts/test/${{ github.event.inputs.scriptName }}.sh
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
