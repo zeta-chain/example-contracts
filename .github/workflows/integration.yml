@@ -52,6 +52,6 @@ jobs:
         run: |
           echo $PWD
           ls
-          ${{ github.workspace }}/scripts/test/${{ github.event.inputs.scriptName }}.sh
+          sh ${{ github.workspace }}/scripts/test/${{ github.event.inputs.scriptName }}.sh
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
