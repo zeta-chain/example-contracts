@@ -31,15 +31,17 @@ contract Swap is zContract {
         bytes calldata message
     ) external virtual override onlySystem {
         address targetTokenAddress;
-        address recipientAddress;
+        bytes memory recipientAddress;
 
         if (context.chainID == BITCOIN) {
             targetTokenAddress = BytesHelperLib.bytesToAddress(message, 0);
-            recipientAddress = BytesHelperLib.bytesToAddress(message, 20);
+            recipientAddress = abi.encodePacked(
+                BytesHelperLib.bytesToAddress(message, 20)
+            );
         } else {
-            (address targetToken, address recipient) = abi.decode(
+            (address targetToken, bytes memory recipient) = abi.decode(
                 message,
-                (address, address)
+                (address, bytes)
             );
             targetTokenAddress = targetToken;
             recipientAddress = recipient;
@@ -63,7 +65,7 @@ contract Swap is zContract {
 
         IZRC20(targetTokenAddress).approve(targetTokenAddress, gasFee);
         IZRC20(targetTokenAddress).withdraw(
-            abi.encodePacked(recipientAddress),
+            recipientAddress,
             outputAmount - gasFee
         );
     }
