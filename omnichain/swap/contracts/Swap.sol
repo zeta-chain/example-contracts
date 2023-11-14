@@ -11,6 +11,7 @@ contract Swap is zContract {
     uint256 constant BITCOIN = 18332;
     error WrongGasContract();
     error NotEnoughToPayGasFee();
+    event TransferRequested(bytes recipient);
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
@@ -24,6 +25,19 @@ contract Swap is zContract {
         _;
     }
 
+    function bytesToAddress(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (address output) {
+        bytes memory b = new bytes(20);
+        for (uint256 i = 0; i < 20; i++) {
+            b[i] = data[i + offset];
+        }
+        assembly {
+            output := mload(add(b, 20))
+        }
+    }
+
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
@@ -32,17 +46,18 @@ contract Swap is zContract {
     ) external virtual override onlySystem {
         address targetTokenAddress;
         bytes memory recipientAddress;
+        uint8 action;
 
         if (context.chainID == BITCOIN) {
-            targetTokenAddress = BytesHelperLib.bytesToAddress(message, 0);
+            action = uint8(message[0]);
+            targetTokenAddress = BytesHelperLib.bytesToAddress(message, 1);
             recipientAddress = abi.encodePacked(
-                BytesHelperLib.bytesToAddress(message, 20)
+                BytesHelperLib.bytesToAddress(message, 21)
             );
         } else {
-            (address targetToken, bytes memory recipient) = abi.decode(
-                message,
-                (address, bytes)
-            );
+            (uint8 code, address targetToken, bytes memory recipient) = abi
+                .decode(message, (uint8, address, bytes));
+            action = code;
             targetTokenAddress = targetToken;
             recipientAddress = recipient;
         }
@@ -63,10 +78,22 @@ contract Swap is zContract {
         if (gasZRC20 != targetTokenAddress) revert WrongGasContract();
         if (gasFee >= outputAmount) revert NotEnoughToPayGasFee();
 
-        IZRC20(targetTokenAddress).approve(targetTokenAddress, gasFee);
-        IZRC20(targetTokenAddress).withdraw(
-            recipientAddress,
-            outputAmount - gasFee
-        );
+        if (action == 1) {
+            IZRC20(targetTokenAddress).approve(targetTokenAddress, gasFee);
+            IZRC20(targetTokenAddress).withdraw(
+                recipientAddress,
+                outputAmount - gasFee
+            );
+        } else if (action == 2) {
+            IZRC20(targetTokenAddress).approve(
+                targetTokenAddress,
+                outputAmount
+            );
+
+            IZRC20(targetTokenAddress).transfer(
+                bytesToAddress(recipientAddress, 0),
+                outputAmount
+            );
+        }
     }
 }
