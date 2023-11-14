@@ -3,21 +3,28 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
 import { getAddress } from "@zetachain/protocol-contracts";
 import { prepareData } from "@zetachain/toolkit/helpers";
-import { BigNumber } from "@ethersproject/bignumber";
+import bech32 from "bech32";
+import { utils } from "ethers";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
 
-  const targetChainID = hre.config.networks[args.destination]?.chainId;
-  if (targetChainID === undefined) {
-    throw new Error("Invalid destination network");
+  let recipient;
+  try {
+    if (bech32.decode(args.recipient)) {
+      recipient = utils.solidityPack(
+        ["bytes"],
+        [utils.toUtf8Bytes(args.recipient)]
+      );
+    }
+  } catch (e) {
+    recipient = args.recipient;
   }
-  const minAmountOut = BigNumber.from("0");
 
   const data = prepareData(
     args.contract,
-    ["uint32", "address", "uint256"],
-    [targetChainID, args.recipient, minAmountOut]
+    ["uint8", "address", "bytes"],
+    [args.action, args.targetToken, recipient]
   );
   const to = getAddress("tss", hre.network.name);
   const value = parseEther(args.amount);
@@ -30,14 +37,15 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     console.log(`🔑 Using account: ${signer.address}\n`);
 
     console.log(`🚀 Successfully broadcasted a token transfer transaction on ${hre.network.name} network.
-📝 Transaction hash: ${tx.hash}
-`);
+  📝 Transaction hash: ${tx.hash}
+  `);
   }
 };
 
 task("interact", "Interact with the contract", main)
   .addParam("contract", "The address of the withdraw contract on ZetaChain")
   .addParam("amount", "Amount of tokens to send")
-  .addParam("recipient")
   .addFlag("json", "Output in JSON")
-  .addParam("destination");
+  .addParam("targetToken")
+  .addParam("recipient")
+  .addParam("action");
