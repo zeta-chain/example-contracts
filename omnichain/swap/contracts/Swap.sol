@@ -12,6 +12,14 @@ contract Swap is zContract {
     error WrongGasContract();
     error NotEnoughToPayGasFee();
 
+    // Define the SwapCompleted event
+    event SwapCompleted(
+        address indexed zrc20,
+        address indexed targetToken,
+        uint256 amount,
+        bytes recipient
+    );
+
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
     }
@@ -67,6 +75,14 @@ contract Swap is zContract {
         IZRC20(targetTokenAddress).withdraw(
             recipientAddress,
             outputAmount - gasFee
+        );
+
+        // Emit the SwapCompleted event
+        emit SwapCompleted(
+            zrc20,
+            targetTokenAddress,
+            outputAmount,
+            recipientAddress
         );
     }
 }

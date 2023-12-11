@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "name": "swap",
+  "abis": {
+    "swap": {
+      "path": "artifacts/contracts/Swap.sol/Swap.json"
+    }
+  },
+  "chains": [
+    "zetachain-testnet"
+  ],
+  "instances": [
+    {
+      "abi": "swap",
+      "address": "0x507D87b4Ce1Afd0C33C3AF2Ff0963d2d29BeE642",
+      "chain": "zetachain-testnet",
+      "startBlock": 2773831
+    }
+  ]
+}
