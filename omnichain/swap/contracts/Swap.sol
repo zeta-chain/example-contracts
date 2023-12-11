@@ -30,27 +30,22 @@ contract Swap is zContract {
         uint256 amount,
         bytes calldata message
     ) external virtual override onlySystem {
-        uint32 targetChainID;
-        address recipient;
-        uint256 minAmountOut;
+        address targetTokenAddress;
+        bytes memory recipientAddress;
 
         if (context.chainID == BITCOIN) {
-            targetChainID = BytesHelperLib.bytesToUint32(message, 0);
-            recipient = BytesHelperLib.bytesToAddress(message, 4);
+            targetTokenAddress = BytesHelperLib.bytesToAddress(message, 0);
+            recipientAddress = abi.encodePacked(
+                BytesHelperLib.bytesToAddress(message, 20)
+            );
         } else {
-            (
-                uint32 targetChainID_,
-                address recipient_,
-                uint256 minAmountOut_
-            ) = abi.decode(message, (uint32, address, uint256));
-            targetChainID = targetChainID_;
-            recipient = recipient_;
-            minAmountOut = minAmountOut_;
+            (address targetToken, bytes memory recipient) = abi.decode(
+                message,
+                (address, bytes)
+            );
+            targetTokenAddress = targetToken;
+            recipientAddress = recipient;
         }
-
-        address targetZRC20 = systemContract.gasCoinZRC20ByChainId(
-            targetChainID
-        );
 
         uint256 outputAmount = SwapHelperLib._doSwap(
             systemContract.wZetaContractAddress(),
@@ -58,19 +53,19 @@ contract Swap is zContract {
             systemContract.uniswapv2Router02Address(),
             zrc20,
             amount,
-            targetZRC20,
-            minAmountOut
+            targetTokenAddress,
+            0
         );
 
-        (address gasZRC20, uint256 gasFee) = IZRC20(targetZRC20)
+        (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
             .withdrawGasFee();
 
-        if (gasZRC20 != targetZRC20) revert WrongGasContract();
+        if (gasZRC20 != targetTokenAddress) revert WrongGasContract();
         if (gasFee >= outputAmount) revert NotEnoughToPayGasFee();
 
-        IZRC20(targetZRC20).approve(targetZRC20, gasFee);
-        IZRC20(targetZRC20).withdraw(
-            abi.encodePacked(recipient),
+        IZRC20(targetTokenAddress).approve(targetTokenAddress, gasFee);
+        IZRC20(targetTokenAddress).withdraw(
+            recipientAddress,
             outputAmount - gasFee
         );
     }
