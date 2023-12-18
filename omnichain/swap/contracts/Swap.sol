@@ -11,8 +11,6 @@ contract Swap is zContract {
     uint256 constant BITCOIN = 18332;
     error WrongGasContract();
     error NotEnoughToPayGasFee();
-    uint256 public inputForGas;
-    uint256 public outputAmount;
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
@@ -52,27 +50,28 @@ contract Swap is zContract {
         (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
             .withdrawGasFee();
 
-        inputForGas = SwapHelperLib.swapTokensForExactTokens(
+        SwapHelperLib.swapTokensForExactTokens(
             systemContract.wZetaContractAddress(),
             systemContract.uniswapv2FactoryAddress(),
             systemContract.uniswapv2Router02Address(),
             zrc20,
             gasFee,
             gasZRC20,
-            amount
+            type(uint256).max
         );
 
-        outputAmount = SwapHelperLib._doSwap(
+        uint256 tokenBalance = IZRC20(zrc20).balanceOf(address(this));
+        uint256 outputAmount = SwapHelperLib._doSwap(
             systemContract.wZetaContractAddress(),
             systemContract.uniswapv2FactoryAddress(),
             systemContract.uniswapv2Router02Address(),
             zrc20,
-            amount - inputForGas,
+            tokenBalance,
             targetTokenAddress,
             0
         );
 
-        IZRC20(gasZRC20).approve(gasZRC20, gasFee);
-        // IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
+        IZRC20(gasZRC20).approve(targetTokenAddress, gasFee);
+        IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
     }
 }
