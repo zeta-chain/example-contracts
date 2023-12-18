@@ -50,23 +50,22 @@ contract Swap is zContract {
         (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
             .withdrawGasFee();
 
-        SwapHelperLib.swapTokensForExactTokens(
+        uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
             systemContract.wZetaContractAddress(),
             systemContract.uniswapv2FactoryAddress(),
             systemContract.uniswapv2Router02Address(),
             zrc20,
             gasFee,
             gasZRC20,
-            type(uint256).max
+            amount
         );
 
-        uint256 tokenBalance = IZRC20(zrc20).balanceOf(address(this));
         uint256 outputAmount = SwapHelperLib._doSwap(
             systemContract.wZetaContractAddress(),
             systemContract.uniswapv2FactoryAddress(),
             systemContract.uniswapv2Router02Address(),
             zrc20,
-            tokenBalance,
+            amount - inputForGas,
             targetTokenAddress,
             0
         );
