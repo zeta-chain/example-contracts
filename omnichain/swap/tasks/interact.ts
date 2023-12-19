@@ -1,12 +1,12 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { parseEther, parseUnits } from "@ethersproject/units";
+import { parseUnits } from "@ethersproject/units";
 import { getAddress } from "@zetachain/protocol-contracts";
 import ERC20Custody from "@zetachain/protocol-contracts/abi/evm/ERC20Custody.sol/ERC20Custody.json";
 import { prepareData } from "@zetachain/toolkit/helpers";
-import bech32 from "bech32";
 import { utils, ethers } from "ethers";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
+import bech32 from "bech32";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -66,7 +66,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 task("interact", "Interact with the contract", main)
   .addParam("contract", "The address of the withdraw contract on ZetaChain")
   .addParam("amount", "Amount of tokens to send")
+  .addOptionalParam("token", "The address of the token to send")
   .addFlag("json", "Output in JSON")
   .addParam("targetToken")
-  .addOptionalParam("token", "The address of the token to send")
   .addParam("recipient");

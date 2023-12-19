@@ -9,8 +9,6 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 contract Swap is zContract {
     SystemContract public immutable systemContract;
     uint256 constant BITCOIN = 18332;
-    error WrongGasContract();
-    error NotEnoughToPayGasFee();
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
