@@ -9,8 +9,6 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 contract Swap is zContract {
     SystemContract public immutable systemContract;
     uint256 constant BITCOIN = 18332;
-    error WrongGasContract();
-    error NotEnoughToPayGasFee();
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
@@ -47,26 +45,30 @@ contract Swap is zContract {
             recipientAddress = recipient;
         }
 
+        (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
+            .withdrawGasFee();
+
+        uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
+            systemContract.wZetaContractAddress(),
+            systemContract.uniswapv2FactoryAddress(),
+            systemContract.uniswapv2Router02Address(),
+            zrc20,
+            gasFee,
+            gasZRC20,
+            amount
+        );
+
         uint256 outputAmount = SwapHelperLib._doSwap(
             systemContract.wZetaContractAddress(),
             systemContract.uniswapv2FactoryAddress(),
             systemContract.uniswapv2Router02Address(),
             zrc20,
-            amount,
+            amount - inputForGas,
             targetTokenAddress,
             0
         );
 
-        (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
-            .withdrawGasFee();
-
-        if (gasZRC20 != targetTokenAddress) revert WrongGasContract();
-        if (gasFee >= outputAmount) revert NotEnoughToPayGasFee();
-
-        IZRC20(targetTokenAddress).approve(targetTokenAddress, gasFee);
-        IZRC20(targetTokenAddress).withdraw(
-            recipientAddress,
-            outputAmount - gasFee
-        );
+        IZRC20(gasZRC20).approve(targetTokenAddress, gasFee);
+        IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
     }
 }
