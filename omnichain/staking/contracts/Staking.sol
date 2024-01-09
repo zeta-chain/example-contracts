@@ -13,7 +13,6 @@ contract Staking is ERC20, zContract {
 
     uint256 public rewardRate = 1;
 
-    error SenderNotSystemContract();
     error WrongChain(uint256 chainID);
     error UnknownAction(uint8 action);
     error Overflow();
@@ -22,10 +21,9 @@ contract Staking is ERC20, zContract {
     error NotAuthorized();
     error NoRewardsToClaim();
 
-    mapping(address => uint256) public stake;
-    mapping(address => bytes) public withdraw;
-    mapping(address => address) public beneficiary;
-    mapping(address => uint256) public lastStakeTime;
+    mapping(bytes => uint256) public stakes;
+    mapping(bytes => address) public beneficiary;
+    mapping(bytes => uint256) public lastStakeTime;
 
     constructor(
         string memory name_,
@@ -55,48 +53,50 @@ contract Staking is ERC20, zContract {
             revert WrongChain(context.chainID);
         }
 
-        address staker = BytesHelperLib.bytesToAddress(context.origin, 0);
-
         uint8 action = chainID == BITCOIN
             ? uint8(message[0])
             : abi.decode(message, (uint8));
 
         if (action == 1) {
-            stakeZRC(staker, amount);
+            stake(context.origin, amount, message);
         } else if (action == 2) {
-            unstakeZRC(staker);
+            unstake(context.origin);
         } else if (action == 3) {
-            setBeneficiary(staker, message);
-        } else if (action == 4) {
-            setWithdraw(staker, message, context.origin);
+            updateBeneficiary(context.origin, message);
         } else {
             revert UnknownAction(action);
         }
     }
 
-    function stakeZRC(address staker, uint256 amount) internal {
-        stake[staker] += amount;
-        if (stake[staker] < amount) revert Overflow();
+    function stake(
+        bytes memory staker,
+        uint256 amount,
+        bytes calldata message
+    ) internal {
+        updateBeneficiary(staker, message);
+
+        stakes[staker] += amount;
+        if (stakes[staker] < amount) revert Overflow();
 
         lastStakeTime[staker] = block.timestamp;
         updateRewards(staker);
     }
 
-    function updateRewards(address staker) internal {
+    function updateRewards(bytes memory staker) internal {
         uint256 rewardAmount = queryRewards(staker);
 
         _mint(beneficiary[staker], rewardAmount);
         lastStakeTime[staker] = block.timestamp;
     }
 
-    function queryRewards(address staker) public view returns (uint256) {
+    function queryRewards(bytes memory staker) public view returns (uint256) {
         uint256 timeDifference = block.timestamp - lastStakeTime[staker];
-        uint256 rewardAmount = timeDifference * stake[staker] * rewardRate;
+        uint256 rewardAmount = timeDifference * stakes[staker] * rewardRate;
         return rewardAmount;
     }
 
-    function unstakeZRC(address staker) internal {
-        uint256 amount = stake[staker];
+    function unstake(bytes memory staker) internal {
+        uint256 amount = stakes[staker];
 
         updateRewards(staker);
 
@@ -105,19 +105,20 @@ contract Staking is ERC20, zContract {
 
         if (amount < gasFee) revert WrongAmount();
 
-        bytes memory recipient = withdraw[staker];
-
-        stake[staker] = 0;
+        stakes[staker] = 0;
 
         IZRC20(zrc20).approve(zrc20, gasFee);
-        IZRC20(zrc20).withdraw(recipient, amount - gasFee);
+        IZRC20(zrc20).withdraw(staker, amount - gasFee);
 
-        if (stake[staker] > amount) revert Underflow();
+        if (stakes[staker] > amount) revert Underflow();
 
         lastStakeTime[staker] = block.timestamp;
     }
 
-    function setBeneficiary(address staker, bytes calldata message) internal {
+    function updateBeneficiary(
+        bytes memory staker,
+        bytes calldata message
+    ) internal {
         address beneficiaryAddress;
         if (chainID == BITCOIN) {
             beneficiaryAddress = BytesHelperLib.bytesToAddress(message, 1);
@@ -127,33 +128,7 @@ contract Staking is ERC20, zContract {
         beneficiary[staker] = beneficiaryAddress;
     }
 
-    function setWithdraw(
-        address staker,
-        bytes calldata message,
-        bytes memory origin
-    ) internal {
-        bytes memory withdrawAddress;
-        if (chainID == BITCOIN) {
-            withdrawAddress = bytesToBech32Bytes(message, 1);
-        } else {
-            withdrawAddress = origin;
-        }
-        withdraw[staker] = withdrawAddress;
-    }
-
-    function bytesToBech32Bytes(
-        bytes calldata data,
-        uint256 offset
-    ) internal pure returns (bytes memory) {
-        bytes memory bech32Bytes = new bytes(42);
-        for (uint i = 0; i < 42; i++) {
-            bech32Bytes[i] = data[i + offset];
-        }
-
-        return bech32Bytes;
-    }
-
-    function claimRewards(address staker) external {
+    function claimRewards(bytes memory staker) external {
         if (beneficiary[staker] != msg.sender) revert NotAuthorized();
         uint256 rewardAmount = queryRewards(staker);
         if (rewardAmount <= 0) revert NoRewardsToClaim();

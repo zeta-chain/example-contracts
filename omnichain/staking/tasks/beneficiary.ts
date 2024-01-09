@@ -28,7 +28,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "set-beneficiary",
+  "update-beneficiary",
   "Set the address on ZetaChain which will be allowed to claim staking rewards",
   main
 )
