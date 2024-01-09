@@ -78,11 +78,11 @@ contract Staking is ERC20, zContract {
         stakes[staker] += amount;
         if (stakes[staker] < amount) revert Overflow();
 
-        lastStakeTime[staker] = block.timestamp;
         updateRewards(staker);
     }
 
     function updateRewards(bytes memory staker) internal {
+        if (lastStakeTime[staker] == 0) lastStakeTime[staker] = block.timestamp;
         uint256 rewardAmount = queryRewards(staker);
 
         _mint(beneficiary[staker], rewardAmount);
