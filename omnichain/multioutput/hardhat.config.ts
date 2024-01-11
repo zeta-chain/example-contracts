@@ -3,6 +3,7 @@ import "./tasks/deploy";
 import "./tasks/destination";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
+import "@nomicfoundation/hardhat-foundry";
 
 import { getHardhatConfigNetworks } from "@zetachain/networks";
 import { HardhatUserConfig } from "hardhat/config";

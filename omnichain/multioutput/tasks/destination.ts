@@ -6,18 +6,18 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   console.log(`🔑 Using account: ${signer.address}\n`);
 
-  const destinationToken = getAddress("zrc20" as any, args.destination as any);
+  const destinationTokens = args.destination.split(",");
   const ZetaMultiOutput = await hre.ethers.getContractAt(
     "MultiOutput",
     args.contract
   );
 
-  const tx = await ZetaMultiOutput.registerDestinationToken(destinationToken);
+  const tx = await ZetaMultiOutput.registerDestinationToken(destinationTokens);
 
   await tx.wait();
 
   console.log(
-    `Registered token ${destinationToken} as a destination in the contract ${args.contract}`
+    `Registered token ${destinationTokens} as destination tokens in the contract ${args.contract}`
   );
 };
 

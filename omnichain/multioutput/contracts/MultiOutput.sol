@@ -10,12 +10,16 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract MultiOutput is zContract, Ownable {
     error SenderNotSystemContract();
     error NoAvailableTransfers();
+    error InvalidRecipient();
 
     event DestinationRegistered(address);
-    event Withdrawal(address, uint256, address);
+    event Withdrawal(address, uint256, bytes);
 
     address[] public destinationTokens;
     SystemContract public immutable systemContract;
+
+    uint256 constant BITCOIN = 18332;
+    address constant BITCOIN_ZRC20_ADDRESS = 0x65a45c57636f9BcCeD4fe193A602008578BcA90b;
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
@@ -30,10 +34,12 @@ contract MultiOutput is zContract, Ownable {
     }
 
     function registerDestinationToken(
-        address destinationToken
+        address[] calldata destinationToken
     ) external onlyOwner {
-        destinationTokens.push(destinationToken);
-        emit DestinationRegistered(destinationToken);
+        for (uint256 i; i < destinationToken.length; i++) {
+            destinationTokens.push(destinationToken[i]);
+            emit DestinationRegistered(destinationToken[i]);
+        }
     }
 
     function _getTotalTransfers(address zrc20) internal view returns (uint256) {
@@ -52,13 +58,15 @@ contract MultiOutput is zContract, Ownable {
         uint256 amount,
         bytes calldata message
     ) external virtual override onlySystem {
-        address recipient = abi.decode(message, (address));
-        if (_getTotalTransfers(zrc20) == 0) revert NoAvailableTransfers();
+        (address evmRecipient, bytes memory btcRecipient) = parseMessage(context.chainID, message);
 
-        uint256 amountToTransfer = amount / _getTotalTransfers(zrc20);
+        uint256 totalTransfers = _getTotalTransfers(zrc20);
+        if (totalTransfers == 0) revert NoAvailableTransfers();
+
+        uint256 amountToTransfer = amount / totalTransfers;
         uint256 leftOver = amount -
             amountToTransfer *
-            _getTotalTransfers(zrc20);
+            totalTransfers;
 
         uint256 lastTransferIndex = destinationTokens[
             destinationTokens.length - 1
@@ -74,21 +82,67 @@ contract MultiOutput is zContract, Ownable {
                 amountToTransfer += leftOver;
             }
 
-            uint256 outputAmount = SwapHelperLib._doSwap(
-                systemContract.wZetaContractAddress(),
-                systemContract.uniswapv2FactoryAddress(),
-                systemContract.uniswapv2Router02Address(),
-                zrc20,
-                amountToTransfer,
-                targetZRC20,
-                0
+            bytes memory recipient = abi.encodePacked(
+                BytesHelperLib.addressToBytes(evmRecipient)
             );
-            SwapHelperLib._doWithdrawal(
-                targetZRC20,
-                outputAmount,
-                BytesHelperLib.addressToBytes(recipient)
-            );
-            emit Withdrawal(targetZRC20, outputAmount, recipient);
+            
+            if (targetZRC20 == BITCOIN_ZRC20_ADDRESS) {
+                if (btcRecipient.length == 0) revert InvalidRecipient();
+                recipient = abi.encodePacked(btcRecipient);
+            }
+
+            _doSwapAndWithdraw(zrc20, amountToTransfer, targetZRC20, recipient);
         }
     }
+
+    function _doSwapAndWithdraw(
+        address zrc20,
+        uint256 amountToTransfer,
+        address targetZRC20,
+        bytes memory recipient
+    ) internal {
+        uint256 outputAmount = SwapHelperLib._doSwap(
+            systemContract.wZetaContractAddress(),
+            systemContract.uniswapv2FactoryAddress(),
+            systemContract.uniswapv2Router02Address(),
+            zrc20,
+            amountToTransfer,
+            targetZRC20,
+            0
+        );
+        SwapHelperLib._doWithdrawal(
+            targetZRC20,
+            outputAmount,
+            bytes32(recipient)
+        );
+        emit Withdrawal(targetZRC20, outputAmount, recipient);
+    }
+
+    function parseMessage(
+        uint256 chainID,
+        bytes calldata message)
+        public
+        pure
+        returns (address, bytes memory)
+    {
+        address evmRecipient;
+        bytes memory btcRecipient;
+        if (chainID == BITCOIN) {
+            evmRecipient = BytesHelperLib.bytesToAddress(message, 0);
+        } else {
+            if (message.length > 32) {
+                (address evmAddress, bytes memory btcAddress) = abi.decode(
+                    message,
+                    (address, bytes)
+                );
+                evmRecipient = evmAddress;
+                btcRecipient = btcAddress;
+            } else {
+                evmRecipient = abi.decode(message, (address));
+            }
+        }
+
+        return (evmRecipient, btcRecipient);
+    }
+        
 }
