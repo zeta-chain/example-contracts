@@ -12,10 +12,8 @@ contract MultiOutput is zContract, Ownable {
     error NoAvailableTransfers();
     error InvalidRecipient();
 
-    event DestinationRegistered(address);
     event Withdrawal(address, uint256, bytes);
 
-    address[] public destinationTokens;
     SystemContract public immutable systemContract;
 
     uint256 constant BITCOIN = 18332;
@@ -33,34 +31,19 @@ contract MultiOutput is zContract, Ownable {
         _;
     }
 
-    function registerDestinationToken(
-        address[] calldata destinationToken
-    ) external onlyOwner {
-        for (uint256 i; i < destinationToken.length; i++) {
-            destinationTokens.push(destinationToken[i]);
-            emit DestinationRegistered(destinationToken[i]);
-        }
-    }
-
-    function _getTotalTransfers(address zrc20) internal view returns (uint256) {
-        uint256 total = 0;
-        for (uint256 i; i < destinationTokens.length; i++) {
-            if (destinationTokens[i] == zrc20) continue;
-            total++;
-        }
-
-        return total;
-    }
-
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external virtual override onlySystem {
-        (address evmRecipient, bytes memory btcRecipient) = parseMessage(context.chainID, message);
+        (
+            address evmRecipient, 
+            bytes memory btcRecipient, 
+            address[] memory destinationTokens
+        ) = parseMessage(context.chainID, message);
 
-        uint256 totalTransfers = _getTotalTransfers(zrc20);
+        uint256 totalTransfers = destinationTokens.length;
         if (totalTransfers == 0) revert NoAvailableTransfers();
 
         uint256 amountToTransfer = amount / totalTransfers;
@@ -123,26 +106,46 @@ contract MultiOutput is zContract, Ownable {
         bytes calldata message)
         public
         pure
-        returns (address, bytes memory)
+        returns (address, bytes memory, address[] memory)
     {
         address evmRecipient;
         bytes memory btcRecipient;
+        address[] memory destinationTokens;
         if (chainID == BITCOIN) {
             evmRecipient = BytesHelperLib.bytesToAddress(message, 0);
-        } else {
-            if (message.length > 32) {
-                (address evmAddress, bytes memory btcAddress) = abi.decode(
+            uint256 numTokens = message.length / 20 - 1;
+            destinationTokens = new address[](numTokens);
+            for (uint256 i = 0; i < numTokens; i++) {
+                destinationTokens[i] = BytesHelperLib.bytesToAddress(
                     message,
-                    (address, bytes)
+                    20 + i * 20
                 );
-                evmRecipient = evmAddress;
-                btcRecipient = btcAddress;
-            } else {
-                evmRecipient = abi.decode(message, (address));
+            }
+        } else {
+            (address evmAddress, bytes memory btcAddress, bytes memory targetTokens) = abi.decode(
+                message,
+                (address, bytes, bytes)
+            );
+
+            btcRecipient = btcAddress;
+            evmRecipient = evmAddress;
+
+            uint256 numTokens = targetTokens.length / 32; 
+            destinationTokens = new address[](numTokens);
+            for (uint256 i = 0; i < numTokens; i++) {
+                destinationTokens[i] = _bytesMemoryToAddress(targetTokens, i * 32);
             }
         }
 
-        return (evmRecipient, btcRecipient);
+        return (evmRecipient, btcRecipient, destinationTokens);
     }
-        
+
+    function _bytesMemoryToAddress(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (address output) {
+        assembly {
+            output := mload(add(add(data, offset), 32))
+        }
+    }
 }

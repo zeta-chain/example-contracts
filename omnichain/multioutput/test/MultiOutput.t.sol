@@ -4,6 +4,8 @@ pragma solidity 0.8.7;
 import {Test, console2} from "forge-std/Test.sol";
 import {MultiOutput} from "../contracts/MultiOutput.sol";
 
+import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
+
 contract MultiOutputTest is Test {
   uint256 constant BITCOIN = 18332;
   MultiOutput multiOutput;
@@ -14,45 +16,57 @@ contract MultiOutputTest is Test {
 
   function testParseMessageFromEVM() public {
     address evmAddress = address(0x1234567890123456789012345678901234567890);
+    string memory btcAddress = "bc1q2c3xu66javgjpfavgwm32g9wqcz4zsv0ynq77z";
+    address[] memory tokens = new address[](2);
+    tokens[0] = 0x1234567890123456789012345678901234567891;
+    tokens[1] = 0x1234567890123456789012345678901234567892;
+    bytes memory tokensBytes = abi.encode(
+      tokens[0],
+      tokens[1]
+    );
+
     bytes memory message = abi.encode(
       evmAddress,
-      "bc1q2c3xu66javgjpfavgwm32g9wqcz4zsv0ynq77z"
+      bytes(btcAddress),
+      tokensBytes
     );
     
-    (address evmRecipient, bytes memory btcRecipient) = multiOutput.parseMessage(0, message);
+    (address evmRecipient, bytes memory btcRecipient, address[] memory destinationTokens) 
+      = multiOutput.parseMessage(0, message);
 
     assertEq(evmRecipient, evmAddress);
-    assertEq(string(btcRecipient), "bc1q2c3xu66javgjpfavgwm32g9wqcz4zsv0ynq77z");
-  }
+    assertEq(string(btcRecipient), btcAddress);
 
-  function testParseMessageFromEVMWithoutBitcoin() public {
-    address evmAddress = address(0x1234567890123456789012345678901234567890);
-    bytes memory message = abi.encode(
-      evmAddress
-    );
-    
-    (address evmRecipient, ) = multiOutput.parseMessage(0, message);
+    for (uint256 i = 0; i < destinationTokens.length; i++) {
+      assertEq(destinationTokens[i], tokens[i]);
+    }
 
-    assertEq(evmRecipient, evmAddress);
   }
 
   function testParseMessageFromBitcoin() public {
     address evmAddress = address(0x1234567890123456789012345678901234567890);
-    bytes memory message = abi.encodePacked(
-      evmAddress
+    
+    address[] memory tokens = new address[](2);
+    tokens[0] = 0x1234567890123456789012345678901234567891;
+    tokens[1] = 0x1234567890123456789012345678901234567892;
+
+    bytes memory tokensBytes = abi.encodePacked(
+      tokens[0],
+      tokens[1]
     );
     
-    (address evmRecipient, ) = multiOutput.parseMessage(BITCOIN, message);
+    bytes memory message = abi.encodePacked(
+      evmAddress,
+      tokensBytes
+    );
+    
+    (address evmRecipient, bytes memory btcRecipient, address[] memory destinationTokens) 
+      = multiOutput.parseMessage(BITCOIN, message);
 
     assertEq(evmRecipient, evmAddress);
-
+    assertEq(btcRecipient.length, 0);
+    for (uint256 i = 0; i < destinationTokens.length; i++) {
+      assertEq(destinationTokens[i], tokens[i]);
+    }
   }
-
-  function testRegisterDestinationToken() public {
-    address[] memory registerAddress = new address[](1);
-    registerAddress[0] = 0x609A560dBB0d505CA58291cf7161B3639e2CC747;
-    multiOutput.registerDestinationToken(registerAddress);
-    assertEq(multiOutput.destinationTokens(0), registerAddress[0]);
-  }
-
 }

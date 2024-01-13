@@ -3,43 +3,34 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
 import { getAddress } from "@zetachain/protocol-contracts";
 import { prepareData } from "@zetachain/toolkit/helpers";
-import { utils } from "ethers";
+import { utils, ethers } from "ethers";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
 
-  if (args.targetToken) {
-    const destinationTokens = args.targetToken.split(",");
-    const ZetaMultiOutput = await hre.ethers.getContractAt(
-      "MultiOutput",
-      args.contract
-    );
-    const tx = await ZetaMultiOutput.registerDestinationToken(
-      destinationTokens
-    );
+  const destinationTokens = args.targetToken.split(",");
 
-    await tx.wait();
-
-    console.log(
-      `Registered tokens ${destinationTokens} as destination tokens in the contract ${args.contract}`
-    );
-  }
-
-  let bitcoinAddress;
+  let bitcoinAddress = "0x01";
   let data;
   if (args.btcRecipient) {
-    bitcoinAddress = utils.solidityPack(
-      ["bytes"],
-      [utils.toUtf8Bytes(args.btcRecipient)]
-    );
-    data = prepareData(
-      args.contract,
-      ["address", "bytes"],
-      [args.recipient, bitcoinAddress]
-    );
-  } else {
-    data = prepareData(args.contract, ["address"], [args.recipient]);
+    bitcoinAddress = args.btcRecipient;
   }
+
+  const bitcoinAddressBytes = utils.solidityPack(
+    ["bytes"],
+    [utils.toUtf8Bytes(args.btcRecipient)]
+  );
+
+  const tokensBytes = ethers.utils.concat(
+    destinationTokens.map(
+      address => utils.defaultAbiCoder.encode(['address'], [address])
+      ));
+
+  data = prepareData(
+    args.contract,
+    ["address", "bytes", "bytes"],
+    [args.recipient, bitcoinAddressBytes, tokensBytes]
+  );
 
   const to = getAddress("tss", hre.network.name);
   const value = parseEther(args.amount);
@@ -63,4 +54,4 @@ task("interact", "Interact with the contract", main)
   .addFlag("json", "Output in JSON")
   .addParam("recipient", "The evm address to send to")
   .addOptionalParam("btcRecipient", "The bitcoin address to send to")
-  .addOptionalParam("targetToken", "The Address of the token to send to");
+  .addParam("targetToken", "The Address of the token to send to");
