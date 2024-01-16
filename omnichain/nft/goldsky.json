@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "name": "MyContract",
+  "abis": {
+    "MyContract": {
+      "path": "artifacts/contracts/MyContract.sol/MyContract.json"
+    }
+  },
+  "chains": [
+    "zetachain-testnet"
+  ],
+  "instances": [
+    {
+      "abi": "MyContract",
+      "address": "0x3d026bE559797557Fa215f9F7EB4e8BE89fD7d6f",
+      "chain": "zetachain-testnet",
+      "startBlock": 3175521
+    }
+  ]
+}
