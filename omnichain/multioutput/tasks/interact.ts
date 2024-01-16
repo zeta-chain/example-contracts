@@ -10,7 +10,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const destinationTokens = args.targetToken.split(",");
 
-  let bitcoinAddress = "0x01";
+  let bitcoinAddress = "";
   let data;
   if (args.btcRecipient) {
     bitcoinAddress = args.btcRecipient;
@@ -18,7 +18,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const bitcoinAddressBytes = utils.solidityPack(
     ["bytes"],
-    [utils.toUtf8Bytes(args.btcRecipient)]
+    [utils.toUtf8Bytes(bitcoinAddress)]
   );
 
   const tokensBytes = ethers.utils.concat(
