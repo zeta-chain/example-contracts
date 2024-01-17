@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 
-contract MyContract is zContract, ERC721 {
+contract NFT is zContract, ERC721 {
     uint256 constant BITCOIN = 18332;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;

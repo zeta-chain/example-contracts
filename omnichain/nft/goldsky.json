@@ -1,9 +1,9 @@
 {
   "version": "1",
-  "name": "MyContract",
+  "name": "NFT",
   "abis": {
-    "MyContract": {
-      "path": "artifacts/contracts/MyContract.sol/MyContract.json"
+    "NFT": {
+      "path": "artifacts/contracts/NFT.sol/NFT.json"
     }
   },
   "chains": [
@@ -11,7 +11,7 @@
   ],
   "instances": [
     {
-      "abi": "MyContract",
+      "abi": "NFT",
       "address": "0x7a984BD3ce37257e0124A3c0d25857df5E258Be2",
       "chain": "zetachain-testnet",
       "startBlock": 3241788
