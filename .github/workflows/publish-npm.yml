@@ -21,6 +21,9 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
+      - name: Build
+        run: yarn build
+        
       - name: Determine NPM Tag
         id: determine-npm-tag
         run: |
