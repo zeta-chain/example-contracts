@@ -1,0 +1,12 @@
+{
+  "name": "@zetachain/example-contracts",
+  "version": "0.0.0-set-on-publish",
+  "author": "ZetaChain",
+  "license": "MIT",
+  "files": [
+    "abi"
+  ],
+  "scripts": {
+    "build": "sh scripts/build.sh"
+  }
+}
