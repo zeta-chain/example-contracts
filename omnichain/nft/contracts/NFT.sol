@@ -4,20 +4,20 @@ pragma solidity 0.8.7;
 import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 
 contract NFT is zContract, ERC721 {
     uint256 constant BITCOIN = 18332;
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdCounter;
 
     SystemContract public immutable systemContract;
     mapping(uint256 => uint256) public tokenAmounts;
     mapping(uint256 => uint256) public tokenChains;
 
+    uint256 private _nextTokenId;
+
     constructor(address systemContractAddress) ERC721("MyNFT", "MNFT") {
         systemContract = SystemContract(systemContractAddress);
+        _nextTokenId = 0;
     }
 
     modifier onlySystem() {
@@ -50,11 +50,11 @@ contract NFT is zContract, ERC721 {
         uint256 chainId,
         uint256 amount
     ) private {
-        uint256 tokenId = _tokenIdCounter.current();
+        uint256 tokenId = _nextTokenId;
         _safeMint(recipient, tokenId);
         tokenChains[tokenId] = chainId;
         tokenAmounts[tokenId] = amount;
-        _tokenIdCounter.increment();
+        _nextTokenId++;
     }
 
     function burnNFT(uint256 tokenId, bytes memory recipient) public {

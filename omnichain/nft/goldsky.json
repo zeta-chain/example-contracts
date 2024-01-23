@@ -12,9 +12,9 @@
   "instances": [
     {
       "abi": "NFT",
-      "address": "0x7a984BD3ce37257e0124A3c0d25857df5E258Be2",
+      "address": "0x936b0724C849090907f9bDDB21b70Ff570E7e358",
       "chain": "zetachain-testnet",
-      "startBlock": 3241788
+      "startBlock": 3325386
     }
   ]
 }
