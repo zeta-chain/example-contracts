@@ -11,13 +11,15 @@ contract MultiOutput is zContract, Ownable {
     error SenderNotSystemContract();
     error NoAvailableTransfers();
     error InvalidRecipient();
+    error WrongGasContract();
+    error NotEnoughToPayGasFee();
+    error FetchingBTCZRC20Failed();
 
     event Withdrawal(address, uint256, bytes);
 
     SystemContract public immutable systemContract;
 
     uint256 constant BITCOIN = 18332;
-    address constant BITCOIN_ZRC20_ADDRESS = 0x65a45c57636f9BcCeD4fe193A602008578BcA90b;
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
@@ -37,6 +39,9 @@ contract MultiOutput is zContract, Ownable {
         uint256 amount,
         bytes calldata message
     ) external virtual override onlySystem {
+        address btcToken = systemContract.gasCoinZRC20ByChainId(BITCOIN);
+        if (btcToken == address(0)) revert FetchingBTCZRC20Failed();
+
         (
             address evmRecipient, 
             bytes memory btcRecipient, 
@@ -69,7 +74,7 @@ contract MultiOutput is zContract, Ownable {
                 BytesHelperLib.addressToBytes(evmRecipient)
             );
             
-            if (targetZRC20 == BITCOIN_ZRC20_ADDRESS) {
+            if (targetZRC20 == btcToken) {
                 if (btcRecipient.length == 0) revert InvalidRecipient();
                 recipient = abi.encodePacked(btcRecipient);
             }
@@ -93,10 +98,10 @@ contract MultiOutput is zContract, Ownable {
             targetZRC20,
             0
         );
-        SwapHelperLib._doWithdrawal(
+        _doWithdrawal(
             targetZRC20,
             outputAmount,
-            bytes32(recipient)
+            recipient
         );
         emit Withdrawal(targetZRC20, outputAmount, recipient);
     }
@@ -138,6 +143,24 @@ contract MultiOutput is zContract, Ownable {
         }
 
         return (evmRecipient, btcRecipient, destinationTokens);
+    }
+
+        function _doWithdrawal(
+        address targetZRC20,
+        uint256 amount,
+        bytes memory receipient
+    ) internal {
+        (address gasZRC20, uint256 gasFee) = IZRC20(targetZRC20)
+            .withdrawGasFee();
+
+        if (gasZRC20 != targetZRC20) revert WrongGasContract();
+        if (gasFee >= amount) revert NotEnoughToPayGasFee();
+
+        IZRC20(targetZRC20).approve(targetZRC20, gasFee);
+        IZRC20(targetZRC20).withdraw(
+            abi.encodePacked(receipient),
+            amount - gasFee
+        );
     }
 
     function _bytesMemoryToAddress(
