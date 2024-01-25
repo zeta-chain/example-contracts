@@ -1,6 +1,5 @@
 import "./tasks/interact";
 import "./tasks/deploy";
-import "./tasks/destination";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
 import "@nomicfoundation/hardhat-foundry";
