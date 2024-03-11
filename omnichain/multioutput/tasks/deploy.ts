@@ -34,7 +34,4 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("deploy", "Deploy the contract", main).addFlag(
-  "json",
-  "Output in JSON"
-);
+task("deploy", "Deploy the contract", main).addFlag("json", "Output in JSON");

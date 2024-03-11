@@ -43,8 +43,8 @@ contract MultiOutput is zContract, Ownable {
         if (btcToken == address(0)) revert FetchingBTCZRC20Failed();
 
         (
-            address evmRecipient, 
-            bytes memory btcRecipient, 
+            address evmRecipient,
+            bytes memory btcRecipient,
             address[] memory destinationTokens
         ) = parseMessage(context.chainID, message);
 
@@ -52,9 +52,7 @@ contract MultiOutput is zContract, Ownable {
         if (totalTransfers == 0) revert NoAvailableTransfers();
 
         uint256 amountToTransfer = amount / totalTransfers;
-        uint256 leftOver = amount -
-            amountToTransfer *
-            totalTransfers;
+        uint256 leftOver = amount - amountToTransfer * totalTransfers;
 
         uint256 lastTransferIndex = destinationTokens[
             destinationTokens.length - 1
@@ -73,7 +71,7 @@ contract MultiOutput is zContract, Ownable {
             bytes memory recipient = abi.encodePacked(
                 BytesHelperLib.addressToBytes(evmRecipient)
             );
-            
+
             if (targetZRC20 == btcToken) {
                 if (btcRecipient.length == 0) revert InvalidRecipient();
                 recipient = abi.encodePacked(btcRecipient);
@@ -91,7 +89,7 @@ contract MultiOutput is zContract, Ownable {
     ) internal {
         (address gasZRC20, uint256 gasFee) = IZRC20(targetZRC20)
             .withdrawGasFee();
-        
+
         uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
             systemContract.wZetaContractAddress(),
             systemContract.uniswapv2FactoryAddress(),
@@ -111,18 +109,15 @@ contract MultiOutput is zContract, Ownable {
             targetZRC20,
             0
         );
-        
+
         IZRC20(gasZRC20).approve(targetZRC20, gasFee);
         IZRC20(targetZRC20).withdraw(recipient, outputAmount);
     }
 
     function parseMessage(
         uint256 chainID,
-        bytes calldata message)
-        public
-        pure
-        returns (address, bytes memory, address[] memory)
-    {
+        bytes calldata message
+    ) public pure returns (address, bytes memory, address[] memory) {
         address evmRecipient;
         bytes memory btcRecipient;
         address[] memory destinationTokens;
@@ -137,18 +132,22 @@ contract MultiOutput is zContract, Ownable {
                 );
             }
         } else {
-            (address evmAddress, bytes memory btcAddress, bytes memory targetTokens) = abi.decode(
-                message,
-                (address, bytes, bytes)
-            );
+            (
+                address evmAddress,
+                bytes memory btcAddress,
+                bytes memory targetTokens
+            ) = abi.decode(message, (address, bytes, bytes));
 
             btcRecipient = btcAddress;
             evmRecipient = evmAddress;
 
-            uint256 numTokens = targetTokens.length / 32; 
+            uint256 numTokens = targetTokens.length / 32;
             destinationTokens = new address[](numTokens);
             for (uint256 i = 0; i < numTokens; i++) {
-                destinationTokens[i] = BytesHelperLib.bytesMemoryToAddress(targetTokens, i * 32);
+                destinationTokens[i] = BytesHelperLib.bytesMemoryToAddress(
+                    targetTokens,
+                    i * 32
+                );
             }
         }
 

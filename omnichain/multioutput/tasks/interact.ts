@@ -24,9 +24,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const tokensBytes = ethers.utils.concat(
-    destinationTokens.map(
-      address => utils.defaultAbiCoder.encode(['address'], [address])
-      ));
+    destinationTokens.map((address) =>
+      utils.defaultAbiCoder.encode(["address"], [address])
+    )
+  );
 
   data = prepareData(
     args.contract,
