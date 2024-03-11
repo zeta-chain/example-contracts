@@ -89,21 +89,31 @@ contract MultiOutput is zContract, Ownable {
         address targetZRC20,
         bytes memory recipient
     ) internal {
+        (address gasZRC20, uint256 gasFee) = IZRC20(targetZRC20)
+            .withdrawGasFee();
+        
+        uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
+            systemContract.wZetaContractAddress(),
+            systemContract.uniswapv2FactoryAddress(),
+            systemContract.uniswapv2Router02Address(),
+            zrc20,
+            gasFee,
+            gasZRC20,
+            amountToTransfer
+        );
+
         uint256 outputAmount = SwapHelperLib._doSwap(
             systemContract.wZetaContractAddress(),
             systemContract.uniswapv2FactoryAddress(),
             systemContract.uniswapv2Router02Address(),
             zrc20,
-            amountToTransfer,
+            amountToTransfer - inputForGas,
             targetZRC20,
             0
         );
-        _doWithdrawal(
-            targetZRC20,
-            outputAmount,
-            recipient
-        );
-        emit Withdrawal(targetZRC20, outputAmount, recipient);
+        
+        IZRC20(gasZRC20).approve(targetZRC20, gasFee);
+        IZRC20(targetZRC20).withdraw(recipient, outputAmount);
     }
 
     function parseMessage(
