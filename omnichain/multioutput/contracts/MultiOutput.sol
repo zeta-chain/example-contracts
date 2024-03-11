@@ -148,19 +148,10 @@ contract MultiOutput is zContract, Ownable {
             uint256 numTokens = targetTokens.length / 32; 
             destinationTokens = new address[](numTokens);
             for (uint256 i = 0; i < numTokens; i++) {
-                destinationTokens[i] = _bytesMemoryToAddress(targetTokens, i * 32);
+                destinationTokens[i] = BytesHelperLib.bytesMemoryToAddress(targetTokens, i * 32);
             }
         }
 
         return (evmRecipient, btcRecipient, destinationTokens);
-    }
-    
-    function _bytesMemoryToAddress(
-        bytes memory data,
-        uint256 offset
-    ) internal pure returns (address output) {
-        assembly {
-            output := mload(add(add(data, offset), 32))
-        }
     }
 }
