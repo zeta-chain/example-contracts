@@ -154,25 +154,7 @@ contract MultiOutput is zContract, Ownable {
 
         return (evmRecipient, btcRecipient, destinationTokens);
     }
-
-        function _doWithdrawal(
-        address targetZRC20,
-        uint256 amount,
-        bytes memory receipient
-    ) internal {
-        (address gasZRC20, uint256 gasFee) = IZRC20(targetZRC20)
-            .withdrawGasFee();
-
-        if (gasZRC20 != targetZRC20) revert WrongGasContract();
-        if (gasFee >= amount) revert NotEnoughToPayGasFee();
-
-        IZRC20(targetZRC20).approve(targetZRC20, gasFee);
-        IZRC20(targetZRC20).withdraw(
-            abi.encodePacked(receipient),
-            amount - gasFee
-        );
-    }
-
+    
     function _bytesMemoryToAddress(
         bytes memory data,
         uint256 offset
