@@ -8,11 +8,8 @@ import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MultiOutput is zContract, Ownable {
-    error SenderNotSystemContract();
     error NoAvailableTransfers();
     error InvalidRecipient();
-    error WrongGasContract();
-    error NotEnoughToPayGasFee();
     error FetchingBTCZRC20Failed();
 
     event Withdrawal(address, uint256, bytes);
