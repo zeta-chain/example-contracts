@@ -7,7 +7,7 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MultiOutput is zContract, Ownable {
+contract Multioutput is zContract, Ownable {
     error NoAvailableTransfers();
     error InvalidRecipient();
     error FetchingBTCZRC20Failed();
