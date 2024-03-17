@@ -1713,15 +1713,15 @@
   dependencies:
     dotenv "^16.1.4"
 
-"@zetachain/protocol-contracts@5.0.0-rc6":
-  version "5.0.0-rc6"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-5.0.0-rc6.tgz#1ec1419a71cdea831ac8de159bfbffae257785f5"
-  integrity sha512-NIN3mkR4csq1yGtv9miOWKHj2S6azTo/QET7ALKh5dxPnpCmTHx9Lgf+xuDa95W/Tbw8BAGHdRoyp0z3j72kXQ==
+"@zetachain/protocol-contracts@5.0.0-rc7":
+  version "5.0.0-rc7"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-5.0.0-rc7.tgz#a266f181bd445cc76239863059b30e295bae3be3"
+  integrity sha512-UjIPWzNv4j6syUKItJA5tbVFaDKvZyJehPlLMlXdp9GjmMxNFhL2qo2zyrVhdUdED5yx98KjRUCSswwgOfJ3PA==
 
-"@zetachain/toolkit@6.0.0-rc5":
-  version "6.0.0-rc5"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-6.0.0-rc5.tgz#b2cdcf9823eb04fb628739e9e9d3c975eddf9de9"
-  integrity sha512-t9ubVlPuJVfbXH9Agt9ftR7UXxcIg36an8CIzm7gn/yRO0ZQY9xqi/3gEXFKJt6R68i3m0+jw2gfQthI5i6igw==
+"@zetachain/toolkit@6.0.0-rc6":
+  version "6.0.0-rc6"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-6.0.0-rc6.tgz#2089e261236798afd430cbcc0b3f3581e708c4b8"
+  integrity sha512-MJKmGi8tMMalWpBLJ8OX45kTQoIIRq9XFWOGUwAcoShJ1vlYKqpmjINNI0OD/kH8P0V4m2ETjJ7cMyO2fjdnrg==
   dependencies:
     "@inquirer/prompts" "^2.1.1"
     "@inquirer/select" "1.1.3"
@@ -1730,7 +1730,7 @@
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
     "@zetachain/faucet-cli" "^4.0.1"
     "@zetachain/networks" "4.0.0-rc1"
-    "@zetachain/protocol-contracts" "5.0.0-rc6"
+    "@zetachain/protocol-contracts" "5.0.0-rc7"
     axios "^1.4.0"
     bech32 "^2.0.0"
     bip39 "^3.1.0"
