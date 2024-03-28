@@ -2,16 +2,12 @@ import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
 import { getAddress } from "@zetachain/protocol-contracts";
-import { prepareData } from "@zetachain/toolkit/helpers";
+import { prepareData } from "@zetachain/toolkit/client";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
 
-  const data = prepareData(
-    args.contract,
-    ["address", ],
-    [args.recipient, ]
-  );
+  const data = prepareData(args.contract, ["address"], [args.recipient]);
   const to = getAddress("tss", hre.network.name);
   const value = parseEther(args.amount);
 
@@ -32,4 +28,4 @@ task("interact", "Interact with the contract", main)
   .addParam("contract", "The address of the withdraw contract on ZetaChain")
   .addParam("amount", "Amount of tokens to send")
   .addFlag("json", "Output in JSON")
-  .addParam("recipient")
+  .addParam("recipient");
