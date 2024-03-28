@@ -16,6 +16,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   if (args.token) {
     const custodyAddress = getAddress("erc20Custody", hre.network.name as any);
+    if (!custodyAddress) {
+      throw new Error(
+        `No ERC20 Custody contract found for ${hre.network.name} network`
+      );
+    }
     const custodyContract = new ethers.Contract(
       custodyAddress,
       ERC20Custody.abi,
