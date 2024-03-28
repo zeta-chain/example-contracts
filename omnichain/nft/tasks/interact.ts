@@ -3,7 +3,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseUnits } from "@ethersproject/units";
 import { getAddress } from "@zetachain/protocol-contracts";
 import ERC20Custody from "@zetachain/protocol-contracts/abi/evm/ERC20Custody.sol/ERC20Custody.json";
-import { prepareData } from "@zetachain/toolkit/helpers";
+import { prepareData } from "@zetachain/toolkit/client";
 import { utils, ethers } from "ethers";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
