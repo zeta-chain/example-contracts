@@ -2,7 +2,7 @@ import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "@ethersproject/units";
 import { getAddress } from "@zetachain/protocol-contracts";
-import { prepareData, trackCCTX } from "@zetachain/toolkit/helpers";
+import { prepareData } from "@zetachain/toolkit/client";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -28,7 +28,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "set-beneficiary",
+  "update-beneficiary",
   "Set the address on ZetaChain which will be allowed to claim staking rewards",
   main
 )

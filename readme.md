@@ -1,9 +1,9 @@
 # Example ZetaChain contracts
 
 > Please, note that code from this repository is referenced in
-> [the documentation](https://github.com/zeta-chain/zeta-apps/tree/main/apps/frontend/docs-site/docs).
-> When making changes to the code especially when moving files, make sure to
-> update the documentation as well.
+> [the documentation](https://github.com/zeta-chain/docs). When making changes
+> to the code especially when moving files, make sure to update the
+> documentation as well.
 
 ## Overview
 
@@ -18,7 +18,7 @@ The `omnichain` directory contains omnichain contracts. Omnichain is a unique
 interoperability feature of ZetaChain that allows you to write and deploy a
 single contract that can manage assets on all connected blockchains. Learn more
 about
-[omnichain contracts in the docs](https://www.zetachain.com/docs/developers/concepts/architecture/).
+[omnichain contracts in the docs](https://www.zetachain.com/docs/developers/omnichain/overview/).
 
 ### Cross-Chain Messaging
 

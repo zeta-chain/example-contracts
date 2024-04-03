@@ -32,20 +32,8 @@ OMNI_STAKING_CONTRACT=$(npx hardhat deploy --network zeta_testnet --chain goerli
 
 echo $OMNI_STAKING_CONTRACT
 
-echo "Setting beneficiary"
-OMNI_STAKING_BENEFICIARY_TX=$(npx hardhat set-beneficiary $SENDER --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
-echo $OMNI_STAKING_BENEFICIARY_TX
-OMNI_STAKING_BENEFICIARY_CCTX=$(npx hardhat cctx $OMNI_STAKING_BENEFICIARY_TX --json)
-echo $OMNI_STAKING_BENEFICIARY_CCTX
-
-echo "Setting withdraw"
-OMNI_STAKING_WITHDRAW_TX=$(npx hardhat set-withdraw --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
-echo $OMNI_STAKING_WITHDRAW_TX
-OMNI_STAKING_WITHDRAW_CCTX=$(npx hardhat cctx $OMNI_STAKING_WITHDRAW_TX --json)
-echo $OMNI_STAKING_WITHDRAW_CCTX
-
 echo "Stake"
-OMNI_STAKING_STAKE_TX=$(npx hardhat stake --amount 0.01 --contract $OMNI_STAKING_CONTRACT --network goerli_testnet --json | jq -r '.hash')
+OMNI_STAKING_STAKE_TX=$(npx hardhat stake --amount 0.01 --contract $OMNI_STAKING_CONTRACT --beneficiary $SENDER --network goerli_testnet --json | jq -r '.hash')
 echo $OMNI_STAKING_STAKE_TX
 OMNI_STAKING_STAKE_CCTX=$(npx hardhat cctx $OMNI_STAKING_STAKE_TX --json)
 echo $OMNI_STAKING_STAKE_CCTX
@@ -67,7 +55,7 @@ npx hardhat compile --force
 echo "Testing CCM Message"
 
 CCM_MESSAGE_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet --json)
-CCM_MESSAGE_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $(echo $CCM_MESSAGE_CONTRACT | jq -r '.goerli_testnet') --message "Hello World" --destination mumbai_testnet --amount 0.01 --json )
+CCM_MESSAGE_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $(echo $CCM_MESSAGE_CONTRACT | jq -r '.goerli_testnet') --message "Hello World" --destination mumbai_testnet --amount 0.05 --json )
 echo $CCM_MESSAGE_TX_OUT
 CCM_MESSAGE_TX=$(echo $CCM_MESSAGE_TX_OUT | jq -r '.hash')
 echo $CCM_MESSAGE_TX
@@ -88,7 +76,7 @@ CCM_NFT_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet -
 echo $CCM_NFT_CONTRACT
 
 CCM_NFT_MINT=$(npx hardhat mint --network goerli_testnet --contract $CCM_NFT_CONTRACT --json)
-CCM_NFT_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_NFT_CONTRACT --token $CCM_NFT_MINT --destination mumbai_testnet --amount 0.01 --to $SENDER --json)
+CCM_NFT_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_NFT_CONTRACT --token $CCM_NFT_MINT --destination mumbai_testnet --amount 0.05 --to $SENDER --json)
 echo $CCM_NFT_TX_OUT
 CCM_NFT_TX=$(echo $CCM_NFT_TX_OUT | jq -r '.hash')
 echo $CCM_NFT_TX
@@ -107,7 +95,7 @@ echo "Testing CCM Counter"
 
 CCM_COUNTER_CONTRACT=$(npx hardhat deploy --networks goerli_testnet,mumbai_testnet --json | jq -r '.goerli_testnet')
 echo $CCM_COUNTER_CONTRACT
-CCM_COUNTER_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_COUNTER_CONTRACT --destination mumbai_testnet --amount 0.01 --json)
+CCM_COUNTER_TX_OUT=$(npx hardhat interact --network goerli_testnet --contract $CCM_COUNTER_CONTRACT --destination mumbai_testnet --amount 0.05 --json)
 echo $CCM_COUNTER_TX_OUT
 CCM_COUNTER_TX=$(echo $CCM_COUNTER_TX_OUT | jq -r '.hash')
 echo $CCM_COUNTER_TX
@@ -151,7 +139,7 @@ OMNI_MULTIOUTPUT_CONTRACT=$(npx hardhat deploy --network zeta_testnet --json | j
 echo $OMNI_MULTIOUTPUT_CONTRACT
 
 npx hardhat destination --contract $OMNI_MULTIOUTPUT_CONTRACT --network zeta_testnet --destination mumbai_testnet
-OMNI_MULTIOUTPUT_TX=$(npx hardhat interact --contract $OMNI_MULTIOUTPUT_CONTRACT --network goerli_testnet --amount 0.01 --recipient $SENDER --json | jq -r '.hash')
+OMNI_MULTIOUTPUT_TX=$(npx hardhat interact --contract $OMNI_MULTIOUTPUT_CONTRACT --network goerli_testnet --amount 0.05 --recipient $SENDER --json | jq -r '.hash')
 echo $OMNI_MULTIOUTPUT_TX
 OMNI_MULTIOUTPUT_CCTX=$(npx hardhat cctx $OMNI_MULTIOUTPUT_TX --json)
 echo $OMNI_MULTIOUTPUT_CCTX
