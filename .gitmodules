@@ -1,0 +1,3 @@
+[submodule "omnichain/multioutput/lib/forge-std"]
+	path = omnichain/multioutput/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
