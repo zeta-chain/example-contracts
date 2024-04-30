@@ -17,7 +17,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const value = parseEther(args.amount);
 
-
   const tx = await contract
     .connect(signer)
     .sendMessage(destination, paramAmount, { value });
@@ -37,5 +36,4 @@ task("interact", "Sends a message from one chain to another.", main)
   .addFlag("json", "Output JSON")
   .addParam("contract", "Contract address")
   .addParam("amount", "Token amount to send")
-  .addParam("destination", "Destination chain")
-  .addParam("amount", "uint256")
+  .addParam("destination", "Destination chain");

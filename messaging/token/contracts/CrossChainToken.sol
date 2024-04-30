@@ -17,12 +17,19 @@ contract CrossChainToken is ZetaInteractor, ZetaReceiver {
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
 
-    constructor(address connectorAddress, address zetaTokenAddress, address zetaConsumerAddress) ZetaInteractor(connectorAddress) {
+    constructor(
+        address connectorAddress,
+        address zetaTokenAddress,
+        address zetaConsumerAddress
+    ) ZetaInteractor(connectorAddress) {
         _zetaToken = IERC20(zetaTokenAddress);
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
     }
 
-    function sendMessage(uint256 destinationChainId, uint256 amount) external payable {
+    function sendMessage(
+        uint256 destinationChainId,
+        uint256 amount
+    ) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -48,7 +55,8 @@ contract CrossChainToken is ZetaInteractor, ZetaReceiver {
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
         (bytes32 messageType, uint256 amount) = abi.decode(
-            zetaMessage.message, (bytes32, uint256)
+            zetaMessage.message,
+            (bytes32, uint256)
         );
 
         if (messageType != CROSS_CHAIN_TOKEN_MESSAGE_TYPE)
