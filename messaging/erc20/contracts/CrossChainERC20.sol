@@ -8,8 +8,8 @@ import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.so
 
 contract CrossChainERC20 is ZetaInteractor, ZetaReceiver {
 
-    event CrossChainERC20Event(address, address, uint256);
-    event CrossChainERC20RevertedEvent(address, address, uint256);
+    event CrossChainERC20Event(address, uint256);
+    event CrossChainERC20RevertedEvent(address, uint256);
 
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
@@ -19,7 +19,7 @@ contract CrossChainERC20 is ZetaInteractor, ZetaReceiver {
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
     }
 
-    function sendMessage(uint256 destinationChainId, address from, address to, uint256 value) external payable {
+    function sendMessage(uint256 destinationChainId, address to, uint256 value) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -34,7 +34,7 @@ contract CrossChainERC20 is ZetaInteractor, ZetaReceiver {
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
                 destinationGasLimit: 300000,
-                message: abi.encode(from, to, value),
+                message: abi.encode(to, value),
                 zetaValueAndGas: zetaValueAndGas,
                 zetaParams: abi.encode("")
             })
@@ -45,22 +45,22 @@ contract CrossChainERC20 is ZetaInteractor, ZetaReceiver {
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
-        (address from , address to , uint256 value ) = abi.decode(
-            zetaMessage.message, (address, address, uint256)
+        (address to , uint256 value ) = abi.decode(
+            zetaMessage.message, (address, uint256)
         );
 
-        emit CrossChainERC20Event(from, to, value);
+        emit CrossChainERC20Event(to, value);
     }
 
     function onZetaRevert(
         ZetaInterfaces.ZetaRevert calldata zetaRevert
     ) external override isValidRevertCall(zetaRevert) {
-        (address from, address to, uint256 value) = abi.decode(
+        (address to, uint256 value) = abi.decode(
             zetaRevert.message,
-            (address, address, uint256)
+            (address, uint256)
         );
 
-        emit CrossChainERC20RevertedEvent(from, to, value);
+        emit CrossChainERC20RevertedEvent(to, value);
     }
 
 }
