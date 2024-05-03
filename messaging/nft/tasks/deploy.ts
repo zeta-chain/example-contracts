@@ -10,10 +10,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const networks = args.networks.split(",");
   const contracts: { [key: string]: string } = {};
   await Promise.all(
-    networks.map(async (networkName: ParamChainName) => {
+    networks.map(async (networkName: string, i: number) => {
+      const parity = i % 2 == 0;
       contracts[networkName] = await deployContract(
         hre,
-        networkName,
+        networkName as ParamChainName,
+        parity,
         args.json,
         args.gasLimit
       );
@@ -49,6 +51,7 @@ const initWallet = (
 const deployContract = async (
   hre: HardhatRuntimeEnvironment,
   networkName: ParamChainName,
+  parity: boolean,
   json: boolean = false,
   gasLimit: number
 ) => {
@@ -60,7 +63,7 @@ const deployContract = async (
 
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
-  const contract = await factory.deploy(connector, zetaToken, zetaTokenConsumer, { gasLimit });
+  const contract = await factory.deploy(connector, zetaToken, zetaTokenConsumer, parity, { gasLimit });
 
   await contract.deployed();
   if (!json) {

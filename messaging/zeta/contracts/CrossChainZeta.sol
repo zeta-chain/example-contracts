@@ -10,9 +10,6 @@ import "@zetachain/protocol-contracts/contracts/evm/Zeta.eth.sol";
 contract CrossChainZeta is ZetaInteractor {
     error ErrorTransferringZeta();
 
-    event CrossChainZetaEvent();
-    event CrossChainZetaRevertedEvent();
-
     IERC20 internal immutable _zetaToken;
 
     constructor(address connectorAddress, address zetaTokenAddress) ZetaInteractor(connectorAddress) {
