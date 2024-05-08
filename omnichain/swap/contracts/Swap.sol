@@ -5,13 +5,21 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Swap is zContract {
-    SystemContract public immutable systemContract;
+    SystemContract public systemContract;
+    address public wzeta;
+    address public factory;
+    address public router;
+
     uint256 constant BITCOIN = 18332;
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
+        wzeta = systemContract.wZetaContractAddress();
+        factory = systemContract.uniswapv2FactoryAddress();
+        router = systemContract.uniswapv2Router02Address();
     }
 
     modifier onlySystem() {
@@ -45,30 +53,47 @@ contract Swap is zContract {
             recipientAddress = recipient;
         }
 
-        (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
-            .withdrawGasFee();
+        if (targetTokenAddress == wzeta) {
+            uint256 outputAmount = SwapHelperLib._doSwap(
+                wzeta,
+                factory,
+                router,
+                zrc20,
+                amount,
+                wzeta,
+                0
+            );
 
-        uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
-            systemContract.wZetaContractAddress(),
-            systemContract.uniswapv2FactoryAddress(),
-            systemContract.uniswapv2Router02Address(),
-            zrc20,
-            gasFee,
-            gasZRC20,
-            amount
-        );
+            IERC20(wzeta).transfer(
+                address(uint160(bytes20(recipientAddress))),
+                outputAmount
+            );
+        } else {
+            (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
+                .withdrawGasFee();
 
-        uint256 outputAmount = SwapHelperLib._doSwap(
-            systemContract.wZetaContractAddress(),
-            systemContract.uniswapv2FactoryAddress(),
-            systemContract.uniswapv2Router02Address(),
-            zrc20,
-            amount - inputForGas,
-            targetTokenAddress,
-            0
-        );
+            uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
+                wzeta,
+                factory,
+                router,
+                zrc20,
+                gasFee,
+                gasZRC20,
+                amount
+            );
 
-        IZRC20(gasZRC20).approve(targetTokenAddress, gasFee);
-        IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
+            uint256 outputAmount = SwapHelperLib._doSwap(
+                wzeta,
+                factory,
+                router,
+                zrc20,
+                amount - inputForGas,
+                targetTokenAddress,
+                0
+            );
+
+            IZRC20(gasZRC20).approve(targetTokenAddress, gasFee);
+            IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
+        }
     }
 }
