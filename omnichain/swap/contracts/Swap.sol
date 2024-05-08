@@ -53,26 +53,15 @@ contract Swap is zContract {
             recipientAddress = recipient;
         }
 
-        if (targetTokenAddress == wzeta) {
-            uint256 outputAmount = SwapHelperLib._doSwap(
-                wzeta,
-                factory,
-                router,
-                zrc20,
-                amount,
-                wzeta,
-                0
-            );
+        bool isTargetZeta = targetTokenAddress == wzeta;
+        uint256 inputForGas;
+        address gasZRC20;
+        uint256 gasFee;
 
-            IERC20(wzeta).transfer(
-                address(uint160(bytes20(recipientAddress))),
-                outputAmount
-            );
-        } else {
-            (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
-                .withdrawGasFee();
+        if (!isTargetZeta) {
+            (gasZRC20, gasFee) = IZRC20(targetTokenAddress).withdrawGasFee();
 
-            uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
+            inputForGas = SwapHelperLib.swapTokensForExactTokens(
                 wzeta,
                 factory,
                 router,
@@ -81,17 +70,19 @@ contract Swap is zContract {
                 gasZRC20,
                 amount
             );
+        }
 
-            uint256 outputAmount = SwapHelperLib._doSwap(
-                wzeta,
-                factory,
-                router,
-                zrc20,
-                amount - inputForGas,
-                targetTokenAddress,
-                0
-            );
+        uint256 outputAmount = SwapHelperLib._doSwap(
+            wzeta,
+            factory,
+            router,
+            zrc20,
+            isTargetZeta ? amount : amount - inputForGas,
+            targetTokenAddress,
+            0
+        );
 
+        if (!isTargetZeta) {
             IZRC20(gasZRC20).approve(targetTokenAddress, gasFee);
             IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
         }
