@@ -7,7 +7,7 @@ import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract SwapZeta is zContract {
+contract SwapToZeta is zContract {
     SystemContract public systemContract;
 
     uint256 constant BITCOIN = 18332;
