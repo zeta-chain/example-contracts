@@ -7,7 +7,7 @@ import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 
 contract Swap is zContract {
-    SystemContract public immutable systemContract;
+    SystemContract public systemContract;
     uint256 constant BITCOIN = 18332;
 
     constructor(address systemContractAddress) {
@@ -49,19 +49,15 @@ contract Swap is zContract {
             .withdrawGasFee();
 
         uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
-            systemContract.wZetaContractAddress(),
-            systemContract.uniswapv2FactoryAddress(),
-            systemContract.uniswapv2Router02Address(),
+            systemContract,
             zrc20,
             gasFee,
             gasZRC20,
             amount
         );
 
-        uint256 outputAmount = SwapHelperLib._doSwap(
-            systemContract.wZetaContractAddress(),
-            systemContract.uniswapv2FactoryAddress(),
-            systemContract.uniswapv2Router02Address(),
+        uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
+            systemContract,
             zrc20,
             amount - inputForGas,
             targetTokenAddress,
