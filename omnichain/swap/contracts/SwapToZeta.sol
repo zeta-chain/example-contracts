@@ -45,7 +45,8 @@ contract SwapToZeta is zContract {
             to = recipient;
         }
 
-        bool isTargetZeta = target == systemContract.wZetaContractAddress();
+        address wzeta = systemContract.wZetaContractAddress();
+        bool isTargetZeta = target == wzeta;
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
@@ -70,7 +71,9 @@ contract SwapToZeta is zContract {
             0
         );
 
-        if (!isTargetZeta) {
+        if (isTargetZeta) {
+            IERC20(wzeta).transfer(address(uint160(bytes20(to))), outputAmount);
+        } else {
             IZRC20(gasZRC20).approve(target, gasFee);
             IZRC20(target).withdraw(to, outputAmount);
         }
