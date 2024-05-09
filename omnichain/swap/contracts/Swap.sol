@@ -28,25 +28,22 @@ contract Swap is zContract {
         uint256 amount,
         bytes calldata message
     ) external virtual override onlySystem {
-        address targetTokenAddress;
-        bytes memory recipientAddress;
+        address target;
+        bytes memory to;
 
         if (context.chainID == BITCOIN) {
-            targetTokenAddress = BytesHelperLib.bytesToAddress(message, 0);
-            recipientAddress = abi.encodePacked(
-                BytesHelperLib.bytesToAddress(message, 20)
-            );
+            target = BytesHelperLib.bytesToAddress(message, 0);
+            to = abi.encodePacked(BytesHelperLib.bytesToAddress(message, 20));
         } else {
             (address targetToken, bytes memory recipient) = abi.decode(
                 message,
                 (address, bytes)
             );
-            targetTokenAddress = targetToken;
-            recipientAddress = recipient;
+            target = targetToken;
+            to = recipient;
         }
 
-        (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
-            .withdrawGasFee();
+        (address gasZRC20, uint256 gasFee) = IZRC20(target).withdrawGasFee();
 
         uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
             systemContract,
@@ -60,11 +57,11 @@ contract Swap is zContract {
             systemContract,
             zrc20,
             amount - inputForGas,
-            targetTokenAddress,
+            target,
             0
         );
 
-        IZRC20(gasZRC20).approve(targetTokenAddress, gasFee);
-        IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
+        IZRC20(gasZRC20).approve(target, gasFee);
+        IZRC20(target).withdraw(to, outputAmount);
     }
 }
