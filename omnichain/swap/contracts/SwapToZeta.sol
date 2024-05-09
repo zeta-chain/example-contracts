@@ -5,7 +5,7 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IWZETA.sol";
 
 contract SwapToZeta is zContract {
     SystemContract public systemContract;
@@ -72,7 +72,7 @@ contract SwapToZeta is zContract {
         );
 
         if (isTargetZeta) {
-            IERC20(wzeta).transfer(address(uint160(bytes20(to))), outputAmount);
+            IWETH9(wzeta).transfer(address(uint160(bytes20(to))), outputAmount);
         } else {
             IZRC20(gasZRC20).approve(target, gasFee);
             IZRC20(target).withdraw(to, outputAmount);
