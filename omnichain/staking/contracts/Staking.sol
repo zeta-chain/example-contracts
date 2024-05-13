@@ -5,9 +5,10 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
+import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
-contract Staking is ERC20, zContract {
-    SystemContract public immutable systemContract;
+contract Staking is ERC20, zContract, OnlySystem {
+    SystemContract public systemContract;
     uint256 public immutable chainID;
     uint256 constant BITCOIN = 18332;
 
@@ -35,20 +36,12 @@ contract Staking is ERC20, zContract {
         chainID = chainID_;
     }
 
-    modifier onlySystem() {
-        require(
-            msg.sender == address(systemContract),
-            "Only system contract can call this function"
-        );
-        _;
-    }
-
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external virtual override onlySystem {
+    ) external virtual override onlySystem(systemContract) {
         if (chainID != context.chainID) {
             revert WrongChain(context.chainID);
         }

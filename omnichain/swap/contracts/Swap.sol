@@ -5,8 +5,9 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
+import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
-contract Swap is zContract {
+contract Swap is zContract, OnlySystem {
     SystemContract public systemContract;
     uint256 constant BITCOIN = 18332;
 
@@ -14,36 +15,31 @@ contract Swap is zContract {
         systemContract = SystemContract(systemContractAddress);
     }
 
-    modifier onlySystem() {
-        require(
-            msg.sender == address(systemContract),
-            "Only system contract can call this function"
-        );
-        _;
-    }
-
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external virtual override onlySystem {
-        address target;
-        bytes memory to;
+    ) external virtual override onlySystem(systemContract) {
+        address targetTokenAddress;
+        bytes memory recipientAddress;
 
         if (context.chainID == BITCOIN) {
-            target = BytesHelperLib.bytesToAddress(message, 0);
-            to = abi.encodePacked(BytesHelperLib.bytesToAddress(message, 20));
+            targetTokenAddress = BytesHelperLib.bytesToAddress(message, 0);
+            recipientAddress = abi.encodePacked(
+                BytesHelperLib.bytesToAddress(message, 20)
+            );
         } else {
             (address targetToken, bytes memory recipient) = abi.decode(
                 message,
                 (address, bytes)
             );
-            target = targetToken;
-            to = recipient;
+            targetTokenAddress = targetToken;
+            recipientAddress = recipient;
         }
 
-        (address gasZRC20, uint256 gasFee) = IZRC20(target).withdrawGasFee();
+        (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
+            .withdrawGasFee();
 
         uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
             systemContract,
@@ -57,11 +53,11 @@ contract Swap is zContract {
             systemContract,
             zrc20,
             amount - inputForGas,
-            target,
+            targetTokenAddress,
             0
         );
 
-        IZRC20(gasZRC20).approve(target, gasFee);
-        IZRC20(target).withdraw(to, outputAmount);
+        IZRC20(gasZRC20).approve(targetTokenAddress, gasFee);
+        IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
     }
 }

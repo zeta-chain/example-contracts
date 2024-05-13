@@ -5,11 +5,13 @@ import "@zetachain/protocol-contracts/contracts/zevm/SystemContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
+import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
-contract NFT is zContract, ERC721 {
+contract NFT is zContract, ERC721, OnlySystem {
+    SystemContract public immutable systemContract;
+    error CallerNotOwnerNotApproved();
     uint256 constant BITCOIN = 18332;
 
-    SystemContract public immutable systemContract;
     mapping(uint256 => uint256) public tokenAmounts;
     mapping(uint256 => uint256) public tokenChains;
 
@@ -20,20 +22,12 @@ contract NFT is zContract, ERC721 {
         _nextTokenId = 0;
     }
 
-    modifier onlySystem() {
-        require(
-            msg.sender == address(systemContract),
-            "Only system contract can call this function"
-        );
-        _;
-    }
-
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override onlySystem {
+    ) external override onlySystem(systemContract) {
         address recipient;
 
         if (context.chainID == BITCOIN) {
@@ -58,10 +52,9 @@ contract NFT is zContract, ERC721 {
     }
 
     function burnNFT(uint256 tokenId, bytes memory recipient) public {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "Caller is not owner nor approved"
-        );
+        if (!_isApprovedOrOwner(_msgSender(), tokenId)) {
+            revert CallerNotOwnerNotApproved();
+        }
         address zrc20 = systemContract.gasCoinZRC20ByChainId(
             tokenChains[tokenId]
         );
