@@ -8,7 +8,7 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
 contract NFT is zContract, ERC721, OnlySystem {
-    SystemContract public immutable systemContract;
+    SystemContract public systemContract;
     error CallerNotOwnerNotApproved();
     uint256 constant BITCOIN = 18332;
 
