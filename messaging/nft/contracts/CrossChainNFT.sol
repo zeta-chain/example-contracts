@@ -5,21 +5,38 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@zetachain/protocol-contracts/contracts/evm/tools/ZetaInteractor.sol";
 import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
-
-    event CrossChainMessageEvent(string);
-    event CrossChainMessageRevertedEvent(string);
+contract CrossChainNFT is
+    ERC721("CrossChainNFT", "CCNFT"),
+    ZetaInteractor,
+    ZetaReceiver
+{
+    event CrossChainNFTEvent(address, uint256);
+    event CrossChainNFTRevertedEvent(address, uint256);
 
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
+    uint256 private _tokenIds;
 
-    constructor(address connectorAddress, address zetaTokenAddress, address zetaConsumerAddress) ZetaInteractor(connectorAddress) {
+    constructor(
+        address connectorAddress,
+        address zetaTokenAddress,
+        address zetaConsumerAddress,
+        bool useEven
+    ) ZetaInteractor(connectorAddress) {
         _zetaToken = IERC20(zetaTokenAddress);
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
+
+        _tokenIds++;
+        if (useEven) _tokenIds++;
     }
 
-    function sendMessage(uint256 destinationChainId, string memory message) external payable {
+    function sendMessage(
+        uint256 destinationChainId,
+        address to,
+        uint256 token
+    ) external payable {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
@@ -29,38 +46,51 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         }(address(this), crossChainGas);
         _zetaToken.approve(address(connector), zetaValueAndGas);
 
+        _burn(token);
+
         connector.send(
             ZetaInterfaces.SendInput({
                 destinationChainId: destinationChainId,
                 destinationAddress: interactorsByChainId[destinationChainId],
                 destinationGasLimit: 300000,
-                message: abi.encode(message),
+                message: abi.encode(to, token, msg.sender),
                 zetaValueAndGas: zetaValueAndGas,
                 zetaParams: abi.encode("")
             })
         );
     }
 
-
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override isValidMessageCall(zetaMessage) {
-        (string memory message ) = abi.decode(
-            zetaMessage.message, (string)
+        (address to, uint256 token) = abi.decode(
+            zetaMessage.message,
+            (address, uint256)
         );
 
-        emit CrossChainMessageEvent(message);
+        _safeMint(to, token);
+
+        emit CrossChainNFTEvent(to, token);
     }
 
     function onZetaRevert(
         ZetaInterfaces.ZetaRevert calldata zetaRevert
     ) external override isValidRevertCall(zetaRevert) {
-        (string memory message) = abi.decode(
+        (address to, uint256 token, address from) = abi.decode(
             zetaRevert.message,
-            (string)
+            (address, uint256, address)
         );
 
-        emit CrossChainMessageRevertedEvent(message);
+        _safeMint(from, token);
+
+        emit CrossChainNFTRevertedEvent(to, token);
     }
 
+    function mint(address to) public returns (uint256) {
+        _tokenIds++;
+        _tokenIds++;
+
+        _safeMint(to, _tokenIds);
+        return _tokenIds;
+    }
 }
