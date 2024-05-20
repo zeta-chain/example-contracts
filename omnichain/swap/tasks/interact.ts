@@ -7,6 +7,7 @@ import { prepareData } from "@zetachain/toolkit/client";
 import { utils, ethers } from "ethers";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 import bech32 from "bech32";
+import { getQuote } from "./getQuote";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -28,6 +29,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ["address", "bytes"],
     [args.targetToken, recipient]
   );
+
+  console.log(
+    await getQuote(args.amount, args.token, args.targetToken, hre.network.name)
+  );
+
+  return;
 
   let tx;
 
