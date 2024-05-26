@@ -4,7 +4,7 @@ import { task, types } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import type { ParamChainName } from "@zetachain/protocol-contracts";
 
-const contractName = "CrossChainMessage";
+const contractName = "CrossChainZeta";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const networks = args.networks.split(",");
@@ -56,11 +56,10 @@ const deployContract = async (
 
   const connector = getAddress("connector", networkName);
   const zetaToken = getAddress("zetaToken", networkName);
-  const zetaTokenConsumer = getAddress("zetaTokenConsumerUniV3", networkName);
 
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
-  const contract = await factory.deploy(connector, zetaToken, zetaTokenConsumer, { gasLimit });
+  const contract = await factory.deploy(connector, zetaToken, { gasLimit });
 
   await contract.deployed();
   if (!json) {

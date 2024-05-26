@@ -1,4 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { deployUniswap, deployWZETA, evmSetup } from "@zetachain/toolkit/test";
 import { expect } from "chai";
 import { defaultAbiCoder, parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
@@ -8,24 +9,40 @@ import {
   MockZRC20,
   Staking,
   Staking__factory,
+  TestUniswapRouter,
+  UniswapV2Factory,
+  WZETA,
 } from "../typechain-types";
-import { evmSetup } from "./test.helpers";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 describe("Staking", function () {
+  let uniswapFactory: UniswapV2Factory;
+  let uniswapRouter: TestUniswapRouter;
   let accounts: SignerWithAddress[];
   let deployer: SignerWithAddress;
   let systemContract: MockSystemContract;
   let ZRC20Contracts: MockZRC20[];
   let stakeEVM: Staking;
   let stakeBitcoin: Staking;
+  let wGasToken: WZETA;
 
   beforeEach(async function () {
     accounts = await ethers.getSigners();
     [deployer] = accounts;
 
-    const evmSetupResult = await evmSetup(zeroAddress);
+    const wZETA = await deployWZETA(deployer);
+    wGasToken = wZETA;
+
+    const deployResult = await deployUniswap(deployer, wGasToken.address);
+    uniswapFactory = deployResult.uniswapFactory;
+    uniswapRouter = deployResult.uniswapRouter;
+
+    const evmSetupResult = await evmSetup(
+      wGasToken.address,
+      uniswapFactory.address,
+      uniswapRouter.address
+    );
     ZRC20Contracts = evmSetupResult.ZRC20Contracts;
     systemContract = evmSetupResult.systemContract;
 
@@ -51,13 +68,13 @@ describe("Staking", function () {
   });
 
   it("Should stake form EVM chain", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[0].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[1].transfer(systemContract.address, amount);
 
     await stakeFromEVM(
       systemContract,
       stakeEVM,
-      ZRC20Contracts[0],
+      ZRC20Contracts[1],
       deployer,
       amount
     );
@@ -69,13 +86,13 @@ describe("Staking", function () {
   });
 
   it("Should unstake from EVM chain", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[0].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[1].transfer(systemContract.address, amount);
 
     await stakeFromEVM(
       systemContract,
       stakeEVM,
-      ZRC20Contracts[0],
+      ZRC20Contracts[1],
       deployer,
       amount
     );
@@ -93,7 +110,7 @@ describe("Staking", function () {
     await systemContract.onCrossChainCall(
       5,
       stakeEVM.address,
-      ZRC20Contracts[0].address,
+      ZRC20Contracts[1].address,
       0,
       unstakeParams,
       { gasLimit: 10_000_000 }
@@ -106,13 +123,13 @@ describe("Staking", function () {
   });
 
   it("Should update beneficiary from EVM chain", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[0].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[1].transfer(systemContract.address, amount);
 
     await stakeFromEVM(
       systemContract,
       stakeEVM,
-      ZRC20Contracts[0],
+      ZRC20Contracts[1],
       deployer,
       amount
     );
@@ -132,7 +149,7 @@ describe("Staking", function () {
     await systemContract.onCrossChainCall(
       5,
       stakeEVM.address,
-      ZRC20Contracts[0].address,
+      ZRC20Contracts[1].address,
       0,
       updateBeneficiaryParams,
       { gasLimit: 10_000_000 }
@@ -145,13 +162,13 @@ describe("Staking", function () {
   });
 
   it("Should stake from Bitcoin chain", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[1].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[4].transfer(systemContract.address, amount);
 
     await stakeFromBitcoin(
       systemContract,
       stakeBitcoin,
-      ZRC20Contracts[1],
+      ZRC20Contracts[4],
       deployer,
       amount
     );
@@ -163,13 +180,13 @@ describe("Staking", function () {
   });
 
   it("Should unstake from Bitcoin chain", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[1].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[4].transfer(systemContract.address, amount);
 
     await stakeFromBitcoin(
       systemContract,
       stakeBitcoin,
-      ZRC20Contracts[1],
+      ZRC20Contracts[4],
       deployer,
       amount
     );
@@ -188,7 +205,7 @@ describe("Staking", function () {
     await systemContract.onCrossChainCall(
       18332,
       stakeBitcoin.address,
-      ZRC20Contracts[1].address,
+      ZRC20Contracts[4].address,
       0,
       unstakeParams,
       { gasLimit: 10_000_000 }
@@ -201,13 +218,13 @@ describe("Staking", function () {
   });
 
   it("Should update beneficiary from Bitcoin chain", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[1].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[4].transfer(systemContract.address, amount);
 
     await stakeFromBitcoin(
       systemContract,
       stakeBitcoin,
-      ZRC20Contracts[1],
+      ZRC20Contracts[4],
       deployer,
       amount
     );
@@ -231,7 +248,7 @@ describe("Staking", function () {
     await systemContract.onCrossChainCall(
       18332,
       stakeBitcoin.address,
-      ZRC20Contracts[1].address,
+      ZRC20Contracts[4].address,
       0,
       updateBeneficiaryParams,
       { gasLimit: 10_000_000 }

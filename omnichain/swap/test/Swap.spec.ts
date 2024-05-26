@@ -1,4 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { deployUniswap, deployWZETA, evmSetup } from "@zetachain/toolkit/test";
 import { expect } from "chai";
 import { defaultAbiCoder, parseEther, parseUnits } from "ethers/lib/utils";
 import { ethers, network } from "hardhat";
@@ -12,7 +13,6 @@ import {
   UniswapV2Factory,
   WZETA,
 } from "../typechain-types";
-import { deployUniswap, deployWZETA, evmSetup } from "./test.helpers";
 
 describe("Swap", function () {
   let uniswapFactory: UniswapV2Factory;
@@ -53,7 +53,7 @@ describe("Swap", function () {
 
   describe("Swap", function () {
     it("Should do swap from EVM Chain", async function () {
-      const amount = parseEther("10");
+      const amount = parseEther("1");
       await ZRC20Contracts[0].transfer(systemContract.address, amount);
 
       const initBalance = await ZRC20Contracts[1].balanceOf(deployer.address);
@@ -82,7 +82,7 @@ describe("Swap", function () {
     });
 
     it("Should do swap from Bitcoin Chain", async function () {
-      const amount = parseEther("10");
+      const amount = parseEther("1");
       await ZRC20Contracts[0].transfer(systemContract.address, amount);
 
       const initBalance = await ZRC20Contracts[1].balanceOf(deployer.address);

@@ -1,4 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { deployUniswap, deployWZETA, evmSetup } from "@zetachain/toolkit/test";
 import { expect } from "chai";
 import { utils } from "ethers";
 import { defaultAbiCoder, parseEther, parseUnits } from "ethers/lib/utils";
@@ -13,7 +14,6 @@ import {
   UniswapV2Factory,
   WZETA,
 } from "../typechain-types";
-import { deployUniswap, deployWZETA, evmSetup } from "./test.helpers";
 
 describe("Multioutput", function () {
   let uniswapFactory: UniswapV2Factory;

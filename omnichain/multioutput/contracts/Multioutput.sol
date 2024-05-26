@@ -6,15 +6,16 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/zContract.sol";
 import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
-contract Multioutput is zContract, Ownable {
+contract Multioutput is zContract, Ownable, OnlySystem {
     error NoAvailableTransfers();
     error InvalidRecipient();
     error FetchingBTCZRC20Failed();
 
     event Withdrawal(address, uint256, bytes);
 
-    SystemContract public immutable systemContract;
+    SystemContract public systemContract;
 
     uint256 constant BITCOIN = 18332;
 
@@ -22,22 +23,14 @@ contract Multioutput is zContract, Ownable {
         systemContract = SystemContract(systemContractAddress);
     }
 
-    modifier onlySystem() {
-        require(
-            msg.sender == address(systemContract),
-            "Only system contract can call this function"
-        );
-        _;
-    }
-
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external virtual override onlySystem {
-        address btcToken = systemContract.gasCoinZRC20ByChainId(BITCOIN);
-        if (btcToken == address(0)) revert FetchingBTCZRC20Failed();
+    ) external virtual override onlySystem(systemContract) {
+        if (systemContract.gasCoinZRC20ByChainId(BITCOIN) == address(0))
+            revert FetchingBTCZRC20Failed();
 
         (
             address evmRecipient,
@@ -69,7 +62,7 @@ contract Multioutput is zContract, Ownable {
                 BytesHelperLib.addressToBytes(evmRecipient)
             );
 
-            if (targetZRC20 == btcToken) {
+            if (targetZRC20 == systemContract.gasCoinZRC20ByChainId(BITCOIN)) {
                 if (btcRecipient.length == 0) revert InvalidRecipient();
                 recipient = abi.encodePacked(btcRecipient);
             }
@@ -88,19 +81,15 @@ contract Multioutput is zContract, Ownable {
             .withdrawGasFee();
 
         uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
-            systemContract.wZetaContractAddress(),
-            systemContract.uniswapv2FactoryAddress(),
-            systemContract.uniswapv2Router02Address(),
+            systemContract,
             zrc20,
             gasFee,
             gasZRC20,
             amountToTransfer
         );
 
-        uint256 outputAmount = SwapHelperLib._doSwap(
-            systemContract.wZetaContractAddress(),
-            systemContract.uniswapv2FactoryAddress(),
-            systemContract.uniswapv2Router02Address(),
+        uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
+            systemContract,
             zrc20,
             amountToTransfer - inputForGas,
             targetZRC20,

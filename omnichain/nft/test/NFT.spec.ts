@@ -1,4 +1,9 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import {
+  deployUniswap,
+  deployWZETA,
+  evmSetup,
+} from "@zetachain/toolkit/test";
 import { expect } from "chai";
 import { defaultAbiCoder, parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
@@ -8,15 +13,20 @@ import {
   MockZRC20,
   NFT,
   NFT__factory,
+  TestUniswapRouter,
+  UniswapV2Factory,
+  WZETA,
 } from "../typechain-types";
-import { evmSetup } from "./test.helpers";
 
 describe("NFT", function () {
+  let uniswapFactory: UniswapV2Factory;
+  let uniswapRouter: TestUniswapRouter;
   let accounts: SignerWithAddress[];
   let deployer: SignerWithAddress;
   let systemContract: MockSystemContract;
   let ZRC20Contracts: MockZRC20[];
   let nft: NFT;
+  let wGasToken: WZETA;
 
   const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -24,7 +34,18 @@ describe("NFT", function () {
     accounts = await ethers.getSigners();
     [deployer] = accounts;
 
-    const evmSetupResult = await evmSetup(zeroAddress);
+    const wZETA = await deployWZETA(deployer);
+    wGasToken = wZETA;
+
+    const deployResult = await deployUniswap(deployer, wGasToken.address);
+    uniswapFactory = deployResult.uniswapFactory;
+    uniswapRouter = deployResult.uniswapRouter;
+
+    const evmSetupResult = await evmSetup(
+      wGasToken.address,
+      uniswapFactory.address,
+      uniswapRouter.address
+    );
     ZRC20Contracts = evmSetupResult.ZRC20Contracts;
     systemContract = evmSetupResult.systemContract;
 
@@ -35,15 +56,15 @@ describe("NFT", function () {
   });
 
   it("Should mint NFT from EVM chain", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[0].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[1].transfer(systemContract.address, amount);
 
     const params = defaultAbiCoder.encode(["address"], [deployer.address]);
 
     await systemContract.onCrossChainCall(
       5,
       nft.address,
-      ZRC20Contracts[0].address,
+      ZRC20Contracts[1].address,
       amount,
       params,
       { gasLimit: 10_000_000 }
@@ -60,8 +81,8 @@ describe("NFT", function () {
   });
 
   it("Should mint NFT from Bitcoin chain", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[1].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[4].transfer(systemContract.address, amount);
 
     const rawMemoBytes = ethers.utils.arrayify(deployer.address);
     const params = ethers.utils.solidityPack(["bytes"], [rawMemoBytes]);
@@ -69,7 +90,7 @@ describe("NFT", function () {
     await systemContract.onCrossChainCall(
       18332,
       nft.address,
-      ZRC20Contracts[1].address,
+      ZRC20Contracts[4].address,
       amount,
       params,
       { gasLimit: 10_000_000 }
@@ -86,15 +107,15 @@ describe("NFT", function () {
   });
 
   it("Should burn NFT", async function () {
-    const amount = parseEther("10");
-    await ZRC20Contracts[0].transfer(systemContract.address, amount);
+    const amount = parseEther("1");
+    await ZRC20Contracts[1].transfer(systemContract.address, amount);
 
     const params = defaultAbiCoder.encode(["address"], [deployer.address]);
 
     await systemContract.onCrossChainCall(
       5,
       nft.address,
-      ZRC20Contracts[0].address,
+      ZRC20Contracts[1].address,
       amount,
       params,
       { gasLimit: 10_000_000 }

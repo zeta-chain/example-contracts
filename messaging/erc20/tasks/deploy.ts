@@ -4,7 +4,7 @@ import { task, types } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import type { ParamChainName } from "@zetachain/protocol-contracts";
 
-const contractName = "CrossChainMessage";
+const contractName = "CrossChainERC20";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const networks = args.networks.split(",");
