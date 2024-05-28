@@ -111,7 +111,7 @@
     "@ethersproject/properties" "^5.4.0"
     "@ethersproject/strings" "^5.4.0"
 
-"@ethersproject/abi@5.7.0", "@ethersproject/abi@^5.0.9", "@ethersproject/abi@^5.1.2", "@ethersproject/abi@^5.4.0", "@ethersproject/abi@^5.4.7", "@ethersproject/abi@^5.7.0":
+"@ethersproject/abi@5.7.0", "@ethersproject/abi@^5.0.0-beta.146", "@ethersproject/abi@^5.0.9", "@ethersproject/abi@^5.1.2", "@ethersproject/abi@^5.4.0", "@ethersproject/abi@^5.4.7", "@ethersproject/abi@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.7.0.tgz#b3f3e045bbbeed1af3947335c247ad625a44e449"
   integrity sha512-351ktp42TiRcYB3H1OP8yajPeAQstMW/yCFokj/AthP9bLHzQFPlOrxOcwYEDkUAICmOHljvN4K39OMTMUa9RA==
@@ -1799,10 +1799,10 @@
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-7.0.0-rc1.tgz#588483d1ec70e572b7e40e84ef5b34282b0ab375"
   integrity sha512-vgS+Pjh4MysOyw8WbqTQVBsHJYqKvMcdV7cNVqxaTJd/dl2ak7NNvsIeaeUnxQrp8XfQol2B8GXJpVLM6MK/dg==
 
-"@zetachain/toolkit@9.0.0-rc4":
-  version "9.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-9.0.0-rc4.tgz#7e5b4a13a3b898364b9c1d3713f5e6eb55478f40"
-  integrity sha512-03zlQYOw4LI2YiCM9a3pJNjv18UW+vDCHzs/fEL+titjiJx9VQXpG+5ppSYrna1brernOFF6NNgFi4Zc7d+yvg==
+"@zetachain/toolkit@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-9.0.0.tgz#eec0769cb212a83167e402502b38aa83ca56e3cb"
+  integrity sha512-uY0FyzDXHWLAP02R2yxskQnqD0+SzvBxNYUdwhIZrYb2rvYhnM66QlmUrJ4aQ8rim+PDJp6liBcwJk1hByOMlQ==
   dependencies:
     "@inquirer/prompts" "^2.1.1"
     "@inquirer/select" "1.1.3"
