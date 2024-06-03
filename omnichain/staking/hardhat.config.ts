@@ -15,7 +15,12 @@ const config: HardhatUserConfig = {
   networks: {
     ...getHardhatConfigNetworks(),
   },
-  solidity: "0.8.7",
+  solidity: {
+    compilers: [
+      { version: "0.5.16" /** For uniswap v2 core*/ },
+      { version: "0.8.7" },
+    ],
+  },
 };
 
 export default config;
