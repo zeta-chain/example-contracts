@@ -56,11 +56,20 @@ const deployContract = async (
 
   const connector = getAddress("connector", networkName);
   const zetaToken = getAddress("zetaToken", networkName);
-  const zetaTokenConsumer = getAddress("zetaTokenConsumerUniV3", networkName);
+
+  const zetaTokenConsumer =
+    networkName === "zeta_testnet"
+      ? "0x48C4475B7A9A6E9c384dDF3eb30c56761a2bc37e"
+      : getAddress("zetaTokenConsumerUniV3", networkName);
 
   const { abi, bytecode } = await hre.artifacts.readArtifact(contractName);
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
-  const contract = await factory.deploy(connector, zetaToken, zetaTokenConsumer, { gasLimit });
+  const contract = await factory.deploy(
+    connector,
+    zetaToken,
+    zetaTokenConsumer,
+    { gasLimit }
+  );
 
   await contract.deployed();
   if (!json) {
