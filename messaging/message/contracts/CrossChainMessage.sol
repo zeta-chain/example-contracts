@@ -13,11 +13,12 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         uint256 blockHeight,
         uint256 prizeAmount,
         uint256 maxParticipants,
-        address nftContract
+        address nftContract,
+        uint256 giveawayId
     );
     event CrossChainMessageEvent(
         uint256 messageType,
-        bytes32 giveawayId,
+        uint256 giveawayId,
         address nftContract
     );
 
@@ -30,12 +31,13 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     }
 
     struct Requirement {
-        bytes32 giveawayId;
+        uint256 giveawayId;
         address nftContract;
     }
 
-    mapping(bytes32 => Giveaway) public giveaways;
-    mapping(bytes32 => Requirement) public requirements;
+    mapping(uint256 => Giveaway) public giveaways;
+    mapping(uint256 => Requirement) public requirements;
+    uint256 public giveawayCounter;
 
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
@@ -47,6 +49,7 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     ) ZetaInteractor(connectorAddress) {
         _zetaToken = IERC20(zetaTokenAddress);
         _zetaConsumer = ZetaTokenConsumer(zetaConsumerAddress);
+        giveawayCounter = 0;
     }
 
     function createGiveaway(
@@ -70,15 +73,7 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
 
-        bytes32 giveawayId = keccak256(
-            abi.encodePacked(
-                msg.sender,
-                blockHeight,
-                prizeAmount,
-                maxParticipants,
-                nftContract
-            )
-        );
+        uint256 giveawayId = giveawayCounter++;
         giveaways[giveawayId] = Giveaway({
             creator: msg.sender,
             blockHeight: blockHeight,
@@ -109,15 +104,16 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
             blockHeight,
             prizeAmount,
             maxParticipants,
-            nftContract
+            nftContract,
+            giveawayId
         );
     }
 
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override {
-        (uint256 messageType, bytes32 giveawayId, address nftContract) = abi
-            .decode(zetaMessage.message, (uint256, bytes32, address));
+        (uint256 messageType, uint256 giveawayId, address nftContract) = abi
+            .decode(zetaMessage.message, (uint256, uint256, address));
 
         if (messageType == 1) {
             requirements[giveawayId] = Requirement({
