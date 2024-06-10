@@ -25,7 +25,6 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     event ClaimedGiveaway(address indexed participant, uint256 giveawayId);
     event RequirementSet(uint256 giveawayId, address nftContract);
     event Participation(
-        uint256 indexed param1,
         uint256 indexed giveawayId,
         address indexed participant
     );
@@ -46,7 +45,8 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
 
     mapping(uint256 => Giveaway) public giveaways;
     mapping(uint256 => Requirement) public requirements;
-    mapping(uint256 => mapping(address => bool)) public participants;
+    mapping(uint256 => mapping(uint256 => address)) public participants;
+    mapping(uint256 => uint256) public participantCounters;
 
     uint256 public giveawayCounter;
 
@@ -60,6 +60,7 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     error InvalidMessageType();
     error InvalidGiveawayID();
     error UserDoesNotOwnRequiredNFT();
+    error InsufficientValueProvided();
 
     constructor(
         address connectorAddress,
@@ -95,10 +96,14 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
             nftContract: nftContract
         });
 
-        uint256 crossChainGas = 2 * (10 ** 18);
+        uint256 crossChainGas = 3 * (10 ** 18);
         uint256 zetaValueAndGas = _zetaConsumer.getZetaFromEth{
             value: msg.value
         }(address(this), crossChainGas);
+
+        uint256 requiredValue = crossChainGas + prizeAmount * maxParticipants;
+        if (msg.value <= requiredValue) revert InsufficientValueProvided();
+
         _zetaToken.approve(address(connector), zetaValueAndGas);
 
         connector.send(
@@ -143,7 +148,8 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
                 zetaMessage.message,
                 (uint256, uint256, address)
             );
-            participants[giveawayId][participant] = true;
+            uint256 participantId = participantCounters[giveawayId]++;
+            participants[giveawayId][participantId] = participant;
         } else {
             revert InvalidMessageType();
         }
@@ -198,7 +204,7 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
             })
         );
 
-        emit Participation(2, giveawayId, msg.sender);
+        emit Participation(giveawayId, msg.sender);
     }
 
     function hasNFT(
@@ -209,5 +215,29 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
 
         IERC721 nft = IERC721(nftContract);
         return nft.balanceOf(user) > 0;
+    }
+
+    function getParticipants(
+        uint256 giveawayId
+    ) external view returns (address[] memory) {
+        uint256 count = participantCounters[giveawayId];
+        address[] memory _participants = new address[](count);
+        for (uint256 i = 0; i < count; i++) {
+            _participants[i] = participants[giveawayId][i];
+        }
+        return _participants;
+    }
+
+    function distributeRewards(uint256 giveawayId) external {
+        Giveaway memory giveaway = giveaways[giveawayId];
+        uint256 participantCount = participantCounters[giveawayId];
+
+        for (uint256 i = 0; i < participantCount; i++) {
+            address participant = participants[giveawayId][i];
+            require(
+                _zetaToken.transfer(participant, giveaway.prizeAmount),
+                "Transfer failed"
+            );
+        }
     }
 }
