@@ -53,6 +53,14 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     ZetaTokenConsumer private immutable _zetaConsumer;
     IERC20 internal immutable _zetaToken;
 
+    error BlockHeightInFuture();
+    error PrizeAmountGreaterThanZero();
+    error MaxParticipantsGreaterThanZero();
+    error NFTContractAddressNotZero();
+    error InvalidMessageType();
+    error InvalidGiveawayID();
+    error UserDoesNotOwnRequiredNFT();
+
     constructor(
         address connectorAddress,
         address zetaTokenAddress,
@@ -70,13 +78,10 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         address nftContract,
         uint256 destinationChainId
     ) external payable {
-        if (blockHeight <= block.number)
-            revert("Block height must be in the future");
-        if (prizeAmount <= 0) revert("Prize amount must be greater than 0");
-        if (maxParticipants <= 0)
-            revert("Max participants must be greater than 0");
-        if (nftContract == address(0))
-            revert("NFT contract address cannot be zero");
+        if (blockHeight <= block.number) revert BlockHeightInFuture();
+        if (prizeAmount <= 0) revert PrizeAmountGreaterThanZero();
+        if (maxParticipants <= 0) revert MaxParticipantsGreaterThanZero();
+        if (nftContract == address(0)) revert NFTContractAddressNotZero();
 
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
@@ -140,7 +145,7 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
             );
             participants[giveawayId][participant] = true;
         } else {
-            revert("Invalid message type");
+            revert InvalidMessageType();
         }
     }
 
@@ -170,12 +175,11 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
 
     function participate(uint256 giveawayId) external payable {
         Requirement memory requirement = requirements[giveawayId];
-        if (requirement.nftContract == address(0))
-            revert("Invalid giveaway ID");
+        if (requirement.nftContract == address(0)) revert InvalidGiveawayID();
 
         IERC721 nftContract = IERC721(requirement.nftContract);
         if (nftContract.balanceOf(msg.sender) == 0)
-            revert("You do not own any NFT from the required collection");
+            revert UserDoesNotOwnRequiredNFT();
 
         uint256 crossChainGas = 2 * (10 ** 18);
         uint256 zetaValueAndGas = _zetaConsumer.getZetaFromEth{
@@ -201,8 +205,7 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         address user,
         address nftContract
     ) public view returns (bool) {
-        if (nftContract == address(0))
-            revert("NFT contract address cannot be zero");
+        if (nftContract == address(0)) revert NFTContractAddressNotZero();
 
         IERC721 nft = IERC721(nftContract);
         return nft.balanceOf(user) > 0;
