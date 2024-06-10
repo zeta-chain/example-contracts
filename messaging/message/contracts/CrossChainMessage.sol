@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@zetachain/protocol-contracts/contracts/evm/tools/ZetaInteractor.sol";
 import "@zetachain/protocol-contracts/contracts/evm/interfaces/ZetaInterfaces.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     event CrossChainMessageRevertedEvent(string);
@@ -21,6 +22,8 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         uint256 giveawayId,
         address nftContract
     );
+    event ClaimedGiveaway(address indexed participant, uint256 giveawayId);
+    event RequirementSet(uint256 giveawayId, address nftContract);
 
     struct Giveaway {
         address creator;
@@ -37,6 +40,9 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
 
     mapping(uint256 => Giveaway) public giveaways;
     mapping(uint256 => Requirement) public requirements;
+    mapping(uint256 => mapping(address => bool)) public participants;
+    mapping(uint256 => mapping(address => bool)) public claimants;
+
     uint256 public giveawayCounter;
 
     ZetaTokenConsumer private immutable _zetaConsumer;
@@ -59,16 +65,13 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         address nftContract,
         uint256 destinationChainId
     ) external payable {
-        require(
-            blockHeight > block.number,
-            "Block height must be in the future"
-        );
-        require(prizeAmount > 0, "Prize amount must be greater than 0");
-        require(maxParticipants > 0, "Max participants must be greater than 0");
-        require(
-            nftContract != address(0),
-            "NFT contract address cannot be zero"
-        );
+        if (blockHeight <= block.number)
+            revert("Block height must be in the future");
+        if (prizeAmount <= 0) revert("Prize amount must be greater than 0");
+        if (maxParticipants <= 0)
+            revert("Max participants must be greater than 0");
+        if (nftContract == address(0))
+            revert("NFT contract address cannot be zero");
 
         if (!_isValidChainId(destinationChainId))
             revert InvalidDestinationChainId();
@@ -112,14 +115,25 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override {
-        (uint256 messageType, uint256 giveawayId, address nftContract) = abi
-            .decode(zetaMessage.message, (uint256, uint256, address));
+        uint256 messageType = abi.decode(zetaMessage.message, (uint256));
 
         if (messageType == 1) {
+            (, uint256 giveawayId, address nftContract) = abi.decode(
+                zetaMessage.message,
+                (uint256, uint256, address)
+            );
+
             requirements[giveawayId] = Requirement({
                 giveawayId: giveawayId,
                 nftContract: nftContract
             });
+        } else if (messageType == 2) {
+            (, uint256 giveawayId, address participant) = abi.decode(
+                zetaMessage.message,
+                (uint256, uint256, address)
+            );
+
+            participants[giveawayId][participant] = true;
         }
     }
 
@@ -129,5 +143,72 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         string memory message = abi.decode(zetaRevert.message, (string));
 
         emit CrossChainMessageRevertedEvent(message);
+    }
+
+    function claim(uint256 giveawayId) external payable {
+        Requirement memory requirement = requirements[giveawayId];
+        if (requirement.nftContract == address(0))
+            revert("Invalid giveaway ID");
+
+        IERC721 nftContract = IERC721(requirement.nftContract);
+        if (nftContract.balanceOf(msg.sender) == 0)
+            revert("You do not own any NFT from the required collection");
+
+        uint256 crossChainGas = 2 * (10 ** 18);
+        uint256 zetaValueAndGas = _zetaConsumer.getZetaFromEth{
+            value: msg.value
+        }(address(this), crossChainGas);
+        _zetaToken.approve(address(connector), zetaValueAndGas);
+
+        connector.send(
+            ZetaInterfaces.SendInput({
+                destinationChainId: 7001,
+                destinationAddress: interactorsByChainId[7001],
+                destinationGasLimit: 300000,
+                message: abi.encode(3, giveawayId, msg.sender),
+                zetaValueAndGas: zetaValueAndGas,
+                zetaParams: abi.encode("")
+            })
+        );
+
+        emit ClaimedGiveaway(msg.sender, giveawayId);
+    }
+
+    function setRequirement(
+        uint256 giveawayId,
+        address nftContract
+    ) external onlyOwner {
+        if (nftContract == address(0))
+            revert("NFT contract address cannot be zero");
+
+        requirements[giveawayId] = Requirement({
+            giveawayId: giveawayId,
+            nftContract: nftContract
+        });
+
+        emit RequirementSet(giveawayId, nftContract);
+    }
+
+    function participate(uint256 giveawayId) external payable {
+        Requirement memory requirement = requirements[giveawayId];
+        if (requirement.nftContract == address(0))
+            revert("Invalid giveaway ID");
+
+        uint256 crossChainGas = 2 * (10 ** 18);
+        uint256 zetaValueAndGas = _zetaConsumer.getZetaFromEth{
+            value: msg.value
+        }(address(this), crossChainGas);
+        _zetaToken.approve(address(connector), zetaValueAndGas);
+
+        connector.send(
+            ZetaInterfaces.SendInput({
+                destinationChainId: 7001,
+                destinationAddress: interactorsByChainId[7001],
+                destinationGasLimit: 300000,
+                message: abi.encode(2, giveawayId, msg.sender),
+                zetaValueAndGas: zetaValueAndGas,
+                zetaParams: abi.encode("")
+            })
+        );
     }
 }
