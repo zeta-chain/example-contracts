@@ -1,11 +1,12 @@
 import "./tasks/interact";
 import "./tasks/deploy";
-import "./tasks/createGiveaway";
+import "./tasks/create-giveaway";
 import "./tasks/mint";
 import "./tasks/deploy-nft";
-import "./tasks/set-req";
+import "./tasks/set-requirement";
 import "./tasks/participate";
 import "./tasks/claim";
+import "./tasks/has-nft";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
 

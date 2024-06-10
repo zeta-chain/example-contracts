@@ -7,12 +7,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const factory = await hre.ethers.getContractFactory("CrossChainMessage");
   const contract = factory.attach(args.contract);
 
-  const tx = await contract.connect(signer).setRequirement(args.id, args.nft);
+  const tx = await contract.connect(signer).hasNFT(args.account, args.nft);
 
   console.log(tx);
 };
 
-task("set-req", "", main)
+task("has-nft", "", main)
   .addParam("contract", "Contract address")
-  .addParam("id")
-  .addParam("nft");
+  .addParam("account")
+  .addParam("nft", "NFT contract address");
