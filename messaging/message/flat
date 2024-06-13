@@ -1948,13 +1948,8 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         address nftContract;
     }
 
-    struct Requirement {
-        uint256 giveawayId;
-        address nftContract;
-    }
-
     mapping(uint256 => Giveaway) public giveaways;
-    mapping(uint256 => Requirement) public requirements;
+    mapping(uint256 => address) public requirements;
     mapping(uint256 => mapping(uint256 => address)) public participants;
     mapping(uint256 => uint256) public participantCounters;
 
@@ -2042,24 +2037,16 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     function onZetaMessage(
         ZetaInterfaces.ZetaMessage calldata zetaMessage
     ) external override {
-        uint256 messageType = abi.decode(zetaMessage.message, (uint256));
+        (uint256 messageType, uint256 giveawayId, address addr) = abi.decode(
+            zetaMessage.message,
+            (uint256, uint256, address)
+        );
 
         if (messageType == 1) {
-            (, uint256 giveawayId, address nftContract) = abi.decode(
-                zetaMessage.message,
-                (uint256, uint256, address)
-            );
-            requirements[giveawayId] = Requirement({
-                giveawayId: giveawayId,
-                nftContract: nftContract
-            });
+            requirements[giveawayId] = addr;
         } else if (messageType == 2) {
-            (, uint256 giveawayId, address participant) = abi.decode(
-                zetaMessage.message,
-                (uint256, uint256, address)
-            );
             uint256 participantId = participantCounters[giveawayId]++;
-            participants[giveawayId][participantId] = participant;
+            participants[giveawayId][participantId] = addr;
         } else {
             revert InvalidMessageType();
         }
@@ -2073,27 +2060,11 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         emit CrossChainMessageRevertedEvent(message);
     }
 
-    function setRequirement(address nftContract) external onlyOwner {
-        require(
-            nftContract != address(0),
-            "NFT contract address cannot be zero"
-        );
-
-        requirements[giveawayCounter] = Requirement({
-            giveawayId: giveawayCounter,
-            nftContract: nftContract
-        });
-
-        emit RequirementSet(giveawayCounter, nftContract);
-
-        giveawayCounter++;
-    }
-
     function participate(uint256 giveawayId) external payable {
-        Requirement memory requirement = requirements[giveawayId];
-        if (requirement.nftContract == address(0)) revert InvalidGiveawayID();
+        address nftContractAddress = requirements[giveawayId];
+        if (nftContractAddress == address(0)) revert InvalidGiveawayID();
 
-        IERC721 nftContract = IERC721(requirement.nftContract);
+        IERC721 nftContract = IERC721(nftContractAddress);
         if (nftContract.balanceOf(msg.sender) == 0)
             revert UserDoesNotOwnRequiredNFT();
 
@@ -2158,13 +2129,12 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
 
 pragma solidity ^0.8.0;
 
-
-contract MyNFT is ERC721, Ownable {
+contract MyNFT is ERC721 {
     uint256 private _currentTokenId = 0;
 
     constructor() ERC721("MyNFT", "MNFT") {}
 
-    function mintTo(address recipient) public onlyOwner returns (uint256) {
+    function mintTo(address recipient) public returns (uint256) {
         uint256 newTokenId = _currentTokenId;
         _currentTokenId += 1;
         _mint(recipient, newTokenId);
