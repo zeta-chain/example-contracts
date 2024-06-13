@@ -19,6 +19,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const nftContract = args.nftContract;
 
   const value = parseEther(args.amount);
+  const title = args.title || "";
 
   const tx = await contract
     .connect(signer)
@@ -28,6 +29,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       maxParticipants,
       nftContract,
       destination,
+      title,
       { value }
     );
 
@@ -57,4 +59,5 @@ task(
   )
   .addParam("prizeAmount", "Prize amount in tokens")
   .addParam("maxParticipants", "Max number of participants")
-  .addParam("nftContract", "NFT contract address");
+  .addParam("nftContract", "NFT contract address")
+  .addOptionalParam("title");

@@ -36,6 +36,8 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         uint256 prizeAmount;
         uint256 maxParticipants;
         address nftContract;
+        bool completed;
+        string title;
     }
 
     mapping(uint256 => Giveaway) public giveaways;
@@ -56,6 +58,7 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     error InvalidGiveawayID();
     error UserDoesNotOwnRequiredNFT();
     error InsufficientValueProvided();
+    error GiveawayAlreadyCompleted();
 
     constructor(
         address connectorAddress,
@@ -72,7 +75,8 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
         uint256 prizeAmount,
         uint256 maxParticipants,
         address nftContract,
-        uint256 destinationChainId
+        uint256 destinationChainId,
+        string memory title
     ) external payable {
         if (blockHeight <= block.number) revert BlockHeightInFuture();
         if (prizeAmount <= 0) revert PrizeAmountGreaterThanZero();
@@ -88,7 +92,9 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
             giveawayId: giveawayCounter,
             prizeAmount: prizeAmount,
             maxParticipants: maxParticipants,
-            nftContract: nftContract
+            nftContract: nftContract,
+            completed: false,
+            title: title
         });
 
         uint256 crossChainGas = 3 * (10 ** 18);
@@ -200,7 +206,10 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
     }
 
     function distributeRewards(uint256 giveawayId) external {
-        Giveaway memory giveaway = giveaways[giveawayId];
+        Giveaway storage giveaway = giveaways[giveawayId];
+
+        if (giveaway.completed) revert GiveawayAlreadyCompleted();
+
         uint256 participantCount = participantCounters[giveawayId];
 
         for (uint256 i = 0; i < participantCount; i++) {
@@ -210,5 +219,7 @@ contract CrossChainMessage is ZetaInteractor, ZetaReceiver {
                 "Transfer failed"
             );
         }
+
+        giveaway.completed = true;
     }
 }
