@@ -23,10 +23,15 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     recipient = args.recipient;
   }
 
+  let withdraw = true;
+  if (args.withdraw != undefined) {
+    withdraw = JSON.parse(args.withdraw);
+  }
+
   const data = prepareData(
     args.contract,
-    ["address", "bytes"],
-    [args.targetToken, recipient]
+    ["address", "bytes", "bool"],
+    [args.targetToken, recipient, withdraw]
   );
 
   let tx;
@@ -75,4 +80,5 @@ task("interact", "Interact with the contract", main)
   .addOptionalParam("token", "The address of the token to send")
   .addFlag("json", "Output in JSON")
   .addParam("targetToken")
-  .addParam("recipient");
+  .addParam("recipient")
+  .addOptionalParam("withdraw");

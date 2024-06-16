@@ -17,35 +17,46 @@ contract SwapToZeta is zContract, OnlySystem {
         systemContract = SystemContract(systemContractAddress);
     }
 
+    struct Params {
+        address target;
+        bytes to;
+        bool withdraw;
+    }
+
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external virtual override onlySystem(systemContract) {
-        address target;
-        bytes memory to;
+        Params memory params = Params({
+            target: address(0),
+            to: bytes(""),
+            withdraw: true
+        });
 
         if (context.chainID == BITCOIN) {
-            target = BytesHelperLib.bytesToAddress(message, 0);
-            to = abi.encodePacked(BytesHelperLib.bytesToAddress(message, 20));
+            params.target = BytesHelperLib.bytesToAddress(message, 0);
+            params.to = abi.encodePacked(BytesHelperLib.bytesToAddress(message, 20));
+            if (message.length >= 41) {
+                params.withdraw = bytesToBool(message, 40);
+            }
         } else {
-            (address targetToken, bytes memory recipient) = abi.decode(
+            (address targetToken, bytes memory recipient, bool withdrawFlag) = abi.decode(
                 message,
-                (address, bytes)
+                (address, bytes, bool)
             );
-            target = targetToken;
-            to = recipient;
+            params.target = targetToken;
+            params.to = recipient;
+            params.withdraw = withdrawFlag;
         }
 
-        address wzeta = systemContract.wZetaContractAddress();
-        bool isTargetZeta = target == wzeta;
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
 
-        if (!isTargetZeta) {
-            (gasZRC20, gasFee) = IZRC20(target).withdrawGasFee();
+        if (params.withdraw) {
+            (gasZRC20, gasFee) = IZRC20(params.target).withdrawGasFee();
 
             inputForGas = SwapHelperLib.swapTokensForExactTokens(
                 systemContract,
@@ -59,16 +70,25 @@ contract SwapToZeta is zContract, OnlySystem {
         uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
             systemContract,
             zrc20,
-            isTargetZeta ? amount : amount - inputForGas,
-            target,
+            params.withdraw ? amount - inputForGas : amount,
+            params.target,
             0
         );
 
-        if (isTargetZeta) {
-            IWETH9(wzeta).transfer(address(uint160(bytes20(to))), outputAmount);
+        if (!params.withdraw) {
+            IWETH9(params.target).transfer(address(uint160(bytes20(params.to))), outputAmount);
         } else {
-            IZRC20(gasZRC20).approve(target, gasFee);
-            IZRC20(target).withdraw(to, outputAmount);
+            IZRC20(gasZRC20).approve(params.target, gasFee);
+            IZRC20(params.target).withdraw(params.to, outputAmount);
         }
+    }
+
+    function bytesToBool(bytes calldata data, uint256 offset)
+        internal
+        pure
+        returns (bool)
+    {
+        require(offset < data.length, "Offset is out of bounds");
+        return uint8(data[offset]) != 0;
     }
 }
