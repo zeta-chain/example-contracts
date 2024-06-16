@@ -8,7 +8,7 @@ import "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IWZETA.sol";
 import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
-contract SwapToZeta is zContract, OnlySystem {
+contract SwapToAnyToken is zContract, OnlySystem {
     SystemContract public systemContract;
 
     uint256 constant BITCOIN = 18332;

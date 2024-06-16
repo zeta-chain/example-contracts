@@ -7,17 +7,17 @@ import { ethers } from "hardhat";
 import {
   MockSystemContract,
   MockZRC20,
-  SwapToZeta,
-  SwapToZeta__factory,
+  SwapToAnyToken,
+  SwapToAnyToken__factory,
   TestUniswapRouter,
   UniswapV2Factory,
   WZETA,
 } from "../typechain-types";
 
-describe("Swap", function () {
+describe("SwapToAnyToken", function () {
   let uniswapFactory: UniswapV2Factory;
   let uniswapRouter: TestUniswapRouter;
-  let swapToZeta: SwapToZeta;
+  let swapToAnyToken: SwapToAnyToken;
   let accounts: SignerWithAddress[];
   let deployer: SignerWithAddress;
   let systemContract: MockSystemContract;
@@ -43,15 +43,15 @@ describe("Swap", function () {
     ZRC20Contracts = evmSetupResult.ZRC20Contracts;
     systemContract = evmSetupResult.systemContract;
 
-    const SwapToZetaFactory = (await ethers.getContractFactory(
-      "SwapToZeta"
-    )) as SwapToZeta__factory;
+    const SwapToAnyTokenFactory = (await ethers.getContractFactory(
+      "SwapToAnyToken"
+    )) as SwapToAnyToken__factory;
 
-    swapToZeta = (await SwapToZetaFactory.deploy(systemContract.address)) as SwapToZeta;
-    await swapToZeta.deployed();
+    swapToAnyToken = (await SwapToAnyTokenFactory.deploy(systemContract.address)) as SwapToAnyToken;
+    await swapToAnyToken.deployed();
   });
 
-  describe("SwapToZeta", function () {
+  describe("SwapToAnyToken", function () {
     it("Should do swap from EVM Chain and withdraw", async function () {
       const amount = parseEther("1");
       await ZRC20Contracts[0].transfer(systemContract.address, amount);
@@ -71,7 +71,7 @@ describe("Swap", function () {
 
       await systemContract.onCrossChainCall(
         1, // ETH chain id
-        swapToZeta.address,
+        swapToAnyToken.address,
         ZRC20Contracts[0].address,
         amount,
         params,
@@ -103,7 +103,7 @@ describe("Swap", function () {
 
       await systemContract.onCrossChainCall(
         1, // ETH chain id
-        swapToZeta.address,
+        swapToAnyToken.address,
         ZRC20Contracts[0].address,
         amount,
         params,
@@ -131,7 +131,7 @@ describe("Swap", function () {
 
       await systemContract.onCrossChainCall(
         18332, // Bitcoin chain id
-        swapToZeta.address,
+        swapToAnyToken.address,
         ZRC20Contracts[0].address,
         amount,
         params,
@@ -159,7 +159,7 @@ describe("Swap", function () {
 
       await systemContract.onCrossChainCall(
         18332, // Bitcoin chain id
-        swapToZeta.address,
+        swapToAnyToken.address,
         ZRC20Contracts[0].address,
         amount,
         params,
