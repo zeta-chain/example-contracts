@@ -10,12 +10,15 @@ import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
 contract SwapToZeta is zContract, OnlySystem {
     SystemContract public systemContract;
+    error ZETATransferFailed(string);
 
     uint256 constant BITCOIN = 18332;
 
     constructor(address systemContractAddress) {
         systemContract = SystemContract(systemContractAddress);
     }
+
+    receive() external payable {}
 
     function onCrossChainCall(
         zContext calldata context,
@@ -65,7 +68,14 @@ contract SwapToZeta is zContract, OnlySystem {
         );
 
         if (isTargetZeta) {
-            IWETH9(wzeta).transfer(address(uint160(bytes20(to))), outputAmount);
+            IWETH9(wzeta).withdraw(outputAmount);
+            (bool success, ) = payable(address(uint160(bytes20(to)))).call{
+                value: outputAmount
+            }("");
+            if (!success)
+                revert ZETATransferFailed(
+                    "Cannot withdraw and transfer ZETA to recipient"
+                );
         } else {
             IZRC20(gasZRC20).approve(target, gasFee);
             IZRC20(target).withdraw(to, outputAmount);
