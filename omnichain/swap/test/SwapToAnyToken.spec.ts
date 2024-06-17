@@ -88,7 +88,6 @@ describe("SwapToAnyToken", function () {
       await ZRC20Contracts[0].transfer(systemContract.address, amount);
 
       const initBalance = await ZRC20Contracts[1].balanceOf(deployer.address);
-      console.log("initBalance", initBalance.toString());
 
       const recipient = ethers.utils.hexlify(
         ethers.utils.zeroPad(deployer.address, 32)
@@ -111,7 +110,6 @@ describe("SwapToAnyToken", function () {
       );
 
       const endBalance = await ZRC20Contracts[1].balanceOf(deployer.address);
-      console.log("endBalance", endBalance.toString());
       expect(endBalance).to.be.gt(initBalance);
     });
 
