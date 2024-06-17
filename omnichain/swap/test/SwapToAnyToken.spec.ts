@@ -1,7 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { deployUniswap, deployWZETA, evmSetup } from "@zetachain/toolkit/test";
 import { expect } from "chai";
-import { defaultAbiCoder, parseEther, parseUnits } from "ethers/lib/utils";
+import { defaultAbiCoder, parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
 import {
@@ -58,9 +58,7 @@ describe("SwapToAnyToken", function () {
 
       const initBalance = await ZRC20Contracts[1].balanceOf(deployer.address);
 
-      const recipient = ethers.utils.hexlify(
-        ethers.utils.zeroPad(deployer.address, 32)
-      );
+      const recipient = ethers.utils.arrayify(deployer.address);
 
       const withdraw = true;
 
@@ -89,9 +87,7 @@ describe("SwapToAnyToken", function () {
 
       const initBalance = await ZRC20Contracts[1].balanceOf(deployer.address);
 
-      const recipient = ethers.utils.hexlify(
-        ethers.utils.zeroPad(deployer.address, 32)
-      );
+      const recipient = ethers.utils.arrayify(deployer.address);
 
       const withdraw = false;
 
