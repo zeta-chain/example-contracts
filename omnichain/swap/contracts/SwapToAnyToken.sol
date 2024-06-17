@@ -75,11 +75,11 @@ contract SwapToAnyToken is zContract, OnlySystem {
             0
         );
 
-        if (!params.withdraw) {
-            IWETH9(params.target).transfer(address(uint160(bytes20(params.to))), outputAmount);
-        } else {
+        if (params.withdraw) {
             IZRC20(gasZRC20).approve(params.target, gasFee);
             IZRC20(params.target).withdraw(params.to, outputAmount);
+        } else {
+            IWETH9(params.target).transfer(address(uint160(bytes20(params.to))), outputAmount);
         }
     }
 
