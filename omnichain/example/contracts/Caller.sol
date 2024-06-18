@@ -7,9 +7,12 @@ contract Caller {
     error DepositFailed();
 
     function deposit(address universalAppAddress) public payable {
-        bytes memory data = abi.encodePacked();
+        bytes memory data = abi.encodePacked(universalAppAddress);
 
-        (bool success, ) = tssAddress.call{value: msg.value, gas: 100000}(data);
+        (bool success, ) = payable(tssAddress).call{
+            value: msg.value,
+            gas: 100000
+        }(data);
 
         if (success) {
             emit DepositSuccess(msg.sender, universalAppAddress);

@@ -1,5 +1,7 @@
 import "./tasks/interact";
 import "./tasks/deploy";
+import "./tasks/deposit-caller";
+import "./tasks/deploy-caller";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
 
