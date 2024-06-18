@@ -42,10 +42,13 @@ contract Swap is zContract, OnlySystem {
             params.to = recipient;
         }
 
-        (address gasZRC20, uint256 gasFee) = IZRC20(params.target)
-            .withdrawGasFee();
+        uint256 inputForGas;
+        address gasZRC20;
+        uint256 gasFee;
 
-        uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
+        (gasZRC20, gasFee) = IZRC20(params.target).withdrawGasFee();
+
+        inputForGas = SwapHelperLib.swapTokensForExactTokens(
             systemContract,
             zrc20,
             gasFee,
