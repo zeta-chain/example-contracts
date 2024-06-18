@@ -15,18 +15,22 @@ contract Swap is zContract, OnlySystem {
         systemContract = SystemContract(systemContractAddress);
     }
 
+    struct Params {
+        address target;
+        bytes to;
+    }
+
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external virtual override onlySystem(systemContract) {
-        address targetTokenAddress;
-        bytes memory recipientAddress;
+        Params memory params = Params({target: address(0), to: bytes("")});
 
         if (context.chainID == BITCOIN) {
-            targetTokenAddress = BytesHelperLib.bytesToAddress(message, 0);
-            recipientAddress = abi.encodePacked(
+            params.target = BytesHelperLib.bytesToAddress(message, 0);
+            params.to = abi.encodePacked(
                 BytesHelperLib.bytesToAddress(message, 20)
             );
         } else {
@@ -34,11 +38,11 @@ contract Swap is zContract, OnlySystem {
                 message,
                 (address, bytes)
             );
-            targetTokenAddress = targetToken;
-            recipientAddress = recipient;
+            params.target = targetToken;
+            params.to = recipient;
         }
 
-        (address gasZRC20, uint256 gasFee) = IZRC20(targetTokenAddress)
+        (address gasZRC20, uint256 gasFee) = IZRC20(params.target)
             .withdrawGasFee();
 
         uint256 inputForGas = SwapHelperLib.swapTokensForExactTokens(
@@ -53,11 +57,11 @@ contract Swap is zContract, OnlySystem {
             systemContract,
             zrc20,
             amount - inputForGas,
-            targetTokenAddress,
+            params.target,
             0
         );
 
-        IZRC20(gasZRC20).approve(targetTokenAddress, gasFee);
-        IZRC20(targetTokenAddress).withdraw(recipientAddress, outputAmount);
+        IZRC20(gasZRC20).approve(params.target, gasFee);
+        IZRC20(params.target).withdraw(params.to, outputAmount);
     }
 }
