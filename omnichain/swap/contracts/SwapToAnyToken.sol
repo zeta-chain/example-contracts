@@ -39,7 +39,7 @@ contract SwapToAnyToken is zContract, OnlySystem {
             params.target = BytesHelperLib.bytesToAddress(message, 0);
             params.to = abi.encodePacked(BytesHelperLib.bytesToAddress(message, 20));
             if (message.length >= 41) {
-                params.withdraw = bytesToBool(message, 40);
+                params.withdraw = BytesHelperLib.bytesToBool(message, 40);
             }
         } else {
             (address targetToken, bytes memory recipient, bool withdrawFlag) = abi.decode(
@@ -81,14 +81,5 @@ contract SwapToAnyToken is zContract, OnlySystem {
         } else {
             IWETH9(params.target).transfer(address(uint160(bytes20(params.to))), outputAmount);
         }
-    }
-
-    function bytesToBool(bytes calldata data, uint256 offset)
-        internal
-        pure
-        returns (bool)
-    {
-        require(offset < data.length, "Offset is out of bounds");
-        return uint8(data[offset]) != 0;
     }
 }
