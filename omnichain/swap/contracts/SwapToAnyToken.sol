@@ -23,6 +23,8 @@ contract SwapToAnyToken is zContract, OnlySystem {
         bool withdraw;
     }
 
+    receive() external payable {}
+
     function onCrossChainCall(
         zContext calldata context,
         address zrc20,
@@ -37,15 +39,18 @@ contract SwapToAnyToken is zContract, OnlySystem {
 
         if (context.chainID == BITCOIN) {
             params.target = BytesHelperLib.bytesToAddress(message, 0);
-            params.to = abi.encodePacked(BytesHelperLib.bytesToAddress(message, 20));
+            params.to = abi.encodePacked(
+                BytesHelperLib.bytesToAddress(message, 20)
+            );
             if (message.length >= 41) {
                 params.withdraw = BytesHelperLib.bytesToBool(message, 40);
             }
         } else {
-            (address targetToken, bytes memory recipient, bool withdrawFlag) = abi.decode(
-                message,
-                (address, bytes, bool)
-            );
+            (
+                address targetToken,
+                bytes memory recipient,
+                bool withdrawFlag
+            ) = abi.decode(message, (address, bytes, bool));
             params.target = targetToken;
             params.to = recipient;
             params.withdraw = withdrawFlag;
@@ -79,7 +84,14 @@ contract SwapToAnyToken is zContract, OnlySystem {
             IZRC20(gasZRC20).approve(params.target, gasFee);
             IZRC20(params.target).withdraw(params.to, outputAmount);
         } else {
-            IWETH9(params.target).transfer(address(uint160(bytes20(params.to))), outputAmount);
+            address recipient = address(uint160(bytes20(params.to)));
+            address wzeta = systemContract.wZetaContractAddress();
+            if (params.target == wzeta) {
+                IWETH9(wzeta).withdraw(outputAmount);
+                payable(recipient).transfer(outputAmount);
+            } else {
+                IWETH9(params.target).transfer(recipient, outputAmount);
+            }
         }
     }
 }
