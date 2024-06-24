@@ -56,41 +56,73 @@ contract SwapToAnyToken is zContract, OnlySystem {
             params.withdraw = withdrawFlag;
         }
 
+        swapAndWithdraw(
+            zrc20,
+            amount,
+            params.target,
+            params.to,
+            params.withdraw
+        );
+    }
+
+    function swap(
+        address inputToken,
+        uint256 amount,
+        address targetToken,
+        bytes memory recipient,
+        bool withdraw
+    ) public {
+        IZRC20(inputToken).transferFrom(msg.sender, address(this), amount);
+
+        swapAndWithdraw(inputToken, amount, targetToken, recipient, withdraw);
+    }
+
+    function swapAndWithdraw(
+        address inputToken,
+        uint256 amount,
+        address targetToken,
+        bytes memory recipient,
+        bool withdraw
+    ) internal {
+        uint256 outputAmount;
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
 
-        if (params.withdraw) {
-            (gasZRC20, gasFee) = IZRC20(params.target).withdrawGasFee();
+        if (withdraw) {
+            (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
 
             inputForGas = SwapHelperLib.swapTokensForExactTokens(
                 systemContract,
-                zrc20,
+                inputToken,
                 gasFee,
                 gasZRC20,
                 amount
             );
         }
 
-        uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
+        outputAmount = SwapHelperLib.swapExactTokensForTokens(
             systemContract,
-            zrc20,
-            params.withdraw ? amount - inputForGas : amount,
-            params.target,
+            inputToken,
+            withdraw ? amount - inputForGas : amount,
+            targetToken,
             0
         );
 
-        if (params.withdraw) {
-            IZRC20(gasZRC20).approve(params.target, gasFee);
-            IZRC20(params.target).withdraw(params.to, outputAmount);
+        if (withdraw) {
+            IZRC20(gasZRC20).approve(targetToken, gasFee);
+            IZRC20(targetToken).withdraw(recipient, outputAmount);
         } else {
-            address recipient = address(uint160(bytes20(params.to)));
             address wzeta = systemContract.wZetaContractAddress();
-            if (params.target == wzeta) {
+            if (targetToken == wzeta) {
                 IWETH9(wzeta).withdraw(outputAmount);
-                payable(recipient).transfer(outputAmount);
+                address payable recipientAddress = payable(
+                    address(uint160(bytes20(recipient)))
+                );
+                recipientAddress.transfer(outputAmount);
             } else {
-                IWETH9(params.target).transfer(recipient, outputAmount);
+                address recipientAddress = address(uint160(bytes20(recipient)));
+                IWETH9(targetToken).transfer(recipientAddress, outputAmount);
             }
         }
     }
