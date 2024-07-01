@@ -1,9 +1,9 @@
 # Example ZetaChain contracts
 
-> Please, note that code from this repository is referenced in
-> [the documentation](https://github.com/zeta-chain/docs). When making changes
-> to the code especially when moving files, make sure to update the
-> documentation as well.
+> Please, note that code from this repository is referenced in [the
+> documentation](https://github.com/zeta-chain/docs). When making changes to the
+> code especially when moving files, make sure to update the documentation as
+> well.
 
 ## Overview
 
@@ -12,27 +12,19 @@ contract projects is written using Hardhat and Solidity, specifically for the
 ZetaChain blockchain. Each project showcases different functionalities and use
 cases that can be implemented on the ZetaChain platform.
 
-### Omnichain Contracts
+### Universal Apps
 
-The `omnichain` directory contains omnichain contracts. Omnichain is a unique
-interoperability feature of ZetaChain that allows you to write and deploy a
-single contract that can manage assets on all connected blockchains. Learn more
-about
-[omnichain contracts in the docs](https://www.zetachain.com/docs/developers/omnichain/overview/).
-
-### Cross-Chain Messaging
-
-The `messaging` directory contains contracts that demonstrate the ability to
-send data and value between blockchains using cross-chain transactions, without
-the need for warpped assets and bridges. Learn more about
-[cross-chain messaging in the docs](https://www.zetachain.com/docs/developers/cross-chain-messaging/overview/).
+The `omnichain` directory contains universal omnichain contracts. A universal
+app is a smart contract on ZetaChain that is natively connected to other
+blockchains like Ethereum, BNB and Bitcoin. Learn more about [universal apps in
+the docs](https://www.zetachain.com/docs/developers/apps/intro/).
 
 ## Tutorials
 
 If you are new to ZetaChain and would like to learn how to use these example
-contracts, check out
-[the developer section in the docs](https://www.zetachain.com/docs/developers/overview/).
-The tutorials provide step-by-step instructions on setting up your development
+contracts, check out [the Tutorial section in the
+docs](https://www.zetachain.com/docs/developers/tutorials/hello/). These
+tutorials provide step-by-step instructions on setting up your development
 environment, deploying contracts, and interacting with the ZetaChain network.
 
 ## Contributing
