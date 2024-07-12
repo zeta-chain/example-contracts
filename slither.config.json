@@ -1,0 +1,8 @@
+{
+	"detectors_to_exclude": "",
+	"compile_force_framework": "hardhat",
+	"hardhat_ignore_compile": true,
+	"npx_disable": true,
+	"foundry_ignore_compile": true,
+	"filter_paths": "artifacts,cache,data,dist,docs,lib,node_modules,pkg,scripts,tasks,test,testing,typechain-types"
+}
