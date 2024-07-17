@@ -104,13 +104,15 @@ contract SwapToAnyToken is zContract, OnlySystem {
             address wzeta = systemContract.wZetaContractAddress();
             if (targetToken == wzeta) {
                 IWETH9(wzeta).withdraw(outputAmount);
-                address payable recipientAddress = payable(
+                address payable to = payable(
                     address(uint160(bytes20(recipient)))
                 );
-                recipientAddress.transfer(outputAmount);
+                (bool success, ) = to.call{value: outputAmount}("");
+                if (!success) revert TransferFailed();
             } else {
-                address recipientAddress = address(uint160(bytes20(recipient)));
-                IWETH9(targetToken).transfer(recipientAddress, outputAmount);
+                address to = address(uint160(bytes20(recipient)));
+                bool success = IWETH9(targetToken).transfer(to, outputAmount);
+                if (!success) revert TransferFailed();
             }
         }
     }
