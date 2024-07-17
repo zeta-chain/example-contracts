@@ -72,7 +72,6 @@ contract SwapToAnyToken is zContract, OnlySystem {
         bytes memory recipient,
         bool withdraw
     ) internal {
-        uint256 outputAmount;
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
@@ -89,7 +88,7 @@ contract SwapToAnyToken is zContract, OnlySystem {
             );
         }
 
-        outputAmount = SwapHelperLib.swapExactTokensForTokens(
+        uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
             systemContract,
             inputToken,
             withdraw ? amount - inputForGas : amount,
