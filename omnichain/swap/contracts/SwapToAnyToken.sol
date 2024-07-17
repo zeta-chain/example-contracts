@@ -9,6 +9,7 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IWZETA.sol";
 import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
 contract SwapToAnyToken is zContract, OnlySystem {
+    error TransferFailed();
     SystemContract public systemContract;
 
     uint256 constant BITCOIN = 18332;
@@ -121,8 +122,12 @@ contract SwapToAnyToken is zContract, OnlySystem {
         bytes memory recipient,
         bool withdraw
     ) public {
-        IZRC20(inputToken).transferFrom(msg.sender, address(this), amount);
-
+        bool success = IZRC20(inputToken).transferFrom(
+            msg.sender,
+            address(this),
+            amount
+        );
+        if (!success) revert TransferFailed();
         swapAndWithdraw(inputToken, amount, targetToken, recipient, withdraw);
     }
 }
