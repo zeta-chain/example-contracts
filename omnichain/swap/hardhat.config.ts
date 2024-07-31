@@ -9,6 +9,20 @@ import { HardhatUserConfig } from "hardhat/config";
 const config: HardhatUserConfig = {
   networks: {
     ...getHardhatConfigNetworks(),
+    eth_mainnet: {
+      accounts: getHardhatConfigNetworks()["eth_mainnet"].accounts,
+      chainId: 1,
+      gas: 30000,
+      gasPrice: 5000000000,
+      url: "https://eth-mainnet.public.blastapi.io",
+    },
+    zeta_mainnet: {
+      accounts: getHardhatConfigNetworks()["zeta_mainnet"].accounts,
+      chainId: 7000,
+      gas: 5000000,
+      gasPrice: 10000000000,
+      url: "https://zetachain-evm.blockpi.network:443/v1/rpc/public",
+    },
   },
   solidity: {
     compilers: [

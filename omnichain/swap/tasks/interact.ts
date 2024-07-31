@@ -55,12 +55,18 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     const approve = await tokenContract.approve(custodyAddress, value);
     await approve.wait();
 
-    tx = await custodyContract.deposit(signer.address, args.token, value, data);
+    tx = await custodyContract.deposit(
+      signer.address,
+      args.token,
+      value,
+      data,
+      { gasLimit: 150000 }
+    );
     tx.wait();
   } else {
     const value = parseUnits(args.amount, 18);
     const to = getAddress("tss", hre.network.name as any);
-    tx = await signer.sendTransaction({ data, to, value });
+    tx = await signer.sendTransaction({ data, to, value, gasLimit: 200000 });
   }
 
   if (args.json) {
