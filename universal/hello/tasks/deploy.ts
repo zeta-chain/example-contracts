@@ -18,15 +18,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   }
 
-  const systemContract = getAddress("systemContract", network);
+  // const systemContract = getAddress("systemContract", network);
 
   const factory = await hre.ethers.getContractFactory(args.name);
-  const contract = await factory.deploy(systemContract);
+  // const contract = await factory.deploy(systemContract);
+  const contract = await factory.deploy();
   await contract.deployed();
-
-  const isTestnet = network === "zeta_testnet";
-  const zetascan = isTestnet ? "athens.explorer" : "explorer";
-  const blockscout = isTestnet ? "zetachain-athens-3" : "zetachain";
 
   if (args.json) {
     console.log(JSON.stringify(contract));
@@ -35,12 +32,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 🚀 Successfully deployed contract on ${network}.
 📜 Contract address: ${contract.address}
-🌍 ZetaScan: https://${zetascan}.zetachain.com/address/${contract.address}
-🌍 Blockcsout: https://${blockscout}.blockscout.com/address/${contract.address}
 `);
   }
 };
 
 task("deploy", "Deploy the contract", main)
   .addFlag("json", "Output in JSON")
-  .addOptionalParam("name", "Contract to deploy", "Swap");
+  .addOptionalParam("name", "Contract to deploy", "Hello");
