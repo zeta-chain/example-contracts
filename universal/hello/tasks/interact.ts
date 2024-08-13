@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
-import GatewayABI from "@zetachain/protocol-contracts/abi/prototypes/evm/GatewayEVM.sol/GatewayEVM.json";
+import GatewayABI from "@zetachain/protocol-contracts/abi/GatewayEVM.sol/GatewayEVM.json";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -16,11 +16,16 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     [args.name]
   );
   try {
-    const callTx = await gateway.call(args.contract, message);
+    const callTx = await gateway.call(args.contract, message, {
+      revertAddress: "0x4955a3F38ff86ae92A914445099caa8eA2B9bA32",
+      callOnRevert: false,
+      abortAddress: "0x4955a3F38ff86ae92A914445099caa8eA2B9bA32",
+      revertMessage: "0x",
+    });
     await callTx.wait();
     console.log("Contract on ZetaChain called from EVM");
   } catch (e) {
-    console.error("Error calling TestZContract:", e);
+    console.error("Error calling contract:", e);
   }
 };
 

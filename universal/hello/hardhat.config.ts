@@ -11,7 +11,7 @@ const config: HardhatUserConfig = {
   networks: {
     ...getHardhatConfigNetworks(),
   },
-  solidity: "0.8.7",
+  solidity: "0.8.26",
 };
 
 export default config;

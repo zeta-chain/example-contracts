@@ -1,4 +1,3 @@
-import { getAddress, ParamChainName } from "@zetachain/protocol-contracts";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 

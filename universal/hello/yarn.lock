@@ -1452,10 +1452,20 @@
     table "^6.8.0"
     undici "^5.14.0"
 
+"@openzeppelin/contracts-upgradeable@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-5.0.2.tgz#3e5321a2ecdd0b206064356798c21225b6ec7105"
+  integrity sha512-0MmkHSHiW2NRFiT9/r5Lu4eJq5UJ4/tzlOgYXNAIj/ONkQTVnz22pLxDvp4C4uZ9he7ZFvGn3Driptn1/iU7tQ==
+
 "@openzeppelin/contracts@^4.9.6":
   version "4.9.6"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.9.6.tgz#2a880a24eb19b4f8b25adc2a5095f2aa27f39677"
   integrity sha512-xSmezSupL+y9VkHZJGDoCBpmnB2ogM13ccaYDWqJTfS3dbuHkgjuwDFUmaFauBCboQMGB/S5UqUl2y54X99BmA==
+
+"@openzeppelin/contracts@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-5.0.2.tgz#b1d03075e49290d06570b2fd42154d76c2a5d210"
+  integrity sha512-ytPc6eLGcHHnapAZ9S+5qsdomhjo6QBHTDRRBFfTxXIpsicMhVPouPgmUPebZZZGX7vt9USA+Z+0M0dSVtSUEA==
 
 "@scure/base@~1.1.0":
   version "1.1.1"
@@ -1895,10 +1905,10 @@
     typescript "5.0.4"
     zod "3.19.1"
 
-"@zetachain/localnet@1.0.0-rc6":
-  version "1.0.0-rc6"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-1.0.0-rc6.tgz#41038660518478dbc3ca28182fb2ecb059491a90"
-  integrity sha512-WUVpKZMWrBVQzH9symUDttq/0aoyPjUXTU7xQLNyTh3JVqezwyfG58kk8Madbsk31cSLm2ErBX/BdwIKlCKEFg==
+"@zetachain/localnet@1.0.0-rc7":
+  version "1.0.0-rc7"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-1.0.0-rc7.tgz#02b6c2b624d11753b1cf2e04477114e255840489"
+  integrity sha512-8ItKSdyLu79BMtWLbPf3UPrKNqbj/r43O5geFKocpY+fRxR3h6kgAaTx07/V6gVdyLCO4Zm/7BCAzIJE7tss3Q==
   dependencies:
     "@zetachain/protocol-contracts" "10.0.0-rc5"
     concurrently "^8.2.2"
@@ -1920,15 +1930,19 @@
   dependencies:
     ethers "^6.13.1"
 
+"@zetachain/protocol-contracts@10.0.0-rc8":
+  version "10.0.0-rc8"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-10.0.0-rc8.tgz#3ca4385c87daf7978cff01366f64beecba5bb3b6"
+  integrity sha512-RWFxwmLDMJfSh8IOxrCoJTVrlJcfCBiEMULVrBRQJk7cg7J/X10YEqdoglYZCrmkSrWoHEd0s6zbckXKjUA1FQ==
+  dependencies:
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    ethers "^6.13.1"
+
 "@zetachain/protocol-contracts@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-7.0.0.tgz#20eb6c62d805d7470408ccdff0e3614684bca174"
   integrity sha512-8JTNFZxVZYmDtAXJIEr+tkakuML12X42Fya4bJ1NkfWiVMkcSej92BSTl/35qYtHdjY7vXy9uMrfXEqfw5rsPw==
-
-"@zetachain/protocol-contracts@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-9.0.0.tgz#c20ad5da43f6f3676f31556b303d1cb4ea17357e"
-  integrity sha512-L4A8bddlyhjaBAsIv/x1Bvxc38RJz8U8rbbBtxK5oVyOAd5Zz04ZiT3HqzO4FuKq6RGGM1uiA8jvUfmRkKchXw==
 
 "@zetachain/toolkit@^10.0.0":
   version "10.0.0"
