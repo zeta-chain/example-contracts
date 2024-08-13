@@ -16,12 +16,20 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     [args.name]
   );
   try {
-    const callTx = await gateway.call(args.contract, message, {
-      revertAddress: "0x4955a3F38ff86ae92A914445099caa8eA2B9bA32",
-      callOnRevert: false,
-      abortAddress: "0x4955a3F38ff86ae92A914445099caa8eA2B9bA32",
-      revertMessage: "0x",
-    });
+    const callTx = await gateway.call(
+      args.contract,
+      message,
+      {
+        revertAddress: "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+        callOnRevert: true,
+        abortAddress: "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+        revertMessage: "0x",
+      },
+      {
+        gasPrice: 10000000000,
+        gasLimit: 6721975,
+      }
+    );
     await callTx.wait();
     console.log("Contract on ZetaChain called from EVM");
   } catch (e) {
