@@ -5,3 +5,7 @@ viaIR = true
 libs = ['node_modules', 'lib']
 test = 'test'
 cache_path  = 'cache_forge'
+verbosity = 3
+
+[dependencies]
+forge-std = { version = "1.9.2" }

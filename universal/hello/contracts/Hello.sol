@@ -15,6 +15,8 @@ contract Hello is UniversalContract {
         string message
     );
 
+    event Foo(string message);
+
     event ContextDataRevert(RevertContext revertContext);
 
     function onCrossChainCall(
@@ -23,6 +25,7 @@ contract Hello is UniversalContract {
         uint256 amount,
         bytes calldata message
     ) external override {
+        emit Foo("Hello from Hello contract");
         string memory decodedMessage;
         if (message.length > 0) {
             decodedMessage = abi.decode(message, (string));

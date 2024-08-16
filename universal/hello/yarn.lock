@@ -1905,12 +1905,12 @@
     typescript "5.0.4"
     zod "3.19.1"
 
-"@zetachain/localnet@1.0.0-rc7":
-  version "1.0.0-rc7"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-1.0.0-rc7.tgz#02b6c2b624d11753b1cf2e04477114e255840489"
-  integrity sha512-8ItKSdyLu79BMtWLbPf3UPrKNqbj/r43O5geFKocpY+fRxR3h6kgAaTx07/V6gVdyLCO4Zm/7BCAzIJE7tss3Q==
+"@zetachain/localnet@1.0.0-rc9":
+  version "1.0.0-rc9"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-1.0.0-rc9.tgz#cc50e39780fb975f5259c87827f1796fc73bc6b5"
+  integrity sha512-GX0INak8xI86GjyLF1Nmw0bqFXZcfDYvTDIBX+VQRyQ3cIFMycNt3hagWW/GND6AcB6ENo4aphKKr/jnpZh2pQ==
   dependencies:
-    "@zetachain/protocol-contracts" "10.0.0-rc5"
+    "@zetachain/protocol-contracts" "10.0.0-rc8"
     concurrently "^8.2.2"
     ethers "^6.13.2"
     hardhat "^2.22.8"
@@ -1923,17 +1923,19 @@
   dependencies:
     dotenv "^16.1.4"
 
-"@zetachain/protocol-contracts@10.0.0-rc5":
-  version "10.0.0-rc5"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-10.0.0-rc5.tgz#130fca5a67256289edbc7ab36ee3bf5af5bbc6b8"
-  integrity sha512-YUZR7DuKbBi8tEaeoH+133psxxunn0EsIeQvuj1KxaIl4Fp5kRCHFQDalzp0Yw0VtGMG8uWr30My6rRTdtAccQ==
-  dependencies:
-    ethers "^6.13.1"
-
 "@zetachain/protocol-contracts@10.0.0-rc8":
   version "10.0.0-rc8"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-10.0.0-rc8.tgz#3ca4385c87daf7978cff01366f64beecba5bb3b6"
   integrity sha512-RWFxwmLDMJfSh8IOxrCoJTVrlJcfCBiEMULVrBRQJk7cg7J/X10YEqdoglYZCrmkSrWoHEd0s6zbckXKjUA1FQ==
+  dependencies:
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    ethers "^6.13.1"
+
+"@zetachain/protocol-contracts@10.0.0-rc9":
+  version "10.0.0-rc9"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-10.0.0-rc9.tgz#edee08ded7ac1d200ba20f595fe916e9c3a66203"
+  integrity sha512-oAmsbpjCglGEL8oQVk+UKYBIdo9ZVP2kIUGnIw0O1FakbBH4+eWjCJjD/bZ8q0HxzEWjpu91tFRsdc3w2q5aqg==
   dependencies:
     "@openzeppelin/contracts" "^5.0.2"
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
