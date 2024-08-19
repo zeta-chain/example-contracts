@@ -17,22 +17,28 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     [args.name]
   );
   try {
-    const callTx = await gateway.call(
+    const callTx = await gateway[
+      "depositAndCall(address,bytes,(address,bool,address,bytes))"
+      // "call(address,bytes,(address,bool,address,bytes))"
+    ](
       args.contract,
       message,
       {
-        revertAddress: "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
-        callOnRevert: true,
-        abortAddress: "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
-        revertMessage: "0x",
+        revertAddress: args.revertAddress,
+        callOnRevert: args.callOnRevert,
+        abortAddress: "0x0000000000000000000000000000000000000000", // not used
+        revertMessage: args.revertMessage,
       },
       {
         gasPrice: 10000000000,
-        gasLimit: 6721975,
+        gasLimit: 7000000,
+        value: hre.ethers.utils.parseEther(args.amount),
       }
     );
     await callTx.wait();
-    console.log("Contract on ZetaChain called from EVM");
+    console.log(
+      `Contract on ZetaChain called from EVM with ${args.amount} ETH`
+    );
   } catch (e) {
     console.error("Error calling contract:", e);
   }
@@ -45,4 +51,8 @@ task("interact", "calls zevm zcontract from evm account", main)
     "gatewayEVM",
     "contract address of gateway on EVM",
     "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
-  );
+  )
+  .addParam("revertAddress")
+  .addFlag("callOnRevert")
+  .addParam("revertMessage")
+  .addParam("amount", "amount of ETH to send with the transaction");

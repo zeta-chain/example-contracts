@@ -17,11 +17,12 @@ contract Hello is UniversalContract {
         uint256 amount,
         bytes calldata message
     ) external override {
-        string memory decodedMessage;
-        if (message.length > 0) {
-            decodedMessage = abi.decode(message, (string));
-        }
         emit HelloEvent("Hello from a universal app");
+        revert("REVERTING!!!");
+        // string memory decodedMessage;
+        // if (message.length > 0) {
+        //     decodedMessage = abi.decode(message, (string));
+        // }
     }
 
     function onRevert(RevertContext calldata revertContext) external override {
