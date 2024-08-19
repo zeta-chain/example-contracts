@@ -9,11 +9,11 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContrac
 contract RevertContract {
     event RevertEvent(string message);
 
-    // event ContextDataRevert(RevertContext revertContext);
+    event ContextDataRevert(RevertContext revertContext);
 
     function onRevert(RevertContext calldata revertContext) external {
-        // emit ContextDataRevert(revertContext);
-        emit RevertEvent("Event from RevertContract!!!");
+        emit ContextDataRevert(revertContext);
+        // emit RevertEvent("Event from RevertContract!!!");
     }
 
     receive() external payable {}
