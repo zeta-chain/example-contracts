@@ -6,7 +6,7 @@ import { getKeypairFromFile } from "@solana-developers/helpers";
 const DEVNET = "https://api.devnet.solana.com";
 const PROGRAM_ID = "2kJndCL9NBR36ySiQ4bmArs4YgWQu67LmCDfLzk5Gb7s";
 const SEED = "meta";
-const MEMO = "Hello, world!";
+const MEMO = "0x3345664691f65614Ec3b76d451B1A005CEfF3b16";
 const ID_JSON_PATH = "~/.config/solana/id.json";
 const AMOUNT = 0.0001;
 
