@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
+import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IZRC20.sol";
 
 contract Hello is UniversalContract {
     event HelloEvent(string, string);
@@ -34,6 +35,7 @@ contract Hello is UniversalContract {
         uint256 gasLimit,
         RevertOptions memory revertOptions
     ) external {
+        IZRC20(zrc20).approve(gateway, 1_000_000_000);
         IGatewayZEVM(gateway).call(
             receiver,
             zrc20,

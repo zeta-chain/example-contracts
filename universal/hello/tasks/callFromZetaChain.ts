@@ -12,6 +12,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     signer
   );
 
+  const zrc20Artifact = await hre.artifacts.readArtifact("IZRC20");
+  const zrc20 = new hre.ethers.Contract(
+    args.zrc20,
+    zrc20Artifact.abi,
+    signer
+  );
+
   const message = hre.ethers.utils.defaultAbiCoder.encode(
     ["string"],
     [args.message]
@@ -20,6 +27,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
 
   try {
+    const zrc20TransferTx = await zrc20.transfer(args.contract, 500_000_000,
+    {
+      gasPrice: 10000000000,
+      gasLimit: 7000000,
+    });
+    await zrc20TransferTx.wait();
+
     const tx = await contract.callFromZetaChain(
       hre.ethers.utils.hexlify(args.receiver),
       args.zrc20,
