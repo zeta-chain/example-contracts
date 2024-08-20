@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:fix": "npx eslint . --ext .js,.ts --fix",
-    "lint": "npx eslint . --ext .js,.ts"
+    "lint": "npx eslint . --ext .js,.ts",
+    "deploy": "npx hardhat compile --force && npx hardhat deploy --network localhost --name Hello && npx hardhat deploy --network localhost --name RevertContract"
   },
   "keywords": [],
   "author": "",

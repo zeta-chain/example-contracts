@@ -1,4 +1,4 @@
-import { task } from "hardhat/config";
+import { task, types } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
 import GatewayABI from "@zetachain/protocol-contracts/abi/GatewayEVM.sol/GatewayEVM.json";
 import { utils } from "ethers";
@@ -12,14 +12,16 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     signer
   );
 
+  const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
+
   const message = hre.ethers.utils.defaultAbiCoder.encode(
     ["string"],
     [args.name]
   );
   try {
     const callTx = await gateway[
-      "depositAndCall(address,bytes,(address,bool,address,bytes))"
-      // "call(address,bytes,(address,bool,address,bytes))"
+      // "depositAndCall(address,bytes,(address,bool,address,bytes))"
+      "call(address,bytes,(address,bool,address,bytes))"
     ](
       args.contract,
       message,
@@ -27,12 +29,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
         revertAddress: args.revertAddress,
         callOnRevert: args.callOnRevert,
         abortAddress: "0x0000000000000000000000000000000000000000", // not used
-        revertMessage: args.revertMessage,
+        revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
       },
       {
         gasPrice: 10000000000,
         gasLimit: 7000000,
-        value: hre.ethers.utils.parseEther(args.amount),
+        // value: hre.ethers.utils.parseEther(args.amount),
       }
     );
     await callTx.wait();
@@ -52,7 +54,7 @@ task("interact", "calls zevm zcontract from evm account", main)
     "contract address of gateway on EVM",
     "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
   )
+  .addFlag("callOnRevert", "Whether to call on revert")
   .addParam("revertAddress")
-  .addFlag("callOnRevert")
   .addParam("revertMessage")
   .addParam("amount", "amount of ETH to send with the transaction");
