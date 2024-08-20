@@ -1,7 +1,6 @@
 import { task, types } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
 import GatewayABI from "@zetachain/protocol-contracts/abi/GatewayEVM.sol/GatewayEVM.json";
-import { utils } from "ethers";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -20,8 +19,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
   try {
     const callTx = await gateway[
-      // "depositAndCall(address,bytes,(address,bool,address,bytes))"
-      "call(address,bytes,(address,bool,address,bytes))"
+      "depositAndCall(address,bytes,(address,bool,address,bytes))"
+      // "call(address,bytes,(address,bool,address,bytes))"
     ](
       args.contract,
       message,
@@ -34,7 +33,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       {
         gasPrice: 10000000000,
         gasLimit: 7000000,
-        // value: hre.ethers.utils.parseEther(args.amount),
+        value: hre.ethers.utils.parseEther(args.amount),
       }
     );
     await callTx.wait();

@@ -8,12 +8,17 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContrac
 
 contract RevertContract {
     event RevertEvent(string message);
+    event HelloEvent(string name);
 
     event ContextDataRevert(RevertContext revertContext);
 
     function onRevert(RevertContext calldata revertContext) external {
         // emit ContextDataRevert(revertContext);
         emit RevertEvent("Event from RevertContract!!!");
+    }
+
+    function hello(string memory name) external {
+        emit HelloEvent(name);
     }
 
     receive() external payable {}

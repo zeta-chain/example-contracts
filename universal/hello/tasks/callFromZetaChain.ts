@@ -1,6 +1,5 @@
 import { task, types } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
-import { utils } from "ethers";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -13,22 +12,24 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const zrc20Artifact = await hre.artifacts.readArtifact("IZRC20");
-  const zrc20 = new hre.ethers.Contract(
-    args.zrc20,
-    zrc20Artifact.abi,
-    signer
-  );
+  const zrc20 = new hre.ethers.Contract(args.zrc20, zrc20Artifact.abi, signer);
 
-  const message = hre.ethers.utils.defaultAbiCoder.encode(
+  const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
+
+  const encodedFunctionCall = hre.ethers.utils.defaultAbiCoder.encode(
     ["string"],
     [args.message]
   );
 
-  const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
+  const message = hre.ethers.utils.hexlify(
+    hre.ethers.utils.concat([
+      hre.ethers.utils.toUtf8Bytes("hello(string)"),
+      encodedFunctionCall,
+    ])
+  );
 
   try {
-    const zrc20TransferTx = await zrc20.transfer(args.contract, 500_000_000,
-    {
+    const zrc20TransferTx = await zrc20.transfer(args.contract, 500_000_000, {
       gasPrice: 10000000000,
       gasLimit: 7000000,
     });
