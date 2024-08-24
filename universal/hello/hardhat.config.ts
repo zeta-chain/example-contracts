@@ -1,4 +1,4 @@
-import "./tasks/interact";
+import "./tasks/depositAndCall";
 import "./tasks/deploy";
 import "./tasks/callFromZetaChain";
 import "./tasks/solana/interact";

@@ -16,14 +16,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
 
-  // Encode the function signature using ethers.utils.id and concatenate with encoded parameters
-  const functionSignature = hre.ethers.utils.id("hello(string)").slice(0, 10); // Get the first 4 bytes (function selector)
+  const functionSignature = hre.ethers.utils.id("hello(string)").slice(0, 10);
   const encodedParameters = hre.ethers.utils.defaultAbiCoder.encode(
     ["string"],
     [args.message]
   );
 
-  // Concatenate the function signature and the encoded parameters
   const message = hre.ethers.utils.hexlify(
     hre.ethers.utils.concat([functionSignature, encodedParameters])
   );

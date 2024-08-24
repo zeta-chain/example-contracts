@@ -10,8 +10,7 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IZRC20.sol";
 
 contract Hello is UniversalContract {
     event HelloEvent(string, string);
-
-    event ContextDataRevert(RevertContext revertContext);
+    event ContextDataRevert(RevertContext);
 
     address constant gateway = 0x610178dA211FEF7D417bC0e6FeD39F05609AD788;
 
@@ -48,8 +47,4 @@ contract Hello is UniversalContract {
     function onRevert(RevertContext calldata revertContext) external override {
         emit ContextDataRevert(revertContext);
     }
-
-    receive() external payable {}
-
-    fallback() external payable {}
 }

@@ -2195,12 +2195,13 @@
     typescript "5.0.4"
     zod "3.19.1"
 
-"@zetachain/localnet@1.0.0-rc9":
-  version "1.0.0-rc9"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-1.0.0-rc9.tgz#cc50e39780fb975f5259c87827f1796fc73bc6b5"
-  integrity sha512-GX0INak8xI86GjyLF1Nmw0bqFXZcfDYvTDIBX+VQRyQ3cIFMycNt3hagWW/GND6AcB6ENo4aphKKr/jnpZh2pQ==
+"@zetachain/localnet@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-1.0.1.tgz#f89fd0e930a4378279831d4f66472a6d01eb9d99"
+  integrity sha512-bP+///fWudDfuSJrciXDwP2UxnwdcEODwxD60ugiyfdOguDClZYQ1r4AybW10CYn9sSkieLzlmSidryQDksYCA==
   dependencies:
     "@zetachain/protocol-contracts" "10.0.0-rc8"
+    ansis "^3.3.2"
     concurrently "^8.2.2"
     ethers "^6.13.2"
     hardhat "^2.22.8"
@@ -2444,6 +2445,11 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   integrity sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==
   dependencies:
     color-convert "^2.0.1"
+
+ansis@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/ansis/-/ansis-3.3.2.tgz#15adc36fea112da95c74d309706e593618accac3"
+  integrity sha512-cFthbBlt+Oi0i9Pv/j6YdVWJh54CtjGACaMPCIrEV4Ha7HWsIjXDwseYV79TIL0B4+KfSwD5S70PeQDkPUd1rA==
 
 antlr4ts@^0.5.0-alpha.4:
   version "0.5.0-alpha.4"

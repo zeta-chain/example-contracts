@@ -15,12 +15,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const message = hre.ethers.utils.defaultAbiCoder.encode(
     ["string"],
-    [args.name]
+    [args.message]
   );
   try {
     const callTx = await gateway[
       "depositAndCall(address,bytes,(address,bool,address,bytes))"
-      // "call(address,bytes,(address,bool,address,bytes))"
     ](
       args.contract,
       message,
@@ -45,8 +44,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("interact", "calls zevm zcontract from evm account", main)
-  .addParam("name")
+task("deposit-and-call", "Deposit tokens to and call a universal app", main)
+  .addParam("message")
   .addParam("contract", "contract address of a universal app on ZetaChain")
   .addOptionalParam(
     "gatewayEVM",
