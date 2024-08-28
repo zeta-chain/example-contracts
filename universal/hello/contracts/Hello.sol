@@ -12,7 +12,8 @@ contract Hello is UniversalContract {
     event HelloEvent(string, string);
     event ContextDataRevert(RevertContext);
 
-    address constant gateway = 0x610178dA211FEF7D417bC0e6FeD39F05609AD788;
+    address constant gatewayAddress =
+        0x610178dA211FEF7D417bC0e6FeD39F05609AD788;
 
     function onCrossChainCall(
         zContext calldata context,
@@ -34,8 +35,8 @@ contract Hello is UniversalContract {
         uint256 gasLimit,
         RevertOptions memory revertOptions
     ) external {
-        IZRC20(zrc20).approve(gateway, 1_000_000_000);
-        IGatewayZEVM(gateway).call(
+        IZRC20(zrc20).approve(gatewayAddress, 1_000_000_000);
+        IGatewayZEVM(gatewayAddress).call(
             receiver,
             zrc20,
             message,
