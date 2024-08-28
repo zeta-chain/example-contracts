@@ -4,12 +4,6 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const network = hre.network.name as ParamChainName;
 
-  // if (!/zeta_(testnet|mainnet)/.test(network)) {
-  //   throw new Error(
-  //     '🚨 Please use either "zeta_testnet" or "zeta_mainnet" network to deploy to ZetaChain.'
-  //   );
-  // }
-
   const [signer] = await hre.ethers.getSigners();
   if (signer === undefined) {
     throw new Error(
@@ -17,10 +11,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   }
 
-  // const systemContract = getAddress("systemContract", network);
-
   const factory = await hre.ethers.getContractFactory(args.name);
-  // const contract = await factory.deploy(systemContract);
   const contract = await factory.deploy();
   await contract.deployed();
 
