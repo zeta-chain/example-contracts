@@ -1,5 +1,5 @@
 {
-  "address": "2kJndCL9NBR36ySiQ4bmArs4YgWQu67LmCDfLzk5Gb7s",
+  "address": "ZETAjseVjuFsxdRxo6MmTCvqFwb3ZHUx56Co3vCmGis",
   "metadata": {
     "name": "gateway",
     "version": "0.1.0",
@@ -157,6 +157,66 @@
         {
           "name": "chain_id",
           "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "set_deposit_paused",
+      "discriminator": [
+        98,
+        179,
+        141,
+        24,
+        246,
+        120,
+        164,
+        143
+      ],
+      "accounts": [
+        {
+          "name": "pda",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "deposit_paused",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "update_authority",
+      "discriminator": [
+        32,
+        46,
+        64,
+        28,
+        149,
+        75,
+        243,
+        88
+      ],
+      "accounts": [
+        {
+          "name": "pda",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_authority_address",
+          "type": "pubkey"
         }
       ]
     },
@@ -392,6 +452,11 @@
       "code": 6007,
       "name": "MemoLengthTooShort",
       "msg": "MemoLengthTooShort"
+    },
+    {
+      "code": 6008,
+      "name": "DepositPaused",
+      "msg": "DepositPaused"
     }
   ],
   "types": [
@@ -420,6 +485,10 @@
           {
             "name": "chain_id",
             "type": "u64"
+          },
+          {
+            "name": "deposit_paused",
+            "type": "bool"
           }
         ]
       }
