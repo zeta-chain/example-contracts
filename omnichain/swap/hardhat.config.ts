@@ -1,5 +1,6 @@
-import "./tasks/interact";
 import "./tasks/deploy";
+import "./tasks/solana/interact";
+import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
 
@@ -18,12 +19,6 @@ const config: HardhatUserConfig = {
       { version: "0.4.19" /** For weth*/ },
       { version: "0.8.7" },
     ],
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200,
-      },
-    },
   },
 };
 

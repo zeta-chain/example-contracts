@@ -47,7 +47,9 @@ describe("SwapToAnyToken", function () {
       "SwapToAnyToken"
     )) as SwapToAnyToken__factory;
 
-    swapToAnyToken = (await SwapToAnyTokenFactory.deploy(systemContract.address)) as SwapToAnyToken;
+    swapToAnyToken = (await SwapToAnyTokenFactory.deploy(
+      systemContract.address
+    )) as SwapToAnyToken;
     await swapToAnyToken.deployed();
   });
 
