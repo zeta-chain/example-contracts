@@ -59,14 +59,7 @@ export const deposit = async (args: {
       keypair,
     ]);
 
-    console.log("Deposit transaction signature:", txSignature);
-
-    const pdaBalance = await connection.getBalance(pdaAccount);
-    console.log(
-      "PDA account SOL balance:",
-      pdaBalance / web3.LAMPORTS_PER_SOL,
-      "SOL"
-    );
+    console.log("Transaction signature:", txSignature);
   } catch (error) {
     console.error("Transaction failed:", error);
   }
