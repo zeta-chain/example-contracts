@@ -42,24 +42,15 @@ contract Swap is zContract, OnlySystem {
             params.to = recipient;
         }
 
-        swapAndWithdraw(zrc20, amount, params.target, params.to);
-    }
-
-    function swapAndWithdraw(
-        address inputToken,
-        uint256 amount,
-        address targetToken,
-        bytes memory recipient
-    ) internal {
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
 
-        (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
+        (gasZRC20, gasFee) = IZRC20(params.target).withdrawGasFee();
 
         inputForGas = SwapHelperLib.swapTokensForExactTokens(
             systemContract,
-            inputToken,
+            zrc20,
             gasFee,
             gasZRC20,
             amount
@@ -67,13 +58,13 @@ contract Swap is zContract, OnlySystem {
 
         uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
             systemContract,
-            inputToken,
+            zrc20,
             amount - inputForGas,
-            targetToken,
+            params.target,
             0
         );
 
-        IZRC20(gasZRC20).approve(targetToken, gasFee);
-        IZRC20(targetToken).withdraw(recipient, outputAmount);
+        IZRC20(gasZRC20).approve(params.target, gasFee);
+        IZRC20(params.target).withdraw(params.to, outputAmount);
     }
 }

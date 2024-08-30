@@ -9,7 +9,6 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IWZETA.sol";
 import "@zetachain/toolkit/contracts/OnlySystem.sol";
 
 contract SwapToAnyToken is zContract, OnlySystem {
-    error TransferFailed();
     SystemContract public systemContract;
 
     uint256 constant BITCOIN = 18332;
@@ -23,8 +22,6 @@ contract SwapToAnyToken is zContract, OnlySystem {
         bytes to;
         bool withdraw;
     }
-
-    receive() external payable {}
 
     function onCrossChainCall(
         zContext calldata context,
@@ -40,49 +37,30 @@ contract SwapToAnyToken is zContract, OnlySystem {
 
         if (context.chainID == BITCOIN) {
             params.target = BytesHelperLib.bytesToAddress(message, 0);
-            params.to = abi.encodePacked(
-                BytesHelperLib.bytesToAddress(message, 20)
-            );
+            params.to = abi.encodePacked(BytesHelperLib.bytesToAddress(message, 20));
             if (message.length >= 41) {
                 params.withdraw = BytesHelperLib.bytesToBool(message, 40);
             }
         } else {
-            (
-                address targetToken,
-                bytes memory recipient,
-                bool withdrawFlag
-            ) = abi.decode(message, (address, bytes, bool));
+            (address targetToken, bytes memory recipient, bool withdrawFlag) = abi.decode(
+                message,
+                (address, bytes, bool)
+            );
             params.target = targetToken;
             params.to = recipient;
             params.withdraw = withdrawFlag;
         }
 
-        swapAndWithdraw(
-            zrc20,
-            amount,
-            params.target,
-            params.to,
-            params.withdraw
-        );
-    }
-
-    function swapAndWithdraw(
-        address inputToken,
-        uint256 amount,
-        address targetToken,
-        bytes memory recipient,
-        bool withdraw
-    ) internal {
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
 
-        if (withdraw) {
-            (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
+        if (params.withdraw) {
+            (gasZRC20, gasFee) = IZRC20(params.target).withdrawGasFee();
 
             inputForGas = SwapHelperLib.swapTokensForExactTokens(
                 systemContract,
-                inputToken,
+                zrc20,
                 gasFee,
                 gasZRC20,
                 amount
@@ -91,45 +69,17 @@ contract SwapToAnyToken is zContract, OnlySystem {
 
         uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
             systemContract,
-            inputToken,
-            withdraw ? amount - inputForGas : amount,
-            targetToken,
+            zrc20,
+            params.withdraw ? amount - inputForGas : amount,
+            params.target,
             0
         );
 
-        if (withdraw) {
-            IZRC20(gasZRC20).approve(targetToken, gasFee);
-            IZRC20(targetToken).withdraw(recipient, outputAmount);
+        if (params.withdraw) {
+            IZRC20(gasZRC20).approve(params.target, gasFee);
+            IZRC20(params.target).withdraw(params.to, outputAmount);
         } else {
-            address wzeta = systemContract.wZetaContractAddress();
-            if (targetToken == wzeta) {
-                IWETH9(wzeta).withdraw(outputAmount);
-                address payable to = payable(
-                    address(uint160(bytes20(recipient)))
-                );
-                (bool success, ) = to.call{value: outputAmount}("");
-                if (!success) revert TransferFailed();
-            } else {
-                address to = address(uint160(bytes20(recipient)));
-                bool success = IWETH9(targetToken).transfer(to, outputAmount);
-                if (!success) revert TransferFailed();
-            }
+            IWETH9(params.target).transfer(address(uint160(bytes20(params.to))), outputAmount);
         }
-    }
-
-    function swap(
-        address inputToken,
-        uint256 amount,
-        address targetToken,
-        bytes memory recipient,
-        bool withdraw
-    ) public {
-        bool success = IZRC20(inputToken).transferFrom(
-            msg.sender,
-            address(this),
-            amount
-        );
-        if (!success) revert TransferFailed();
-        swapAndWithdraw(inputToken, amount, targetToken, recipient, withdraw);
     }
 }
