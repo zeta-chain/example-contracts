@@ -1,0 +1,542 @@
+// Sources flattened with hardhat v2.22.3 https://hardhat.org
+
+// SPDX-License-Identifier: MIT
+
+// File @zetachain/protocol-contracts/contracts/Revert.sol@v10.0.0-rc9
+
+// Original license: SPDX_License_Identifier: MIT
+pragma solidity 0.8.26;
+
+/// @notice Struct containing revert options
+/// @param revertAddress Address to receive revert.
+/// @param callOnRevert Flag if onRevert hook should be called.
+/// @param abortAddress Address to receive funds if aborted.
+/// @param revertMessage Arbitrary data sent back in onRevert.
+struct RevertOptions {
+    address revertAddress;
+    bool callOnRevert;
+    address abortAddress;
+    bytes revertMessage;
+}
+
+/// @notice Struct containing revert context passed to onRevert.
+/// @param asset Address of asset, empty if it's gas token.
+/// @param amount Amount specified with the transaction.
+/// @param revertMessage Arbitrary data sent back in onRevert.
+struct RevertContext {
+    address asset;
+    uint64 amount;
+    bytes revertMessage;
+}
+
+/// @title Revertable
+/// @notice Interface for contracts that support revertable calls.
+interface Revertable {
+    /// @notice Called when a revertable call is made.
+    /// @param revertContext Revert context to pass to onRevert.
+    function onRevert(RevertContext calldata revertContext) external;
+}
+
+
+// File @zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol@v10.0.0-rc9
+
+// Original license: SPDX_License_Identifier: MIT
+pragma solidity 0.8.26;
+
+struct zContext {
+    bytes origin;
+    address sender;
+    uint256 chainID;
+}
+
+/// @custom:deprecated should be removed once v2 SystemContract is not used anymore.
+/// UniversalContract should be used
+interface zContract {
+    function onCrossChainCall(
+        zContext calldata context,
+        address zrc20,
+        uint256 amount,
+        bytes calldata message
+    )
+        external;
+}
+
+interface UniversalContract {
+    function onCrossChainCall(
+        zContext calldata context,
+        address zrc20,
+        uint256 amount,
+        bytes calldata message
+    )
+        external;
+
+    function onRevert(RevertContext calldata revertContext) external;
+}
+
+
+// File @zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol@v10.0.0-rc9
+
+// Original license: SPDX_License_Identifier: MIT
+pragma solidity 0.8.26;
+
+
+/// @title IGatewayZEVMEvents
+/// @notice Interface for the events emitted by the GatewayZEVM contract.
+interface IGatewayZEVMEvents {
+    /// @notice Emitted when a cross-chain call is made.
+    /// @param sender The address of the sender.
+    /// @param zrc20 Address of zrc20 to pay fees.
+    /// @param receiver The receiver address on the external chain.
+    /// @param message The calldata passed to the contract call.
+    /// @param revertOptions Revert options.
+    event Called(
+        address indexed sender, address indexed zrc20, bytes receiver, bytes message, RevertOptions revertOptions
+    );
+
+    /// @notice Emitted when a withdrawal is made.
+    /// @param sender The address from which the tokens are withdrawn.
+    /// @param chainId Chain id of external chain.
+    /// @param receiver The receiver address on the external chain.
+    /// @param zrc20 The address of the ZRC20 token.
+    /// @param value The amount of tokens withdrawn.
+    /// @param gasfee The gas fee for the withdrawal.
+    /// @param protocolFlatFee The protocol flat fee for the withdrawal.
+    /// @param message The calldata passed to the contract call.
+    /// @param revertOptions Revert options.
+    event Withdrawn(
+        address indexed sender,
+        uint256 indexed chainId,
+        bytes receiver,
+        address zrc20,
+        uint256 value,
+        uint256 gasfee,
+        uint256 protocolFlatFee,
+        bytes message,
+        RevertOptions revertOptions
+    );
+}
+
+/// @title IGatewayZEVMErrors
+/// @notice Interface for the errors used in the GatewayZEVM contract.
+interface IGatewayZEVMErrors {
+    /// @notice Error indicating a withdrawal failure.
+    error WithdrawalFailed();
+
+    /// @notice Error indicating an insufficient ZRC20 token amount.
+    error InsufficientZRC20Amount();
+
+    /// @notice Error indicating an insufficient zeta amount.
+    error InsufficientZetaAmount();
+
+    /// @notice Error indicating a failure to burn ZRC20 tokens.
+    error ZRC20BurnFailed();
+
+    /// @notice Error indicating a failure to transfer ZRC20 tokens.
+    error ZRC20TransferFailed();
+
+    /// @notice Error indicating a failure to deposit ZRC20 tokens.
+    error ZRC20DepositFailed();
+
+    /// @notice Error indicating a failure to transfer gas fee.
+    error GasFeeTransferFailed();
+
+    /// @notice Error indicating that the caller is not the Fungible module.
+    error CallerIsNotFungibleModule();
+
+    /// @notice Error indicating an invalid target address.
+    error InvalidTarget();
+
+    /// @notice Error indicating a failure to send ZETA tokens.
+    error FailedZetaSent();
+
+    /// @notice Error indicating that only WZETA or the Fungible module can call the function.
+    error OnlyWZETAOrFungible();
+
+    /// @notice Error indicating call method received empty message as argument.
+    error EmptyMessage();
+}
+
+/// @title IGatewayZEVM
+/// @notice Interface for the GatewayZEVM contract.
+/// @dev Defines functions for cross-chain interactions and token handling.
+interface IGatewayZEVM is IGatewayZEVMErrors, IGatewayZEVMEvents {
+    /// @notice Withdraw ZRC20 tokens to an external chain.
+    /// @param receiver The receiver address on the external chain.
+    /// @param amount The amount of tokens to withdraw.
+    /// @param zrc20 The address of the ZRC20 token.
+    /// @param revertOptions Revert options.
+    function withdraw(
+        bytes memory receiver,
+        uint256 amount,
+        address zrc20,
+        RevertOptions calldata revertOptions
+    )
+        external;
+
+    /// @notice Withdraw ZETA tokens to an external chain.
+    /// @param receiver The receiver address on the external chain.
+    /// @param amount The amount of tokens to withdraw.
+    /// @param revertOptions Revert options.
+    function withdraw(
+        bytes memory receiver,
+        uint256 amount,
+        uint256 chainId,
+        RevertOptions calldata revertOptions
+    )
+        external;
+
+    /// @notice Withdraw ZRC20 tokens and call a smart contract on an external chain.
+    /// @param receiver The receiver address on the external chain.
+    /// @param amount The amount of tokens to withdraw.
+    /// @param zrc20 The address of the ZRC20 token.
+    /// @param message The calldata to pass to the contract call.
+    /// @param gasLimit Gas limit.
+    /// @param revertOptions Revert options.
+    function withdrawAndCall(
+        bytes memory receiver,
+        uint256 amount,
+        address zrc20,
+        bytes calldata message,
+        uint256 gasLimit,
+        RevertOptions calldata revertOptions
+    )
+        external;
+
+    /// @notice Withdraw ZETA tokens and call a smart contract on an external chain.
+    /// @param receiver The receiver address on the external chain.
+    /// @param amount The amount of tokens to withdraw.
+    /// @param chainId Chain id of the external chain.
+    /// @param message The calldata to pass to the contract call.
+    /// @param revertOptions Revert options.
+    function withdrawAndCall(
+        bytes memory receiver,
+        uint256 amount,
+        uint256 chainId,
+        bytes calldata message,
+        RevertOptions calldata revertOptions
+    )
+        external;
+
+    /// @notice Call a smart contract on an external chain without asset transfer.
+    /// @param receiver The receiver address on the external chain.
+    /// @param zrc20 Address of zrc20 to pay fees.
+    /// @param message The calldata to pass to the contract call.
+    /// @param gasLimit Gas limit.
+    /// @param revertOptions Revert options.
+    function call(
+        bytes memory receiver,
+        address zrc20,
+        bytes calldata message,
+        uint256 gasLimit,
+        RevertOptions calldata revertOptions
+    )
+        external;
+
+    /// @notice Deposit foreign coins into ZRC20.
+    /// @param zrc20 The address of the ZRC20 token.
+    /// @param amount The amount of tokens to deposit.
+    /// @param target The target address to receive the deposited tokens.
+    function deposit(address zrc20, uint256 amount, address target) external;
+
+    /// @notice Execute a user-specified contract on ZEVM.
+    /// @param context The context of the cross-chain call.
+    /// @param zrc20 The address of the ZRC20 token.
+    /// @param amount The amount of tokens to transfer.
+    /// @param target The target contract to call.
+    /// @param message The calldata to pass to the contract call.
+    function execute(
+        zContext calldata context,
+        address zrc20,
+        uint256 amount,
+        address target,
+        bytes calldata message
+    )
+        external;
+
+    /// @notice Deposit foreign coins into ZRC20 and call a user-specified contract on ZEVM.
+    /// @param context The context of the cross-chain call.
+    /// @param zrc20 The address of the ZRC20 token.
+    /// @param amount The amount of tokens to transfer.
+    /// @param target The target contract to call.
+    /// @param message The calldata to pass to the contract call.
+    function depositAndCall(
+        zContext calldata context,
+        address zrc20,
+        uint256 amount,
+        address target,
+        bytes calldata message
+    )
+        external;
+
+    /// @notice Deposit ZETA and call a user-specified contract on ZEVM.
+    /// @param context The context of the cross-chain call.
+    /// @param amount The amount of tokens to transfer.
+    /// @param target The target contract to call.
+    /// @param message The calldata to pass to the contract call.
+    function depositAndCall(
+        zContext calldata context,
+        uint256 amount,
+        address target,
+        bytes calldata message
+    )
+        external;
+
+    /// @notice Revert a user-specified contract on ZEVM.
+    /// @param context The context of the revert call.
+    /// @param zrc20 The address of the ZRC20 token.
+    /// @param amount The amount of tokens to revert.
+    /// @param target The target contract to call.
+    /// @param message The calldata to pass to the contract call.
+    /// @param revertContext Revert context to pass to onRevert.
+    function executeRevert(
+        zContext calldata context,
+        address zrc20,
+        uint256 amount,
+        address target,
+        bytes calldata message,
+        RevertContext calldata revertContext
+    )
+        external;
+
+    /// @notice Deposit foreign coins into ZRC20 and revert a user-specified contract on ZEVM.
+    /// @param context The context of the revert call.
+    /// @param zrc20 The address of the ZRC20 token.
+    /// @param amount The amount of tokens to revert.
+    /// @param target The target contract to call.
+    /// @param message The calldata to pass to the contract call.
+    /// @param revertContext Revert context to pass to onRevert.
+    function depositAndRevert(
+        zContext calldata context,
+        address zrc20,
+        uint256 amount,
+        address target,
+        bytes calldata message,
+        RevertContext calldata revertContext
+    )
+        external;
+}
+
+
+// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v5.0.2
+
+// Original license: SPDX_License_Identifier: MIT
+// OpenZeppelin Contracts (last updated v5.0.0) (token/ERC20/IERC20.sol)
+
+pragma solidity ^0.8.20;
+
+/**
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */
+interface IERC20 {
+    /**
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * another (`to`).
+     *
+     * Note that `value` may be zero.
+     */
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    /**
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * a call to {approve}. `value` is the new allowance.
+     */
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+
+    /**
+     * @dev Returns the value of tokens in existence.
+     */
+    function totalSupply() external view returns (uint256);
+
+    /**
+     * @dev Returns the value of tokens owned by `account`.
+     */
+    function balanceOf(address account) external view returns (uint256);
+
+    /**
+     * @dev Moves a `value` amount of tokens from the caller's account to `to`.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transfer(address to, uint256 value) external returns (bool);
+
+    /**
+     * @dev Returns the remaining number of tokens that `spender` will be
+     * allowed to spend on behalf of `owner` through {transferFrom}. This is
+     * zero by default.
+     *
+     * This value changes when {approve} or {transferFrom} are called.
+     */
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    /**
+     * @dev Sets a `value` amount of tokens as the allowance of `spender` over the
+     * caller's tokens.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * IMPORTANT: Beware that changing an allowance with this method brings the risk
+     * that someone may use both the old and the new allowance by unfortunate
+     * transaction ordering. One possible solution to mitigate this race
+     * condition is to first reduce the spender's allowance to 0 and set the
+     * desired value afterwards:
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address spender, uint256 value) external returns (bool);
+
+    /**
+     * @dev Moves a `value` amount of tokens from `from` to `to` using the
+     * allowance mechanism. `value` is then deducted from the caller's
+     * allowance.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(address from, address to, uint256 value) external returns (bool);
+}
+
+
+// File @zetachain/protocol-contracts/contracts/zevm/interfaces/IZRC20.sol@v10.0.0-rc9
+
+// Original license: SPDX_License_Identifier: MIT
+pragma solidity 0.8.26;
+
+/// @title IZRC20
+/// @notice Interface for the ZRC20 token contract.
+interface IZRC20 {
+    function totalSupply() external view returns (uint256);
+
+    function balanceOf(address account) external view returns (uint256);
+
+    function transfer(address recipient, uint256 amount) external returns (bool);
+
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+    function deposit(address to, uint256 amount) external returns (bool);
+
+    function burn(uint256 amount) external returns (bool);
+
+    function withdraw(bytes memory to, uint256 amount) external returns (bool);
+
+    function withdrawGasFee() external view returns (address, uint256);
+
+    function withdrawGasFeeWithGasLimit(uint256 gasLimit) external view returns (address, uint256);
+
+    /// @dev Name is in upper case to maintain compatibility with ZRC20.sol v1
+    function PROTOCOL_FLAT_FEE() external view returns (uint256);
+
+    /// @dev Name is in upper case to maintain compatibility with ZRC20.sol v1
+    function GAS_LIMIT() external view returns (uint256);
+}
+
+/// @title IZRC20Metadata
+/// @notice Interface for the ZRC20 metadata.
+interface IZRC20Metadata is IZRC20 {
+    function name() external view returns (string memory);
+
+    function symbol() external view returns (string memory);
+
+    function decimals() external view returns (uint8);
+}
+
+/// @title ZRC20Events
+/// @notice Interface for the ZRC20 events.
+interface ZRC20Events {
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Deposit(bytes from, address indexed to, uint256 value);
+    event Withdrawal(address indexed from, bytes to, uint256 value, uint256 gasFee, uint256 protocolFlatFee);
+    event UpdatedSystemContract(address systemContract);
+    event UpdatedGateway(address gateway);
+    event UpdatedGasLimit(uint256 gasLimit);
+    event UpdatedProtocolFlatFee(uint256 protocolFlatFee);
+}
+
+/// @dev Coin types for ZRC20. Zeta value should not be used.
+enum CoinType {
+    Zeta,
+    Gas,
+    ERC20
+}
+
+
+// File contracts/Hello.sol
+
+// Original license: SPDX_License_Identifier: MIT
+pragma solidity 0.8.26;
+
+
+
+
+contract Hello is UniversalContract {
+    event HelloEvent(string, string);
+    event ContextDataRevert(RevertContext);
+
+    address constant gateway = 0x610178dA211FEF7D417bC0e6FeD39F05609AD788;
+
+    function onCrossChainCall(
+        zContext calldata context,
+        address zrc20,
+        uint256 amount,
+        bytes calldata message
+    ) external override {
+        string memory decodedMessage;
+        if (message.length > 0) {
+            decodedMessage = abi.decode(message, (string));
+        }
+        emit HelloEvent("Hello from a universal app", decodedMessage);
+    }
+
+    function callFromZetaChain(
+        bytes memory receiver,
+        address zrc20,
+        bytes calldata message,
+        uint256 gasLimit,
+        RevertOptions memory revertOptions
+    ) external {
+        IZRC20(zrc20).approve(gateway, 1_000_000_000);
+        IGatewayZEVM(gateway).call(
+            receiver,
+            zrc20,
+            message,
+            gasLimit,
+            revertOptions
+        );
+    }
+
+    function onRevert(RevertContext calldata revertContext) external override {
+        emit ContextDataRevert(revertContext);
+    }
+}
+
+
+// File contracts/ReceiverContract.sol
+
+// Original license: SPDX_License_Identifier: MIT
+pragma solidity 0.8.26;
+
+
+contract ReceiverContract {
+    event RevertEvent(string);
+    event HelloEvent(string);
+
+    function hello(string memory message) external {
+        emit HelloEvent(message);
+    }
+
+    function onRevert(RevertContext calldata revertContext) external {
+        emit RevertEvent("Event from RevertContract!");
+    }
+
+    receive() external payable {}
+
+    fallback() external payable {}
+}
