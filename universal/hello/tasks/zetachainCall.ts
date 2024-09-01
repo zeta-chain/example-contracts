@@ -87,5 +87,5 @@ task(
     7000000,
     types.int
   )
-  .addParam("revertMessage")
+  .addOptionalParam("revertMessage", "Revert message", "0x")
   .addParam("receiver", "The address of the receiver contract on EVM");
