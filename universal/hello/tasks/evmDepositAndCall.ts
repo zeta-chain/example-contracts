@@ -18,15 +18,16 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
   try {
     const callTx = await gateway[
-      "depositAndCall(address,bytes,(address,bool,address,bytes))"
+      "depositAndCall(address,bytes,(address,bool,address,bytes,uint256))"
     ](
-      args.contract,
+      args.receiver,
       message,
       {
         revertAddress: args.revertAddress,
         callOnRevert: args.callOnRevert,
         abortAddress: "0x0000000000000000000000000000000000000000", // not used
         revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
+        onRevertGasLimit: args.onRevertGasLimit,
       },
       {
         gasPrice: args.gasPrice,
@@ -35,17 +36,14 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       }
     );
     await callTx.wait();
-    console.log(
-      `Contract on ZetaChain called from EVM with ${args.amount} ETH`
-    );
   } catch (e) {
-    console.error("Error calling contract:", e);
+    console.error("Transaction error:", e);
   }
 };
 
 task("evm-deposit-and-call", "Deposit tokens to and call a universal app", main)
   .addParam("message")
-  .addParam("contract", "contract address of a universal app on ZetaChain")
+  .addParam("receiver", "Receiver address on ZetaChain")
   .addOptionalParam(
     "gatewayEvm",
     "contract address of gateway on EVM",
@@ -66,6 +64,12 @@ task("evm-deposit-and-call", "Deposit tokens to and call a universal app", main)
   .addOptionalParam(
     "gasLimit",
     "The gas limit for the transaction",
+    7000000,
+    types.int
+  )
+  .addOptionalParam(
+    "onRevertGasLimit",
+    "The gas limit for the revert transaction",
     7000000,
     types.int
   )

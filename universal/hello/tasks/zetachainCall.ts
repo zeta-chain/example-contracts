@@ -1,5 +1,6 @@
 import { task, types } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
+import GatewayABI from "@zetachain/protocol-contracts/abi/GatewayZEVM.sol/GatewayZEVM.json";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -11,15 +12,21 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     signer
   );
 
+  const gateway = new hre.ethers.Contract(
+    args.gatewayZetaChain,
+    GatewayABI.abi,
+    signer
+  );
+
   const zrc20Artifact = await hre.artifacts.readArtifact("IZRC20");
   const zrc20 = new hre.ethers.Contract(args.zrc20, zrc20Artifact.abi, signer);
 
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
 
-  const functionSignature = hre.ethers.utils.id("hello(string)").slice(0, 10);
+  const functionSignature = hre.ethers.utils.id(args.function).slice(0, 10);
   const encodedParameters = hre.ethers.utils.defaultAbiCoder.encode(
-    ["string"],
-    [args.message]
+    JSON.parse(args.types),
+    args.values
   );
 
   const message = hre.ethers.utils.hexlify(
@@ -27,13 +34,18 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   try {
-    const zrc20TransferTx = await zrc20.transfer(args.contract, 500_000_000, {
-      gasPrice: 10000000000,
-      gasLimit: 7000000,
-    });
+    const zrc20TransferTx = await zrc20.approve(
+      args.gatewayZetaChain,
+      hre.ethers.utils.parseUnits(args.amount, 18),
+      {
+        gasPrice: 10000000000,
+        gasLimit: 7000000,
+      }
+    );
     await zrc20TransferTx.wait();
-
-    const tx = await contract.call(
+    const tx = await gateway[
+      "call(bytes,address,bytes,uint256,(address,bool,address,bytes,uint256))"
+    ](
       hre.ethers.utils.hexlify(args.receiver),
       args.zrc20,
       message,
@@ -43,6 +55,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
         callOnRevert: args.callOnRevert,
         abortAddress: "0x0000000000000000000000000000000000000000", // not used
         revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
+        onRevertGasLimit: args.onRevertGasLimit,
       },
       {
         gasPrice: args.gasPrice,
@@ -62,7 +75,11 @@ task(
   "Calls the callFromZetaChain function on a universal app",
   main
 )
-  .addParam("message", "A message")
+  .addOptionalParam(
+    "gatewayZetaChain",
+    "contract address of gateway on EVM",
+    "0x610178dA211FEF7D417bC0e6FeD39F05609AD788"
+  )
   .addParam("contract", "The address of the universal app on ZetaChain")
   .addOptionalParam(
     "zrc20",
@@ -88,4 +105,17 @@ task(
     types.int
   )
   .addOptionalParam("revertMessage", "Revert message", "0x")
-  .addParam("receiver", "The address of the receiver contract on EVM");
+  .addParam(
+    "receiver",
+    "The address of the receiver contract on a connected chain"
+  )
+  .addOptionalParam(
+    "onRevertGasLimit",
+    "The gas limit for the revert transaction",
+    7000000,
+    types.int
+  )
+  .addParam("function", "Function to call (example: 'hello(string)')")
+  .addParam("amount", "The amount of tokens to send")
+  .addParam("types", "The types of the parameters (example: ['string'])")
+  .addVariadicPositionalParam("values", "The values of the parameters");

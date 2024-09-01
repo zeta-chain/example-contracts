@@ -10,19 +10,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     GatewayABI.abi,
     signer
   );
-
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
 
-  const message = hre.ethers.utils.defaultAbiCoder.encode(
-    ["string"],
-    [args.message]
-  );
   try {
     const callTx = await gateway[
-      "call(address,bytes,(address,bool,address,bytes,uint256))"
+      "deposit(address,(address,bool,address,bytes,uint256))"
     ](
       args.receiver,
-      message,
       {
         revertAddress: args.revertAddress,
         callOnRevert: args.callOnRevert,
@@ -33,6 +27,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       {
         gasPrice: args.gasPrice,
         gasLimit: args.gasLimit,
+        value: hre.ethers.utils.parseEther(args.amount),
       }
     );
     await callTx.wait();
@@ -41,8 +36,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("evm-call", "Call a universal app", main)
-  .addParam("message")
+task("evm-deposit", "Deposit tokens", main)
   .addParam("receiver", "Receiver address on ZetaChain")
   .addOptionalParam(
     "gatewayEvm",
@@ -53,7 +47,8 @@ task("evm-call", "Call a universal app", main)
   .addOptionalParam(
     "revertAddress",
     "Revert address",
-    "0x0000000000000000000000000000000000000000"
+    "0x0000000000000000000000000000000000000000",
+    types.string
   )
   .addOptionalParam(
     "gasPrice",
@@ -73,4 +68,5 @@ task("evm-call", "Call a universal app", main)
     7000000,
     types.int
   )
-  .addOptionalParam("revertMessage", "Revert message", "0x");
+  .addOptionalParam("revertMessage", "Revert message", "0x")
+  .addParam("amount", "amount of ETH to send with the transaction");
