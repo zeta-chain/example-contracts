@@ -33,7 +33,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     });
     await zrc20TransferTx.wait();
 
-    const tx = await contract.callFromZetaChain(
+    const tx = await contract.call(
       hre.ethers.utils.hexlify(args.receiver),
       args.zrc20,
       message,
@@ -45,8 +45,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
         revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
       },
       {
-        gasPrice: 10000000000,
-        gasLimit: 7000000,
+        gasPrice: args.gasPrice,
+        gasLimit: args.gasLimit,
       }
     );
 
@@ -58,7 +58,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "call-from-zetachain",
+  "zetachain-call",
   "Calls the callFromZetaChain function on a universal app",
   main
 )
@@ -69,8 +69,23 @@ task(
     "The address of the ZRC20 token",
     "0x9fd96203f7b22bCF72d9DCb40ff98302376cE09c"
   )
-  .addParam("gasLimit", "The gas limit for the transaction", 7000000, types.int)
   .addFlag("callOnRevert", "Whether to call on revert")
-  .addParam("revertAddress")
+  .addOptionalParam(
+    "revertAddress",
+    "Revert address",
+    "0x0000000000000000000000000000000000000000"
+  )
+  .addOptionalParam(
+    "gasPrice",
+    "The gas price for the transaction",
+    10000000000,
+    types.int
+  )
+  .addOptionalParam(
+    "gasLimit",
+    "The gas limit for the transaction",
+    7000000,
+    types.int
+  )
   .addParam("revertMessage")
   .addParam("receiver", "The address of the receiver contract on EVM");

@@ -28,7 +28,7 @@ contract Hello is UniversalContract {
         emit HelloEvent("Hello from a universal app", decodedMessage);
     }
 
-    function callFromZetaChain(
+    function call(
         bytes memory receiver,
         address zrc20,
         bytes calldata message,

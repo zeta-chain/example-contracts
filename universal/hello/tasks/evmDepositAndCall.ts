@@ -6,11 +6,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
 
   const gateway = new hre.ethers.Contract(
-    args.gatewayEVM,
+    args.gatewayEvm,
     GatewayABI.abi,
     signer
   );
-
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
 
   const message = hre.ethers.utils.defaultAbiCoder.encode(
@@ -30,8 +29,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
         revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
       },
       {
-        gasPrice: 10000000000,
-        gasLimit: 7000000,
+        gasPrice: args.gasPrice,
+        gasLimit: args.gasLimit,
         value: hre.ethers.utils.parseEther(args.amount),
       }
     );
@@ -44,15 +43,31 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("deposit-and-call", "Deposit tokens to and call a universal app", main)
+task("evm-deposit-and-call", "Deposit tokens to and call a universal app", main)
   .addParam("message")
   .addParam("contract", "contract address of a universal app on ZetaChain")
   .addOptionalParam(
-    "gatewayEVM",
+    "gatewayEvm",
     "contract address of gateway on EVM",
     "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
   )
   .addFlag("callOnRevert", "Whether to call on revert")
-  .addParam("revertAddress")
-  .addParam("revertMessage")
+  .addOptionalParam(
+    "revertAddress",
+    "Revert address",
+    "0x0000000000000000000000000000000000000000"
+  )
+  .addOptionalParam(
+    "gasPrice",
+    "The gas price for the transaction",
+    10000000000,
+    types.int
+  )
+  .addOptionalParam(
+    "gasLimit",
+    "The gas limit for the transaction",
+    7000000,
+    types.int
+  )
+  .addOptionalParam("revertMessage", "Revert message", "0x")
   .addParam("amount", "amount of ETH to send with the transaction");
