@@ -6,13 +6,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
   const { utils } = hre.ethers;
 
-  const contractArtifact = await hre.artifacts.readArtifact("Hello");
-  const contract = new hre.ethers.Contract(
-    args.contract,
-    contractArtifact.abi,
-    signer
-  );
-
   const gateway = new hre.ethers.Contract(
     args.gatewayZetaChain,
     GatewayABI.abi,
