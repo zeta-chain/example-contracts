@@ -4,6 +4,7 @@ import GatewayABI from "@zetachain/protocol-contracts/abi/GatewayZEVM.sol/Gatewa
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
+  const { utils } = hre.ethers;
 
   const contractArtifact = await hre.artifacts.readArtifact("Hello");
   const contract = new hre.ethers.Contract(
@@ -21,22 +22,20 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const zrc20Artifact = await hre.artifacts.readArtifact("IZRC20");
   const zrc20 = new hre.ethers.Contract(args.zrc20, zrc20Artifact.abi, signer);
 
-  const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
-
-  const functionSignature = hre.ethers.utils.id(args.function).slice(0, 10);
-  const encodedParameters = hre.ethers.utils.defaultAbiCoder.encode(
+  const functionSignature = utils.id(args.function).slice(0, 10);
+  const encodedParameters = utils.defaultAbiCoder.encode(
     JSON.parse(args.types),
     args.values
   );
 
-  const message = hre.ethers.utils.hexlify(
-    hre.ethers.utils.concat([functionSignature, encodedParameters])
+  const message = utils.hexlify(
+    utils.concat([functionSignature, encodedParameters])
   );
 
   try {
     const zrc20TransferTx = await zrc20.approve(
       args.gatewayZetaChain,
-      hre.ethers.utils.parseUnits(args.amount, 18),
+      utils.parseUnits(args.amount, 18),
       {
         gasPrice: 10000000000,
         gasLimit: 7000000,
@@ -46,7 +45,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     const tx = await gateway[
       "call(bytes,address,bytes,uint256,(address,bool,address,bytes,uint256))"
     ](
-      hre.ethers.utils.hexlify(args.receiver),
+      utils.hexlify(args.receiver),
       args.zrc20,
       message,
       args.gasLimit,
@@ -54,7 +53,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
         revertAddress: args.revertAddress,
         callOnRevert: args.callOnRevert,
         abortAddress: "0x0000000000000000000000000000000000000000", // not used
-        revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
+        revertMessage: utils.hexlify(utils.toUtf8Bytes(args.revertMessage)),
         onRevertGasLimit: args.onRevertGasLimit,
       },
       {

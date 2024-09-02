@@ -4,6 +4,7 @@ import GatewayABI from "@zetachain/protocol-contracts/abi/GatewayEVM.sol/Gateway
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
+  const { utils } = hre.ethers;
 
   const gateway = new hre.ethers.Contract(
     args.gatewayEvm,
@@ -11,12 +12,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     signer
   );
 
-  const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
-
-  const message = hre.ethers.utils.defaultAbiCoder.encode(
-    ["string"],
-    [args.message]
-  );
+  const message = utils.defaultAbiCoder.encode(["string"], [args.message]);
   try {
     const callTx = await gateway[
       "call(address,bytes,(address,bool,address,bytes,uint256))"
@@ -27,7 +23,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
         revertAddress: args.revertAddress,
         callOnRevert: args.callOnRevert,
         abortAddress: "0x0000000000000000000000000000000000000000", // not used
-        revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
+        revertMessage: utils.hexlify(utils.toUtf8Bytes(args.revertMessage)),
         onRevertGasLimit: args.onRevertGasLimit,
       },
       {
