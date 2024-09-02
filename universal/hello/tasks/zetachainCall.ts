@@ -1,6 +1,7 @@
 import { task, types } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
 import GatewayABI from "@zetachain/protocol-contracts/abi/GatewayZEVM.sol/GatewayZEVM.json";
+import ZRC20ABI from "@zetachain/protocol-contracts/abi/ZRC20.sol/ZRC20.json";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -12,8 +13,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     signer
   );
 
-  const zrc20Artifact = await hre.artifacts.readArtifact("IZRC20");
-  const zrc20 = new hre.ethers.Contract(args.zrc20, zrc20Artifact.abi, signer);
+  const zrc20 = new hre.ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
 
   const functionSignature = utils.id(args.function).slice(0, 10);
   const encodedParameters = utils.defaultAbiCoder.encode(
