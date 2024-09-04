@@ -51,7 +51,7 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
         // if (isDeposit) {
         // Deposit - USDC coming from Ethereum (e.g.), going to BSC via Zeta
         IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
-        uint256 gasLimit = 1_000_000;
+        uint256 gasLimit = 1_000_000_000;
         bytes memory recipient = incomingMessage;
 
         // Step 1: Generate the function selector
