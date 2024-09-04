@@ -3,6 +3,7 @@ import "./tasks/depositAndCall2";
 import "./tasks/mintUSDC";
 import "./tasks/checkBalance";
 import "./tasks/deploy";
+import "./tasks/deposit";
 import "./tasks/callFromZetaChain";
 import "./tasks/solana/interact";
 import "@zetachain/localnet/tasks";

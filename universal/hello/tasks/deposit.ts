@@ -13,16 +13,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
 
-  const message = hre.ethers.utils.defaultAbiCoder.encode(
-    ["string"],
-    [args.message]
-  );
   try {
     const callTx = await gateway[
-      "depositAndCall(address,bytes,(address,bool,address,bytes))"
+      "deposit(address(address,bool,address,bytes))"
     ](
       args.contract,
-      message,
       {
         revertAddress: args.revertAddress,
         callOnRevert: args.callOnRevert,
@@ -30,7 +25,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
         revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
       },
       {
-        gasPrice: 40000000000,
+        gasPrice: 10000000000,
         gasLimit: 7000000,
         value: hre.ethers.utils.parseEther(args.amount),
       }
@@ -44,8 +39,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("deposit-and-call", "Deposit tokens to and call a universal app", main)
-  .addParam("message")
+task("deposit2", "Deposit tokens to a universal app", main)
   .addParam("contract", "contract address of a universal app on ZetaChain")
   .addOptionalParam(
     "gatewayEVM",

@@ -16,6 +16,7 @@ import "hardhat/console.sol";
 
 contract ZRC4626 is ERC20, IERC4626, UniversalContract {
     using Math for uint256;
+    event HelloEvent(string, string);
 
     event ContextDataRevert(RevertContext);
 
@@ -48,40 +49,45 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
         uint256 amount, // the amount that was deposited
         bytes calldata incomingMessage // in this case this is the address of the contract to call, converted to bytes
     ) external override {
+        string memory decodedMessage;
+        if (incomingMessage.length > 0) {
+            decodedMessage = abi.decode(incomingMessage, (string));
+        }
+        emit HelloEvent("Hello from a universal app", decodedMessage);
         // if (isDeposit) {
         // Deposit - USDC coming from Ethereum (e.g.), going to BSC via Zeta
-        IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
-        uint256 gasLimit = 1_000_000_000;
-        bytes memory recipient = incomingMessage;
+        // IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
+        // uint256 gasLimit = 1_000_000_000;
+        // bytes memory recipient = incomingMessage;
 
-        // Step 1: Generate the function selector
-        // Function signature: depositIntoVault(uint256)
-        bytes4 functionSelector = bytes4(
-            keccak256(bytes("depositIntoVault(uint256)"))
-        );
-        // Step 2: ABI-encode the arguments
-        uint256 outgoingAmount = 2000000; // 2 USDC
-        bytes memory encodedArgs = abi.encode(outgoingAmount);
-        // Step 3: Combine the function selector and ABI-encoded arguments
-        bytes memory outgoingMessage = abi.encodePacked(
-            functionSelector,
-            encodedArgs
-        );
+        // // Step 1: Generate the function selector
+        // // Function signature: depositIntoVault(uint256)
+        // bytes4 functionSelector = bytes4(
+        //     keccak256(bytes("depositIntoVault(uint256)"))
+        // );
+        // // Step 2: ABI-encode the arguments
+        // uint256 outgoingAmount = 2000000; // 2 USDC
+        // bytes memory encodedArgs = abi.encode(outgoingAmount);
+        // // Step 3: Combine the function selector and ABI-encoded arguments
+        // bytes memory outgoingMessage = abi.encodePacked(
+        //     functionSelector,
+        //     encodedArgs
+        // );
 
-        RevertOptions memory revertOptions = RevertOptions(
-            address(this),
-            false,
-            address(this),
-            bytes("revert message")
-        );
+        // RevertOptions memory revertOptions = RevertOptions(
+        //     address(this),
+        //     false,
+        //     address(this),
+        //     bytes("revert message")
+        // );
 
-        IGatewayZEVM(_GATEWAY_ADDRESS).call(
-            recipient, // this contains the recipient smart contract address
-            zrc20, // this is used as an identifier of which chain to call
-            outgoingMessage, // this is the function call for depositIntoVault(uint256 amount) in VaultManager
-            gasLimit,
-            revertOptions
-        );
+        // IGatewayZEVM(_GATEWAY_ADDRESS).call(
+        //     recipient, // this contains the recipient smart contract address
+        //     zrc20, // this is used as an identifier of which chain to call
+        //     outgoingMessage, // this is the function call for depositIntoVault(uint256 amount) in VaultManager
+        //     gasLimit,
+        //     revertOptions
+        // );
         // the call part from the depositAndCall above will prompt a call to BSC to get assets amount
         // wrap the below in _convertToShares(// need to call destination chain);
         // maybe these next two can be combined into one
