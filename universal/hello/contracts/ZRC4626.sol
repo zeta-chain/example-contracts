@@ -19,7 +19,7 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
 
     event ContextDataRevert(RevertContext);
 
-    address constant gatewayAddress =
+    address constant _GATEWAY_ADDRESS =
         0x610178dA211FEF7D417bC0e6FeD39F05609AD788;
     IERC20 private immutable _asset;
     uint8 private immutable _decimals;
@@ -43,14 +43,14 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
     }
 
     function onCrossChainCall(
-        zContext calldata context,
-        address zrc20, // what is this? the zrc20 that came in
-        uint256 amount,
-        bytes calldata incomingMessage
+        zContext calldata context, // has the address of the sender and of the originating chain ID
+        address zrc20, // this is the zrc20 that corresponds to the gas token of the incoming deposit (e.g. zrc20 ETH)
+        uint256 amount, // the amount that was deposited
+        bytes calldata incomingMessage // in this case this is the address of the contract to call, converted to bytes
     ) external override {
         // if (isDeposit) {
         // Deposit - USDC coming from Ethereum (e.g.), going to BSC via Zeta
-        IZRC20(zrc20).approve(gatewayAddress, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
+        IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
         uint256 gasLimit = 1_000_000;
         bytes memory recipient = incomingMessage;
 
@@ -59,16 +59,15 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
         bytes4 functionSelector = bytes4(
             keccak256(bytes("depositIntoVault(uint256)"))
         );
-
         // Step 2: ABI-encode the arguments
         uint256 amount = 2000000; // 2 USDC
         bytes memory encodedArgs = abi.encode(amount);
-
         // Step 3: Combine the function selector and ABI-encoded arguments
         bytes memory outgoingMessage = abi.encodePacked(
             functionSelector,
             encodedArgs
         );
+
         RevertOptions memory revertOptions = RevertOptions(
             address(this),
             false,
@@ -76,7 +75,7 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
             bytes("revert message")
         );
 
-        IGatewayZEVM(gatewayAddress).call(
+        IGatewayZEVM(_GATEWAY_ADDRESS).call(
             recipient, // this contains the recipient smart contract address
             zrc20, // this is used as an identifier of which chain to call
             outgoingMessage, // this is the function call for depositIntoVault(uint256 amount) in VaultManager
@@ -154,8 +153,8 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
         uint256 gasLimit,
         RevertOptions memory revertOptions
     ) external {
-        IZRC20(zrc20).approve(gatewayAddress, 1_000_000_000);
-        IGatewayZEVM(gatewayAddress).call(
+        IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000);
+        IGatewayZEVM(_GATEWAY_ADDRESS).call(
             receiver,
             zrc20,
             message,
