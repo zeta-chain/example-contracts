@@ -12,7 +12,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
-  const message = hre.ethers.utils.toUtf8Bytes(args.message); // this is the address of the recipient contract (VaultManager)
+  if (!hre.ethers.utils.isAddress(args.message)) {
+    throw new Error("Invalid address");
+  }
+  const message = hre.ethers.utils.defaultAbiCoder.encode(
+    ["address"],
+    [args.message]
+  ); // this is the address of the recipient contract (VaultManager)
 
   try {
     const callTx = await gateway[

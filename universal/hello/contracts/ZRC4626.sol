@@ -11,8 +11,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
-import "hardhat/console.sol";
-// import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 
 contract ZRC4626 is ERC20, IERC4626, UniversalContract {
     using Math for uint256;
@@ -25,9 +23,6 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
     IERC20 private immutable _asset;
     uint8 private immutable _decimals;
 
-    /**
-     * @dev Set the underlying asset contract. This must be an ERC20-compatible contract (ERC20 or ERC777).
-     */
     constructor(
         string memory name_,
         string memory symbol_,
@@ -49,108 +44,35 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
         uint256 amount, // the amount that was deposited
         bytes calldata incomingMessage // in this case this is the address of the contract to call, converted to bytes
     ) external override {
-        string memory decodedMessage;
-        if (incomingMessage.length > 0) {
-            decodedMessage = abi.decode(incomingMessage, (string));
-        }
-        emit HelloEvent("Hello from a universal app", decodedMessage);
-        // if (isDeposit) {
-        // Deposit - USDC coming from Ethereum (e.g.), going to BSC via Zeta
-        // IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
-        // uint256 gasLimit = 1_000_000_000;
-        // bytes memory recipient = incomingMessage;
+        IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
+        uint256 gasLimit = 1_000_000_000;
+        bytes memory recipient = incomingMessage;
 
-        // // Step 1: Generate the function selector
-        // // Function signature: depositIntoVault(uint256)
-        // bytes4 functionSelector = bytes4(
-        //     keccak256(bytes("depositIntoVault(uint256)"))
-        // );
-        // // Step 2: ABI-encode the arguments
-        // uint256 outgoingAmount = 2000000; // 2 USDC
-        // bytes memory encodedArgs = abi.encode(outgoingAmount);
-        // // Step 3: Combine the function selector and ABI-encoded arguments
-        // bytes memory outgoingMessage = abi.encodePacked(
-        //     functionSelector,
-        //     encodedArgs
-        // );
+        bytes4 functionSelector = bytes4(
+            keccak256(bytes("depositIntoVault(uint256)"))
+        );
+        uint256 outgoingAmount = 2000000; // 2 USDC
+        bytes memory encodedArgs = abi.encode(outgoingAmount);
+        bytes memory outgoingMessage = abi.encodePacked(
+            functionSelector,
+            encodedArgs
+        );
 
-        // RevertOptions memory revertOptions = RevertOptions(
-        //     address(this),
-        //     false,
-        //     address(this),
-        //     bytes("revert message")
-        // );
+        RevertOptions memory revertOptions = RevertOptions(
+            address(this),
+            false,
+            address(this),
+            bytes("revert message")
+        );
 
-        // IGatewayZEVM(_GATEWAY_ADDRESS).call(
-        //     recipient, // this contains the recipient smart contract address
-        //     zrc20, // this is used as an identifier of which chain to call
-        //     outgoingMessage, // this is the function call for depositIntoVault(uint256 amount) in VaultManager
-        //     gasLimit,
-        //     revertOptions
-        // );
-        // the call part from the depositAndCall above will prompt a call to BSC to get assets amount
-        // wrap the below in _convertToShares(// need to call destination chain);
-        // maybe these next two can be combined into one
-        // uint256 shares = call(bsc_dummy_vault_address, zrc20_address_eth_bsc, bytes calldata message, uint256 gasLimit, RevertOptions calldata revertOptions)
-        //this next call is correct - we are withdrawing from Zeta to the target chain
-        // need to swap USDC.ETH to USDC.BSC
-        // swapAndWithdraw(zrc20, amount, params.target, params.to);
-
-        // withdrawAndCall(bsc_dummy_vault_address, usdc_address, zrc20_address_eth_bsc, bytes calldata message, uint256 gasLimit, RevertOptions calldata revertOptions);
-        // the call here is a call to our dummy vault to deposit into Aave
-
-        // } else if (withdrawal part 1) {
-        //     // Withdraw - USDC coming from BSC (e.g.), going to Ethereum via Zeta
-        //     //
-        //     // this next part would be done by our UI to the Ethereum Gateway
-        //     call(address receiver, bytes calldata payload, RevertOptions calldata revertOptions)
-        //     //
-        //     // the call above will prompt a call from here to BSC to get the asset amount based on shares
-        //     uint256 amount = call(bytes memory receiver, address zrc20, bytes calldata message, uint256 gasLimit, RevertOptions calldata revertOptions)
-        //     // this call prompts our contract on BSC to initiate the withdrawal and then send a deposit back this way
-
-        // } else if (withdrawal part 2) { // i'm not sure this is necessary, as the first part of the conditional can maybe handle it?
-        //     uint256 assets = call(bytes memory receiver, address zrc20, bytes calldata message, uint256 gasLimit, RevertOptions calldata revertOptions)
-        //     uint256 assets = _convertToAssets(// need to call destination chain);
-        //     // would need this call here to withdraw from Aave and withdraw fund back to Zeta?
-        //     call(bytes memory receiver, address zrc20, bytes calldata message, uint256 gasLimit, RevertOptions calldata revertOptions)
-        //     // this last withdraw send the USDC from Zeta back to Ethereum
-        //     withdraw(bytes memory receiver, uint256 amount, address zrc20, RevertOptions calldata revertOptions);
-        // }
+        IGatewayZEVM(_GATEWAY_ADDRESS).call(
+            recipient, // this contains the recipient smart contract address
+            zrc20, // this is used as an identifier of which chain to call
+            outgoingMessage, // this is the function call for depositIntoVault(uint256 amount) in VaultManager
+            gasLimit,
+            revertOptions
+        );
     }
-
-    // function swapAndWithdraw(
-    //     address inputToken,
-    //     uint256 amount,
-    //     address targetToken,
-    //     bytes memory recipient
-    // ) internal {
-    //     uint256 inputForGas;
-    //     address gasZRC20;
-    //     uint256 gasFee;
-
-    //     (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
-
-    //     inputForGas = SwapHelperLib.swapTokensForExactTokens(
-    //         systemContract,
-    //         inputToken,
-    //         gasFee,
-    //         gasZRC20,
-    //         amount
-    //     );
-
-    //     uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
-    //         systemContract,
-    //         inputToken,
-    //         amount - inputForGas,
-    //         targetToken,
-    //         0
-    //     );
-
-    //     IZRC20(gasZRC20).approve(targetToken, gasFee);
-    //     IZRC20(targetToken).withdraw(recipient, outputAmount); // in final version, switch to the withdrawand call
-    //     // IZRC20(targetToken).withdrawAndCall(recipient, outputAmount, gasZRC20, bytes("function selector & abi encoded arguments"), 0, RevertOptions(false));
-    // }
 
     function callFromZetaChain(
         bytes memory receiver,
