@@ -74,6 +74,7 @@ contract Swap is UniversalContract {
             params.target,
             0
         );
+
         IZRC20(gasZRC20).approve(gatewayAddress, gasFee);
         IZRC20(params.target).approve(gatewayAddress, outputAmount);
         IGatewayZEVM(gatewayAddress).withdraw(

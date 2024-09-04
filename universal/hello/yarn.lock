@@ -2173,6 +2173,11 @@
   resolved "https://registry.yarnpkg.com/@uniswap/v2-core/-/v2-core-1.0.0.tgz#e0fab91a7d53e8cafb5326ae4ca18351116b0844"
   integrity sha512-BJiXrBGnN8mti7saW49MXwxDBRFiWemGetE58q8zgfnPPzQKq55ADltEILqOt6VFZ22kVeVKbF8gVd8aY3l7pA==
 
+"@uniswap/v2-core@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@uniswap/v2-core/-/v2-core-1.0.1.tgz#af8f508bf183204779938969e2e54043e147d425"
+  integrity sha512-MtybtkUPSyysqLY2U210NBDeCHX+ltHt3oADGdjqoThZaFRDKwM6k1Nb3F0A3hk5hwuQvytFWhrWHOEq6nVJ8Q==
+
 "@uniswap/v2-periphery@^1.1.0-beta.0":
   version "1.1.0-beta.0"
   resolved "https://registry.yarnpkg.com/@uniswap/v2-periphery/-/v2-periphery-1.1.0-beta.0.tgz#20a4ccfca22f1a45402303aedb5717b6918ebe6d"
@@ -2195,11 +2200,13 @@
     typescript "5.0.4"
     zod "3.19.1"
 
-"@zetachain/localnet@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-1.0.2.tgz#a569d56c92f5ecfa735762ad952281b7eb8292f9"
-  integrity sha512-Z+IGRilCIZagQwcQXhOb/uNhao8ogjIbj88TlqncxiVh62PN7vL+6dsNREah+vI2qmQIwEEtHuiQ+vPevqp8XA==
+"@zetachain/localnet@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-2.0.0.tgz#66bf7d389234d7baeaf4f1ab399cd31252154e85"
+  integrity sha512-pW4PUuwt6hkgKVbLOpZm1yPld+YhRzYbEtbZJZpQ2cCGwlIrWcb7U66eA0XUMcTUUgfd/l7cRNhxnUKHZ6A8fg==
   dependencies:
+    "@uniswap/v2-core" "^1.0.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
     "@zetachain/protocol-contracts" "10.0.0-rc10"
     ansis "^3.3.2"
     concurrently "^8.2.2"
