@@ -12,11 +12,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
+  const message = hre.ethers.utils.toUtf8Bytes(args.message); // this is the address of the recipient contract (VaultManager)
 
-  const message = hre.ethers.utils.defaultAbiCoder.encode(
-    ["string"],
-    [args.message]
-  );
   try {
     const callTx = await gateway[
       "depositAndCall(address,bytes,(address,bool,address,bytes))"
@@ -30,7 +27,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
         revertMessage: hre.ethers.utils.hexlify(revertMessageBytes),
       },
       {
-        gasPrice: 40000000000,
+        gasPrice: 50000000000,
         gasLimit: 7000000,
         value: hre.ethers.utils.parseEther(args.amount),
       }
@@ -39,6 +36,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     console.log(
       `Contract on ZetaChain called from EVM with ${args.amount} ETH`
     );
+
   } catch (e) {
     console.error("Error calling contract:", e);
   }
