@@ -21,7 +21,7 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
     event ContextDataRevert(RevertContext);
 
     address constant _GATEWAY_ADDRESS =
-        0x610178dA211FEF7D417bC0e6FeD39F05609AD788;
+        0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0;
     IERC20 private immutable _asset;
     uint8 private immutable _decimals;
 
