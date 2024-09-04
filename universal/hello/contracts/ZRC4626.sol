@@ -14,26 +14,6 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 import "hardhat/console.sol";
 // import "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 
-/**
- * @dev Implementation of the ERC4626 "Tokenized Vault Standard" as defined in
- * https://eips.ethereum.org/EIPS/eip-4626[EIP-4626].
- *
- * This extension allows the minting and burning of "shares" (represented using the ERC20 inheritance) in exchange for
- * underlying "assets" through standardized {deposit}, {mint}, {redeem} and {burn} workflows. This contract extends
- * the ERC20 standard. Any additional extensions included along it would affect the "shares" token represented by this
- * contract and not the "assets" token which is an independent contract.
- *
- * CAUTION: When the vault is empty or nearly empty, deposits are at high risk of being stolen through frontrunning with
- * a "donation" to the vault that inflates the price of a share. This is variously known as a donation or inflation
- * attack and is essentially a problem of slippage. Vault deployers can protect against this attack by making an initial
- * deposit of a non-trivial amount of the asset, such that price manipulation becomes infeasible. Withdrawals may
- * similarly be affected by slippage. Users can protect against this attack as well unexpected slippage in general by
- * verifying the amount received is as expected, using a wrapper that performs these checks such as
- * https://github.com/fei-protocol/ERC4626#erc4626router-and-base[ERC4626Router].
- *
- * _Available since v4.7._
- */
-
 contract ZRC4626 is ERC20, IERC4626, UniversalContract {
     using Math for uint256;
 
@@ -66,28 +46,29 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
         zContext calldata context,
         address zrc20, // what is this? the zrc20 that came in
         uint256 amount,
-        bytes calldata message
+        bytes calldata incomingMessage
     ) external override {
-        // Params memory params = Params({target: address(0), to: bytes("")});
-        // (address targetToken, bytes memory recipient) = abi.decode(
-        //     message,
-        //     (address, bytes)
-        // );
-        // params.target = targetToken;
-        // params.to = recipient;
-        // bool isDeposit = true;
-        // string memory decodedMessage;
-        // if (message.length > 0) {
-        //     decodedMessage = abi.decode(message, (string));
-        // }
-        // console.log("decodedMessage:", decodedMessage);
-        // address recipient = address(decodedMessage);
-        // console.log("zrc20:", zrc20);
         // if (isDeposit) {
         // Deposit - USDC coming from Ethereum (e.g.), going to BSC via Zeta
         IZRC20(zrc20).approve(gatewayAddress, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
-        // bytes calldata message = "";
         uint256 gasLimit = 1_000_000;
+        bytes memory recipient = incomingMessage;
+
+        // Step 1: Generate the function selector
+        // Function signature: depositIntoVault(uint256)
+        bytes4 functionSelector = bytes4(
+            keccak256(bytes("depositIntoVault(uint256)"))
+        );
+
+        // Step 2: ABI-encode the arguments
+        uint256 amount = 2000000; // 2 USDC
+        bytes memory encodedArgs = abi.encode(amount);
+
+        // Step 3: Combine the function selector and ABI-encoded arguments
+        bytes memory outgoingMessage = abi.encodePacked(
+            functionSelector,
+            encodedArgs
+        );
         RevertOptions memory revertOptions = RevertOptions(
             address(this),
             false,
@@ -96,9 +77,9 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
         );
 
         IGatewayZEVM(gatewayAddress).call(
-            message,
-            zrc20,
-            message, // I have to create a function call for depositIntoVault(uint256 amount) in VaultManager
+            recipient, // this contains the recipient smart contract address
+            zrc20, // this is used as an identifier of which chain to call
+            outgoingMessage, // this is the function call for depositIntoVault(uint256 amount) in VaultManager
             gasLimit,
             revertOptions
         );

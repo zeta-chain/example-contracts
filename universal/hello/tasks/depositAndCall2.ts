@@ -12,23 +12,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const revertMessageBytes = hre.ethers.utils.toUtf8Bytes(args.revertMessage);
-  const functionSignature = 'depositIntoVault(uint256)';
-
-  // Step 1: Generate the function selector
-  const functionSelector = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes(functionSignature)).substring(0, 10);
-
-  console.log('Function Selector:', functionSelector);
-
-  // Step 2: ABI-encode the arguments
-  const amount = 2000000; // 2 Ether in Wei
-  const encodedArgs = hre.ethers.utils.defaultAbiCoder.encode(['uint256'], [amount]);
-
-  console.log('Encoded Arguments:', encodedArgs);
-
-  // Step 3: Combine the function selector and ABI-encoded arguments
-  const message = functionSelector + encodedArgs.substring(2); // Remove the '0x' from encodedArgs
-
-  console.log('Final Message:', message);
+  const message = hre.ethers.utils.toUtf8Bytes(args.message); // this is the address of the recipient contract (VaultManager)
 
   try {
     const callTx = await gateway[
