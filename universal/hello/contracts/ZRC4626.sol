@@ -60,8 +60,8 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
             keccak256(bytes("depositIntoVault(uint256)"))
         );
         // Step 2: ABI-encode the arguments
-        uint256 amount = 2000000; // 2 USDC
-        bytes memory encodedArgs = abi.encode(amount);
+        uint256 outgoingAmount = 2000000; // 2 USDC
+        bytes memory encodedArgs = abi.encode(outgoingAmount);
         // Step 3: Combine the function selector and ABI-encoded arguments
         bytes memory outgoingMessage = abi.encodePacked(
             functionSelector,
