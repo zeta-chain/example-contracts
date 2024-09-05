@@ -17,7 +17,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("direct-deposit", "Check the balance of an account for any ERC-20 contract", main)
+task("direct-deposit", "Directly call the VaultManager to test it", main)
   .addParam("vaultManagerAddress", "The address of the VaultManager contract")
   .addParam("amount", "Amount to deposit")
   .setAction(main);
