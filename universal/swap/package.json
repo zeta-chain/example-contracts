@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:fix": "npx eslint . --ext .js,.ts --fix",
     "lint": "npx eslint . --ext .js,.ts",
-    "deploy": "npx hardhat compile --force && npx hardhat deploy --network localhost --name Hello && npx hardhat deploy --network localhost --name ReceiverContract"
+    "deploy": "npx hardhat compile --force && npx hardhat deploy --network localhost"
   },
   "keywords": [],
   "author": "",
@@ -54,6 +54,7 @@
   "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72",
   "dependencies": {
     "@coral-xyz/anchor": "0.30.0",
+    "@openzeppelin/contracts": "^4.9.6",
     "@solana-developers/helpers": "^2.4.0",
     "@solana/spl-memo": "^0.2.5",
     "@solana/web3.js": "^1.95.2",

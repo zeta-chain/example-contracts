@@ -5,9 +5,9 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const network = hre.network.name as ParamChainName;
 
-  if (!/zeta_(testnet|mainnet)/.test(network)) {
+  if (!/zeta_(testnet|mainnet|localhost)/.test(network)) {
     throw new Error(
-      '🚨 Please use either "zeta_testnet" or "zeta_mainnet" network to deploy to ZetaChain.'
+      '🚨 Please use either "zeta_testnet", "zeta_mainnet" or "localhost" network to deploy to ZetaChain.'
     );
   }
 
