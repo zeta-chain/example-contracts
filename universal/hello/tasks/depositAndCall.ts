@@ -17,7 +17,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   //   throw new Error("Invalid address");
   // }
   const message = hre.ethers.utils.defaultAbiCoder.encode(
-    ["string"],
+    ["address"],
     [args.message]
   ); // this is the address of the recipient contract (VaultManager)
 

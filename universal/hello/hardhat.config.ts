@@ -1,5 +1,6 @@
 import "./tasks/evmDepositAndCall";
 import "./tasks/evmDeposit";
+import "./tasks/depositAndCall";
 import "./tasks/evmCall";
 import "./tasks/mintUSDC";
 import "./tasks/checkBalance";

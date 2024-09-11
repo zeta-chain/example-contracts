@@ -45,34 +45,35 @@ contract ZRC4626 is ERC20, IERC4626, UniversalContract {
         bytes calldata incomingMessage // in this case this is the address of the contract to call, converted to bytes
     ) external override {
         emit HelloEvent("Hello", "World");
-        // IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
-        // uint256 gasLimit = 1_000_000_000;
-        // bytes memory recipient = incomingMessage;
+        IZRC20(zrc20).approve(_GATEWAY_ADDRESS, 1_000_000_000); // approve gateway to spend on my behalf to cover gas, I think?
+        uint256 gasLimit = 1_000_000_000;
+        bytes memory recipient = incomingMessage;
 
-        // bytes4 functionSelector = bytes4(
-        //     keccak256(bytes("depositIntoVault(uint256)"))
-        // );
-        // uint256 outgoingAmount = 2000000; // 2 USDC
-        // bytes memory encodedArgs = abi.encode(outgoingAmount);
-        // bytes memory outgoingMessage = abi.encodePacked(
-        //     functionSelector,
-        //     encodedArgs
-        // );
+        bytes4 functionSelector = bytes4(
+            keccak256(bytes("depositIntoVault(uint256)"))
+        );
+        uint256 outgoingAmount = 2000000; // 2 USDC
+        bytes memory encodedArgs = abi.encode(outgoingAmount);
+        bytes memory outgoingMessage = abi.encodePacked(
+            functionSelector,
+            encodedArgs
+        );
 
-        // RevertOptions memory revertOptions = RevertOptions(
-        //     address(this),
-        //     false,
-        //     address(this),
-        //     bytes("revert message")
-        // );
+        RevertOptions memory revertOptions = RevertOptions(
+            address(this),
+            false,
+            address(this),
+            bytes("revert message"),
+            uint256(1_000_000_000)
+        );
 
-        // IGatewayZEVM(_GATEWAY_ADDRESS).call(
-        //     recipient, // this contains the recipient smart contract address
-        //     zrc20, // this is used as an identifier of which chain to call
-        //     outgoingMessage, // this is the function call for depositIntoVault(uint256 amount) in VaultManager
-        //     gasLimit,
-        //     revertOptions
-        // );
+        IGatewayZEVM(_GATEWAY_ADDRESS).call(
+            recipient, // this contains the recipient smart contract address
+            zrc20, // this is used as an identifier of which chain to call
+            outgoingMessage, // this is the function call for depositIntoVault(uint256 amount) in VaultManager
+            gasLimit,
+            revertOptions
+        );
     }
 
     function callFromZetaChain(
