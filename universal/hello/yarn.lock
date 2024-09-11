@@ -2200,10 +2200,10 @@
     typescript "5.0.4"
     zod "3.19.1"
 
-"@zetachain/localnet@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-2.0.0.tgz#66bf7d389234d7baeaf4f1ab399cd31252154e85"
-  integrity sha512-pW4PUuwt6hkgKVbLOpZm1yPld+YhRzYbEtbZJZpQ2cCGwlIrWcb7U66eA0XUMcTUUgfd/l7cRNhxnUKHZ6A8fg==
+"@zetachain/localnet@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.0.1.tgz#741e9924ca26ea457e2a48a1385ebe9953bf96e3"
+  integrity sha512-ge1PZJuDhBCOWTF8a/P6rCxQAfGLRtmlGyyVjtSzsSrpOy45JLzFOjA9tNJMst+YrokpLBhmRCYfJWThFQ4/wA==
   dependencies:
     "@uniswap/v2-core" "^1.0.1"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
