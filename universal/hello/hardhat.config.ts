@@ -1,8 +1,4 @@
-import "./tasks/evmDepositAndCall";
-import "./tasks/evmDeposit";
-import "./tasks/evmCall";
 import "./tasks/deploy";
-import "./tasks/zetachainCall";
 import "./tasks/solana/interact";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";

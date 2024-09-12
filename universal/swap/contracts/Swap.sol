@@ -75,8 +75,12 @@ contract Swap is UniversalContract {
             0
         );
 
-        IZRC20(gasZRC20).approve(gatewayAddress, gasFee);
-        IZRC20(params.target).approve(gatewayAddress, outputAmount);
+        if (gasZRC20 == params.target) {
+            IZRC20(gasZRC20).approve(gatewayAddress, outputAmount + gasFee);
+        } else {
+            IZRC20(gasZRC20).approve(gatewayAddress, gasFee);
+            IZRC20(params.target).approve(gatewayAddress, outputAmount);
+        }
         IGatewayZEVM(gatewayAddress).withdraw(
             params.to,
             outputAmount,
