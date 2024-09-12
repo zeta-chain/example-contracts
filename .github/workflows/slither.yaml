@@ -19,10 +19,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - project: "hello"
-            file: "examples/hello.sarif"
-          - project: "swap"
-            file: "examples/swap.sarif"
+          - project: "examples/hello"
+            file: "hello.sarif"
+          - project: "examples/swap"
+            file: "swap.sarif"
     permissions:
       contents: read
       security-events: write
