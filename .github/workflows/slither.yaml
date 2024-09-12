@@ -20,9 +20,9 @@ jobs:
       matrix:
         include:
           - project: "hello"
-            file: "hello.sarif"
+            file: "examples/hello.sarif"
           - project: "swap"
-            file: "swap.sarif"
+            file: "examples/swap.sarif"
     permissions:
       contents: read
       security-events: write
