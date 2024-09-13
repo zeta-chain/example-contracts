@@ -84,14 +84,30 @@ contract SwapToAnyToken is UniversalContract {
         uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
             systemContract,
             zrc20,
-            params.withdraw ? swapAmount : amount,
+            swapAmount,
             params.target,
             0
         );
 
         if (params.withdraw) {
-            IZRC20(gasZRC20).approve(params.target, gasFee);
-            IZRC20(params.target).withdraw(params.to, outputAmount);
+            if (gasZRC20 == params.target) {
+                IZRC20(gasZRC20).approve(gatewayAddress, outputAmount + gasFee);
+            } else {
+                IZRC20(gasZRC20).approve(gatewayAddress, gasFee);
+                IZRC20(params.target).approve(gatewayAddress, outputAmount);
+            }
+            IGatewayZEVM(gatewayAddress).withdraw(
+                params.to,
+                outputAmount,
+                params.target,
+                RevertOptions({
+                    revertAddress: address(0),
+                    callOnRevert: false,
+                    abortAddress: address(0),
+                    revertMessage: "",
+                    onRevertGasLimit: 0
+                })
+            );
         } else {
             IWETH9(params.target).transfer(
                 address(uint160(bytes20(params.to))),
