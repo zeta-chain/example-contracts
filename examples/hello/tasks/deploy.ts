@@ -1,8 +1,8 @@
-import { task } from "hardhat/config";
+import { task, types } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
-  const network = hre.network.name as ParamChainName;
+  const network = hre.network.name;
 
   const [signer] = await hre.ethers.getSigners();
   if (signer === undefined) {
@@ -12,7 +12,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 
   const factory = await hre.ethers.getContractFactory(args.name);
-  const contract = await factory.deploy();
+  const contract = await (factory as any).deploy(args.gatewayZetaChain);
   await contract.deployed();
 
   if (args.json) {
@@ -20,7 +20,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   } else {
     console.log(`🔑 Using account: ${signer.address}
 
-🚀 Successfully deployed contract on ${network}.
+🚀 Successfully deployed "${args.name}" contract on ${network}.
 📜 Contract address: ${contract.address}
 `);
   }
@@ -28,4 +28,9 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 task("deploy", "Deploy the contract", main)
   .addFlag("json", "Output in JSON")
-  .addOptionalParam("name", "Contract to deploy", "Hello");
+  .addOptionalParam("name", "Contract to deploy", "Hello")
+  .addOptionalParam(
+    "gatewayZetaChain",
+    "Gateway address",
+    "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0"
+  );
