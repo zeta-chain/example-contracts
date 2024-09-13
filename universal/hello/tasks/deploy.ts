@@ -12,7 +12,9 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 
   const factory = await hre.ethers.getContractFactory(args.name);
-  const contract = await factory.deploy();
+  const constructorArgs = args.conargs ? args.conargs.split(',') : [];
+
+  const contract = await factory.deploy(...constructorArgs);
   await contract.deployed();
 
   if (args.json) {
@@ -28,4 +30,5 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 task("deploy", "Deploy the contract", main)
   .addFlag("json", "Output in JSON")
-  .addOptionalParam("name", "Contract to deploy", "Hello");
+  .addOptionalParam("name", "Contract to deploy", "Hello")
+  .addOptionalParam("conargs", "Constructor arguments for the contract as a comma-separated string", ""); // Use a default empty string
