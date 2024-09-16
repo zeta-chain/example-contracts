@@ -14,10 +14,16 @@ cases that can be implemented on the ZetaChain platform.
 
 ### Universal Apps
 
-The `omnichain` directory contains universal omnichain contracts. A universal
-app is a smart contract on ZetaChain that is natively connected to other
-blockchains like Ethereum, BNB and Bitcoin. Learn more about [universal apps in
-the docs](https://www.zetachain.com/docs/developers/apps/intro/).
+The `examples` directory contains the latest universal omnichain example
+contracts. A universal app is a smart contract on ZetaChain that is natively
+connected to other blockchains like Ethereum, BNB and Bitcoin. These contracts
+use the latest gateway architecture and are compatible with localnet. Learn more
+about [universal apps in the
+docs](https://www.zetachain.com/docs/developers/apps/intro/).
+
+The `omnichain` directory contains contracts that use TSS for interacting with
+universal apps. These contracts do not use the latest gateway architecture, but
+are compatible with the current testnet.
 
 ## Tutorials
 
