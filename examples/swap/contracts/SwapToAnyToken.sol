@@ -62,7 +62,7 @@ contract SwapToAnyToken is UniversalContract {
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
-        uint256 swapAmount;
+        uint256 swapAmount = amount;
 
         if (params.withdraw) {
             (gasZRC20, gasFee) = IZRC20(params.target).withdrawGasFee();
