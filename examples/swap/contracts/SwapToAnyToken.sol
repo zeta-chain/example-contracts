@@ -10,15 +10,16 @@ import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contra
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IWZETA.sol";
+import {GatewayZEVM} from "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 
 contract SwapToAnyToken is UniversalContract {
     SystemContract public systemContract;
+    GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
-    address constant gatewayAddress =
-        0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0;
 
-    constructor(address systemContractAddress) {
+    constructor(address systemContractAddress, address payable gatewayAddress) {
         systemContract = SystemContract(systemContractAddress);
+        gateway = GatewayZEVM(gatewayAddress);
     }
 
     struct Params {
@@ -90,12 +91,15 @@ contract SwapToAnyToken is UniversalContract {
 
         if (params.withdraw) {
             if (gasZRC20 == params.target) {
-                IZRC20(gasZRC20).approve(gatewayAddress, outputAmount + gasFee);
+                IZRC20(gasZRC20).approve(
+                    address(gateway),
+                    outputAmount + gasFee
+                );
             } else {
-                IZRC20(gasZRC20).approve(gatewayAddress, gasFee);
-                IZRC20(params.target).approve(gatewayAddress, outputAmount);
+                IZRC20(gasZRC20).approve(address(gateway), gasFee);
+                IZRC20(params.target).approve(address(gateway), outputAmount);
             }
-            IGatewayZEVM(gatewayAddress).withdraw(
+            gateway.withdraw(
                 params.to,
                 outputAmount,
                 params.target,
