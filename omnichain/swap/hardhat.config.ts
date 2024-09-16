@@ -1,6 +1,7 @@
 import "./tasks/deploy";
 import "./tasks/solana/interact";
 import "./tasks/interact";
+import "./tasks/swap";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";

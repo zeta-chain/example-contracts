@@ -1,4 +1,5 @@
 import "./tasks/deploy";
+import "./tasks/swap";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";

@@ -47,19 +47,28 @@ contract Swap is UniversalContract {
             params.to = recipient;
         }
 
+        swapAndWithdraw(zrc20, amount, params.target, params.to);
+    }
+
+    function swapAndWithdraw(
+        address inputToken,
+        uint256 amount,
+        address targetToken,
+        bytes memory recipient
+    ) internal {
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
         uint256 swapAmount;
 
-        (gasZRC20, gasFee) = IZRC20(params.target).withdrawGasFee();
+        (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
 
-        if (gasZRC20 == zrc20) {
+        if (gasZRC20 == inputToken) {
             swapAmount = amount - gasFee;
         } else {
             inputForGas = SwapHelperLib.swapTokensForExactTokens(
                 systemContract,
-                zrc20,
+                inputToken,
                 gasFee,
                 gasZRC20,
                 amount
@@ -69,23 +78,23 @@ contract Swap is UniversalContract {
 
         uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
             systemContract,
-            zrc20,
+            inputToken,
             swapAmount,
-            params.target,
+            targetToken,
             0
         );
 
-        if (gasZRC20 == params.target) {
+        if (gasZRC20 == targetToken) {
             IZRC20(gasZRC20).approve(address(gateway), outputAmount + gasFee);
         } else {
             IZRC20(gasZRC20).approve(address(gateway), gasFee);
-            IZRC20(params.target).approve(address(gateway), outputAmount);
+            IZRC20(targetToken).approve(address(gateway), outputAmount);
         }
 
         gateway.withdraw(
-            params.to,
+            recipient,
             outputAmount,
-            params.target,
+            targetToken,
             RevertOptions({
                 revertAddress: address(0),
                 callOnRevert: false,
