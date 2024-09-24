@@ -1,6 +1,4 @@
 import "./tasks/deploy";
-import "./tasks/solana/interact";
-import "./tasks/interact";
 import "./tasks/swap";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
@@ -20,6 +18,7 @@ const config: HardhatUserConfig = {
       { version: "0.5.16" /** For uniswap v2 core*/ },
       { version: "0.4.19" /** For weth*/ },
       { version: "0.8.7" },
+      { version: "0.8.26" },
     ],
   },
 };
