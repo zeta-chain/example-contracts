@@ -29,4 +29,16 @@ contract Hello is UniversalContract {
     function onRevert(RevertContext calldata revertContext) external override {
         emit RevertEvent("Revert on ZetaChain", revertContext);
     }
+
+    function gatewayCall(
+        bytes memory receiver,
+        address zrc20,
+        bytes calldata message,
+        uint256 gasLimit,
+        RevertOptions memory revertOptions
+    ) external {
+        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(gasLimit);
+        IZRC20(zrc20).approve(address(gateway), gasFee);
+        gateway.call(receiver, zrc20, message, gasLimit, revertOptions);
+    }
 }
