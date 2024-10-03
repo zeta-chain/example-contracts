@@ -22,6 +22,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const types = JSON.parse(args.types);
 
+  if (types.length !== args.values.length) {
+    throw new Error(
+      `The number of types (${types.length}) does not match the number of values (${args.values.length}).`
+    );
+  }
+
   const valuesArray = args.values.map((value: any, index: number) => {
     const type = types[index];
 
