@@ -2,10 +2,17 @@
 pragma solidity 0.8.26;
 
 import {RevertContext} from "@zetachain/protocol-contracts/contracts/Revert.sol";
+import "@zetachain/protocol-contracts/contracts/evm/GatewayEVM.sol";
 
-contract Revert {
+contract Echo {
+    GatewayEVM public gateway;
+
     event RevertEvent(string, RevertContext);
     event HelloEvent(string, string);
+
+    constructor(address payable gatewayAddress) {
+        gateway = GatewayEVM(gatewayAddress);
+    }
 
     function hello(string memory message) external {
         emit HelloEvent("Hello on EVM", message);
@@ -13,6 +20,14 @@ contract Revert {
 
     function onRevert(RevertContext calldata revertContext) external {
         emit RevertEvent("Revert on EVM", revertContext);
+    }
+
+    function gatewayCall(
+        address receiver,
+        bytes calldata message,
+        RevertOptions memory revertOptions
+    ) external {
+        gateway.call(receiver, message, revertOptions);
     }
 
     receive() external payable {}
