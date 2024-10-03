@@ -49,7 +49,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
-  const contract = factory.attach(args.contract);
+  const contract = factory.attach(args.contract).connect(signer);
 
   const tx = await contract.gatewayCall(
     args.receiver,
