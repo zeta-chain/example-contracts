@@ -55,7 +55,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ethers.utils.concat([functionSignature, encodedParameters])
   );
 
-  const gasLimit = hre.ethers.BigNumber.from(args.gasLimit);
+  const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
   const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
   const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
   const zrc20TransferTx = await zrc20.transfer(
@@ -90,12 +90,6 @@ task(
 )
   .addParam("contract", "The address of the deployed Hello contract")
   .addParam("zrc20", "The address of ZRC-20 to pay fees")
-  .addOptionalParam(
-    "gasLimit",
-    "Gas limit for for a cross-chain call",
-    7000000,
-    types.int
-  )
   .addOptionalParam(
     "txOptionsGasPrice",
     "The gas price for the transaction",

@@ -48,8 +48,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     valuesArray
   );
 
-  const gasLimit = hre.ethers.BigNumber.from(args.gasLimit);
-
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
   const contract = factory.attach(args.contract);
 
@@ -67,12 +65,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 task("call-from-evm", "Calls the gateway on a contract on EVM", main)
   .addParam("contract", "The address of the deployed contract")
-  .addOptionalParam(
-    "gasLimit",
-    "Gas limit for for a cross-chain call",
-    7000000,
-    types.int
-  )
   .addOptionalParam(
     "txOptionsGasPrice",
     "The gas price for the transaction",
