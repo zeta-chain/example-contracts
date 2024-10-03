@@ -5,7 +5,7 @@ import {RevertContext} from "@zetachain/protocol-contracts/contracts/Revert.sol"
 import "@zetachain/protocol-contracts/contracts/evm/GatewayEVM.sol";
 
 contract Echo {
-    GatewayEVM public gateway;
+    GatewayEVM public immutable gateway;
 
     event RevertEvent(string, RevertContext);
     event HelloEvent(string, string);

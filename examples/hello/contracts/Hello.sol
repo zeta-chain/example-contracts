@@ -7,7 +7,7 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol
 import "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 
 contract Hello is UniversalContract {
-    GatewayZEVM public gateway;
+    GatewayZEVM public immutable gateway;
 
     event HelloEvent(string, string);
     event RevertEvent(string, RevertContext);
