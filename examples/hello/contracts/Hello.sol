@@ -30,7 +30,7 @@ contract Hello is UniversalContract {
         emit RevertEvent("Revert on ZetaChain", revertContext);
     }
 
-    function gatewayCall(
+    function call(
         bytes memory receiver,
         address zrc20,
         bytes calldata message,
@@ -40,5 +40,31 @@ contract Hello is UniversalContract {
         (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(gasLimit);
         IZRC20(zrc20).approve(address(gateway), gasFee);
         gateway.call(receiver, zrc20, message, gasLimit, revertOptions);
+    }
+
+    function withdrawAndCall(
+        bytes memory receiver,
+        uint256 amount,
+        address zrc20,
+        bytes calldata message,
+        uint256 gasLimit,
+        RevertOptions memory revertOptions
+    ) external {
+        (address gasZRC20, uint256 gasFee) = IZRC20(zrc20)
+            .withdrawGasFeeWithGasLimit(gasLimit);
+        if (zrc20 == gasZRC20) {
+            IZRC20(zrc20).approve(address(gateway), amount + gasFee);
+        } else {
+            IZRC20(zrc20).approve(address(gateway), amount);
+            IZRC20(gasZRC20).approve(address(gateway), gasFee);
+        }
+        gateway.withdrawAndCall(
+            receiver,
+            amount,
+            zrc20,
+            message,
+            gasLimit,
+            revertOptions
+        );
     }
 }

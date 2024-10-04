@@ -56,21 +56,34 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
+
+  const amount = hre.ethers.utils.parseUnits(args.amount, 18);
+
   const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
-  const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
-  const zrc20TransferTx = await zrc20.transfer(
+  const [gasZRC20, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
+  const gasZRC20Contract = new ethers.Contract(gasZRC20, ZRC20ABI.abi, signer);
+  const gasFeeTransfer = await gasZRC20Contract.transfer(
     args.contract,
-    gasFee,
+    gasZRC20 == args.zrc20 ? gasFee.add(amount) : gasFee,
     txOptions
   );
+  await gasFeeTransfer.wait();
 
-  await zrc20TransferTx.wait();
+  if (gasZRC20 !== args.zrc20) {
+    const targetTokenTransfer = await zrc20.transfer(
+      args.contract,
+      gasFee.add(amount),
+      txOptions
+    );
+    await targetTokenTransfer.wait();
+  }
 
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
   const contract = factory.attach(args.contract);
 
-  const tx = await contract.gatewayCall(
+  const tx = await contract.withdrawAndCall(
     ethers.utils.hexlify(args.receiver),
+    amount,
     args.zrc20,
     message,
     gasLimit,
@@ -84,8 +97,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "call-from-zetachain",
-  "Calls the gatewayCall function on a contract on ZetaChain",
+  "hello-withdraw-and-call",
+  "Calls the gatewayWithdrawAndCall function on a contract on ZetaChain",
   main
 )
   .addParam("contract", "The address of the deployed Hello contract")
@@ -121,7 +134,6 @@ task(
   )
   .addParam("function", `Function to call (example: "hello(string)")`)
   .addParam("name", "The name of the contract", "Hello")
+  .addParam("amount", "Amount of ZRC-20 to withdraw")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
   .addVariadicPositionalParam("values", "The values of the parameters");
-
-module.exports = {};

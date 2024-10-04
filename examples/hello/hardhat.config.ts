@@ -1,6 +1,7 @@
 import "./tasks/deploy";
-import "./tasks/callFromZetachain";
-import "./tasks/callFromEVM";
+import "./tasks/helloCall";
+import "./tasks/echoCall";
+import "./tasks/helloWithdrawAndCall";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";

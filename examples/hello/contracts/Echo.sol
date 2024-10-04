@@ -14,7 +14,7 @@ contract Echo {
         gateway = GatewayEVM(gatewayAddress);
     }
 
-    function hello(string memory message) external {
+    function hello(string memory message) external payable {
         emit HelloEvent("Hello on EVM", message);
     }
 
@@ -22,7 +22,7 @@ contract Echo {
         emit RevertEvent("Revert on EVM", revertContext);
     }
 
-    function gatewayCall(
+    function call(
         address receiver,
         bytes calldata message,
         RevertOptions memory revertOptions

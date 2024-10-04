@@ -1,5 +1,6 @@
 import { task, types } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
+import ZRC20ABI from "@zetachain/protocol-contracts/abi/ZRC20.sol/ZRC20.json";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
@@ -19,6 +20,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       ethers.utils.toUtf8Bytes(args.revertMessage)
     ),
   };
+
+  const functionSignature = ethers.utils.id(args.function).slice(0, 10);
 
   const types = JSON.parse(args.types);
 
@@ -48,12 +51,29 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     valuesArray
   );
 
-  const factory = (await hre.ethers.getContractFactory(args.name)) as any;
-  const contract = factory.attach(args.contract).connect(signer);
+  const message = ethers.utils.hexlify(
+    ethers.utils.concat([functionSignature, encodedParameters])
+  );
 
-  const tx = await contract.gatewayCall(
-    args.receiver,
-    encodedParameters,
+  const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
+  const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
+  const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
+  const zrc20TransferTx = await zrc20.transfer(
+    args.contract,
+    gasFee,
+    txOptions
+  );
+
+  await zrc20TransferTx.wait();
+
+  const factory = (await hre.ethers.getContractFactory(args.name)) as any;
+  const contract = factory.attach(args.contract);
+
+  const tx = await contract.call(
+    ethers.utils.hexlify(args.receiver),
+    args.zrc20,
+    message,
+    gasLimit,
     revertOptions,
     txOptions
   );
@@ -63,8 +83,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   console.log("gatewayCall executed successfully");
 };
 
-task("call-from-evm", "Calls the gateway on a contract on EVM", main)
-  .addParam("contract", "The address of the deployed contract")
+task(
+  "hello-call",
+  "Calls the gatewayCall function on a contract on ZetaChain",
+  main
+)
+  .addParam("contract", "The address of the deployed Hello contract")
+  .addParam("zrc20", "The address of ZRC-20 to pay fees")
   .addOptionalParam(
     "txOptionsGasPrice",
     "The gas price for the transaction",
@@ -94,8 +119,7 @@ task("call-from-evm", "Calls the gateway on a contract on EVM", main)
     7000000,
     types.int
   )
-  .addParam("name", "The name of the contract", "Echo")
+  .addParam("function", `Function to call (example: "hello(string)")`)
+  .addParam("name", "The name of the contract", "Hello")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
   .addVariadicPositionalParam("values", "The values of the parameters");
-
-module.exports = {};
