@@ -30,6 +30,20 @@ contract Echo {
         gateway.call(receiver, message, revertOptions);
     }
 
+    function pingPong(string memory message) external payable {
+        gateway.call(
+            0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E,
+            abi.encode("hello"),
+            RevertOptions({
+                revertAddress: address(0),
+                callOnRevert: false,
+                abortAddress: address(0),
+                revertMessage: "",
+                onRevertGasLimit: 0
+            })
+        );
+    }
+
     receive() external payable {}
 
     fallback() external payable {}
