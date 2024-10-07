@@ -62,20 +62,20 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
   const [gasZRC20, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
   const gasZRC20Contract = new ethers.Contract(gasZRC20, ZRC20ABI.abi, signer);
-  const gasFeeTransfer = await gasZRC20Contract.transfer(
+  const gasFeeApprove = await gasZRC20Contract.approve(
     args.contract,
     gasZRC20 == args.zrc20 ? gasFee.add(amount) : gasFee,
     txOptions
   );
-  await gasFeeTransfer.wait();
+  await gasFeeApprove.wait();
 
   if (gasZRC20 !== args.zrc20) {
-    const targetTokenTransfer = await zrc20.transfer(
+    const targetTokenApprove = await zrc20.approve(
       args.contract,
       gasFee.add(amount),
       txOptions
     );
-    await targetTokenTransfer.wait();
+    await targetTokenApprove.wait();
   }
 
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
