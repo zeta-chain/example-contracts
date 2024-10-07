@@ -53,9 +53,9 @@ contract Hello is UniversalContract {
     ) external {
         (address gasZRC20, uint256 gasFee) = IZRC20(zrc20)
             .withdrawGasFeeWithGasLimit(gasLimit);
-        uint256 total = zrc20 == gasZRC20 ? amount + gasFee : amount;
-        IZRC20(zrc20).transferFrom(msg.sender, address(this), total);
-        IZRC20(zrc20).approve(address(gateway), total);
+        uint256 targetAmount = zrc20 == gasZRC20 ? amount + gasFee : amount;
+        IZRC20(zrc20).transferFrom(msg.sender, address(this), targetAmount);
+        IZRC20(zrc20).approve(address(gateway), targetAmount);
         if (zrc20 != gasZRC20) {
             IZRC20(gasZRC20).transferFrom(msg.sender, address(this), gasFee);
             IZRC20(gasZRC20).approve(address(gateway), gasFee);
