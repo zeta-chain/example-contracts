@@ -2402,10 +2402,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.2.0.tgz#66c09120397dbaf4f0c461ba6671f249c3379f6b"
-  integrity sha512-oqyxrxuSraj1A6/CAkeEBa9VfIvp+QxBIivTu/L9jK1zUa5MQw+rLqTL/rD1LR/k9om6x/zJHzhzZKU9Vpk3Bw==
+"@zetachain/localnet@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.3.0.tgz#eb026e1e56ef4ea78fd5efb15df2f931daeba884"
+  integrity sha512-8PbS6GQrROYicyEHk3QGhspwKnm3Nn8tmgISbtVw2ca4I+9lIAnuo4WstBPXhV3/kR9zPxgxErWnBWNSE78BuA==
   dependencies:
     "@inquirer/prompts" "^5.5.0"
     "@uniswap/v2-core" "^1.0.1"
