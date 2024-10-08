@@ -34,7 +34,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   console.log(`Transaction hash: ${tx.hash}`);
 };
 
-task("swap", "Interact with the Swap contract from ZetaChain", main)
+task("swap-from-zetachain", "Swap tokens from ZetaChain", main)
   .addFlag("json", "Output JSON")
   .addParam("contract", "Contract address")
   .addParam("amount", "Token amount to send")

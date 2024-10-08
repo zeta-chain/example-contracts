@@ -2140,10 +2140,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.0.4.tgz#ff457f732f9ea52f491c16dc4cc5ac77d9561a9b"
-  integrity sha512-biZhhonyUrtXSZCPzunT6x6pKK3GANtFtwkXHoEnDfQsjICRgfBMMrC76IsfM8XgEdRF15dp845QeDHMa19GkA==
+"@zetachain/localnet@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.3.0.tgz#eb026e1e56ef4ea78fd5efb15df2f931daeba884"
+  integrity sha512-8PbS6GQrROYicyEHk3QGhspwKnm3Nn8tmgISbtVw2ca4I+9lIAnuo4WstBPXhV3/kR9zPxgxErWnBWNSE78BuA==
   dependencies:
     "@inquirer/prompts" "^5.5.0"
     "@uniswap/v2-core" "^1.0.1"
@@ -2176,10 +2176,10 @@
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-9.0.0.tgz#c20ad5da43f6f3676f31556b303d1cb4ea17357e"
   integrity sha512-L4A8bddlyhjaBAsIv/x1Bvxc38RJz8U8rbbBtxK5oVyOAd5Zz04ZiT3HqzO4FuKq6RGGM1uiA8jvUfmRkKchXw==
 
-"@zetachain/toolkit@13.0.0-rc4":
-  version "13.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc4.tgz#e137fc16043f1416469f709c48808cfa301d9299"
-  integrity sha512-4z4MKbQKjRIeNruUyDBjZDRO5oTLa1w/7wVn+PfMsXn++mFFGkiawkLcitnkH9dadBJiERzmo89MRJxsLQ3U6w==
+"@zetachain/toolkit@13.0.0-rc5":
+  version "13.0.0-rc5"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc5.tgz#56b2603c8367819a5265fcc7354e93ffdfbc3ea3"
+  integrity sha512-/97eSf3ALdrLHc9vyaO/xcjuAI9wa4JUNkB8NtnNT6dMeSBPI2ME9lmG+Qk2YDoZkrYlzmEzeru+zcZI9v7cog==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^2.1.1"
