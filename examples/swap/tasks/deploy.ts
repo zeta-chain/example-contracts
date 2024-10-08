@@ -14,7 +14,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const factory = await hre.ethers.getContractFactory(args.name);
   const contract = await (factory as any).deploy(
     args.systemContract,
-    args.gatewayZetaChain
+    args.gateway
   );
   await contract.deployed();
 
@@ -38,7 +38,7 @@ task("deploy", "Deploy the contract", main)
     "0x610178dA211FEF7D417bC0e6FeD39F05609AD788"
   )
   .addOptionalParam(
-    "gatewayZetaChain",
-    "Gateway address",
+    "gateway",
+    "Gateway address (default: ZetaChain Gateway)",
     "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0"
   );
