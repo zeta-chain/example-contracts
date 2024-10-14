@@ -74,4 +74,9 @@ task("swap-from-evm", "Swap tokens from EVM", evmDepositAndCall)
   .addOptionalParam("erc20", "ERC-20 token address")
   .addParam("target", "ZRC-20 address of the token to swap for")
   .addParam("recipient", "Recipient address")
-  .addFlag("withdraw", "Withdraw to destination or keep token on ZetaChain");
+  .addOptionalParam(
+    "withdraw",
+    "Withdraw to destination or keep token on ZetaChain",
+    true,
+    types.boolean
+  );
