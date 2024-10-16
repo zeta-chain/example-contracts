@@ -9,6 +9,7 @@ contract Echo {
 
     event RevertEvent(string, RevertContext);
     event HelloEvent(string, string);
+    event Foo(address);
 
     constructor(address payable gatewayAddress) {
         gateway = GatewayEVM(gatewayAddress);
@@ -28,6 +29,20 @@ contract Echo {
         RevertOptions memory revertOptions
     ) external {
         gateway.call(receiver, message, revertOptions);
+    }
+
+    function pingPong(address receiver) external payable {
+        gateway.call(
+            receiver,
+            abi.encode(address(this)),
+            RevertOptions({
+                revertAddress: address(0),
+                callOnRevert: false,
+                abortAddress: address(0),
+                revertMessage: "",
+                onRevertGasLimit: 0
+            })
+        );
     }
 
     receive() external payable {}

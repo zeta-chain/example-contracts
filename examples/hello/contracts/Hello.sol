@@ -23,8 +23,26 @@ contract Hello is UniversalContract {
         uint256 amount,
         bytes calldata message
     ) external override {
-        string memory name = abi.decode(message, (string));
-        emit HelloEvent("Hello on ZetaChain", name);
+        address receiver = abi.decode(message, (address));
+        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(700000);
+        IZRC20(zrc20).approve(address(gateway), gasFee);
+
+        // cast send 0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe "transfer(address,uint256)" 0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E 2000000000000000000 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+        // cast send 0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690 "pingPong(address)" 0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E --value 10000000 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+        // cast call 0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe "balanceOf(address)(uint256)" 0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E
+        gateway.call(
+            abi.encodePacked(receiver),
+            zrc20,
+            abi.encodeWithSelector(0xc8580dfc, address(this)),
+            700000,
+            RevertOptions({
+                revertAddress: address(0),
+                callOnRevert: false,
+                abortAddress: address(0),
+                revertMessage: "",
+                onRevertGasLimit: 0
+            })
+        );
     }
 
     function onRevert(RevertContext calldata revertContext) external override {
