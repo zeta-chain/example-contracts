@@ -80,7 +80,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
   const contract = factory.attach(args.contract);
-
+  console.log(message);
   const tx = await contract.withdrawAndCall(
     ethers.utils.hexlify(args.receiver),
     amount,
