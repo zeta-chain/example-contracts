@@ -17,8 +17,8 @@ contract Hello is UniversalContract {
         gateway = GatewayZEVM(gatewayAddress);
     }
 
-    function onCrossChainCall(
-        zContext calldata context,
+    function onCall(
+        MessageContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
@@ -52,11 +52,11 @@ contract Hello is UniversalContract {
         uint256 amount,
         address zrc20,
         bytes calldata message,
-        uint256 gasLimit,
+        CallOptions memory callOptions,
         RevertOptions memory revertOptions
     ) external {
         (address gasZRC20, uint256 gasFee) = IZRC20(zrc20)
-            .withdrawGasFeeWithGasLimit(gasLimit);
+            .withdrawGasFeeWithGasLimit(callOptions.gasLimit);
         uint256 target = zrc20 == gasZRC20 ? amount + gasFee : amount;
         if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), target))
             revert TransferFailed();
@@ -76,7 +76,7 @@ contract Hello is UniversalContract {
             amount,
             zrc20,
             message,
-            gasLimit,
+            callOptions,
             revertOptions
         );
     }
