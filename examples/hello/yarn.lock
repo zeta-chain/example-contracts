@@ -2433,6 +2433,16 @@
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
     ethers "^6.13.1"
 
+"@zetachain/protocol-contracts@11.0.0-rc2":
+  version "11.0.0-rc2"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0-rc2.tgz#493d7d41cb8fd6c47fef3493981a83914a3f70f4"
+  integrity sha512-Yu14cmVHZZ4up6LV4NgyG/ynZk4id9hRmB4qH/6L18uKXETN6dkXt4iMhUkjoR2KpMA4oLBijlW/6JpDeV/3DA==
+  dependencies:
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    "@zetachain/networks" "^10.0.0"
+    ethers "^6.13.1"
+
 "@zetachain/protocol-contracts@9.0.0":
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-9.0.0.tgz#c20ad5da43f6f3676f31556b303d1cb4ea17357e"
