@@ -17,8 +17,8 @@ contract Hello is UniversalContract {
         gateway = GatewayZEVM(gatewayAddress);
     }
 
-    function onCrossChainCall(
-        zContext calldata context,
+    function onCall(
+        MessageContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
@@ -27,7 +27,7 @@ contract Hello is UniversalContract {
         emit HelloEvent("Hello on ZetaChain", name);
     }
 
-    function onRevert(RevertContext calldata revertContext) external override {
+    function onRevert(RevertContext calldata revertContext) external {
         emit RevertEvent("Revert on ZetaChain", revertContext);
     }
 
@@ -35,14 +35,16 @@ contract Hello is UniversalContract {
         bytes memory receiver,
         address zrc20,
         bytes calldata message,
-        uint256 gasLimit,
+        CallOptions memory callOptions,
         RevertOptions memory revertOptions
     ) external {
-        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(gasLimit);
+        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(
+            callOptions.gasLimit
+        );
         if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee))
             revert TransferFailed();
         IZRC20(zrc20).approve(address(gateway), gasFee);
-        gateway.call(receiver, zrc20, message, gasLimit, revertOptions);
+        gateway.call(receiver, zrc20, message, callOptions, revertOptions);
     }
 
     function withdrawAndCall(
@@ -50,11 +52,11 @@ contract Hello is UniversalContract {
         uint256 amount,
         address zrc20,
         bytes calldata message,
-        uint256 gasLimit,
+        CallOptions memory callOptions,
         RevertOptions memory revertOptions
     ) external {
         (address gasZRC20, uint256 gasFee) = IZRC20(zrc20)
-            .withdrawGasFeeWithGasLimit(gasLimit);
+            .withdrawGasFeeWithGasLimit(callOptions.gasLimit);
         uint256 target = zrc20 == gasZRC20 ? amount + gasFee : amount;
         if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), target))
             revert TransferFailed();
@@ -74,7 +76,7 @@ contract Hello is UniversalContract {
             amount,
             zrc20,
             message,
-            gasLimit,
+            callOptions,
             revertOptions
         );
     }
