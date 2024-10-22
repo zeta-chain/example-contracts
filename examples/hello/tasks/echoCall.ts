@@ -60,7 +60,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   console.log(`Transaction hash: ${tx.hash}`);
   await tx.wait();
-  console.log("gatewayCall executed successfully");
 };
 
 task("echo-call", "Calls the gateway on a contract on EVM", main)

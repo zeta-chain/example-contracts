@@ -21,7 +21,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ),
   };
 
-  const functionSignature = ethers.utils.id(args.function).slice(0, 10);
+  const callOptions = {
+    gasLimit: args.txOptionsGasLimit,
+    isArbitraryCall: args.isArbitraryCall,
+  };
 
   const types = JSON.parse(args.types);
 
@@ -46,14 +49,23 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       return value;
     }
   });
+
   const encodedParameters = ethers.utils.defaultAbiCoder.encode(
     types,
     valuesArray
   );
 
-  const message = ethers.utils.hexlify(
-    ethers.utils.concat([functionSignature, encodedParameters])
-  );
+  let message: string;
+
+  if (args.isArbitraryCall) {
+    const functionSignature = ethers.utils.id(args.function).slice(0, 10);
+
+    message = ethers.utils.hexlify(
+      ethers.utils.concat([functionSignature, encodedParameters])
+    );
+  } else {
+    message = encodedParameters;
+  }
 
   const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
 
@@ -86,14 +98,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     amount,
     args.zrc20,
     message,
-    gasLimit,
+    callOptions,
     revertOptions,
     txOptions
   );
 
   console.log(`Transaction hash: ${tx.hash}`);
   await tx.wait();
-  console.log("gatewayCall executed successfully");
 };
 
 task(
@@ -132,8 +143,9 @@ task(
     7000000,
     types.int
   )
-  .addParam("function", `Function to call (example: "hello(string)")`)
+  .addOptionalParam("function", `Function to call (example: "hello(string)")`)
   .addParam("name", "The name of the contract", "Hello")
+  .addFlag("isArbitraryCall", "Whether the call is arbitrary")
   .addParam("amount", "Amount of ZRC-20 to withdraw")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
   .addVariadicPositionalParam("values", "The values of the parameters");
