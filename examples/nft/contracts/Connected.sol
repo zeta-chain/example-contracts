@@ -43,14 +43,12 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function onCall(
         MessageContext calldata messageContext,
         bytes calldata message
-    ) external payable {
-        // Decode the message into the expected types
-        // (uint256 tokenId, address originalSender) = abi.decode(
-        //     message,
-        //     (uint256, address)
-        // );
-        // _safeMint(originalSender, tokenId);
-        // _setTokenURI(tokenId, uri);
+    ) external payable returns (bytes4) {
+        (uint256 tokenId, address originalSender, string memory uri) = abi
+            .decode(message, (uint256, address, string));
+        _safeMint(originalSender, tokenId);
+        _setTokenURI(tokenId, uri);
+        return "";
     }
 
     receive() external payable {}
