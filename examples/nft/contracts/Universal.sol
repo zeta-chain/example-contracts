@@ -20,14 +20,25 @@ contract Universal is
 {
     uint256 private _nextTokenId;
     GatewayZEVM public immutable gateway;
-    event onCallEvent();
     error TransferFailed();
+
+    mapping(address => bytes) public counterparty;
+
+    event counterpartySet(address indexed zrc20, bytes indexed contractAddress);
 
     constructor(
         address payable gatewayAddress,
         address initialOwner
     ) ERC721("MyToken", "MTK") Ownable(initialOwner) {
         gateway = GatewayZEVM(gatewayAddress);
+    }
+
+    function setCounterparty(
+        address zrc20,
+        bytes memory contractAddress
+    ) external onlyOwner {
+        counterparty[zrc20] = contractAddress;
+        emit counterpartySet(zrc20, contractAddress);
     }
 
     function transfer(
@@ -58,12 +69,13 @@ contract Universal is
     }
 
     function onCall(
-        MessageContext calldata context,
+        MessageContext calldata messageContext,
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external override {
-        emit onCallEvent();
+        if (keccak256(messageContext.origin) != keccak256(counterparty[zrc20]))
+            revert("Unauthorized");
         (uint256 tokenId, address sender, string memory uri) = abi.decode(
             message,
             (uint256, address, string)

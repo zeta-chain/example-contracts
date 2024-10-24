@@ -2,6 +2,8 @@ import "./tasks/deploy";
 import "./tasks/deploy";
 import "./tasks/mint";
 import "./tasks/transfer";
+import "./tasks/universalSetCounterparty";
+import "./tasks/connectedSetCounterparty";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";

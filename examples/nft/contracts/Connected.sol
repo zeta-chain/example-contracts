@@ -21,6 +21,12 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         address originalSender
     );
 
+    address counterparty;
+
+    function setCounterparty(address contractAddress) external onlyOwner {
+        counterparty = contractAddress;
+    }
+
     constructor(
         address payable gatewayAddress,
         address initialOwner
@@ -48,6 +54,8 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         MessageContext calldata messageContext,
         bytes calldata message
     ) external payable returns (bytes4) {
+        if (messageContext.sender != counterparty) revert("Unauthorized");
+
         (uint256 tokenId, address sender, string memory uri) = abi.decode(
             message,
             (uint256, address, string)
