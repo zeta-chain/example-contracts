@@ -39,10 +39,24 @@ contract Hello is UniversalContract {
         RevertOptions memory revertOptions
     ) external {
         (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(gasLimit);
-        if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee))
+
+        // Calculate the total gas fee for 10 calls
+        uint256 totalGasFee = gasFee * 10;
+
+        // Transfer the total gas fee from the caller to this contract
+        if (
+            !IZRC20(zrc20).transferFrom(msg.sender, address(this), totalGasFee)
+        ) {
             revert TransferFailed();
-        IZRC20(zrc20).approve(address(gateway), gasFee);
-        gateway.call(receiver, zrc20, message, gasLimit, revertOptions);
+        }
+
+        // Approve the gateway to spend the total gas fee
+        IZRC20(zrc20).approve(address(gateway), totalGasFee);
+
+        // Loop to make 10 calls to the gateway
+        for (uint256 i = 0; i < 10; i++) {
+            gateway.call(receiver, zrc20, message, gasLimit, revertOptions);
+        }
     }
 
     function withdrawAndCall(

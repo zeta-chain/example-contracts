@@ -58,7 +58,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
   const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
   const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
-  const zrc20TransferTx = await zrc20.approve(args.contract, gasFee, txOptions);
+  const zrc20TransferTx = await zrc20.approve(
+    args.contract,
+    gasFee * 10,
+    txOptions
+  );
 
   await zrc20TransferTx.wait();
 
