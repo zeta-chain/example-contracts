@@ -20,6 +20,7 @@ contract Universal is
 {
     uint256 private _nextTokenId;
     GatewayZEVM public immutable gateway;
+    event onCallEvent();
     error TransferFailed();
 
     constructor(
@@ -29,7 +30,7 @@ contract Universal is
         gateway = GatewayZEVM(gatewayAddress);
     }
 
-    function transferNFT(
+    function transfer(
         uint256 tokenId,
         bytes memory receiver,
         address zrc20,
@@ -62,7 +63,13 @@ contract Universal is
         uint256 amount,
         bytes calldata message
     ) external override {
-        string memory name = abi.decode(message, (string));
+        emit onCallEvent();
+        (uint256 tokenId, address sender, string memory uri) = abi.decode(
+            message,
+            (uint256, address, string)
+        );
+        _safeMint(sender, tokenId);
+        _setTokenURI(tokenId, uri);
     }
 
     // The following functions are overrides required by Solidity.

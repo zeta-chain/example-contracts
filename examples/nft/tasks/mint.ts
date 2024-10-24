@@ -41,7 +41,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("nft-mint", "Mint an NFT", main)
+task("mint", "Mint an NFT", main)
   .addParam("contract", "The address of the deployed NFT contract")
   .addOptionalParam(
     "to",

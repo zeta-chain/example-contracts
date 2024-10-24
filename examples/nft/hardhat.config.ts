@@ -1,7 +1,7 @@
 import "./tasks/deploy";
-import "./tasks/nftDeploy";
-import "./tasks/nftMint";
-import "./tasks/nftTransfer";
+import "./tasks/deploy";
+import "./tasks/mint";
+import "./tasks/transfer";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";

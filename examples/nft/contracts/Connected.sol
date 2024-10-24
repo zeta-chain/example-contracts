@@ -32,6 +32,18 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         emit RevertEvent("Revert on EVM", revertContext);
     }
 
+    function transfer(
+        uint256 tokenId,
+        address receiver,
+        RevertOptions memory revertOptions
+    ) external {
+        string memory uri = tokenURI(tokenId);
+        _burn(tokenId);
+        bytes memory encodedData = abi.encode(tokenId, msg.sender, uri);
+
+        gateway.call(receiver, encodedData, revertOptions);
+    }
+
     function call(
         address receiver,
         bytes calldata message,
@@ -44,9 +56,11 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         MessageContext calldata messageContext,
         bytes calldata message
     ) external payable returns (bytes4) {
-        (uint256 tokenId, address originalSender, string memory uri) = abi
-            .decode(message, (uint256, address, string));
-        _safeMint(originalSender, tokenId);
+        (uint256 tokenId, address sender, string memory uri) = abi.decode(
+            message,
+            (uint256, address, string)
+        );
+        _safeMint(sender, tokenId);
         _setTokenURI(tokenId, uri);
         return "";
     }
