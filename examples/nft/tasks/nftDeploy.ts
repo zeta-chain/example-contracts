@@ -12,7 +12,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 
   const factory = await hre.ethers.getContractFactory(args.name);
-  const contract = await factory.deploy(signer.address);
+  const contract = await factory.deploy(args.gateway, signer.address);
   await contract.deployed();
 
   if (args.json) {
@@ -33,4 +33,9 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 task("nft-deploy", "Deploy the NFT contract", main)
   .addFlag("json", "Output the result in JSON format")
-  .addOptionalParam("name", "The contract name to deploy", "NFT");
+  .addOptionalParam("name", "The contract name to deploy", "Universal")
+  .addOptionalParam(
+    "gateway",
+    "Gateway address (default: ZetaChain Gateway)",
+    "0x9A676e781A523b5d0C0e43731313A708CB607508"
+  );

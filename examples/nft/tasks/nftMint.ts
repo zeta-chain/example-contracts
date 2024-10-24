@@ -48,5 +48,5 @@ task("nft-mint", "Mint an NFT", main)
     "The recipient address, defaults to the signer address"
   )
   .addParam("tokenUri", "The metadata URI of the token")
-  .addOptionalParam("name", "The contract name to interact with", "NFT")
+  .addOptionalParam("name", "The contract name to interact with", "Universal")
   .addFlag("json", "Output the result in JSON format");

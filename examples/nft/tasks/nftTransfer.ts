@@ -6,7 +6,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
   const [signer] = await ethers.getSigners();
 
-  const nftContract = await ethers.getContractAt("IERC721", args.nftContract);
+  const nftContract = await ethers.getContractAt("IERC721", args.contract);
   const approveTx = await nftContract
     .connect(signer)
     .approve(args.contract, args.tokenId);
@@ -45,7 +45,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   await zrc20TransferTx.wait();
 
   const tx = await universalContract.transferNFT(
-    args.nftContract,
     args.tokenId,
     args.receiver,
     args.zrc20,
@@ -60,7 +59,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     console.log(
       JSON.stringify({
         contractAddress: args.contract,
-        nftContract: args.nftContract,
         transferTransactionHash: tx.hash,
         sender: signer.address,
         tokenId: args.tokenId,
@@ -77,7 +75,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 task("nft-transfer", "Transfer and lock an NFT", main)
   .addParam("contract", "The address of the Universal contract")
-  .addParam("nftContract", "The address of the NFT contract to transfer from")
   .addParam("tokenId", "The ID of the NFT to transfer")
   .addOptionalParam("name", "The contract name to interact with", "Universal")
   .addOptionalParam(
