@@ -44,14 +44,6 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         gateway.call(receiver, encodedData, revertOptions);
     }
 
-    function call(
-        address receiver,
-        bytes calldata message,
-        RevertOptions memory revertOptions
-    ) external {
-        gateway.call(receiver, message, revertOptions);
-    }
-
     function onCall(
         MessageContext calldata messageContext,
         bytes calldata message
