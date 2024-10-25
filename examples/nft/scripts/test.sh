@@ -3,17 +3,17 @@
 set -e
 
 echo -e "\n🚀 Compiling contracts..."
-npx hardhat compile --force &>/dev/null
+npx hardhat compile --force
 
 ZRC20=0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe
 GATEWAY=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
 SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
 
-UNIVERSAL=$(npx hardhat deploy --network localhost --json | jq -r '.contractAddress')
+UNIVERSAL=$(npx hardhat deploy --network localhost --json --chain-id 7001 | jq -r '.contractAddress')
 echo -e "\n🚀 Deployed NFT contract on ZetaChain: $UNIVERSAL"
 
-CONNECTED=$(npx hardhat deploy --name Connected --json --network localhost --gateway "$GATEWAY" | jq -r '.contractAddress')
+CONNECTED=$(npx hardhat deploy --name Connected --json --network localhost --chain-id 5 --gateway "$GATEWAY" | jq -r '.contractAddress')
 echo -e "🚀 Deployed NFT contract on EVM chain: $CONNECTED"
 
 echo -e "\n📮 User Address: $SENDER"

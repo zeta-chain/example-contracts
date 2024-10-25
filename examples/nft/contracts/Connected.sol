@@ -11,6 +11,8 @@ import {RevertContext} from "@zetachain/protocol-contracts/contracts/Revert.sol"
 
 contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     GatewayEVM public immutable gateway;
+    uint256 private _nextTokenId;
+    uint256 public chainId;
 
     event RevertEvent(string, RevertContext);
     event HelloEvent(string, string);
@@ -29,13 +31,26 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
     constructor(
         address payable gatewayAddress,
-        address initialOwner
+        address initialOwner,
+        uint256 chain
     ) ERC721("MyToken", "MTK") Ownable(initialOwner) {
         gateway = GatewayEVM(gatewayAddress);
+        chainId = chain;
     }
 
     function onRevert(RevertContext calldata revertContext) external {
         emit RevertEvent("Revert on EVM", revertContext);
+    }
+
+    function safeMint(address to, string memory uri) public onlyOwner {
+        uint256 hash = uint256(
+            keccak256(abi.encodePacked(chainId, _nextTokenId++))
+        );
+
+        uint256 tokenId = hash & 0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, uri);
     }
 
     function transfer(
