@@ -19,7 +19,7 @@ contract Universal is
     UniversalContract
 {
     uint256 private _nextTokenId;
-    uint256 public chainId;
+    uint256 public chainLabel;
     GatewayZEVM public immutable gateway;
     error TransferFailed();
 
@@ -30,10 +30,10 @@ contract Universal is
     constructor(
         address payable gatewayAddress,
         address initialOwner,
-        uint256 chain
+        uint256 label
     ) ERC721("MyToken", "MTK") Ownable(initialOwner) {
         gateway = GatewayZEVM(gatewayAddress);
-        chainId = chain;
+        chainLabel = label;
     }
 
     function setCounterparty(
@@ -67,7 +67,7 @@ contract Universal is
 
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 hash = uint256(
-            keccak256(abi.encodePacked(chainId, _nextTokenId++))
+            keccak256(abi.encodePacked(chainLabel, _nextTokenId++))
         );
 
         uint256 tokenId = hash & 0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;

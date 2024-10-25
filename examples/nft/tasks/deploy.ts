@@ -15,7 +15,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const contract = await factory.deploy(
     args.gateway,
     signer.address,
-    args.chainId
+    args.chainLabel
   );
   await contract.deployed();
 
@@ -39,8 +39,9 @@ task("deploy", "Deploy the NFT contract", main)
   .addFlag("json", "Output the result in JSON format")
   .addOptionalParam("name", "The contract name to deploy", "Universal")
   .addParam(
-    "chainId",
-    "Chain ID of the network where the contract will be deployed"
+    "chainLabel",
+    "Label to uniquely identify a chain (using ZRC-20 of the gas token, zero address for ZetaChain",
+    "0x0000000000000000000000000000000000000000"
   )
   .addOptionalParam(
     "gateway",
