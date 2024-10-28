@@ -113,10 +113,6 @@ contract Universal is
                 0
             );
 
-            // Check if the swapped amount is less than the gas fee
-            if (swappedAmount < gasFee)
-                revert("Swapped amount is less than required gas fee");
-
             IZRC20(destination).approve(address(gateway), gasFee);
             bytes memory encodedData = abi.encode(tokenId, sender, uri);
             gateway.call(
