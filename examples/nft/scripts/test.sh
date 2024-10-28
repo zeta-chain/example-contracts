@@ -49,21 +49,21 @@ echo -e "\nMinted NFT with ID: $NFT_ID on ZetaChain."
 display_nft_balance
 
 echo -e "\nTransferring NFT: ZetaChain → Ethereum..."
-SENDER=$(npx hardhat transfer --network localhost --contract "$UNIVERSAL" --token-id "$NFT_ID" --json --zrc20 "$ZRC20_ETHEREUM" --receiver "$CONNECTED_ETHEREUM" | jq -r '.sender')
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$UNIVERSAL" --receiver "$CONNECTED_ETHEREUM" --destination "$ZRC20_ETHEREUM" 
 
 display_nft_balance
 
 echo -e "\nTransferring NFT: Ethereum → ZetaChain..."
-npx hardhat transfer --network localhost --name Connected --contract "$CONNECTED_ETHEREUM" --token-id "$NFT_ID" --json --receiver "$UNIVERSAL" &>/dev/null
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$CONNECTED_ETHEREUM" --receiver "$UNIVERSAL" --name Connected 
 
 display_nft_balance
 
 echo -e "\nTransferring NFT: ZetaChain → BNB..."
-SENDER=$(npx hardhat transfer --network localhost --contract "$UNIVERSAL" --token-id "$NFT_ID" --json --zrc20 "$ZRC20_BNB" --receiver "$CONNECTED_BNB" | jq -r '.sender')
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$UNIVERSAL" --receiver "$CONNECTED_BNB" --destination "$ZRC20_BNB"
 
 display_nft_balance
 
 echo -e "\nTransferring NFT: BNB → ZetaChain..."
-npx hardhat transfer --network localhost --name Connected --contract "$CONNECTED_BNB" --token-id "$NFT_ID" --json --receiver "$UNIVERSAL" &>/dev/null
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$CONNECTED_BNB" --receiver "$UNIVERSAL" --name Connected
 
 display_nft_balance

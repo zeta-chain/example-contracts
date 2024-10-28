@@ -56,11 +56,17 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function transfer(
         uint256 tokenId,
         address receiver,
+        address destination,
         RevertOptions memory revertOptions
     ) external {
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
-        bytes memory encodedData = abi.encode(tokenId, msg.sender, uri);
+        bytes memory encodedData = abi.encode(
+            tokenId,
+            msg.sender,
+            uri,
+            destination
+        );
 
         gateway.call(receiver, encodedData, revertOptions);
     }
