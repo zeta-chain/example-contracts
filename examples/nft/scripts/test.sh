@@ -2,7 +2,7 @@
 
 set -e
 
-function display_nft_balance() {
+function nft_balance() {
   echo -e "\n🖼️  NFT Balance"
   echo "---------------------------------------------"
   local ZETACHAIN=$(cast call "$UNIVERSAL" "balanceOf(address)(uint256)" "$SENDER")
@@ -41,24 +41,24 @@ npx hardhat connected-set-counterparty --network localhost --contract "$CONNECTE
 npx hardhat universal-set-counterparty --network localhost --contract "$UNIVERSAL" --counterparty "$CONNECTED_ETHEREUM" --zrc20 "$ZRC20_ETHEREUM" --json &>/dev/null
 npx hardhat universal-set-counterparty --network localhost --contract "$UNIVERSAL" --counterparty "$CONNECTED_BNB" --zrc20 "$ZRC20_BNB" --json &>/dev/null
 
-display_nft_balance
+nft_balance
 
 NFT_ID=$(npx hardhat mint --network localhost --json --contract "$UNIVERSAL" --token-uri https://example.com/nft/metadata/1 | jq -r '.tokenId')
 echo -e "\nMinted NFT with ID: $NFT_ID on ZetaChain."
 
-display_nft_balance
+nft_balance
 
 echo -e "\nTransferring NFT: ZetaChain → Ethereum..."
 npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$UNIVERSAL" --to "$ZRC20_ETHEREUM" 
 
-display_nft_balance
+nft_balance
 
 echo -e "\nTransferring NFT: Ethereum → BNB..."
 npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$CONNECTED_ETHEREUM" --to "$ZRC20_BNB" --amount 0.1
 
-display_nft_balance
+nft_balance
 
 echo -e "\nTransferring NFT: BNB → ZetaChain..."
 npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$CONNECTED_BNB"
 
-display_nft_balance
+nft_balance
