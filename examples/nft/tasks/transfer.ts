@@ -5,13 +5,12 @@ import ZRC20ABI from "@zetachain/protocol-contracts/abi/ZRC20.sol/ZRC20.json";
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
   const [signer] = await ethers.getSigners();
-  const nftContract = await ethers.getContractAt("IERC721", args.contract);
+  const nftContract = await ethers.getContractAt("IERC721", args.from);
   const approveTx = await nftContract
     .connect(signer)
-    .approve(args.contract, args.tokenId);
+    .approve(args.from, args.tokenId);
   await approveTx.wait();
 
-  const contract = await ethers.getContractAt(args.name, args.contract);
   const revertOptions = {
     abortAddress: "0x0000000000000000000000000000000000000000",
     callOnRevert: args.callOnRevert,
@@ -29,30 +28,30 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   let fromZetaChain = false;
   try {
+    const contract = await ethers.getContractAt("Universal", args.from);
     fromZetaChain = await (contract as any).isUniversal();
   } catch (e) {}
 
   if (fromZetaChain) {
+    const contract = await ethers.getContractAt("Universal", args.from);
     const callOptions = {
       gasLimit: args.txOptionsGasLimit,
       isArbitraryCall: args.isArbitraryCall,
     };
 
     const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
-    const zrc20 = new ethers.Contract(args.destination, ZRC20ABI.abi, signer);
+    const zrc20 = new ethers.Contract(args.to, ZRC20ABI.abi, signer);
     const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
-    const zrc20TransferTx = await zrc20.approve(
-      args.contract,
-      gasFee,
-      txOptions
-    );
+    const zrc20TransferTx = await zrc20.approve(args.from, gasFee, txOptions);
 
     await zrc20TransferTx.wait();
 
+    const receiver = await (contract as any).counterparty(args.to);
+
     tx = await (contract as any).transferCrossChain(
       args.tokenId,
-      args.receiver,
-      args.destination,
+      receiver,
+      args.to,
       callOptions,
       revertOptions,
       txOptions
@@ -60,12 +59,16 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
     await tx.wait();
   } else {
+    const contract = await ethers.getContractAt("Connected", args.from);
+
     const value = ethers.utils.parseUnits(args.amount, 18);
+
+    const receiver = await (contract as any).counterparty();
 
     tx = await (contract as any).transferCrossChain(
       args.tokenId,
-      args.receiver,
-      args.destination,
+      receiver,
+      args.to,
       revertOptions,
       { ...txOptions, value }
     );
@@ -75,7 +78,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   if (args.json) {
     console.log(
       JSON.stringify({
-        contractAddress: args.contract,
+        contractAddress: args.from,
         transferTransactionHash: tx.hash,
         sender: signer.address,
         tokenId: args.tokenId,
@@ -83,7 +86,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   } else {
     console.log(`🚀 Successfully transferred NFT to the contract.
-📜 Contract address: ${args.contract}
+📜 Contract address: ${args.from}
 🖼 NFT Contract address: ${args.nftContract}
 🆔 Token ID: ${args.tokenId}
 🔗 Transaction hash: ${tx.hash}`);
@@ -91,9 +94,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task("transfer", "Transfer and lock an NFT", main)
-  .addParam("contract", "The address of the Universal contract")
+  .addParam("from", "The contract being transferred from")
   .addParam("tokenId", "The ID of the NFT to transfer")
-  .addOptionalParam("name", "The contract name to interact with", "Universal")
   .addOptionalParam(
     "txOptionsGasPrice",
     "The gas price for the transaction",
@@ -122,12 +124,8 @@ task("transfer", "Transfer and lock an NFT", main)
   .addFlag("isArbitraryCall", "Whether the call is arbitrary")
   .addFlag("json", "Output the result in JSON format")
   .addOptionalParam(
-    "destination",
+    "to",
     "ZRC-20 of the gas token of the destination chain",
     "0x0000000000000000000000000000000000000000"
   )
-  .addParam("amount", "The amount of gas to transfer", "0")
-  .addParam(
-    "receiver",
-    "The address of the receiver contract on a connected chain"
-  );
+  .addParam("amount", "The amount of gas to transfer", "0");

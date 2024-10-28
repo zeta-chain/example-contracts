@@ -13,6 +13,7 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     GatewayEVM public immutable gateway;
     uint256 private _nextTokenId;
     uint256 public chainLabel;
+    address public counterparty;
 
     event RevertEvent(string, RevertContext);
     event HelloEvent(string, string);
@@ -22,8 +23,6 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 tokenId,
         address originalSender
     );
-
-    address counterparty;
 
     function setCounterparty(address contractAddress) external onlyOwner {
         counterparty = contractAddress;

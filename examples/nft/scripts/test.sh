@@ -49,16 +49,16 @@ echo -e "\nMinted NFT with ID: $NFT_ID on ZetaChain."
 display_nft_balance
 
 echo -e "\nTransferring NFT: ZetaChain → Ethereum..."
-npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$UNIVERSAL" --receiver "$CONNECTED_ETHEREUM" --destination "$ZRC20_ETHEREUM" 
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$UNIVERSAL" --to "$ZRC20_ETHEREUM" 
 
 display_nft_balance
 
 echo -e "\nTransferring NFT: Ethereum → BNB..."
-npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$CONNECTED_ETHEREUM" --receiver "$UNIVERSAL" --destination "$ZRC20_BNB" --name Connected --amount 0.1
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$CONNECTED_ETHEREUM" --to "$ZRC20_BNB" --amount 0.1
 
 display_nft_balance
 
 echo -e "\nTransferring NFT: BNB → ZetaChain..."
-npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$CONNECTED_BNB" --receiver "$UNIVERSAL" --name Connected 
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$CONNECTED_BNB"
 
 display_nft_balance
