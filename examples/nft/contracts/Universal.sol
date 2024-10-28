@@ -105,7 +105,7 @@ contract Universal is
                 700000
             );
 
-            uint256 swappedAmount = SwapHelperLib.swapExactTokensForTokens(
+            SwapHelperLib.swapExactTokensForTokens(
                 systemContract,
                 zrc20,
                 amount,
@@ -114,11 +114,10 @@ contract Universal is
             );
 
             IZRC20(destination).approve(address(gateway), gasFee);
-            bytes memory encodedData = abi.encode(tokenId, sender, uri);
             gateway.call(
                 counterparty[destination],
                 destination,
-                encodedData,
+                abi.encode(tokenId, sender, uri),
                 CallOptions(700000, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
