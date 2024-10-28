@@ -10,6 +10,8 @@ import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contra
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
+import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
+import {SystemContract} from "@zetachain/toolkit/contracts/SystemContract.sol";
 
 contract Universal is
     ERC721,
@@ -22,6 +24,9 @@ contract Universal is
     uint256 public chainLabel;
     GatewayZEVM public immutable gateway;
     error TransferFailed();
+    bool public isUniversal = true;
+    SystemContract public immutable systemContract =
+        SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
 
     mapping(address => bytes) public counterparty;
 
@@ -44,13 +49,13 @@ contract Universal is
         emit CounterpartySet(zrc20, contractAddress);
     }
 
-    function transfer(
+    function transferCrossChain(
         uint256 tokenId,
         bytes memory receiver,
         address zrc20,
         CallOptions memory callOptions,
         RevertOptions memory revertOptions
-    ) external {
+    ) public {
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
 
@@ -84,12 +89,44 @@ contract Universal is
     ) external override {
         if (keccak256(messageContext.origin) != keccak256(counterparty[zrc20]))
             revert("Unauthorized");
-        (uint256 tokenId, address sender, string memory uri) = abi.decode(
-            message,
-            (uint256, address, string)
-        );
-        _safeMint(sender, tokenId);
-        _setTokenURI(tokenId, uri);
+
+        (
+            uint256 tokenId,
+            address sender,
+            string memory uri,
+            address destination
+        ) = abi.decode(message, (uint256, address, string, address));
+
+        if (destination == address(0)) {
+            _safeMint(sender, tokenId);
+            _setTokenURI(tokenId, uri);
+        } else {
+            (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
+                700000
+            );
+
+            uint256 swappedAmount = SwapHelperLib.swapExactTokensForTokens(
+                systemContract,
+                zrc20,
+                amount,
+                destination,
+                0
+            );
+
+            // Check if the swapped amount is less than the gas fee
+            if (swappedAmount < gasFee)
+                revert("Swapped amount is less than required gas fee");
+
+            IZRC20(destination).approve(address(gateway), gasFee);
+            bytes memory encodedData = abi.encode(tokenId, sender, uri);
+            gateway.call(
+                counterparty[destination],
+                destination,
+                encodedData,
+                CallOptions(700000, false),
+                RevertOptions(address(0), false, address(0), "", 0)
+            );
+        }
     }
 
     // The following functions are overrides required by Solidity.

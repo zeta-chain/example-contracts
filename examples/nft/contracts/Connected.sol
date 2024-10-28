@@ -53,12 +53,12 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, uri);
     }
 
-    function transfer(
+    function transferCrossChain(
         uint256 tokenId,
         address receiver,
         address destination,
         RevertOptions memory revertOptions
-    ) external {
+    ) external payable {
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
         bytes memory encodedData = abi.encode(
@@ -68,7 +68,15 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
             destination
         );
 
-        gateway.call(receiver, encodedData, revertOptions);
+        if (destination == address(0)) {
+            gateway.call(receiver, encodedData, revertOptions);
+        } else {
+            gateway.depositAndCall{value: msg.value}(
+                receiver,
+                encodedData,
+                revertOptions
+            );
+        }
     }
 
     function onCall(

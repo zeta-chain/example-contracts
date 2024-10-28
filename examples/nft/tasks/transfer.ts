@@ -26,8 +26,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     gasLimit: args.txOptionsGasLimit,
   };
   let tx;
-  if (args.destination) {
-    // From ZetaChain to a connected chain
+
+  let fromZetaChain = false;
+  try {
+    fromZetaChain = await (contract as any).isUniversal();
+  } catch (e) {}
+
+  if (fromZetaChain) {
     const callOptions = {
       gasLimit: args.txOptionsGasLimit,
       isArbitraryCall: args.isArbitraryCall,
@@ -44,7 +49,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
     await zrc20TransferTx.wait();
 
-    tx = await (contract as any).transfer(
+    tx = await (contract as any).transferCrossChain(
       args.tokenId,
       args.receiver,
       args.destination,
@@ -55,13 +60,14 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
     await tx.wait();
   } else {
-    // From a connected chain to ZetaChain
-    tx = await (contract as any).transfer(
+    const value = ethers.utils.parseUnits(args.amount, 18);
+
+    tx = await (contract as any).transferCrossChain(
       args.tokenId,
       args.receiver,
-      hre.ethers.constants.AddressZero,
+      args.destination,
       revertOptions,
-      txOptions
+      { ...txOptions, value }
     );
 
     await tx.wait();
@@ -117,8 +123,10 @@ task("transfer", "Transfer and lock an NFT", main)
   .addFlag("json", "Output the result in JSON format")
   .addOptionalParam(
     "destination",
-    "ZRC-20 of the gas token of the destination chain"
+    "ZRC-20 of the gas token of the destination chain",
+    "0x0000000000000000000000000000000000000000"
   )
+  .addParam("amount", "The amount of gas to transfer", "0")
   .addParam(
     "receiver",
     "The address of the receiver contract on a connected chain"

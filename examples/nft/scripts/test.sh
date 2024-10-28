@@ -15,7 +15,7 @@ function display_nft_balance() {
 }
 
 echo -e "\n🚀 Compiling contracts..."
-npx hardhat compile --force
+npx hardhat compile --force --quiet
 
 ZRC20_ETHEREUM=0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe # ZRC-20 of the gas token of Ethereum
 ZRC20_BNB=0x65a45c57636f9BcCeD4fe193A602008578BcA90b # ZRC-20 of the gas token of BNB
@@ -53,17 +53,12 @@ npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract 
 
 display_nft_balance
 
-echo -e "\nTransferring NFT: Ethereum → ZetaChain..."
-npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$CONNECTED_ETHEREUM" --receiver "$UNIVERSAL" --name Connected 
-
-display_nft_balance
-
-echo -e "\nTransferring NFT: ZetaChain → BNB..."
-npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$UNIVERSAL" --receiver "$CONNECTED_BNB" --destination "$ZRC20_BNB"
+echo -e "\nTransferring NFT: Ethereum → BNB..."
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$CONNECTED_ETHEREUM" --receiver "$UNIVERSAL" --destination "$ZRC20_BNB" --name Connected --amount 0.1
 
 display_nft_balance
 
 echo -e "\nTransferring NFT: BNB → ZetaChain..."
-npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$CONNECTED_BNB" --receiver "$UNIVERSAL" --name Connected
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --contract "$CONNECTED_BNB" --receiver "$UNIVERSAL" --name Connected 
 
 display_nft_balance
