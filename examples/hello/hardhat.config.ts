@@ -1,6 +1,7 @@
 import "./tasks/deploy";
-import "./tasks/deployRevert";
-import "./tasks/gatewayCall";
+import "./tasks/helloCall";
+import "./tasks/echoCall";
+import "./tasks/helloWithdrawAndCall";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";

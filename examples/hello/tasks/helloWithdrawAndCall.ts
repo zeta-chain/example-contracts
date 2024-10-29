@@ -25,6 +25,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const types = JSON.parse(args.types);
 
+  if (types.length !== args.values.length) {
+    throw new Error(
+      `The number of types (${types.length}) does not match the number of values (${args.values.length}).`
+    );
+  }
+
   const valuesArray = args.values.map((value: any, index: number) => {
     const type = types[index];
 
@@ -49,22 +55,35 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ethers.utils.concat([functionSignature, encodedParameters])
   );
 
-  const gasLimit = hre.ethers.BigNumber.from(args.gasLimit);
+  const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
+
+  const amount = hre.ethers.utils.parseUnits(args.amount, 18);
+
   const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
-  const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
-  const zrc20TransferTx = await zrc20.transfer(
+  const [gasZRC20, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
+  const gasZRC20Contract = new ethers.Contract(gasZRC20, ZRC20ABI.abi, signer);
+  const gasFeeApprove = await gasZRC20Contract.approve(
     args.contract,
-    gasFee,
+    gasZRC20 == args.zrc20 ? gasFee.add(amount) : gasFee,
     txOptions
   );
+  await gasFeeApprove.wait();
 
-  await zrc20TransferTx.wait();
+  if (gasZRC20 !== args.zrc20) {
+    const targetTokenApprove = await zrc20.approve(
+      args.contract,
+      gasFee.add(amount),
+      txOptions
+    );
+    await targetTokenApprove.wait();
+  }
 
-  const factory = await hre.ethers.getContractFactory("Hello");
+  const factory = (await hre.ethers.getContractFactory(args.name)) as any;
   const contract = factory.attach(args.contract);
 
-  const tx = await contract.gatewayCall(
+  const tx = await contract.withdrawAndCall(
     ethers.utils.hexlify(args.receiver),
+    amount,
     args.zrc20,
     message,
     gasLimit,
@@ -78,18 +97,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "gateway-call",
-  "Calls the gatewayCall function on the Hello contract",
+  "hello-withdraw-and-call",
+  "Calls the gatewayWithdrawAndCall function on a contract on ZetaChain",
   main
 )
   .addParam("contract", "The address of the deployed Hello contract")
   .addParam("zrc20", "The address of ZRC-20 to pay fees")
-  .addOptionalParam(
-    "gasLimit",
-    "Gas limit for for a cross-chain call",
-    7000000,
-    types.int
-  )
   .addOptionalParam(
     "txOptionsGasPrice",
     "The gas price for the transaction",
@@ -120,7 +133,7 @@ task(
     types.int
   )
   .addParam("function", `Function to call (example: "hello(string)")`)
+  .addParam("name", "The name of the contract", "Hello")
+  .addParam("amount", "Amount of ZRC-20 to withdraw")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
   .addVariadicPositionalParam("values", "The values of the parameters");
-
-module.exports = {};
