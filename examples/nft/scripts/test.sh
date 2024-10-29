@@ -27,10 +27,10 @@ SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 CONTRACT_ZETACHAIN=$(npx hardhat deploy --network localhost --json | jq -r '.contractAddress')
 echo -e "\n🚀 Deployed NFT contract on ZetaChain: $CONTRACT_ZETACHAIN"
 
-CONTRACT_ETHEREUM=$(npx hardhat deploy --name Connected --json --network localhost --chain-label "$ZRC20_ETHEREUM" --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')
+CONTRACT_ETHEREUM=$(npx hardhat deploy --name Connected --json --network localhost --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')
 echo -e "🚀 Deployed NFT contract on EVM chain: $CONTRACT_ETHEREUM"
 
-CONTRACT_BNB=$(npx hardhat deploy --name Connected --json --network localhost --chain-label "$ZRC20_BNB" --gateway "$GATEWAY_BNB" | jq -r '.contractAddress')
+CONTRACT_BNB=$(npx hardhat deploy --name Connected --json --network localhost --gateway "$GATEWAY_BNB" | jq -r '.contractAddress')
 echo -e "🚀 Deployed NFT contract on BNB chain: $CONTRACT_BNB"
 
 echo -e "\n📮 User Address: $SENDER"

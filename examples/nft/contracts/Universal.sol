@@ -24,7 +24,6 @@ contract Universal is
     SystemContract public immutable systemContract =
         SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
     uint256 private _nextTokenId;
-    uint256 public chainLabel;
     bool public isUniversal = true;
     uint256 public gasLimit = 700000;
 
@@ -36,11 +35,9 @@ contract Universal is
 
     constructor(
         address payable gatewayAddress,
-        address initialOwner,
-        uint256 label
+        address initialOwner
     ) ERC721("MyToken", "MTK") Ownable(initialOwner) {
         gateway = GatewayZEVM(gatewayAddress);
-        chainLabel = label;
     }
 
     function setCounterparty(
@@ -80,7 +77,9 @@ contract Universal is
 
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 hash = uint256(
-            keccak256(abi.encodePacked(chainLabel, _nextTokenId++))
+            keccak256(
+                abi.encodePacked(address(this), block.number, _nextTokenId++)
+            )
         );
 
         uint256 tokenId = hash & 0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;

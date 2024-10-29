@@ -12,7 +12,6 @@ import {RevertContext} from "@zetachain/protocol-contracts/contracts/Revert.sol"
 contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     GatewayEVM public immutable gateway;
     uint256 private _nextTokenId;
-    uint256 public chainLabel;
     address public counterparty;
 
     function setCounterparty(address contractAddress) external onlyOwner {
@@ -21,16 +20,16 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
     constructor(
         address payable gatewayAddress,
-        address initialOwner,
-        uint256 label
+        address initialOwner
     ) ERC721("MyToken", "MTK") Ownable(initialOwner) {
         gateway = GatewayEVM(gatewayAddress);
-        chainLabel = label;
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 hash = uint256(
-            keccak256(abi.encodePacked(chainLabel, _nextTokenId++))
+            keccak256(
+                abi.encodePacked(address(this), block.number, _nextTokenId++)
+            )
         );
 
         uint256 tokenId = hash & 0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
