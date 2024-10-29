@@ -26,8 +26,8 @@ contract Swap is UniversalContract {
         bytes to;
     }
 
-    function onCrossChainCall(
-        zContext calldata context,
+    function onCall(
+        MessageContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message

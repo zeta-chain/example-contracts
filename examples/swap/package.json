@@ -56,7 +56,7 @@
     "@solana-developers/helpers": "^2.4.0",
     "@solana/spl-memo": "^0.2.5",
     "@solana/web3.js": "^1.95.2",
-    "@zetachain/protocol-contracts": "10.0.0-rc10",
+    "@zetachain/protocol-contracts": "10.0.0-rc11",
     "@zetachain/toolkit": "13.0.0-rc4"
   }
 }
