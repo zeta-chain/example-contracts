@@ -11,15 +11,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     .approve(args.from, args.tokenId);
   await approveTx.wait();
 
-  const revertOptions = {
-    abortAddress: "0x0000000000000000000000000000000000000000",
-    callOnRevert: args.callOnRevert,
-    onRevertGasLimit: args.onRevertGasLimit,
-    revertAddress: args.revertAddress,
-    revertMessage: ethers.utils.hexlify(
-      ethers.utils.toUtf8Bytes(args.revertMessage)
-    ),
-  };
   const txOptions = {
     gasPrice: args.txOptionsGasPrice,
     gasLimit: args.txOptionsGasLimit,
@@ -32,12 +23,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     fromZetaChain = await (contract as any).isUniversal();
   } catch (e) {}
 
+  let contract, receiver;
+  const value = ethers.utils.parseUnits(args.amount, 18);
+
   if (fromZetaChain) {
-    const contract = await ethers.getContractAt("Universal", args.from);
-    const callOptions = {
-      gasLimit: args.txOptionsGasLimit,
-      isArbitraryCall: args.isArbitraryCall,
-    };
+    contract = await ethers.getContractAt("Universal", args.from);
 
     const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
     const zrc20 = new ethers.Contract(args.to, ZRC20ABI.abi, signer);
@@ -46,35 +36,19 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
     await zrc20TransferTx.wait();
 
-    const receiver = await (contract as any).counterparty(args.to);
-
-    tx = await (contract as any).transferCrossChain(
-      args.tokenId,
-      receiver,
-      args.to,
-      callOptions,
-      revertOptions,
-      txOptions
-    );
-
-    await tx.wait();
+    receiver = await (contract as any).counterparty(args.to);
   } else {
-    const contract = await ethers.getContractAt("Connected", args.from);
-
-    const value = ethers.utils.parseUnits(args.amount, 18);
-
-    const receiver = await (contract as any).counterparty();
-
-    tx = await (contract as any).transferCrossChain(
-      args.tokenId,
-      receiver,
-      args.to,
-      revertOptions,
-      { ...txOptions, value }
-    );
-
-    await tx.wait();
+    contract = await ethers.getContractAt("Connected", args.from);
+    receiver = await (contract as any).counterparty();
   }
+  tx = await (contract as any).transferCrossChain(
+    args.tokenId,
+    receiver,
+    args.to,
+    { ...txOptions, value }
+  );
+
+  await tx.wait();
   if (args.json) {
     console.log(
       JSON.stringify({

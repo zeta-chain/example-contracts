@@ -15,15 +15,6 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     uint256 public chainLabel;
     address public counterparty;
 
-    event RevertEvent(string, RevertContext);
-    event HelloEvent(string, string);
-    event ReceivedOnCall(
-        address sender,
-        address nftContract,
-        uint256 tokenId,
-        address originalSender
-    );
-
     function setCounterparty(address contractAddress) external onlyOwner {
         counterparty = contractAddress;
     }
@@ -35,10 +26,6 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     ) ERC721("MyToken", "MTK") Ownable(initialOwner) {
         gateway = GatewayEVM(gatewayAddress);
         chainLabel = label;
-    }
-
-    function onRevert(RevertContext calldata revertContext) external {
-        emit RevertEvent("Revert on EVM", revertContext);
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
@@ -55,8 +42,7 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function transferCrossChain(
         uint256 tokenId,
         address receiver,
-        address destination,
-        RevertOptions memory revertOptions
+        address destination
     ) external payable {
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
@@ -65,6 +51,14 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
             msg.sender,
             uri,
             destination
+        );
+
+        RevertOptions memory revertOptions = RevertOptions(
+            address(this),
+            true,
+            address(0),
+            encodedData,
+            0
         );
 
         if (destination == address(0)) {
@@ -91,6 +85,16 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _safeMint(sender, tokenId);
         _setTokenURI(tokenId, uri);
         return "";
+    }
+
+    function onRevert(RevertContext calldata context) external {
+        (uint256 tokenId, address sender, string memory uri) = abi.decode(
+            context.revertMessage,
+            (uint256, address, string)
+        );
+
+        _safeMint(sender, tokenId);
+        _setTokenURI(tokenId, uri);
     }
 
     receive() external payable {}

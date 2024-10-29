@@ -20,13 +20,15 @@ contract Universal is
     Ownable,
     UniversalContract
 {
-    uint256 private _nextTokenId;
-    uint256 public chainLabel;
     GatewayZEVM public immutable gateway;
-    error TransferFailed();
-    bool public isUniversal = true;
     SystemContract public immutable systemContract =
         SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
+    uint256 private _nextTokenId;
+    uint256 public chainLabel;
+    bool public isUniversal = true;
+    uint256 public gasLimit = 700000;
+
+    error TransferFailed();
 
     mapping(address => bytes) public counterparty;
 
@@ -52,20 +54,26 @@ contract Universal is
     function transferCrossChain(
         uint256 tokenId,
         bytes memory receiver,
-        address zrc20,
-        CallOptions memory callOptions,
-        RevertOptions memory revertOptions
+        address zrc20
     ) public {
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
 
-        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(
-            callOptions.gasLimit
-        );
+        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(gasLimit);
         if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee))
             revert TransferFailed();
         IZRC20(zrc20).approve(address(gateway), gasFee);
         bytes memory encodedData = abi.encode(tokenId, msg.sender, uri);
+
+        CallOptions memory callOptions = CallOptions(gasLimit, false);
+
+        RevertOptions memory revertOptions = RevertOptions(
+            address(this),
+            true,
+            address(0),
+            encodedData,
+            gasLimit
+        );
 
         gateway.call(receiver, zrc20, encodedData, callOptions, revertOptions);
     }
@@ -122,6 +130,16 @@ contract Universal is
                 RevertOptions(address(0), false, address(0), "", 0)
             );
         }
+    }
+
+    function onRevert(RevertContext calldata context) external {
+        (uint256 tokenId, address sender, string memory uri) = abi.decode(
+            context.revertMessage,
+            (uint256, address, string)
+        );
+
+        _safeMint(sender, tokenId);
+        _setTokenURI(tokenId, uri);
     }
 
     // The following functions are overrides required by Solidity.
