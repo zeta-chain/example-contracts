@@ -31,6 +31,6 @@ task("deploy", "Deploy the contract", main)
   .addOptionalParam("name", "Contract to deploy", "Hello")
   .addOptionalParam(
     "gateway",
-    "Gateway address (default: ZetaChain Gateway)",
+    "Gateway address (default: ZetaChain Gateway on testnet)",
     "0x6c533f7fe93fae114d0954697069df33c9b74fd7"
   );
