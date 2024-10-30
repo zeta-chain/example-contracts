@@ -2140,10 +2140,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.2.0.tgz#66c09120397dbaf4f0c461ba6671f249c3379f6b"
-  integrity sha512-oqyxrxuSraj1A6/CAkeEBa9VfIvp+QxBIivTu/L9jK1zUa5MQw+rLqTL/rD1LR/k9om6x/zJHzhzZKU9Vpk3Bw==
+"@zetachain/localnet@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.4.1.tgz#30fec2ce492b9fc4b85a0b13ae49abeed8d9c6e7"
+  integrity sha512-4WCYQ6InvqeGLibToxBQ/0zuztXYj43UqLObXZ3VhSOOTox9d/oVmcOnRc4pybGuDz+ebKhs+9ybakTcY0waQA==
   dependencies:
     "@inquirer/prompts" "^5.5.0"
     "@uniswap/v2-core" "^1.0.1"
@@ -2171,15 +2171,25 @@
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
     ethers "^6.13.1"
 
+"@zetachain/protocol-contracts@10.0.0-rc11":
+  version "10.0.0-rc11"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-10.0.0-rc11.tgz#53f55ead492f7b5802b1feae4e51abc75730af33"
+  integrity sha512-qWazjqnIGRngf4OmyeSIv7sHICQRdMQ1CKPIQIqxA8qFR+gHhDHSfvMdRAvgWbsfkimXOIFiHVIATypyWhviJw==
+  dependencies:
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    "@zetachain/networks" "^10.0.0"
+    ethers "^6.13.1"
+
 "@zetachain/protocol-contracts@9.0.0":
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-9.0.0.tgz#c20ad5da43f6f3676f31556b303d1cb4ea17357e"
   integrity sha512-L4A8bddlyhjaBAsIv/x1Bvxc38RJz8U8rbbBtxK5oVyOAd5Zz04ZiT3HqzO4FuKq6RGGM1uiA8jvUfmRkKchXw==
 
-"@zetachain/toolkit@13.0.0-rc4":
-  version "13.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc4.tgz#e137fc16043f1416469f709c48808cfa301d9299"
-  integrity sha512-4z4MKbQKjRIeNruUyDBjZDRO5oTLa1w/7wVn+PfMsXn++mFFGkiawkLcitnkH9dadBJiERzmo89MRJxsLQ3U6w==
+"@zetachain/toolkit@13.0.0-rc5":
+  version "13.0.0-rc5"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc5.tgz#56b2603c8367819a5265fcc7354e93ffdfbc3ea3"
+  integrity sha512-/97eSf3ALdrLHc9vyaO/xcjuAI9wa4JUNkB8NtnNT6dMeSBPI2ME9lmG+Qk2YDoZkrYlzmEzeru+zcZI9v7cog==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^2.1.1"
