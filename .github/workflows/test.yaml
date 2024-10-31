@@ -17,7 +17,7 @@ jobs:
         id: set-matrix
         run: |
           test_dirs=$(find examples/*/scripts -type f -name 'run.sh' -exec dirname {} \; | xargs dirname)
-          
+
           if [[ -z "$test_dirs" ]]; then
             echo "No test directories found."
             echo "matrix=[]" >> $GITHUB_ENV
@@ -27,7 +27,8 @@ jobs:
           fi
 
       - name: Output Matrix for Debugging
-        run: echo "Matrix: ${{ steps.set-matrix.outputs.matrix }}"
+        run: |
+          echo "Matrix: ${{ steps.set-matrix.outputs.matrix }}"
 
   test:
     needs: setup-matrix
