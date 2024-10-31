@@ -17,13 +17,22 @@ jobs:
         id: set-matrix
         run: |
           test_dirs=$(find examples/*/scripts -type f -name 'run.sh' -exec dirname {} \; | xargs dirname)
+          
+          if [[ -z "$test_dirs" ]]; then
+            echo "No test directories found."
+            echo "matrix=[]" >> $GITHUB_ENV
+          else
+            matrix_json=$(echo "$test_dirs" | jq -R '{"example-dir": .}' | jq -s .)
+            echo "matrix=$matrix_json" >> $GITHUB_ENV
+          fi
 
-          matrix_json=$(echo "$test_dirs" | jq -R '{"example-dir": .}' | jq -s .)
-          echo "::set-output name=matrix::$matrix_json"
+      - name: Output Matrix for Debugging
+        run: echo "Matrix: ${{ steps.set-matrix.outputs.matrix }}"
 
   test:
     needs: setup-matrix
     runs-on: ubuntu-latest
+    if: needs.setup-matrix.outputs.matrix != '[]'
     strategy:
       matrix:
         include: ${{ fromJSON(needs.setup-matrix.outputs.matrix) }}
