@@ -16,7 +16,7 @@ jobs:
       - name: Set up Test Matrix
         id: set-matrix
         run: |
-          test_dirs=$(find examples/*/scripts -type f -name 'run.sh' -exec dirname {} \; | xargs dirname)
+          test_dirs=$(find examples/*/scripts -type f -name 'test.sh' -exec dirname {} \; | xargs dirname)
           matrix_json=$(echo "$test_dirs" | jq -R '{"example-dir": .}' | jq -s . | jq -c .)
           echo "matrix=$matrix_json" >> $GITHUB_OUTPUT
 
@@ -39,5 +39,5 @@ jobs:
         run: |
           cd "${{ matrix.example-dir }}"
           yarn
-          chmod +x ./scripts/run.sh
-          ./scripts/run.sh
+          chmod +x ./scripts/test.sh
+          ./scripts/test.sh
