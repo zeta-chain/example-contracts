@@ -17,35 +17,28 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   };
   let tx;
 
-  let fromZetaChain = false;
+  let contract;
   try {
-    const contract = await ethers.getContractAt("Universal", args.from);
-    fromZetaChain = await (contract as any).isUniversal();
-  } catch (e) {}
-
-  let contract, receiver;
-  const value = ethers.utils.parseUnits(args.amount, 18);
-
-  if (fromZetaChain) {
     contract = await ethers.getContractAt("Universal", args.from);
-
+    await (contract as any).isUniversal();
     const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
     const zrc20 = new ethers.Contract(args.to, ZRC20ABI.abi, signer);
     const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
     const zrc20TransferTx = await zrc20.approve(args.from, gasFee, txOptions);
-
     await zrc20TransferTx.wait();
-
-    receiver = await (contract as any).counterparty(args.to);
-  } else {
+  } catch (e) {
     contract = await ethers.getContractAt("Connected", args.from);
-    receiver = await (contract as any).counterparty();
   }
+
+  const gasAmount = ethers.utils.parseUnits(args.gasAmount, 18);
+
+  const receiver = args.receiver || signer.address;
+
   tx = await (contract as any).transferCrossChain(
     args.tokenId,
     receiver,
     args.to,
-    { ...txOptions, value }
+    { ...txOptions, value: gasAmount }
   );
 
   await tx.wait();
@@ -102,4 +95,4 @@ task("transfer", "Transfer and lock an NFT", main)
     "ZRC-20 of the gas token of the destination chain",
     "0x0000000000000000000000000000000000000000"
   )
-  .addParam("amount", "The amount of gas to transfer", "0");
+  .addParam("gasAmount", "The amount of gas to transfer", "0");
