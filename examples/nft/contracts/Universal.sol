@@ -50,17 +50,20 @@ contract Universal is
 
     function transferCrossChain(
         uint256 tokenId,
-        bytes memory receiver,
-        address zrc20
+        address receiver,
+        address destination
     ) public {
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
 
-        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(gasLimit);
-        if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee))
-            revert TransferFailed();
-        IZRC20(zrc20).approve(address(gateway), gasFee);
-        bytes memory encodedData = abi.encode(tokenId, msg.sender, uri);
+        (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
+            gasLimit
+        );
+        if (
+            !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
+        ) revert TransferFailed();
+        IZRC20(destination).approve(address(gateway), gasFee);
+        bytes memory encodedData = abi.encode(tokenId, receiver, uri);
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -72,7 +75,13 @@ contract Universal is
             gasLimit
         );
 
-        gateway.call(receiver, zrc20, encodedData, callOptions, revertOptions);
+        gateway.call(
+            counterparty[destination],
+            destination,
+            encodedData,
+            callOptions,
+            revertOptions
+        );
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
@@ -89,12 +98,12 @@ contract Universal is
     }
 
     function onCall(
-        MessageContext calldata messageContext,
+        MessageContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external override {
-        if (keccak256(messageContext.origin) != keccak256(counterparty[zrc20]))
+        if (keccak256(context.origin) != keccak256(counterparty[zrc20]))
             revert("Unauthorized");
 
         (

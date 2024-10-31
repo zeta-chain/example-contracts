@@ -54,7 +54,7 @@ npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$CO
 nft_balance
 
 echo -e "\nTransferring NFT: Ethereum → BNB..."
-npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --amount 0.1
+npx hardhat transfer --network localhost --json --token-id "$NFT_ID" --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 0.1
 
 nft_balance
 

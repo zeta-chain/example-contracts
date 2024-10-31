@@ -47,7 +47,7 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _burn(tokenId);
         bytes memory encodedData = abi.encode(
             tokenId,
-            msg.sender,
+            receiver,
             uri,
             destination
         );
@@ -61,10 +61,10 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         );
 
         if (destination == address(0)) {
-            gateway.call(receiver, encodedData, revertOptions);
+            gateway.call(counterparty, encodedData, revertOptions);
         } else {
             gateway.depositAndCall{value: msg.value}(
-                receiver,
+                counterparty,
                 encodedData,
                 revertOptions
             );
@@ -77,11 +77,11 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     ) external payable returns (bytes4) {
         if (messageContext.sender != counterparty) revert("Unauthorized");
 
-        (uint256 tokenId, address sender, string memory uri) = abi.decode(
+        (uint256 tokenId, address receiver, string memory uri) = abi.decode(
             message,
             (uint256, address, string)
         );
-        _safeMint(sender, tokenId);
+        _safeMint(receiver, tokenId);
         _setTokenURI(tokenId, uri);
         return "";
     }
