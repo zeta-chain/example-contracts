@@ -2,9 +2,9 @@
 
 set -e
 
-npx hardhat localnet --exit-on-error &
-
-sleep 10
+if [ "$1" = "localnet" ]; then
+  npx hardhat localnet --exit-on-error & sleep 10
+fi
 
 yarn deploy:localnet
 

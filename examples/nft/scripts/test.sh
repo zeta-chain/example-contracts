@@ -2,16 +2,16 @@
 
 set -e
 
-npx hardhat localnet --exit-on-error &
-
-sleep 10
+if [ "$1" = "localnet" ]; then
+  npx hardhat localnet --exit-on-error & sleep 10
+fi
 
 function nft_balance() {
-  echo -e "\n🖼️  NFT Balance"
-  echo "---------------------------------------------"
   local ZETACHAIN=$(cast call "$CONTRACT_ZETACHAIN" "balanceOf(address)(uint256)" "$SENDER")
   local ETHEREUM=$(cast call "$CONTRACT_ETHEREUM" "balanceOf(address)(uint256)" "$SENDER")
   local BNB=$(cast call "$CONTRACT_BNB" "balanceOf(address)(uint256)" "$SENDER")
+  echo -e "\n🖼️  NFT Balance"
+  echo "---------------------------------------------"
   echo "🟢 ZetaChain: $ZETACHAIN"
   echo "🔵 EVM Chain: $ETHEREUM"
   echo "🟡 BNB Chain: $BNB"
