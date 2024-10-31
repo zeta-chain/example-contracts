@@ -2402,15 +2402,15 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.3.0.tgz#eb026e1e56ef4ea78fd5efb15df2f931daeba884"
-  integrity sha512-8PbS6GQrROYicyEHk3QGhspwKnm3Nn8tmgISbtVw2ca4I+9lIAnuo4WstBPXhV3/kR9zPxgxErWnBWNSE78BuA==
+"@zetachain/localnet@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-3.5.0.tgz#a4d1509a154a736b868d7a89eb6a920f8047083e"
+  integrity sha512-awZMdQE/inTGmR4dBa+yrMwoedZGSjU+QPOx91gBgRAWcWOx6BYX+MJxcrfpmdu/oMPbMWUK262o2HD19Kfrkw==
   dependencies:
     "@inquirer/prompts" "^5.5.0"
     "@uniswap/v2-core" "^1.0.1"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/protocol-contracts" "10.0.0-rc10"
+    "@zetachain/protocol-contracts" "10.0.0-rc11"
     ansis "^3.3.2"
     concurrently "^8.2.2"
     ethers "^6.13.2"
@@ -2423,15 +2423,6 @@
   integrity sha512-FPolaO19oVkSLSPDUA/Hu+8AhG3lDEslRDpLnMzbMbnNSC669Fkah0/TEf+6egrQbAifBRfFLzwWidAGs8oxtA==
   dependencies:
     dotenv "^16.1.4"
-
-"@zetachain/protocol-contracts@10.0.0-rc10":
-  version "10.0.0-rc10"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-10.0.0-rc10.tgz#e3c21b493904ec743c9026627b2f809009fec7a2"
-  integrity sha512-kOH7Lk0os3xt9N/FCdeaLUMyonfez97q69Jy2YFwddjv9jpqaxwLXWj2hvdIFc21inKZ7HIjmDDcj9/n8gITKg==
-  dependencies:
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    ethers "^6.13.1"
 
 "@zetachain/protocol-contracts@10.0.0-rc11":
   version "10.0.0-rc11"
