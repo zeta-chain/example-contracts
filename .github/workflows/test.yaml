@@ -2,6 +2,8 @@ name: Run Tests
 
 on:
   push:
+    paths:
+      - "examples/**"
   workflow_dispatch:
 
 jobs:
@@ -16,27 +18,29 @@ jobs:
       - name: Set up Test Matrix
         id: set-matrix
         run: |
+          # Find only immediate subdirectories in examples with a scripts/run.sh file
           test_dirs=$(find examples/*/scripts -type f -name 'run.sh' -exec dirname {} \; | xargs dirname)
 
+          # Check if test_dirs is empty and set matrix accordingly
           if [[ -z "$test_dirs" ]]; then
-            echo "No test directories found."
             echo "matrix=[]" >> $GITHUB_ENV
           else
+            # Convert the directories to JSON format for matrix.include
             matrix_json=$(echo "$test_dirs" | jq -R '{"example-dir": .}' | jq -s .)
             echo "matrix=$matrix_json" >> $GITHUB_ENV
           fi
 
       - name: Output Matrix for Debugging
         run: |
-          echo "Matrix: ${{ steps.set-matrix.outputs.matrix }}"
+          echo "Matrix: ${{ env.matrix }}"
 
   test:
     needs: setup-matrix
     runs-on: ubuntu-latest
-    if: needs.setup-matrix.outputs.matrix != '[]'
+    if: ${{ env.matrix }} != '[]' # Only run if matrix is not empty
     strategy:
       matrix:
-        include: ${{ fromJSON(needs.setup-matrix.outputs.matrix) }}
+        include: ${{ fromJSON(env.matrix) }}
       fail-fast: false
 
     steps:
