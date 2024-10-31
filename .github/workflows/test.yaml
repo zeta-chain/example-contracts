@@ -32,6 +32,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
       - name: Run Test Script
         run: |
           cd "${{ matrix.example-dir }}"
