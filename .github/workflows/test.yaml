@@ -7,25 +7,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  setup-matrix:
     runs-on: ubuntu-latest
-    env:
-      CI: true
-
-    strategy:
-      matrix:
-        example-dir: ${{ fromJSON(env.TEST_DIRS) }}
-      fail-fast: false
-
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Test Matrix
+        id: set-matrix
         run: |
-          # Find only immediate subdirectories in examples with a scripts/run.sh file
-          test_dirs=$(find examples/*/scripts -type f -name 'run.sh' -exec dirname {} \; | xargs dirname | jq -R . | jq -s .)
-          echo "TEST_DIRS=$test_dirs" >> $GITHUB_ENV
+          test_dirs=$(find examples/*/scripts -type f -name 'run.sh' -exec dirname {} \; | xargs dirname)
+
+          matrix_json=$(echo "$test_dirs" | jq -R '{"example-dir": .}' | jq -s .)
+          echo "::set-output name=matrix::$matrix_json"
+
+  test:
+    needs: setup-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: ${{ fromJSON(needs.setup-matrix.outputs.matrix) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Run Test Script
         run: |
