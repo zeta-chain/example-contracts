@@ -1,0 +1,34 @@
+name: Run Tests
+
+on:
+  push:
+    paths:
+      - "examples/**"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+
+    strategy:
+      matrix:
+        example-dir: ${{ fromJSON(env.TEST_DIRS) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Test Matrix
+        run: |
+          # Find only immediate subdirectories in examples with a scripts/run.sh file
+          test_dirs=$(find examples/*/scripts -type f -name 'run.sh' -exec dirname {} \; | xargs dirname | jq -R . | jq -s .)
+          echo "TEST_DIRS=$test_dirs" >> $GITHUB_ENV
+
+      - name: Run Test Script
+        run: |
+          cd "${{ matrix.example-dir }}"
+          chmod +x ./scripts/run.sh
+          ./scripts/run.sh
