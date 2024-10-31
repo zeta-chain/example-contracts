@@ -35,5 +35,6 @@ jobs:
       - name: Run Test Script
         run: |
           cd "${{ matrix.example-dir }}"
+          yarn
           chmod +x ./scripts/run.sh
           ./scripts/run.sh
