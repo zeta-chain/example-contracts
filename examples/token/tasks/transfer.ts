@@ -22,29 +22,21 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   };
   let tx;
 
-  let fromZetaChain = false;
-  try {
-    const contract = await ethers.getContractAt("Universal", args.from);
-    fromZetaChain = await (contract as any).isUniversal();
-  } catch (e) {}
-
   let contract;
-
-  if (fromZetaChain) {
+  try {
     contract = await ethers.getContractAt("Universal", args.from);
-
+    await (contract as any).isUniversal();
     const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
     const zrc20 = new ethers.Contract(args.to, ZRC20ABI.abi, signer);
     const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
     const zrc20TransferTx = await zrc20.approve(args.from, gasFee, txOptions);
-
     await zrc20TransferTx.wait();
-
     const tokenApprove = await contract.approve(args.from, value);
     await tokenApprove.wait();
-  } else {
+  } catch (e) {
     contract = await ethers.getContractAt("Connected", args.from);
   }
+
   const receiver = args.receiver || signer.address;
 
   tx = await (contract as any).transferCrossChain(
