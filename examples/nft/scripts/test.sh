@@ -4,6 +4,8 @@ set -e
 
 npx hardhat localnet --exit-on-error &
 
+sleep 10
+
 function nft_balance() {
   echo -e "\n🖼️  NFT Balance"
   echo "---------------------------------------------"
