@@ -33,6 +33,11 @@ contract Universal is
 
     event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
 
+    modifier onlyGateway() {
+        require(msg.sender == address(gateway), "Caller is not the gateway");
+        _;
+    }
+
     constructor(
         address payable gatewayAddress,
         address initialOwner
@@ -102,7 +107,7 @@ contract Universal is
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override {
+    ) external override onlyGateway {
         if (keccak256(context.origin) != keccak256(counterparty[zrc20]))
             revert("Unauthorized");
 
@@ -140,7 +145,7 @@ contract Universal is
         }
     }
 
-    function onRevert(RevertContext calldata context) external {
+    function onRevert(RevertContext calldata context) external onlyGateway {
         (uint256 tokenId, address sender, string memory uri) = abi.decode(
             context.revertMessage,
             (uint256, address, string)

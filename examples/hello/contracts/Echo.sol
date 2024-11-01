@@ -10,6 +10,11 @@ contract Echo {
     event RevertEvent(string, RevertContext);
     event HelloEvent(string, string);
 
+    modifier onlyGateway() {
+        require(msg.sender == address(gateway), "Caller is not the gateway");
+        _;
+    }
+
     constructor(address payable gatewayAddress) {
         gateway = GatewayEVM(gatewayAddress);
     }
@@ -18,7 +23,9 @@ contract Echo {
         emit HelloEvent("Hello on EVM", message);
     }
 
-    function onRevert(RevertContext calldata revertContext) external {
+    function onRevert(
+        RevertContext calldata revertContext
+    ) external onlyGateway {
         emit RevertEvent("Revert on EVM", revertContext);
     }
 
