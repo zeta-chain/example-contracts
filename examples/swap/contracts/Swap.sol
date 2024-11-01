@@ -16,6 +16,11 @@ contract Swap is UniversalContract {
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
 
+    modifier onlyGateway() {
+        require(msg.sender == address(gateway), "Caller is not the gateway");
+        _;
+    }
+
     constructor(address systemContractAddress, address payable gatewayAddress) {
         systemContract = SystemContract(systemContractAddress);
         gateway = GatewayZEVM(gatewayAddress);
@@ -31,7 +36,7 @@ contract Swap is UniversalContract {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override {
+    ) external override onlyGateway {
         Params memory params = Params({target: address(0), to: bytes("")});
         if (context.chainID == BITCOIN) {
             params.target = BytesHelperLib.bytesToAddress(message, 0);
@@ -105,5 +110,7 @@ contract Swap is UniversalContract {
         );
     }
 
-    function onRevert(RevertContext calldata revertContext) external override {}
+    function onRevert(
+        RevertContext calldata revertContext
+    ) external override onlyGateway {}
 }

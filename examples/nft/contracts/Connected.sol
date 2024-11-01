@@ -18,6 +18,11 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         counterparty = contractAddress;
     }
 
+    modifier onlyGateway() {
+        require(msg.sender == address(gateway), "Caller is not the gateway");
+        _;
+    }
+
     constructor(
         address payable gatewayAddress,
         address initialOwner
@@ -74,7 +79,7 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function onCall(
         MessageContext calldata messageContext,
         bytes calldata message
-    ) external payable returns (bytes4) {
+    ) external payable onlyGateway returns (bytes4) {
         if (messageContext.sender != counterparty) revert("Unauthorized");
 
         (uint256 tokenId, address receiver, string memory uri) = abi.decode(
@@ -86,7 +91,7 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         return "";
     }
 
-    function onRevert(RevertContext calldata context) external {
+    function onRevert(RevertContext calldata context) external onlyGateway {
         (uint256 tokenId, address sender, string memory uri) = abi.decode(
             context.revertMessage,
             (uint256, address, string)

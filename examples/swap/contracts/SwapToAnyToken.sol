@@ -17,6 +17,11 @@ contract SwapToAnyToken is UniversalContract {
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
 
+    modifier onlyGateway() {
+        require(msg.sender == address(gateway), "Caller is not the gateway");
+        _;
+    }
+
     constructor(address systemContractAddress, address payable gatewayAddress) {
         systemContract = SystemContract(systemContractAddress);
         gateway = GatewayZEVM(gatewayAddress);
@@ -33,7 +38,7 @@ contract SwapToAnyToken is UniversalContract {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external virtual override {
+    ) external virtual override onlyGateway {
         Params memory params = Params({
             target: address(0),
             to: bytes(""),
@@ -147,5 +152,7 @@ contract SwapToAnyToken is UniversalContract {
         swapAndWithdraw(inputToken, amount, targetToken, recipient, withdraw);
     }
 
-    function onRevert(RevertContext calldata revertContext) external override {}
+    function onRevert(
+        RevertContext calldata revertContext
+    ) external override onlyGateway {}
 }
