@@ -2743,10 +2743,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@4.0.0-rc1":
-  version "4.0.0-rc1"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-4.0.0-rc1.tgz#0476fc28f184849ccd170927bc9fe6cd6768ca76"
-  integrity sha512-IWyw+FcrCQ0wCDKs8D2eEdj+L2aBZne81Y2o3e23l1lZ+v7P95cXEmHvHNILF96awKRWvaadregwk8LWdCJcDA==
+"@zetachain/localnet@4.0.0-rc4":
+  version "4.0.0-rc4"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-4.0.0-rc4.tgz#916c58f83dd4901691fbc1216aec2ee88e7f531e"
+  integrity sha512-yNlA6qaQZiuHXRx4pgNLLHlJ+2ENet9WTIWxoslnLzzDljWwYTJHkErlTQcWa5oL9jjyn2/hQB/laoqXzlX1gQ==
   dependencies:
     "@inquirer/prompts" "^5.5.0"
     "@uniswap/v2-core" "^1.0.1"
