@@ -45,7 +45,10 @@ npx hardhat universal-set-counterparty --network localhost --contract "$CONTRACT
 
 npx hardhat localnet-check
 
-echo -e "\nTransferring NFT: ZetaChain → Ethereum..."
+echo -e "\nMaking an authenticated call..."
 npx hardhat transfer --network localhost --json --receiver "$CONTRACT_BNB" --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --types '["string"]' alice
+
+echo -e "\nMaking an arbitrary call..."
+npx hardhat transfer --network localhost --json --receiver "$CONTRACT_BNB" --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --call-options-is-arbitrary-call --function "hello(string)" --types '["string"]' alice
 
 if [ "$1" = "localnet" ]; then npx hardhat localnet-stop; fi

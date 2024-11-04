@@ -16,6 +16,43 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     gasLimit: args.callOptionsGasLimit,
   };
 
+  if (args.callOptionsIsArbitraryCall && !args.function) {
+    throw new Error("You must provide a function to call");
+  }
+
+  let message;
+
+  const valuesArray = args.values.map((value: any, index: any) => {
+    const type = args.types[index];
+
+    if (type === "bool") {
+      try {
+        return JSON.parse(value.toLowerCase());
+      } catch (e) {
+        throw new Error(`Invalid boolean value: ${value}`);
+      }
+    } else if (type.startsWith("uint") || type.startsWith("int")) {
+      return ethers.BigNumber.from(value);
+    } else {
+      return value;
+    }
+  });
+
+  const encodedParameters = hre.ethers.utils.defaultAbiCoder.encode(
+    JSON.parse(args.types),
+    valuesArray
+  );
+
+  if (!args.callOptionsIsArbitraryCall && args.function) {
+    const functionSignature = hre.ethers.utils.id(args.function).slice(0, 10);
+
+    message = hre.ethers.utils.hexlify(
+      hre.ethers.utils.concat([functionSignature, encodedParameters])
+    );
+  } else {
+    message = encodedParameters;
+  }
+
   const revertOptions = {
     abortAddress: "0x0000000000000000000000000000000000000000", // not used
     callOnRevert: args.callOnRevert,
@@ -45,26 +82,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const receiver = args.receiver;
 
-  const valuesArray = args.values.map((value: any, index: any) => {
-    const type = args.types[index];
-    if (type === "bool") {
-      return JSON.parse(value.toLowerCase());
-    } else if (type.startsWith("uint") || type.startsWith("int")) {
-      return ethers.BigNumber.from(value);
-    } else {
-      return value;
-    }
-  });
-
-  const encodedData = hre.ethers.utils.defaultAbiCoder.encode(
-    JSON.parse(args.types),
-    valuesArray
-  );
-
   tx = await (contract as any).transferCrossChain(
     receiver,
     args.to,
-    encodedData,
+    message,
     callOptions,
     revertOptions,
     { ...txOptions, value: gasAmount }
@@ -117,7 +138,6 @@ task("transfer", "Transfer and lock an NFT", main)
     7000000,
     types.int
   )
-  .addFlag("isArbitraryCall", "Whether the call is arbitrary")
   .addFlag("json", "Output the result in JSON format")
   .addOptionalParam(
     "to",
@@ -126,16 +146,15 @@ task("transfer", "Transfer and lock an NFT", main)
   )
   .addParam("gasAmount", "The amount of gas to transfer", "0")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
-  .addOptionalParam(
-    "callOptionsIsArbitraryCall",
-    "Call any function",
-    false,
-    types.boolean
-  )
+  .addFlag("callOptionsIsArbitraryCall", "Call any function")
   .addOptionalParam(
     "callOptionsGasLimit",
     "The gas limit for the call",
     7000000,
     types.int
+  )
+  .addOptionalParam(
+    "function",
+    "The function to call on the destination chain (only for arbitrary calls)"
   )
   .addVariadicPositionalParam("values", "The values of the parameters");
