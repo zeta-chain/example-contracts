@@ -13,6 +13,11 @@ contract Hello is UniversalContract {
     event RevertEvent(string, RevertContext);
     error TransferFailed();
 
+    modifier onlyGateway() {
+        require(msg.sender == address(gateway), "Caller is not the gateway");
+        _;
+    }
+
     constructor(address payable gatewayAddress) {
         gateway = GatewayZEVM(gatewayAddress);
     }
@@ -22,12 +27,14 @@ contract Hello is UniversalContract {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override {
+    ) external override onlyGateway {
         string memory name = abi.decode(message, (string));
         emit HelloEvent("Hello on ZetaChain", name);
     }
 
-    function onRevert(RevertContext calldata revertContext) external override {
+    function onRevert(
+        RevertContext calldata revertContext
+    ) external override onlyGateway {
         emit RevertEvent("Revert on ZetaChain", revertContext);
     }
 
