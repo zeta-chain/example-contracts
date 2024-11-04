@@ -10,6 +10,11 @@ contract Connected is ERC20, Ownable {
     GatewayEVM public immutable gateway;
     address public counterparty;
 
+    modifier onlyGateway() {
+        require(msg.sender == address(gateway), "Caller is not the gateway");
+        _;
+    }
+
     function setCounterparty(address contractAddress) external onlyOwner {
         counterparty = contractAddress;
     }
@@ -55,7 +60,7 @@ contract Connected is ERC20, Ownable {
     function onCall(
         MessageContext calldata messageContext,
         bytes calldata message
-    ) external payable returns (bytes4) {
+    ) external payable onlyGateway returns (bytes4) {
         if (messageContext.sender != counterparty) revert("Unauthorized");
         (address receiver, uint256 amount) = abi.decode(
             message,
@@ -64,7 +69,7 @@ contract Connected is ERC20, Ownable {
         _mint(receiver, amount);
     }
 
-    function onRevert(RevertContext calldata context) external {}
+    function onRevert(RevertContext calldata context) external onlyGateway {}
 
     receive() external payable {}
 

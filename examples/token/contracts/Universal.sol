@@ -24,6 +24,11 @@ contract Universal is ERC20, Ownable, UniversalContract {
 
     event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
 
+    modifier onlyGateway() {
+        require(msg.sender == address(gateway), "Caller is not the gateway");
+        _;
+    }
+
     constructor(
         address payable gatewayAddress,
         address initialOwner
@@ -81,7 +86,7 @@ contract Universal is ERC20, Ownable, UniversalContract {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override {
+    ) external override onlyGateway {
         if (keccak256(messageContext.origin) != keccak256(counterparty[zrc20]))
             revert("Unauthorized");
         (address receiver, uint256 tokenAmount, address destination) = abi
@@ -110,5 +115,5 @@ contract Universal is ERC20, Ownable, UniversalContract {
         }
     }
 
-    function onRevert(RevertContext calldata context) external {}
+    function onRevert(RevertContext calldata context) external onlyGateway {}
 }
