@@ -2,6 +2,10 @@
 
 set -e
 
+if [ "$1" = "localnet" ]; then
+  npx hardhat localnet --exit-on-error & sleep 10
+fi
+
 function balance() {
   echo -e "\n🖼️  Balance"
   echo "---------------------------------------------"
