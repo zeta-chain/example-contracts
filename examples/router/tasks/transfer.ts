@@ -80,10 +80,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const gasAmount = ethers.utils.parseUnits(args.gasAmount, 18);
 
-  const receiver = args.receiver;
-
   tx = await (contract as any).transferCrossChain(
-    receiver,
     args.to,
     message,
     callOptions,
@@ -112,7 +109,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 task("transfer", "Transfer and lock an NFT", main)
   .addParam("from", "The contract being transferred from")
-  .addParam("receiver", "The address")
   .addOptionalParam(
     "txOptionsGasPrice",
     "The gas price for the transaction",

@@ -4,6 +4,7 @@ import "./tasks/mint";
 import "./tasks/transfer";
 import "./tasks/universalSetCounterparty";
 import "./tasks/connectedSetCounterparty";
+import "./tasks/connectedSetRouter";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
@@ -15,7 +16,16 @@ const config: HardhatUserConfig = {
   networks: {
     ...getHardhatConfigNetworks(),
   },
-  solidity: "0.8.26",
+  solidity: {
+    version: "0.8.26",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+      viaIR: true,
+    },
+  },
 };
 
 export default config;

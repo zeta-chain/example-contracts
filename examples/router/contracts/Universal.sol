@@ -17,10 +17,13 @@ contract Universal is UniversalContract, Ownable {
     uint256 public gasLimit = 700000;
 
     error TransferFailed();
+    error InsufficientOutAmount(uint256 out, uint256 gasFee);
 
     mapping(address => bytes) public counterparty;
 
     event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
+    event GasFeeAndOut(uint256 gasFee, uint256 out);
+    event RevertEvent(string);
 
     modifier onlyGateway() {
         require(msg.sender == address(gateway), "Caller is not the gateway");
@@ -51,7 +54,7 @@ contract Universal is UniversalContract, Ownable {
         (
             bytes memory receiver,
             address destination,
-            bytes memory encodedData,
+            bytes memory data,
             CallOptions memory callOptions,
             RevertOptions memory revertOptions
         ) = abi.decode(
@@ -62,30 +65,84 @@ contract Universal is UniversalContract, Ownable {
         (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
             callOptions.gasLimit
         );
-        SwapHelperLib.swapExactTokensForTokens(
+        uint256 out = SwapHelperLib.swapExactTokensForTokens(
             systemContract,
             zrc20,
             amount,
             destination,
             0
         );
-        IZRC20(destination).approve(address(gateway), gasFee);
+        require(out >= gasFee, "Insufficient out amount for gas fee");
+        IZRC20(destination).approve(address(gateway), out);
 
-        gateway.call(
+        RevertOptions memory revertOptionsUniversal = RevertOptions(
+            address(this),
+            true,
+            address(0),
+            abi.encode(
+                revertOptions,
+                zrc20,
+                revertOptions.onRevertGasLimit,
+                receiver,
+                data
+            ),
+            gasLimit
+        );
+
+        gateway.withdrawAndCall(
             receiver,
+            out - gasFee,
             destination,
-            encodedData,
+            abi.encode(context.origin, data, true),
             callOptions,
-            revertOptions
+            revertOptionsUniversal
         );
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        // (uint256 tokenId, address sender, string memory uri) = abi.decode(
-        //     context.revertMessage,
-        //     (uint256, address, string)
+        (
+            RevertOptions memory revertOptions,
+            address destination,
+            uint256 onRevertGasLimit,
+            bytes memory receiver,
+            bytes memory data
+        ) = abi.decode(
+                context.revertMessage,
+                (RevertOptions, address, uint256, bytes, bytes)
+            );
+        uint256 out = SwapHelperLib.swapExactTokensForTokens(
+            systemContract,
+            context.asset,
+            context.amount,
+            destination,
+            0
+        );
+        (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
+            700000
+        );
+        if (out < gasFee) revert("Insufficient out amount for gas fee");
+
+        IZRC20(destination).approve(address(gateway), out);
+        // bytes4 selector = bytes4(
+        //     keccak256("onRevert((address,address,uint256,bytes))")
         // );
-        // _safeMint(sender, tokenId);
-        // _setTokenURI(tokenId, uri);
+        // // bytes4 selector = bytes4(keccak256("hello(string)"));
+        // gateway.withdrawAndCall(
+        //     abi.encodePacked(revertOptions.revertAddress),
+        //     out - gasFee,
+        //     destination,
+        //     abi.encodePacked(selector, abi.encode("hello")),
+        //     CallOptions(700000, true),
+        //     RevertOptions(address(0), false, address(0), "", 0)
+        // );
+        // bytes4 selector = bytes4(keccak256("hello(string)"));
+        gateway.withdrawAndCall(
+            abi.encodePacked(revertOptions.revertAddress),
+            out - gasFee,
+            destination,
+            abi.encode(receiver, data, false),
+            CallOptions(700000, false),
+            RevertOptions(address(0), false, address(0), "", 0)
+        );
     }
 }

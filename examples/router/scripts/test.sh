@@ -5,18 +5,6 @@ set -x
 
 if [ "$1" = "localnet" ]; then npx hardhat localnet --exit-on-error & sleep 10; fi
 
-# function nft_balance() {
-#   local ZETACHAIN=$(cast call "$CONTRACT_ZETACHAIN" "balanceOf(address)(uint256)" "$SENDER")
-#   local ETHEREUM=$(cast call "$CONTRACT_ETHEREUM" "balanceOf(address)(uint256)" "$SENDER")
-#   local BNB=$(cast call "$CONTRACT_BNB" "balanceOf(address)(uint256)" "$SENDER")
-#   echo -e "\n🖼️  NFT Balance"
-#   echo "---------------------------------------------"
-#   echo "🟢 ZetaChain: $ZETACHAIN"
-#   echo "🔵 EVM Chain: $ETHEREUM"
-#   echo "🟡 BNB Chain: $BNB"
-#   echo "---------------------------------------------"
-# }
-
 echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
 
@@ -38,17 +26,19 @@ echo -e "🚀 Deployed NFT contract on BNB chain: $CONTRACT_BNB"
 echo -e "\n📮 User Address: $SENDER"
 
 echo -e "\n🔗 Setting counterparty contracts..."
-npx hardhat connected-set-counterparty --network localhost --contract "$CONTRACT_ETHEREUM" --counterparty "$CONTRACT_ZETACHAIN" --json &>/dev/null
-npx hardhat connected-set-counterparty --network localhost --contract "$CONTRACT_BNB" --counterparty "$CONTRACT_ZETACHAIN" --json &>/dev/null
+npx hardhat connected-set-counterparty --network localhost --contract "$CONTRACT_ETHEREUM" --counterparty "$CONTRACT_BNB" --json &>/dev/null
+npx hardhat connected-set-counterparty --network localhost --contract "$CONTRACT_BNB" --counterparty "$CONTRACT_ETHEREUM" --json &>/dev/null
 npx hardhat universal-set-counterparty --network localhost --contract "$CONTRACT_ZETACHAIN" --counterparty "$CONTRACT_ETHEREUM" --zrc20 "$ZRC20_ETHEREUM" --json &>/dev/null
 npx hardhat universal-set-counterparty --network localhost --contract "$CONTRACT_ZETACHAIN" --counterparty "$CONTRACT_BNB" --zrc20 "$ZRC20_BNB" --json &>/dev/null
+npx hardhat connected-set-router --network localhost --contract "$CONTRACT_ETHEREUM" --counterparty "$CONTRACT_ZETACHAIN" --json &>/dev/null
+npx hardhat connected-set-router --network localhost --contract "$CONTRACT_BNB" --counterparty "$CONTRACT_ZETACHAIN" --json &>/dev/null
 
-npx hardhat localnet-check
+# npx hardhat localnet-check
 
 echo -e "\nMaking an authenticated call..."
-npx hardhat transfer --network localhost --json --receiver "$CONTRACT_BNB" --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --types '["string"]' alice
+npx hardhat transfer --network localhost --json --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --call-on-revert --revert-address "$CONTRACT_ETHEREUM" --revert-message "hello" --types '["string"]' alice
 
-echo -e "\nMaking an arbitrary call..."
-npx hardhat transfer --network localhost --json --receiver "$CONTRACT_BNB" --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --call-options-is-arbitrary-call --function "hello(string)" --types '["string"]' alice
+# echo -e "\nMaking an arbitrary call..."
+# npx hardhat transfer --network localhost --json --receiver "$CONTRACT_BNB" --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --call-options-is-arbitrary-call --function "hello(string)" --types '["string"]' alice
 
 if [ "$1" = "localnet" ]; then npx hardhat localnet-stop; fi
