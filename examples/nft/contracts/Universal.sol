@@ -34,6 +34,29 @@ contract Universal is
     mapping(address => bytes) public counterparty;
 
     event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
+    event TokenTransfer(
+        uint256 indexed tokenId,
+        address indexed receiver,
+        address indexed destination,
+        string uri
+    );
+    event TokenTransferReceived(
+        uint256 indexed tokenId,
+        address indexed receiver,
+        string uri
+    );
+    event TokenTransferReverted(
+        uint256 indexed tokenId,
+        address indexed sender,
+        string uri
+    );
+
+    event TokenTransferToDestination(
+        uint256 indexed tokenId,
+        address indexed sender,
+        address indexed destination,
+        string uri
+    );
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -96,6 +119,8 @@ contract Universal is
             callOptions,
             revertOptions
         );
+
+        emit TokenTransfer(tokenId, receiver, destination, uri);
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
@@ -130,6 +155,7 @@ contract Universal is
         if (destination == address(0)) {
             _safeMint(sender, tokenId);
             _setTokenURI(tokenId, uri);
+            emit TokenTransferReceived(tokenId, sender, uri);
         } else {
             (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
                 gasLimit
@@ -151,6 +177,7 @@ contract Universal is
                 CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
+            emit TokenTransferToDestination(tokenId, sender, destination, uri);
         }
     }
 
@@ -162,6 +189,7 @@ contract Universal is
 
         _safeMint(sender, tokenId);
         _setTokenURI(tokenId, uri);
+        emit TokenTransferReverted(tokenId, sender, uri);
     }
 
     // The following functions are overrides required by Solidity.
