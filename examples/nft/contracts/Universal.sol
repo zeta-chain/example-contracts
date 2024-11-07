@@ -25,7 +25,7 @@ contract Universal is
         SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
     uint256 private _nextTokenId;
     bool public isUniversal = true;
-    uint256 public gasLimit = 700000;
+    uint256 public gasLimit;
 
     error TransferFailed();
     error Unauthorized();
@@ -44,11 +44,13 @@ contract Universal is
         address payable gatewayAddress,
         address owner,
         string memory name,
-        string memory symbol
+        string memory symbol,
+        uint256 gas
     ) ERC721(name, symbol) Ownable(owner) {
         if (gatewayAddress == address(0) || owner == address(0))
             revert InvalidAddress();
         gateway = GatewayZEVM(gatewayAddress);
+        gasLimit = gas;
     }
 
     function setCounterparty(
@@ -130,7 +132,7 @@ contract Universal is
             _setTokenURI(tokenId, uri);
         } else {
             (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
-                700000
+                gasLimit
             );
 
             SwapHelperLib.swapExactTokensForTokens(
@@ -146,7 +148,7 @@ contract Universal is
                 counterparty[destination],
                 destination,
                 abi.encode(tokenId, sender, uri),
-                CallOptions(700000, false),
+                CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
         }
