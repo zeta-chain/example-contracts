@@ -8,33 +8,21 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@zetachain/protocol-contracts/contracts/evm/GatewayEVM.sol";
 import {RevertContext} from "@zetachain/protocol-contracts/contracts/Revert.sol";
+import "./shared/Events.sol";
 
-contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract Connected is
+    ERC721,
+    ERC721Enumerable,
+    ERC721URIStorage,
+    Ownable,
+    Events
+{
     GatewayEVM public immutable gateway;
     uint256 private _nextTokenId;
     address public counterparty;
 
     error InvalidAddress();
     error Unauthorized();
-
-    event SetCounterparty(address indexed newCounterparty);
-    event TokenMinted(address indexed to, uint256 indexed tokenId, string uri);
-    event TokenTransfer(
-        uint256 indexed tokenId,
-        address indexed receiver,
-        address indexed destination,
-        string uri
-    );
-    event TokenTransferReceived(
-        uint256 indexed tokenId,
-        address indexed receiver,
-        string uri
-    );
-    event TokenTransferReverted(
-        uint256 indexed tokenId,
-        address indexed sender,
-        string uri
-    );
 
     function setCounterparty(address contractAddress) external onlyOwner {
         if (contractAddress == address(0)) revert InvalidAddress();

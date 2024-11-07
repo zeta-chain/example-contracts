@@ -12,13 +12,15 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol
 import "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {SystemContract} from "@zetachain/toolkit/contracts/SystemContract.sol";
+import "./Events.sol";
 
 contract Universal is
     ERC721,
     ERC721Enumerable,
     ERC721URIStorage,
     Ownable,
-    UniversalContract
+    UniversalContract,
+    Events
 {
     GatewayZEVM public immutable gateway;
     SystemContract public immutable systemContract =
@@ -32,31 +34,6 @@ contract Universal is
     error InvalidAddress();
 
     mapping(address => bytes) public counterparty;
-
-    event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
-    event TokenTransfer(
-        uint256 indexed tokenId,
-        address indexed receiver,
-        address indexed destination,
-        string uri
-    );
-    event TokenTransferReceived(
-        uint256 indexed tokenId,
-        address indexed receiver,
-        string uri
-    );
-    event TokenTransferReverted(
-        uint256 indexed tokenId,
-        address indexed sender,
-        string uri
-    );
-
-    event TokenTransferToDestination(
-        uint256 indexed tokenId,
-        address indexed sender,
-        address indexed destination,
-        string uri
-    );
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
