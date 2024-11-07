@@ -89,14 +89,25 @@ contract Universal is UniversalContract, Ownable {
             gasLimit
         );
 
-        gateway.withdrawAndCall(
-            receiver,
-            out - gasFee,
-            destination,
-            abi.encodePacked(data, context.origin, true),
-            callOptions,
-            revertOptionsUniversal
-        );
+        if (callOptions.isArbitraryCall) {
+            gateway.withdrawAndCall(
+                receiver,
+                out - gasFee,
+                destination,
+                abi.encodePacked(data, context.origin, true),
+                callOptions,
+                revertOptionsUniversal
+            );
+        } else {
+            gateway.withdrawAndCall(
+                receiver,
+                out - gasFee,
+                destination,
+                abi.encode(data, context.origin, true),
+                callOptions,
+                revertOptionsUniversal
+            );
+        }
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
