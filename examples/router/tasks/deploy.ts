@@ -1,4 +1,4 @@
-import { task, types } from "hardhat/config";
+import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
@@ -11,7 +11,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   }
 
-  const factory = await hre.ethers.getContractFactory(args.name);
+  const factory: any = await hre.ethers.getContractFactory(args.name);
   const contract = await factory.deploy(args.gateway, signer.address);
   await contract.deployed();
 

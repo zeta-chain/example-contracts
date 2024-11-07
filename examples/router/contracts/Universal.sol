@@ -93,7 +93,7 @@ contract Universal is UniversalContract, Ownable {
             receiver,
             out - gasFee,
             destination,
-            abi.encode(data, context.origin, true),
+            abi.encodePacked(data, context.origin, true),
             callOptions,
             revertOptionsUniversal
         );

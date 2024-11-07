@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { ethers } from "ethers";
+import { Connected } from "../typechain-types";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -10,10 +10,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   }
 
-  const contract = await hre.ethers.getContractAt(args.name, args.contract);
+  const contract: Connected = await hre.ethers.getContractAt(
+    "Connected",
+    args.contract
+  );
 
   const tx = await contract.setRouter(args.counterparty);
-  const receipt = await tx.wait();
 
   if (args.json) {
     console.log(

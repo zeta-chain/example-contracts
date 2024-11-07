@@ -43,9 +43,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     valuesArray
   );
 
-  if (!args.callOptionsIsArbitraryCall && args.function) {
+  if (args.callOptionsIsArbitraryCall && args.function) {
     const functionSignature = hre.ethers.utils.id(args.function).slice(0, 10);
-
     message = hre.ethers.utils.hexlify(
       hre.ethers.utils.concat([functionSignature, encodedParameters])
     );
