@@ -5,21 +5,17 @@ import ZRC20ABI from "@zetachain/protocol-contracts/abi/ZRC20.sol/ZRC20.json";
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
   const [signer] = await ethers.getSigners();
-
-  try {
-    const nftContract = await ethers.getContractAt("IERC721", args.from);
-    const approveTx = await nftContract
-      .connect(signer)
-      .approve(args.from, args.tokenId);
-    await approveTx.wait();
-  } catch (error: any) {
-    throw new Error(`Approval transaction failed: ${error.message}`);
-  }
+  const nftContract = await ethers.getContractAt("IERC721", args.from);
+  const approveTx = await nftContract
+    .connect(signer)
+    .approve(args.from, args.tokenId);
+  await approveTx.wait();
 
   const txOptions = {
     gasPrice: args.txOptionsGasPrice,
     gasLimit: args.txOptionsGasLimit,
   };
+  let tx;
 
   let contract;
   try {
@@ -28,51 +24,44 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
     const zrc20 = new ethers.Contract(args.to, ZRC20ABI.abi, signer);
     const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
-
-    try {
-      const zrc20TransferTx = await zrc20.approve(args.from, gasFee, txOptions);
-      await zrc20TransferTx.wait();
-    } catch (error: any) {
-      throw new Error(`ZRC-20 transfer approval failed: ${error.message}`);
-    }
+    const zrc20TransferTx = await zrc20.approve(args.from, gasFee, txOptions);
+    await zrc20TransferTx.wait();
   } catch (e) {
     contract = await ethers.getContractAt("Connected", args.from);
   }
 
   const gasAmount = ethers.utils.parseUnits(args.gasAmount, 18);
+
   const receiver = args.receiver || signer.address;
 
-  try {
-    const tx = await (contract as any).transferCrossChain(
-      args.tokenId,
-      receiver,
-      args.to,
-      { ...txOptions, value: gasAmount }
-    );
-    await tx.wait();
+  tx = await (contract as any).transferCrossChain(
+    args.tokenId,
+    receiver,
+    args.to,
+    { ...txOptions, value: gasAmount }
+  );
 
-    if (args.json) {
-      console.log(
-        JSON.stringify({
-          contractAddress: args.from,
-          transferTransactionHash: tx.hash,
-          sender: signer.address,
-          tokenId: args.tokenId,
-        })
-      );
-    } else {
-      console.log(`🚀 Successfully transferred NFT to the contract.
+  await tx.wait();
+  if (args.json) {
+    console.log(
+      JSON.stringify({
+        contractAddress: args.from,
+        transferTransactionHash: tx.hash,
+        sender: signer.address,
+        tokenId: args.tokenId,
+      })
+    );
+  } else {
+    console.log(`🚀 Successfully transferred NFT to the contract.
 📜 Contract address: ${args.from}
 🖼 NFT Contract address: ${args.nftContract}
 🆔 Token ID: ${args.tokenId}
 🔗 Transaction hash: ${tx.hash}`);
-    }
-  } catch (error: any) {
-    throw new Error(`NFT transfer transaction failed: ${error.message}`);
   }
 };
 
 task("transfer", "Transfer and lock an NFT", main)
+  .addOptionalParam("receiver", "The address to receive the NFT")
   .addParam("from", "The contract being transferred from")
   .addParam("tokenId", "The ID of the NFT to transfer")
   .addOptionalParam(

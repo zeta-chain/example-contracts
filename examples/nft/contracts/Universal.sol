@@ -64,6 +64,7 @@ contract Universal is
         address receiver,
         address destination
     ) public {
+        if (receiver == address(0)) revert InvalidAddress();
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
 
