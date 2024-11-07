@@ -64,7 +64,7 @@ contract Connected is Ownable {
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
         if (context.sender != router) revert("Unauthorized: not router");
-        (bytes memory sender, bytes memory data, bool isCall) = abi.decode(
+        (bytes memory data, bytes memory sender, bool isCall) = abi.decode(
             message,
             (bytes, bytes, bool)
         );

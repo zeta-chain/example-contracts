@@ -93,7 +93,7 @@ contract Universal is UniversalContract, Ownable {
             receiver,
             out - gasFee,
             destination,
-            abi.encode(context.origin, data, true),
+            abi.encode(data, context.origin, true),
             callOptions,
             revertOptionsUniversal
         );
@@ -123,24 +123,11 @@ contract Universal is UniversalContract, Ownable {
         if (out < gasFee) revert("Insufficient out amount for gas fee");
 
         IZRC20(destination).approve(address(gateway), out);
-        // bytes4 selector = bytes4(
-        //     keccak256("onRevert((address,address,uint256,bytes))")
-        // );
-        // // bytes4 selector = bytes4(keccak256("hello(string)"));
-        // gateway.withdrawAndCall(
-        //     abi.encodePacked(revertOptions.revertAddress),
-        //     out - gasFee,
-        //     destination,
-        //     abi.encodePacked(selector, abi.encode("hello")),
-        //     CallOptions(700000, true),
-        //     RevertOptions(address(0), false, address(0), "", 0)
-        // );
-        // bytes4 selector = bytes4(keccak256("hello(string)"));
         gateway.withdrawAndCall(
             abi.encodePacked(revertOptions.revertAddress),
             out - gasFee,
             destination,
-            abi.encode(receiver, data, false),
+            abi.encode(data, receiver, false),
             CallOptions(700000, false),
             RevertOptions(address(0), false, address(0), "", 0)
         );

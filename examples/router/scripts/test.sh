@@ -39,6 +39,6 @@ echo -e "\nMaking an authenticated call..."
 npx hardhat transfer --network localhost --json --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --call-on-revert --revert-address "$CONTRACT_ETHEREUM" --revert-message "hello" --types '["string"]' alice
 
 # echo -e "\nMaking an arbitrary call..."
-# npx hardhat transfer --network localhost --json --receiver "$CONTRACT_BNB" --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --call-options-is-arbitrary-call --function "hello(string)" --types '["string"]' alice
+npx hardhat transfer --network localhost --json --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --call-options-is-arbitrary-call --function "hello(string)" --types '["string"]' alice
 
 if [ "$1" = "localnet" ]; then npx hardhat localnet-stop; fi
