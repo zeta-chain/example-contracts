@@ -9,7 +9,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   }
 
-  const contract = await hre.ethers.getContractAt(args.name, args.contract);
+  const contract = await hre.ethers.getContractAt(
+    args.name as "Universal" | "Connected",
+    args.contract
+  );
 
   const recipient = args.to || signer.address;
 
@@ -17,7 +20,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const receipt = await tx.wait();
 
   const transferEvent = receipt.events?.find(
-    (event) => event.event === "Transfer"
+    (event: any) => event.event === "Transfer"
   );
   const tokenId = transferEvent?.args?.tokenId;
 

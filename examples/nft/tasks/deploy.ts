@@ -11,7 +11,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   }
 
-  const factory = await hre.ethers.getContractFactory(args.name);
+  const factory: any = await hre.ethers.getContractFactory(args.name);
   const contract = await factory.deploy(
     args.gateway,
     signer.address,

@@ -1,5 +1,6 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { Connected } from "@/typechain-types";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -9,7 +10,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   }
 
-  const contract = await hre.ethers.getContractAt(args.name, args.contract);
+  const contract: Connected = await hre.ethers.getContractAt(
+    "Connected",
+    args.contract
+  );
 
   const tx = await contract.setCounterparty(args.counterparty);
   const receipt = await tx.wait();
@@ -33,5 +37,4 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 task("connected-set-counterparty", "Sets the universal contract address", main)
   .addParam("contract", "The address of the deployed contract")
   .addParam("counterparty", "The address of the universal contract to set")
-  .addOptionalParam("name", "The contract name to interact with", "Connected")
   .addFlag("json", "Output the result in JSON format");
