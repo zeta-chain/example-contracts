@@ -32,6 +32,7 @@ contract Universal is
     error TransferFailed();
     error Unauthorized();
     error InvalidAddress();
+    error InvalidGasLimit();
 
     mapping(address => bytes) public counterparty;
 
@@ -49,6 +50,7 @@ contract Universal is
     ) ERC721(name, symbol) Ownable(owner) {
         if (gatewayAddress == address(0) || owner == address(0))
             revert InvalidAddress();
+        if (gas == 0) revert InvalidGasLimit();
         gateway = GatewayZEVM(gatewayAddress);
         gasLimit = gas;
     }
