@@ -52,37 +52,32 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     ) external payable {
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
-        bytes memory encodedData = abi.encode(
-            tokenId,
-            receiver,
-            uri,
-            destination
-        );
+        bytes memory message = abi.encode(tokenId, receiver, uri, destination);
 
         RevertOptions memory revertOptions = RevertOptions(
             address(this),
             true,
             address(0),
-            encodedData,
+            message,
             0
         );
 
         if (destination == address(0)) {
-            gateway.call(counterparty, encodedData, revertOptions);
+            gateway.call(counterparty, message, revertOptions);
         } else {
             gateway.depositAndCall{value: msg.value}(
                 counterparty,
-                encodedData,
+                message,
                 revertOptions
             );
         }
     }
 
     function onCall(
-        MessageContext calldata messageContext,
+        MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        if (messageContext.sender != counterparty) revert("Unauthorized");
+        if (context.sender != counterparty) revert("Unauthorized");
 
         (uint256 tokenId, address receiver, string memory uri) = abi.decode(
             message,

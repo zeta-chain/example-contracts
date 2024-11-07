@@ -70,7 +70,7 @@ contract Universal is
             !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
         ) revert TransferFailed();
         IZRC20(destination).approve(address(gateway), gasFee);
-        bytes memory encodedData = abi.encode(tokenId, receiver, uri);
+        bytes memory message = abi.encode(tokenId, receiver, uri);
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -78,14 +78,14 @@ contract Universal is
             address(this),
             true,
             address(0),
-            encodedData,
+            message,
             gasLimit
         );
 
         gateway.call(
             counterparty[destination],
             destination,
-            encodedData,
+            message,
             callOptions,
             revertOptions
         );
