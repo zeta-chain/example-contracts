@@ -56,7 +56,6 @@ contract Connected is Ownable {
     }
 
     function hello(string memory message) external payable {
-        revert("revert");
         emit HelloEvent("Event from hello()", message);
     }
 

@@ -25,6 +25,8 @@ contract Universal is UniversalContract, Ownable {
     event GasFeeAndOut(uint256 gasFee, uint256 out);
     event RevertEvent(string);
 
+    event Data(bytes);
+
     modifier onlyGateway() {
         require(msg.sender == address(gateway), "Caller is not the gateway");
         _;
@@ -89,25 +91,21 @@ contract Universal is UniversalContract, Ownable {
             gasLimit
         );
 
-        if (callOptions.isArbitraryCall) {
-            gateway.withdrawAndCall(
-                receiver,
-                out - gasFee,
-                destination,
-                abi.encodePacked(data, context.origin, true),
-                callOptions,
-                revertOptionsUniversal
-            );
-        } else {
-            gateway.withdrawAndCall(
-                receiver,
-                out - gasFee,
-                destination,
-                abi.encode(data, context.origin, true),
-                callOptions,
-                revertOptionsUniversal
-            );
-        }
+        emit Data(abi.encodePacked(data, context.origin, true));
+        emit Data(abi.encode(data, context.origin, true));
+
+        bytes memory m = callOptions.isArbitraryCall
+            ? abi.encodePacked(data, context.origin, true)
+            : abi.encode(data, context.origin, true);
+
+        gateway.withdrawAndCall(
+            receiver,
+            out - gasFee,
+            destination,
+            m,
+            callOptions,
+            revertOptionsUniversal
+        );
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
