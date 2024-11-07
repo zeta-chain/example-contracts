@@ -40,8 +40,10 @@ contract Universal is
 
     constructor(
         address payable gatewayAddress,
-        address initialOwner
-    ) ERC721("MyToken", "MTK") Ownable(initialOwner) {
+        address owner,
+        string memory name,
+        string memory symbol
+    ) ERC721(name, symbol) Ownable(owner) {
         gateway = GatewayZEVM(gatewayAddress);
     }
 
