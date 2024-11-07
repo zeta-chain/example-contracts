@@ -14,12 +14,16 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     uint256 private _nextTokenId;
     address public counterparty;
 
+    error InvalidAddress();
+    error Unauthorized();
+
     function setCounterparty(address contractAddress) external onlyOwner {
+        if (contractAddress == address(0)) revert InvalidAddress();
         counterparty = contractAddress;
     }
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
@@ -29,17 +33,15 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         string memory name,
         string memory symbol
     ) ERC721(name, symbol) Ownable(owner) {
+        if (gatewayAddress == address(0) || owner == address(0))
+            revert InvalidAddress();
         gateway = GatewayEVM(gatewayAddress);
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
-        uint256 hash = uint256(
-            keccak256(
-                abi.encodePacked(address(this), block.number, _nextTokenId++)
-            )
-        );
+        if (to == address(0)) revert InvalidAddress();
 
-        uint256 tokenId = hash & 0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+        uint256 tokenId = _nextTokenId++;
 
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
@@ -50,6 +52,8 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         address receiver,
         address destination
     ) external payable {
+        if (receiver == address(0)) revert InvalidAddress();
+
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
         bytes memory message = abi.encode(tokenId, receiver, uri, destination);
@@ -77,12 +81,13 @@ contract Connected is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        if (context.sender != counterparty) revert("Unauthorized");
+        if (context.sender != counterparty) revert Unauthorized();
 
         (uint256 tokenId, address receiver, string memory uri) = abi.decode(
             message,
             (uint256, address, string)
         );
+
         _safeMint(receiver, tokenId);
         _setTokenURI(tokenId, uri);
         return "";

@@ -28,13 +28,15 @@ contract Universal is
     uint256 public gasLimit = 700000;
 
     error TransferFailed();
+    error Unauthorized();
+    error InvalidAddress();
 
     mapping(address => bytes) public counterparty;
 
     event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
@@ -44,6 +46,8 @@ contract Universal is
         string memory name,
         string memory symbol
     ) ERC721(name, symbol) Ownable(owner) {
+        if (gatewayAddress == address(0) || owner == address(0))
+            revert InvalidAddress();
         gateway = GatewayZEVM(gatewayAddress);
     }
 
