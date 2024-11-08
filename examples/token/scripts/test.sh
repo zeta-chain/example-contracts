@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 if [ "$1" = "localnet" ]; then
   npx hardhat localnet --exit-on-error & sleep 10

@@ -10,12 +10,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const gasAmount =
     args.gasAmount && ethers.utils.parseUnits(args.gasAmount, 18);
 
-  const tokenContract = await ethers.getContractAt("IERC20", args.from);
-  const approveTx = await tokenContract
-    .connect(signer)
-    .approve(args.from, value);
-  await approveTx.wait();
-
   const txOptions = {
     gasPrice: args.txOptionsGasPrice,
     gasLimit: args.txOptionsGasLimit,
