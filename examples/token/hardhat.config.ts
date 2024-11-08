@@ -1,5 +1,4 @@
 import "./tasks/deploy";
-import "./tasks/deploy";
 import "./tasks/mint";
 import "./tasks/transfer";
 import "./tasks/universalSetCounterparty";
