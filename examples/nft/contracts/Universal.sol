@@ -79,7 +79,7 @@ contract Universal is
             !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
         ) revert TransferFailed();
         IZRC20(destination).approve(address(gateway), gasFee);
-        bytes memory message = abi.encode(tokenId, receiver, uri);
+        bytes memory message = abi.encode(receiver, tokenId, uri);
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -99,7 +99,7 @@ contract Universal is
             revertOptions
         );
 
-        emit TokenTransfer(tokenId, receiver, destination, uri);
+        emit TokenTransfer(receiver, destination, tokenId, uri);
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
@@ -125,16 +125,16 @@ contract Universal is
             revert("Unauthorized");
 
         (
-            uint256 tokenId,
+            address destination,
             address sender,
-            string memory uri,
-            address destination
-        ) = abi.decode(message, (uint256, address, string, address));
+            uint256 tokenId,
+            string memory uri
+        ) = abi.decode(message, (address, address, uint256, string));
 
         if (destination == address(0)) {
             _safeMint(sender, tokenId);
             _setTokenURI(tokenId, uri);
-            emit TokenTransferReceived(tokenId, sender, uri);
+            emit TokenTransferReceived(sender, tokenId, uri);
         } else {
             (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
                 gasLimit
@@ -152,23 +152,23 @@ contract Universal is
             gateway.call(
                 counterparty[destination],
                 destination,
-                abi.encode(tokenId, sender, uri),
+                abi.encode(sender, tokenId, uri),
                 CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
-            emit TokenTransferToDestination(tokenId, sender, destination, uri);
+            emit TokenTransferToDestination(sender, destination, tokenId, uri);
         }
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (uint256 tokenId, address sender, string memory uri) = abi.decode(
+        (address sender, uint256 tokenId, string memory uri) = abi.decode(
             context.revertMessage,
-            (uint256, address, string)
+            (address, uint256, string)
         );
 
         _safeMint(sender, tokenId);
         _setTokenURI(tokenId, uri);
-        emit TokenTransferReverted(tokenId, sender, uri);
+        emit TokenTransferReverted(sender, tokenId, uri);
     }
 
     // The following functions are overrides required by Solidity.

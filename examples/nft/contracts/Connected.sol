@@ -65,7 +65,7 @@ contract Connected is
 
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
-        bytes memory message = abi.encode(tokenId, receiver, uri, destination);
+        bytes memory message = abi.encode(destination, receiver, tokenId, uri);
 
         RevertOptions memory revertOptions = RevertOptions(
             address(this),
@@ -85,7 +85,7 @@ contract Connected is
             );
         }
 
-        emit TokenTransfer(tokenId, receiver, destination, uri);
+        emit TokenTransfer(destination, receiver, tokenId, uri);
     }
 
     function onCall(
@@ -94,26 +94,26 @@ contract Connected is
     ) external payable onlyGateway returns (bytes4) {
         if (context.sender != counterparty) revert Unauthorized();
 
-        (uint256 tokenId, address receiver, string memory uri) = abi.decode(
+        (address receiver, uint256 tokenId, string memory uri) = abi.decode(
             message,
-            (uint256, address, string)
+            (address, uint256, string)
         );
 
         _safeMint(receiver, tokenId);
         _setTokenURI(tokenId, uri);
-        emit TokenTransferReceived(tokenId, receiver, uri);
+        emit TokenTransferReceived(receiver, tokenId, uri);
         return "";
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (uint256 tokenId, address sender, string memory uri) = abi.decode(
+        (address sender, uint256 tokenId, string memory uri) = abi.decode(
             context.revertMessage,
-            (uint256, address, string)
+            (address, uint256, string)
         );
 
         _safeMint(sender, tokenId);
         _setTokenURI(tokenId, uri);
-        emit TokenTransferReverted(tokenId, sender, uri);
+        emit TokenTransferReverted(sender, tokenId, uri);
     }
 
     receive() external payable {}
