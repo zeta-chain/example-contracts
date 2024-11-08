@@ -61,6 +61,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task("transfer", "Transfer and lock an NFT", main)
+  .addOptionalParam("receiver", "The address to receive the NFT")
   .addParam("from", "The contract being transferred from")
   .addParam("tokenId", "The ID of the NFT to transfer")
   .addOptionalParam(

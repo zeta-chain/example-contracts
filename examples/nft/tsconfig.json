@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "esModuleInterop": true,

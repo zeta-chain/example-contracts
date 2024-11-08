@@ -4,45 +4,55 @@ pragma solidity ^0.8.26;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {SystemContract} from "@zetachain/toolkit/contracts/SystemContract.sol";
+import "./shared/Events.sol";
 
 contract Universal is
     ERC721,
     ERC721Enumerable,
     ERC721URIStorage,
-    Ownable,
-    UniversalContract
+    Ownable2Step,
+    UniversalContract,
+    Events
 {
     GatewayZEVM public immutable gateway;
     SystemContract public immutable systemContract =
         SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
     uint256 private _nextTokenId;
     bool public isUniversal = true;
-    uint256 public gasLimit = 700000;
+    uint256 public gasLimit;
 
     error TransferFailed();
+    error Unauthorized();
+    error InvalidAddress();
+    error InvalidGasLimit();
 
     mapping(address => bytes) public counterparty;
 
-    event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
-
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
     constructor(
         address payable gatewayAddress,
-        address initialOwner
-    ) ERC721("MyToken", "MTK") Ownable(initialOwner) {
+        address owner,
+        string memory name,
+        string memory symbol,
+        uint256 gas
+    ) ERC721(name, symbol) Ownable(owner) {
+        if (gatewayAddress == address(0) || owner == address(0))
+            revert InvalidAddress();
+        if (gas == 0) revert InvalidGasLimit();
         gateway = GatewayZEVM(gatewayAddress);
+        gasLimit = gas;
     }
 
     function setCounterparty(
@@ -58,6 +68,7 @@ contract Universal is
         address receiver,
         address destination
     ) public {
+        if (receiver == address(0)) revert InvalidAddress();
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
 
@@ -68,7 +79,7 @@ contract Universal is
             !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
         ) revert TransferFailed();
         IZRC20(destination).approve(address(gateway), gasFee);
-        bytes memory encodedData = abi.encode(tokenId, receiver, uri);
+        bytes memory message = abi.encode(tokenId, receiver, uri);
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -76,17 +87,19 @@ contract Universal is
             address(this),
             true,
             address(0),
-            encodedData,
+            message,
             gasLimit
         );
 
         gateway.call(
             counterparty[destination],
             destination,
-            encodedData,
+            message,
             callOptions,
             revertOptions
         );
+
+        emit TokenTransfer(tokenId, receiver, destination, uri);
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
@@ -121,9 +134,10 @@ contract Universal is
         if (destination == address(0)) {
             _safeMint(sender, tokenId);
             _setTokenURI(tokenId, uri);
+            emit TokenTransferReceived(tokenId, sender, uri);
         } else {
             (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
-                700000
+                gasLimit
             );
 
             SwapHelperLib.swapExactTokensForTokens(
@@ -139,9 +153,10 @@ contract Universal is
                 counterparty[destination],
                 destination,
                 abi.encode(tokenId, sender, uri),
-                CallOptions(700000, false),
+                CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
+            emit TokenTransferToDestination(tokenId, sender, destination, uri);
         }
     }
 
@@ -153,6 +168,7 @@ contract Universal is
 
         _safeMint(sender, tokenId);
         _setTokenURI(tokenId, uri);
+        emit TokenTransferReverted(tokenId, sender, uri);
     }
 
     // The following functions are overrides required by Solidity.
