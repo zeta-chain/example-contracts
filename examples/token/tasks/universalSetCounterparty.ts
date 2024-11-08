@@ -30,7 +30,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     console.log(`🚀 Successfully set the connected contract.
 📜 Contract address: ${args.contract}
 🔗 ZRC20 address: ${args.zrc20}
-🔗 Connected contract address: ${args.contractAddress}
+🔗 Connected contract address: ${args.counterparty}
 🔗 Transaction hash: ${tx.hash}`);
   }
 };
