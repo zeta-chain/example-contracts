@@ -42,10 +42,10 @@ task("deploy", "Deploy the contract", main)
   .addOptionalParam(
     "systemContract",
     "System contract",
-    "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0"
+    "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
   )
   .addOptionalParam(
     "gateway",
     "Gateway address (default: ZetaChain Gateway)",
-    "0x9A676e781A523b5d0C0e43731313A708CB607508"
+    "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
   );

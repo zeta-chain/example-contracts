@@ -91,25 +91,25 @@ contract Swap is UniversalContract {
             0
         );
 
-        // if (gasZRC20 == targetToken) {
-        //     IZRC20(gasZRC20).approve(address(gateway), outputAmount + gasFee);
-        // } else {
-        //     IZRC20(gasZRC20).approve(address(gateway), gasFee);
-        //     IZRC20(targetToken).approve(address(gateway), outputAmount);
-        // }
+        if (gasZRC20 == targetToken) {
+            IZRC20(gasZRC20).approve(address(gateway), outputAmount + gasFee);
+        } else {
+            IZRC20(gasZRC20).approve(address(gateway), gasFee);
+            IZRC20(targetToken).approve(address(gateway), outputAmount);
+        }
 
-        // gateway.withdraw(
-        //     recipient,
-        //     outputAmount,
-        //     targetToken,
-        //     RevertOptions({
-        //         revertAddress: address(0),
-        //         callOnRevert: false,
-        //         abortAddress: address(0),
-        //         revertMessage: "",
-        //         onRevertGasLimit: 0
-        //     })
-        // );
+        gateway.withdraw(
+            recipient,
+            outputAmount,
+            targetToken,
+            RevertOptions({
+                revertAddress: address(0),
+                callOnRevert: false,
+                abortAddress: address(0),
+                revertMessage: "",
+                onRevertGasLimit: 0
+            })
+        );
     }
 
     function onRevert(
