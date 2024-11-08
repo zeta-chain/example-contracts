@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
@@ -14,14 +11,7 @@ import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {SystemContract} from "@zetachain/toolkit/contracts/SystemContract.sol";
 import "./shared/Events.sol";
 
-contract Universal is
-    ERC721,
-    ERC721Enumerable,
-    ERC721URIStorage,
-    Ownable2Step,
-    UniversalContract,
-    Events
-{
+contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
     GatewayZEVM public immutable gateway;
     SystemContract public immutable systemContract =
         SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
@@ -37,7 +27,7 @@ contract Universal is
     mapping(address => bytes) public counterparty;
 
     modifier onlyGateway() {
-        if (msg.sender != address(gateway)) revert Unauthorized();
+        require(msg.sender == address(gateway), "Caller is not the gateway");
         _;
     }
 
@@ -47,7 +37,7 @@ contract Universal is
         string memory name,
         string memory symbol,
         uint256 gas
-    ) ERC721(name, symbol) Ownable(owner) {
+    ) ERC20(name, symbol) Ownable(owner) {
         if (gatewayAddress == address(0) || owner == address(0))
             revert InvalidAddress();
         if (gas == 0) revert InvalidGasLimit();
@@ -60,17 +50,16 @@ contract Universal is
         bytes memory contractAddress
     ) external onlyOwner {
         counterparty[zrc20] = contractAddress;
-        emit CounterpartySet(zrc20, contractAddress);
+        emit CounterpartyMappingSet(zrc20, contractAddress);
     }
 
     function transferCrossChain(
-        uint256 tokenId,
+        address destination,
         address receiver,
-        address destination
+        uint256 amount
     ) public {
         if (receiver == address(0)) revert InvalidAddress();
-        string memory uri = tokenURI(tokenId);
-        _burn(tokenId);
+        _burn(msg.sender, amount);
 
         (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
             gasLimit
@@ -79,7 +68,7 @@ contract Universal is
             !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
         ) revert TransferFailed();
         IZRC20(destination).approve(address(gateway), gasFee);
-        bytes memory message = abi.encode(receiver, tokenId, uri);
+        bytes memory message = abi.encode(receiver, amount);
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -98,21 +87,11 @@ contract Universal is
             callOptions,
             revertOptions
         );
-
-        emit TokenTransfer(receiver, destination, tokenId, uri);
+        emit TokenTransfer(destination, receiver, amount);
     }
 
-    function safeMint(address to, string memory uri) public onlyOwner {
-        uint256 hash = uint256(
-            keccak256(
-                abi.encodePacked(address(this), block.number, _nextTokenId++)
-            )
-        );
-
-        uint256 tokenId = hash & 0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-
-        _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri);
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
     }
 
     function onCall(
@@ -122,24 +101,15 @@ contract Universal is
         bytes calldata message
     ) external override onlyGateway {
         if (keccak256(context.origin) != keccak256(counterparty[zrc20]))
-            revert("Unauthorized");
-
-        (
-            address destination,
-            address sender,
-            uint256 tokenId,
-            string memory uri
-        ) = abi.decode(message, (address, address, uint256, string));
-
+            revert Unauthorized();
+        (address destination, address receiver, uint256 tokenAmount) = abi
+            .decode(message, (address, address, uint256));
         if (destination == address(0)) {
-            _safeMint(sender, tokenId);
-            _setTokenURI(tokenId, uri);
-            emit TokenTransferReceived(sender, tokenId, uri);
+            _mint(receiver, tokenAmount);
         } else {
             (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
                 gasLimit
             );
-
             SwapHelperLib.swapExactTokensForTokens(
                 systemContract,
                 zrc20,
@@ -147,61 +117,24 @@ contract Universal is
                 destination,
                 0
             );
-
             IZRC20(destination).approve(address(gateway), gasFee);
             gateway.call(
                 counterparty[destination],
                 destination,
-                abi.encode(sender, tokenId, uri),
+                abi.encode(receiver, tokenAmount),
                 CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
-            emit TokenTransferToDestination(sender, destination, tokenId, uri);
         }
+        emit TokenTransferToDestination(destination, receiver, amount);
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (address sender, uint256 tokenId, string memory uri) = abi.decode(
+        (address sender, uint256 amount) = abi.decode(
             context.revertMessage,
-            (address, uint256, string)
+            (address, uint256)
         );
-
-        _safeMint(sender, tokenId);
-        _setTokenURI(tokenId, uri);
-        emit TokenTransferReverted(sender, tokenId, uri);
-    }
-
-    // The following functions are overrides required by Solidity.
-
-    function _update(
-        address to,
-        uint256 tokenId,
-        address auth
-    ) internal override(ERC721, ERC721Enumerable) returns (address) {
-        return super._update(to, tokenId, auth);
-    }
-
-    function _increaseBalance(
-        address account,
-        uint128 value
-    ) internal override(ERC721, ERC721Enumerable) {
-        super._increaseBalance(account, value);
-    }
-
-    function tokenURI(
-        uint256 tokenId
-    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
-        return super.tokenURI(tokenId);
-    }
-
-    function supportsInterface(
-        bytes4 interfaceId
-    )
-        public
-        view
-        override(ERC721, ERC721Enumerable, ERC721URIStorage)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
+        _mint(sender, amount);
+        emit TokenTransferReverted(sender, amount);
     }
 }
