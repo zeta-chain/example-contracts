@@ -42,7 +42,7 @@ task("swap-from-evm", "Swap tokens from EVM", evmDepositAndCall)
   .addOptionalParam(
     "gatewayEvm",
     "contract address of gateway on EVM",
-    "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+    "0x610178dA211FEF7D417bC0e6FeD39F05609AD788"
   )
   .addFlag("callOnRevert", "Whether to call on revert")
   .addOptionalParam(

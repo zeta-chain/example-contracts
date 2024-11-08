@@ -38,7 +38,7 @@ contract SwapToAnyToken is UniversalContract {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external virtual override onlyGateway {
+    ) external onlyGateway {
         Params memory params = Params({
             target: address(0),
             to: bytes(""),
@@ -154,5 +154,5 @@ contract SwapToAnyToken is UniversalContract {
 
     function onRevert(
         RevertContext calldata revertContext
-    ) external override onlyGateway {}
+    ) external onlyGateway {}
 }
