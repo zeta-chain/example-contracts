@@ -2,24 +2,35 @@
 
 set -e
 
-if [ "$1" = "localnet" ]; then
-  npx hardhat localnet --exit-on-error & sleep 10
-fi
+if [ "$1" = "localnet" ]; then npx hardhat localnet --exit-on-error & sleep 10; fi
 
-yarn deploy:localnet
+echo -e "\n🚀 Compiling contracts..."
+npx hardhat compile --force --quiet
+
+ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 5") | .address' localnet.json)
+ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 97") | .address' localnet.json)
+GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
+GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
+SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+
+CONTRACT_ZETACHAIN=$(npx hardhat deploy --name Hello --network localhost --gateway "$GATEWAY_ZETACHAIN" --json | jq -r '.contractAddress')
+echo -e "\n🚀 Deployed contract on ZetaChain: $CONTRACT_ZETACHAIN"
+
+CONTRACT_ETHEREUM=$(npx hardhat deploy --name Echo --json --network localhost --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')
+echo -e "🚀 Deployed contract on Ethereum: $CONTRACT_ETHEREUM"
 
 npx hardhat echo-call \
-  --contract 0x9E545E3C0baAB3E08CdfD552C960A1050f373042 \
-  --receiver 0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
   --network localhost \
   --types '["string"]' alice
 
 npx hardhat localnet-check
 
 npx hardhat hello-call \
-  --contract 0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB \
-  --receiver 0x9E545E3C0baAB3E08CdfD552C960A1050f373042 \
-  --zrc20 0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
   --function "hello(string)" \
   --network localhost \
   --types '["string"]' alice
@@ -27,9 +38,9 @@ npx hardhat hello-call \
 npx hardhat localnet-check
 
 npx hardhat hello-withdraw-and-call \
-  --contract 0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB \
-  --receiver 0x9E545E3C0baAB3E08CdfD552C960A1050f373042 \
-  --zrc20 0x9fd96203f7b22bCF72d9DCb40ff98302376cE09c \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
   --function "hello(string)" \
   --amount 1 \
   --network localhost \
@@ -37,4 +48,4 @@ npx hardhat hello-withdraw-and-call \
 
 npx hardhat localnet-check
 
-npx hardhat localnet-stop
+if [ "$1" = "localnet" ]; then npx hardhat localnet-stop; fi

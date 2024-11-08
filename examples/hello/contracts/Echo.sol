@@ -37,6 +37,15 @@ contract Echo {
         gateway.call(receiver, message, revertOptions);
     }
 
+    function onCall(
+        MessageContext calldata context,
+        bytes calldata message
+    ) external payable onlyGateway returns (bytes4) {
+        emit HelloEvent("Hello on EVM from onCall()", "hey");
+
+        return "";
+    }
+
     receive() external payable {}
 
     fallback() external payable {}

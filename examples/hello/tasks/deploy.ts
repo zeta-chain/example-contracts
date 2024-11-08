@@ -16,7 +16,14 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   await contract.deployed();
 
   if (args.json) {
-    console.log(JSON.stringify(contract));
+    console.log(
+      JSON.stringify({
+        contractAddress: contract.address,
+        deployer: signer.address,
+        network: network,
+        transactionHash: contract.deployTransaction.hash,
+      })
+    );
   } else {
     console.log(`🔑 Using account: ${signer.address}
 

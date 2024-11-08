@@ -34,7 +34,7 @@ contract Hello is UniversalContract {
 
     function onRevert(
         RevertContext calldata revertContext
-    ) external override onlyGateway {
+    ) external onlyGateway {
         emit RevertEvent("Revert on ZetaChain", revertContext);
     }
 
@@ -49,7 +49,8 @@ contract Hello is UniversalContract {
         if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee))
             revert TransferFailed();
         IZRC20(zrc20).approve(address(gateway), gasFee);
-        gateway.call(receiver, zrc20, message, gasLimit, revertOptions);
+        CallOptions memory callOptions = CallOptions(gasLimit, true);
+        gateway.call(receiver, zrc20, message, callOptions, revertOptions);
     }
 
     function withdrawAndCall(
@@ -76,12 +77,13 @@ contract Hello is UniversalContract {
             ) revert TransferFailed();
             IZRC20(gasZRC20).approve(address(gateway), gasFee);
         }
+        CallOptions memory callOptions = CallOptions(gasLimit, false);
         gateway.withdrawAndCall(
             receiver,
             amount,
             zrc20,
             message,
-            gasLimit,
+            callOptions,
             revertOptions
         );
     }
