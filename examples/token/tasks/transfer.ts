@@ -39,9 +39,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const receiver = args.receiver || signer.address;
 
+  console.log(args.to, receiver, args.amount, {
+    ...txOptions,
+    value: gasAmount,
+  });
   tx = await (contract as any).transferCrossChain(
-    receiver,
     args.to,
+    receiver,
     args.amount,
     { ...txOptions, value: gasAmount }
   );

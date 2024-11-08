@@ -5,10 +5,14 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@zetachain/protocol-contracts/contracts/evm/GatewayEVM.sol";
 import {RevertContext} from "@zetachain/protocol-contracts/contracts/Revert.sol";
+import "./shared/Events.sol";
 
-contract Connected is ERC20, Ownable {
+contract Connected is ERC20, Ownable, Events {
     GatewayEVM public immutable gateway;
     address public counterparty;
+
+    error InvalidAddress();
+    error Unauthorized();
 
     modifier onlyGateway() {
         require(msg.sender == address(gateway), "Caller is not the gateway");
@@ -17,12 +21,17 @@ contract Connected is ERC20, Ownable {
 
     function setCounterparty(address contractAddress) external onlyOwner {
         counterparty = contractAddress;
+        emit CounterpartySet(contractAddress);
     }
 
     constructor(
         address payable gatewayAddress,
-        address initialOwner
-    ) ERC20("MyToken", "MTK") Ownable(initialOwner) {
+        address owner,
+        string memory name,
+        string memory symbol
+    ) ERC20(name, symbol) Ownable(owner) {
+        if (gatewayAddress == address(0) || owner == address(0))
+            revert InvalidAddress();
         gateway = GatewayEVM(gatewayAddress);
     }
 
@@ -31,42 +40,45 @@ contract Connected is ERC20, Ownable {
     }
 
     function transferCrossChain(
-        address receiver,
         address destination,
+        address receiver,
         uint256 amount
     ) external payable {
         _burn(msg.sender, amount);
-        bytes memory encodedData = abi.encode(receiver, amount, destination);
+        bytes memory message = abi.encode(destination, receiver, amount);
 
         RevertOptions memory revertOptions = RevertOptions(
             address(this),
             true,
             address(0),
-            encodedData,
+            message,
             0
         );
 
         if (destination == address(0)) {
-            gateway.call(counterparty, encodedData, revertOptions);
+            gateway.call(counterparty, message, revertOptions);
         } else {
             gateway.depositAndCall{value: msg.value}(
                 counterparty,
-                encodedData,
+                message,
                 revertOptions
             );
         }
+        emit TokenTransfer(destination, receiver, amount);
     }
 
     function onCall(
-        MessageContext calldata messageContext,
+        MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        if (messageContext.sender != counterparty) revert("Unauthorized");
+        if (context.sender != counterparty) revert Unauthorized();
         (address receiver, uint256 amount) = abi.decode(
             message,
             (address, uint256)
         );
         _mint(receiver, amount);
+        emit TokenTransferReceived(receiver, amount);
+        return "";
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {}
