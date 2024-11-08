@@ -2,7 +2,7 @@
 pragma solidity ^0.8.26;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
@@ -11,7 +11,7 @@ import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {SystemContract} from "@zetachain/toolkit/contracts/SystemContract.sol";
 import "./shared/Events.sol";
 
-contract Universal is ERC20, Ownable, UniversalContract, Events {
+contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
     GatewayZEVM public immutable gateway;
     SystemContract public immutable systemContract =
         SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
