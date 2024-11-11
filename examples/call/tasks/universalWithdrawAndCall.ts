@@ -6,9 +6,22 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
   const [signer] = await ethers.getSigners();
 
+  if (args.callOptionsIsArbitraryCall && !args.function) {
+    throw new Error("Function is required for arbitrary calls");
+  }
+
+  if (!args.callOptionsIsArbitraryCall && args.function) {
+    throw new Error("Function is not allowed for non-arbitrary calls");
+  }
+
   const txOptions = {
     gasPrice: args.txOptionsGasPrice,
     gasLimit: args.txOptionsGasLimit,
+  };
+
+  const callOptions = {
+    isArbitraryCall: args.callOptionsIsArbitraryCall,
+    gasLimit: args.callOptionsGasLimit,
   };
 
   const revertOptions = {
@@ -20,8 +33,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       ethers.utils.toUtf8Bytes(args.revertMessage)
     ),
   };
-
-  const functionSignature = ethers.utils.id(args.function).slice(0, 10);
 
   const types = JSON.parse(args.types);
 
@@ -51,9 +62,16 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     valuesArray
   );
 
-  const message = ethers.utils.hexlify(
-    ethers.utils.concat([functionSignature, encodedParameters])
-  );
+  let message;
+
+  if (args.isArbitraryCall) {
+    let functionSignature = ethers.utils.id(args.function).slice(0, 10);
+    message = ethers.utils.hexlify(
+      ethers.utils.concat([functionSignature, encodedParameters])
+    );
+  } else {
+    message = encodedParameters;
+  }
 
   const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
 
@@ -86,7 +104,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     amount,
     args.zrc20,
     message,
-    gasLimit,
+    callOptions,
     revertOptions,
     txOptions
   );
@@ -132,7 +150,14 @@ task(
     7000000,
     types.int
   )
-  .addParam("function", `Function to call (example: "hello(string)")`)
+  .addFlag("callOptionsIsArbitraryCall", "Call any function")
+  .addOptionalParam(
+    "callOptionsGasLimit",
+    "The gas limit for the call",
+    7000000,
+    types.int
+  )
+  .addOptionalParam("function", `Function to call (example: "hello(string)")`)
   .addParam("name", "The name of the contract", "Universal")
   .addParam("amount", "Amount of ZRC-20 to withdraw")
   .addParam("types", `The types of the parameters (example: '["string"]')`)

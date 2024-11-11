@@ -70,6 +70,17 @@ npx hardhat universal-withdraw-and-call \
   --function "hello(string)" \
   --amount 1 \
   --network localhost \
+  --call-options-is-arbitrary-call \
+  --types '["string"]' hello
+
+npx hardhat localnet-check
+
+npx hardhat universal-withdraw-and-call \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --amount 1 \
+  --network localhost \
   --types '["string"]' hello
 
 npx hardhat localnet-check

@@ -11,6 +11,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     gasLimit: args.txOptionsGasLimit,
   };
 
+  const callOptions = {
+    isArbitraryCall: args.callOptionsIsArbitraryCall,
+    gasLimit: args.callOptionsGasLimit,
+  };
+
   const revertOptions = {
     abortAddress: "0x0000000000000000000000000000000000000000", // not used
     callOnRevert: args.callOnRevert,
@@ -69,7 +74,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ethers.utils.hexlify(args.receiver),
     args.zrc20,
     message,
-    gasLimit,
+    callOptions,
     revertOptions,
     txOptions
   );
@@ -111,6 +116,13 @@ task(
   .addOptionalParam(
     "onRevertGasLimit",
     "The gas limit for the revert transaction",
+    7000000,
+    types.int
+  )
+  .addFlag("callOptionsIsArbitraryCall", "Call any function")
+  .addOptionalParam(
+    "callOptionsGasLimit",
+    "The gas limit for the call",
     7000000,
     types.int
   )

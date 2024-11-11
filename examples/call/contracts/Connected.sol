@@ -19,16 +19,6 @@ contract Connected {
         gateway = GatewayEVM(gatewayAddress);
     }
 
-    function hello(string memory message) external payable {
-        emit HelloEvent("Hello on EVM", message);
-    }
-
-    function onRevert(
-        RevertContext calldata revertContext
-    ) external onlyGateway {
-        emit RevertEvent("Revert on EVM", revertContext);
-    }
-
     function deposit(
         address receiver,
         RevertOptions memory revertOptions
@@ -56,6 +46,10 @@ contract Connected {
         );
     }
 
+    function hello(string memory message) external payable {
+        emit HelloEvent("Hello on EVM", message);
+    }
+
     function onCall(
         MessageContext calldata context,
         bytes calldata message
@@ -63,6 +57,12 @@ contract Connected {
         emit HelloEvent("Hello on EVM from onCall()", "hey");
 
         return "";
+    }
+
+    function onRevert(
+        RevertContext calldata revertContext
+    ) external onlyGateway {
+        emit RevertEvent("Revert on EVM", revertContext);
     }
 
     receive() external payable {}
