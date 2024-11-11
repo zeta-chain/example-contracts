@@ -27,6 +27,15 @@ npx hardhat connected-call \
 
 npx hardhat localnet-check
 
+npx hardhat connected-deposit-and-call \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --amount 1 \
+  --types '["string"]' alice
+
+npx hardhat localnet-check
+
 npx hardhat universal-call \
   --contract "$CONTRACT_ZETACHAIN" \
   --receiver "$CONTRACT_ETHEREUM" \

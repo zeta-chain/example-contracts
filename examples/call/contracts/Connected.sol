@@ -37,6 +37,18 @@ contract Connected {
         gateway.call(receiver, message, revertOptions);
     }
 
+    function depositAndCall(
+        address receiver,
+        bytes calldata message,
+        RevertOptions memory revertOptions
+    ) external payable {
+        gateway.depositAndCall{value: msg.value}(
+            receiver,
+            message,
+            revertOptions
+        );
+    }
+
     function onCall(
         MessageContext calldata context,
         bytes calldata message

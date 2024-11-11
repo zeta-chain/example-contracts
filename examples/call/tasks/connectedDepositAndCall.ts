@@ -51,11 +51,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
   const contract = factory.attach(args.contract).connect(signer);
 
-  const tx = await contract.call(
+  const value = hre.ethers.utils.parseEther(args.amount);
+
+  const tx = await contract.depositAndCall(
     args.receiver,
     encodedParameters,
     revertOptions,
-    txOptions
+    { value, ...txOptions }
   );
 
   await tx.wait();
@@ -63,8 +65,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "connected-call",
-  "Make a call from a connected chain to a universal app on ZetaChain",
+  "connected-deposit-and-call",
+  "Deposit tokens and make a call from a connected chain to a universal app on ZetaChain",
   main
 )
   .addParam("contract", "The address of the deployed contract")
@@ -97,6 +99,7 @@ task(
     7000000,
     types.int
   )
+  .addParam("amount", "The amount of tokens to deposit")
   .addParam("name", "The name of the contract", "Connected")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
   .addVariadicPositionalParam("values", "The values of the parameters");
