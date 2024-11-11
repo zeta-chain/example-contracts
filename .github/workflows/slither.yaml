@@ -23,8 +23,6 @@ jobs:
             file: "hello.sarif"
           - project: "examples/swap"
             file: "swap.sarif"
-          - project: "omnichain/swap"
-            file: "omnichain-swap.sarif"
     permissions:
       contents: read
       security-events: write
