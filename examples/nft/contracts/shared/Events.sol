@@ -20,7 +20,7 @@ contract Events {
         address indexed sender,
         string uri
     );
-    event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
+    event CounterpartySet(address indexed zrc20, address contractAddress);
     event TokenTransferToDestination(
         uint256 indexed tokenId,
         address indexed sender,

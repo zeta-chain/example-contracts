@@ -34,7 +34,7 @@ contract Universal is
     error InvalidAddress();
     error InvalidGasLimit();
 
-    mapping(address => bytes) public counterparty;
+    mapping(address => address) public counterparty;
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -57,7 +57,7 @@ contract Universal is
 
     function setCounterparty(
         address zrc20,
-        bytes memory contractAddress
+        address contractAddress
     ) external onlyOwner {
         counterparty[zrc20] = contractAddress;
         emit CounterpartySet(zrc20, contractAddress);
@@ -92,7 +92,7 @@ contract Universal is
         );
 
         gateway.call(
-            counterparty[destination],
+            abi.encodePacked(counterparty[destination]),
             destination,
             message,
             callOptions,
@@ -115,14 +115,16 @@ contract Universal is
         _setTokenURI(tokenId, uri);
     }
 
+    event Foo(address);
+
     function onCall(
         MessageContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
-        if (keccak256(context.origin) != keccak256(counterparty[zrc20]))
-            revert("Unauthorized");
+        emit Foo(context.sender);
+        if (context.sender != counterparty[zrc20]) revert("Unauthorized");
 
         (
             uint256 tokenId,
@@ -150,7 +152,7 @@ contract Universal is
 
             IZRC20(destination).approve(address(gateway), gasFee);
             gateway.call(
-                counterparty[destination],
+                abi.encodePacked(counterparty[destination]),
                 destination,
                 abi.encode(tokenId, sender, uri),
                 CallOptions(gasLimit, false),
