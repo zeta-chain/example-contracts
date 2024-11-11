@@ -29,6 +29,13 @@ contract Connected {
         emit RevertEvent("Revert on EVM", revertContext);
     }
 
+    function deposit(
+        address receiver,
+        RevertOptions memory revertOptions
+    ) external payable {
+        gateway.deposit{value: msg.value}(receiver, revertOptions);
+    }
+
     function call(
         address receiver,
         bytes calldata message,

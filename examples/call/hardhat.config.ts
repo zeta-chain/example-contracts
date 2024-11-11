@@ -1,6 +1,7 @@
 import "./tasks/deploy";
 import "./tasks/universalCall";
 import "./tasks/connectedCall";
+import "./tasks/connectedDeposit";
 import "./tasks/connectedDepositAndCall";
 import "./tasks/universalWithdrawAndCall";
 import "@zetachain/localnet/tasks";

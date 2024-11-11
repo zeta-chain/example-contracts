@@ -19,6 +19,14 @@ echo -e "\n🚀 Deployed contract on ZetaChain: $CONTRACT_ZETACHAIN"
 CONTRACT_ETHEREUM=$(npx hardhat deploy --name Connected --json --network localhost --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')
 echo -e "🚀 Deployed contract on Ethereum: $CONTRACT_ETHEREUM"
 
+npx hardhat connected-deposit \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --amount 1
+
+npx hardhat localnet-check
+
 npx hardhat connected-call \
   --contract "$CONTRACT_ETHEREUM" \
   --receiver "$CONTRACT_ZETACHAIN" \
