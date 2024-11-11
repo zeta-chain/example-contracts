@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - project: "examples/calls"
+          - project: "examples/call"
             file: "hello.sarif"
           - project: "examples/swap"
             file: "swap.sarif"
