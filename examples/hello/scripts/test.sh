@@ -13,13 +13,13 @@ GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain==
 GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
 SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
-CONTRACT_ZETACHAIN=$(npx hardhat deploy --name Hello --network localhost --gateway "$GATEWAY_ZETACHAIN" --json | jq -r '.contractAddress')
+CONTRACT_ZETACHAIN=$(npx hardhat deploy --name Universal --network localhost --gateway "$GATEWAY_ZETACHAIN" --json | jq -r '.contractAddress')
 echo -e "\n🚀 Deployed contract on ZetaChain: $CONTRACT_ZETACHAIN"
 
-CONTRACT_ETHEREUM=$(npx hardhat deploy --name Echo --json --network localhost --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')
+CONTRACT_ETHEREUM=$(npx hardhat deploy --name Connected --json --network localhost --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')
 echo -e "🚀 Deployed contract on Ethereum: $CONTRACT_ETHEREUM"
 
-npx hardhat echo-call \
+npx hardhat connected-call \
   --contract "$CONTRACT_ETHEREUM" \
   --receiver "$CONTRACT_ZETACHAIN" \
   --network localhost \
@@ -27,7 +27,7 @@ npx hardhat echo-call \
 
 npx hardhat localnet-check
 
-npx hardhat hello-call \
+npx hardhat universal-call \
   --contract "$CONTRACT_ZETACHAIN" \
   --receiver "$CONTRACT_ETHEREUM" \
   --zrc20 "$ZRC20_ETHEREUM" \
@@ -37,7 +37,7 @@ npx hardhat hello-call \
 
 npx hardhat localnet-check
 
-npx hardhat hello-withdraw-and-call \
+npx hardhat universal-withdraw-and-call \
   --contract "$CONTRACT_ZETACHAIN" \
   --receiver "$CONTRACT_ETHEREUM" \
   --zrc20 "$ZRC20_ETHEREUM" \

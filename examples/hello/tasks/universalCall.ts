@@ -56,34 +56,17 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
-
-  const amount = hre.ethers.utils.parseUnits(args.amount, 18);
-
   const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
-  const [gasZRC20, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
-  const gasZRC20Contract = new ethers.Contract(gasZRC20, ZRC20ABI.abi, signer);
-  const gasFeeApprove = await gasZRC20Contract.approve(
-    args.contract,
-    gasZRC20 == args.zrc20 ? gasFee.add(amount) : gasFee,
-    txOptions
-  );
-  await gasFeeApprove.wait();
+  const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
+  const zrc20TransferTx = await zrc20.approve(args.contract, gasFee, txOptions);
 
-  if (gasZRC20 !== args.zrc20) {
-    const targetTokenApprove = await zrc20.approve(
-      args.contract,
-      gasFee.add(amount),
-      txOptions
-    );
-    await targetTokenApprove.wait();
-  }
+  await zrc20TransferTx.wait();
 
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
   const contract = factory.attach(args.contract);
 
-  const tx = await contract.withdrawAndCall(
+  const tx = await contract.call(
     ethers.utils.hexlify(args.receiver),
-    amount,
     args.zrc20,
     message,
     gasLimit,
@@ -97,11 +80,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "hello-withdraw-and-call",
-  "Calls the gatewayWithdrawAndCall function on a contract on ZetaChain",
+  "universal-call",
+  "Make a call from a universal app to a contract on a connected chain",
   main
 )
-  .addParam("contract", "The address of the deployed Hello contract")
+  .addParam("contract", "The address of the deployed universal contract")
   .addParam("zrc20", "The address of ZRC-20 to pay fees")
   .addOptionalParam(
     "txOptionsGasPrice",
@@ -133,7 +116,6 @@ task(
     types.int
   )
   .addParam("function", `Function to call (example: "hello(string)")`)
-  .addParam("name", "The name of the contract", "Hello")
-  .addParam("amount", "Amount of ZRC-20 to withdraw")
+  .addParam("name", "The name of the contract", "Universal")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
   .addVariadicPositionalParam("values", "The values of the parameters");

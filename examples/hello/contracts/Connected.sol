@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 import {RevertContext} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/evm/GatewayEVM.sol";
 
-contract Echo {
+contract Connected {
     GatewayEVM public immutable gateway;
 
     event RevertEvent(string, RevertContext);

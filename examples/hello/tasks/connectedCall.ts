@@ -63,7 +63,11 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   console.log("gatewayCall executed successfully");
 };
 
-task("echo-call", "Calls the gateway on a contract on EVM", main)
+task(
+  "connected-call",
+  "Make a call from a connected chain to a universal app on ZetaChain",
+  main
+)
   .addParam("contract", "The address of the deployed contract")
   .addOptionalParam(
     "txOptionsGasPrice",
@@ -94,6 +98,6 @@ task("echo-call", "Calls the gateway on a contract on EVM", main)
     7000000,
     types.int
   )
-  .addParam("name", "The name of the contract", "Echo")
+  .addParam("name", "The name of the contract", "Connected")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
   .addVariadicPositionalParam("values", "The values of the parameters");
