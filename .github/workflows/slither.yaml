@@ -19,10 +19,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - project: "examples/hello"
+          - project: "examples/calls"
             file: "hello.sarif"
           - project: "examples/swap"
             file: "swap.sarif"
+          - project: "examples/nft"
+            file: "nft.sarif"
     permissions:
       contents: read
       security-events: write
