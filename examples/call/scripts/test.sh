@@ -44,6 +44,15 @@ npx hardhat connected-deposit-and-call \
 
 npx hardhat localnet-check
 
+npx hardhat universal-withdraw \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --network localhost \
+  --amount 1
+
+npx hardhat localnet-check
+
 npx hardhat universal-call \
   --contract "$CONTRACT_ZETACHAIN" \
   --receiver "$CONTRACT_ETHEREUM" \

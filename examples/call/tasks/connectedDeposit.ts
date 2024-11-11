@@ -24,7 +24,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const contract = factory.attach(args.contract).connect(signer);
 
   const value = hre.ethers.utils.parseEther(args.amount);
-  console.log(contract);
+
   const tx = await contract.deposit(args.receiver, revertOptions, {
     value,
     ...txOptions,

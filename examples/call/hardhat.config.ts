@@ -3,6 +3,7 @@ import "./tasks/universalCall";
 import "./tasks/connectedCall";
 import "./tasks/connectedDeposit";
 import "./tasks/connectedDepositAndCall";
+import "./tasks/universalWithdraw";
 import "./tasks/universalWithdrawAndCall";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
