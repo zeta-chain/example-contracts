@@ -10,6 +10,9 @@ contract Connected {
     event RevertEvent(string, RevertContext);
     event HelloEvent(string, string);
 
+    error TransferFailed();
+    error ApprovalFailed();
+
     modifier onlyGateway() {
         require(msg.sender == address(gateway), "Caller is not the gateway");
         _;
@@ -32,17 +35,13 @@ contract Connected {
         address asset,
         RevertOptions memory revertOptions
     ) external {
-        IERC20(asset).transferFrom(msg.sender, address(this), amount);
-        IERC20(asset).approve(address(gateway), amount);
+        if (!IERC20(asset).transferFrom(msg.sender, address(this), amount)) {
+            revert TransferFailed();
+        }
+        if (!IERC20(asset).approve(address(gateway), amount)) {
+            revert ApprovalFailed();
+        }
         gateway.deposit(receiver, amount, asset, revertOptions);
-    }
-
-    function call(
-        address receiver,
-        bytes calldata message,
-        RevertOptions memory revertOptions
-    ) external {
-        gateway.call(receiver, message, revertOptions);
     }
 
     function depositAndCall(
@@ -52,9 +51,21 @@ contract Connected {
         bytes calldata message,
         RevertOptions memory revertOptions
     ) external {
-        IERC20(asset).transferFrom(msg.sender, address(this), amount);
-        IERC20(asset).approve(address(gateway), amount);
+        if (!IERC20(asset).transferFrom(msg.sender, address(this), amount)) {
+            revert TransferFailed();
+        }
+        if (!IERC20(asset).approve(address(gateway), amount)) {
+            revert ApprovalFailed();
+        }
         gateway.depositAndCall(receiver, amount, asset, message, revertOptions);
+    }
+
+    function call(
+        address receiver,
+        bytes calldata message,
+        RevertOptions memory revertOptions
+    ) external {
+        gateway.call(receiver, message, revertOptions);
     }
 
     function depositAndCall(
