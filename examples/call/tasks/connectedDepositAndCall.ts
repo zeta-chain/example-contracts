@@ -1,3 +1,4 @@
+import ERC20_ABI from "@openzeppelin/contracts/build/contracts/ERC20.json";
 import { task, types } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
 
@@ -51,14 +52,43 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
   const contract = factory.attach(args.contract).connect(signer);
 
-  const value = hre.ethers.utils.parseEther(args.amount);
-
-  const tx = await contract.depositAndCall(
-    args.receiver,
-    encodedParameters,
-    revertOptions,
-    { value, ...txOptions }
-  );
+  let tx;
+  if (args.erc20) {
+    const erc20Contract = new ethers.Contract(
+      args.erc20,
+      ERC20_ABI.abi,
+      signer
+    );
+    const decimals = await erc20Contract.decimals();
+    const value = hre.ethers.utils.parseUnits(args.amount, decimals);
+    const approveTx = await erc20Contract
+      .connect(signer)
+      .approve(args.contract, value);
+    await approveTx.wait();
+    const method =
+      "depositAndCall(address,uint256,address,bytes,(address,bool,address,bytes,uint256))";
+    tx = await contract[method](
+      args.receiver,
+      value,
+      args.erc20,
+      encodedParameters,
+      revertOptions,
+      txOptions
+    );
+  } else {
+    const value = hre.ethers.utils.parseEther(args.amount);
+    const method =
+      "depositAndCall(address,bytes,(address,bool,address,bytes,uint256))";
+    tx = await contract[method](
+      args.receiver,
+      encodedParameters,
+      revertOptions,
+      {
+        ...txOptions,
+        value,
+      }
+    );
+  }
 
   await tx.wait();
   console.log(`Transaction hash: ${tx.hash}`);
@@ -101,5 +131,6 @@ task(
   )
   .addParam("amount", "The amount of tokens to deposit")
   .addParam("name", "The name of the contract", "Connected")
+  .addOptionalParam("erc20", "The address of the ERC20 token to deposit")
   .addParam("types", `The types of the parameters (example: '["string"]')`)
   .addVariadicPositionalParam("values", "The values of the parameters");

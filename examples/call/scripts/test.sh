@@ -8,6 +8,7 @@ echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
 
 ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 5") | .address' localnet.json)
+ERC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ERC-20 USDC" and .chain=="ethereum") | .address' localnet.json)
 ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 97") | .address' localnet.json)
 GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
 GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
@@ -27,6 +28,15 @@ npx hardhat connected-deposit \
 
 npx hardhat localnet-check
 
+npx hardhat connected-deposit \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --erc20 "$ERC20_ETHEREUM" \
+  --amount 1
+
+npx hardhat localnet-check
+
 npx hardhat connected-call \
   --contract "$CONTRACT_ETHEREUM" \
   --receiver "$CONTRACT_ZETACHAIN" \
@@ -40,6 +50,16 @@ npx hardhat connected-deposit-and-call \
   --receiver "$CONTRACT_ZETACHAIN" \
   --network localhost \
   --amount 1 \
+  --types '["string"]' alice
+
+npx hardhat localnet-check
+
+npx hardhat connected-deposit-and-call \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --amount 1 \
+  --erc20 "$ERC20_ETHEREUM" \
   --types '["string"]' alice
 
 npx hardhat localnet-check

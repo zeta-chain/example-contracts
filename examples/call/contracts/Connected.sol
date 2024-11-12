@@ -26,12 +26,35 @@ contract Connected {
         gateway.deposit{value: msg.value}(receiver, revertOptions);
     }
 
+    function deposit(
+        address receiver,
+        uint256 amount,
+        address asset,
+        RevertOptions memory revertOptions
+    ) external {
+        IERC20(asset).transferFrom(msg.sender, address(this), amount);
+        IERC20(asset).approve(address(gateway), amount);
+        gateway.deposit(receiver, amount, asset, revertOptions);
+    }
+
     function call(
         address receiver,
         bytes calldata message,
         RevertOptions memory revertOptions
     ) external {
         gateway.call(receiver, message, revertOptions);
+    }
+
+    function depositAndCall(
+        address receiver,
+        uint256 amount,
+        address asset,
+        bytes calldata message,
+        RevertOptions memory revertOptions
+    ) external {
+        IERC20(asset).transferFrom(msg.sender, address(this), amount);
+        IERC20(asset).approve(address(gateway), amount);
+        gateway.depositAndCall(receiver, amount, asset, message, revertOptions);
     }
 
     function depositAndCall(
