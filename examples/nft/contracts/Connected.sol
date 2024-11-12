@@ -91,7 +91,7 @@ contract Connected is
     function onCall(
         MessageContext calldata context,
         bytes calldata message
-    ) external payable onlyGateway {
+    ) external payable onlyGateway returns (bytes4) {
         if (context.sender != counterparty) revert Unauthorized();
 
         (address receiver, uint256 tokenId, string memory uri) = abi.decode(
@@ -102,6 +102,7 @@ contract Connected is
         _safeMint(receiver, tokenId);
         _setTokenURI(tokenId, uri);
         emit TokenTransferReceived(receiver, tokenId, uri);
+        return "";
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {

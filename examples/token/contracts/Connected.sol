@@ -70,7 +70,7 @@ contract Connected is ERC20, Ownable2Step, Events {
     function onCall(
         MessageContext calldata context,
         bytes calldata message
-    ) external payable onlyGateway {
+    ) external payable onlyGateway returns (bytes4) {
         if (context.sender != counterparty) revert Unauthorized();
         (address receiver, uint256 amount) = abi.decode(
             message,
@@ -78,6 +78,7 @@ contract Connected is ERC20, Ownable2Step, Events {
         );
         _mint(receiver, amount);
         emit TokenTransferReceived(receiver, amount);
+        return "";
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {}

@@ -76,8 +76,9 @@ contract Connected {
     function onCall(
         MessageContext calldata context,
         bytes calldata message
-    ) external payable onlyGateway {
+    ) external payable onlyGateway returns (bytes4) {
         emit HelloEvent("Hello on EVM from onCall()", "hey");
+        return "";
     }
 
     function onRevert(
