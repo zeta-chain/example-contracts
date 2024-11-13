@@ -19,6 +19,8 @@ jobs:
     strategy:
       matrix:
         include:
+          - project: "examples/hello"
+            file: "hello.sarif"
           - project: "examples/call"
             file: "call.sarif"
           - project: "examples/swap"

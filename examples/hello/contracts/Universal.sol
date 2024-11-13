@@ -24,6 +24,6 @@ contract Universal is UniversalContract {
         bytes calldata message
     ) external override onlyGateway {
         string memory name = abi.decode(message, (string));
-        emit HelloEvent("Hello on ZetaChain", name);
+        emit HelloEvent("Hello: ", name);
     }
 }
