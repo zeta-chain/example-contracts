@@ -23,8 +23,7 @@ contract Universal is
     Events
 {
     GatewayZEVM public immutable gateway;
-    SystemContract public immutable systemContract =
-        SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
+    SystemContract public immutable systemContract;
     uint256 private _nextTokenId;
     bool public isUniversal = true;
     uint256 public gasLimit;
@@ -46,12 +45,17 @@ contract Universal is
         address owner,
         string memory name,
         string memory symbol,
-        uint256 gas
+        uint256 gas,
+        address systemContractAddress
     ) ERC721(name, symbol) Ownable(owner) {
-        if (gatewayAddress == address(0) || owner == address(0))
-            revert InvalidAddress();
+        if (
+            gatewayAddress == address(0) ||
+            owner == address(0) ||
+            systemContractAddress == address(0)
+        ) revert InvalidAddress();
         if (gas == 0) revert InvalidGasLimit();
         gateway = GatewayZEVM(gatewayAddress);
+        systemContract = SystemContract(systemContractAddress);
         gasLimit = gas;
     }
 
@@ -115,15 +119,12 @@ contract Universal is
         _setTokenURI(tokenId, uri);
     }
 
-    event Foo(address);
-
     function onCall(
         MessageContext calldata context,
         address zrc20,
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
-        emit Foo(context.sender);
         if (context.sender != counterparty[zrc20]) revert("Unauthorized");
 
         (

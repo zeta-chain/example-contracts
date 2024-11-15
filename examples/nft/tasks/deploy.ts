@@ -12,13 +12,16 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 
   const factory: any = await hre.ethers.getContractFactory(args.name);
+
   const contract = await factory.deploy(
     args.gateway,
     signer.address,
     args.nftName,
     args.nftSymbol,
-    ...(args.gasLimit ? [args.gasLimit] : [])
+    ...(args.gasLimit ? [args.gasLimit] : []),
+    ...(args.systemContract ? [args.systemContract] : [])
   );
+
   await contract.deployed();
 
   if (args.json) {
@@ -47,4 +50,5 @@ task("deploy", "Deploy the NFT contract", main)
     "gateway",
     "Gateway address (default: ZetaChain Gateway)",
     "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
-  );
+  )
+  .addOptionalParam("systemContract", "System contract address");

@@ -47,9 +47,13 @@ contract Connected is
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
-        if (to == address(0)) revert InvalidAddress();
+        uint256 hash = uint256(
+            keccak256(
+                abi.encodePacked(address(this), block.number, _nextTokenId++)
+            )
+        );
 
-        uint256 tokenId = _nextTokenId++;
+        uint256 tokenId = hash & 0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
 
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
@@ -74,7 +78,6 @@ contract Connected is
             message,
             0
         );
-
         if (destination == address(0)) {
             gateway.call(counterparty, message, revertOptions);
         } else {

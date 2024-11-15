@@ -33,13 +33,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const gasAmount = ethers.utils.parseUnits(args.gasAmount, 18);
 
   const receiver = args.receiver || signer.address;
-
-  tx = await (contract as any).transferCrossChain(
-    args.tokenId,
-    receiver,
-    args.to,
-    { ...txOptions, value: gasAmount }
-  );
+  console.log(args.tokenId, receiver, args.to);
+  tx = await contract.transferCrossChain(args.tokenId, receiver, args.to);
 
   await tx.wait();
   if (args.json) {
@@ -53,10 +48,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   } else {
     console.log(`🚀 Successfully transferred NFT to the contract.
-📜 Contract address: ${args.from}
-🖼 NFT Contract address: ${args.nftContract}
-🆔 Token ID: ${args.tokenId}
-🔗 Transaction hash: ${tx.hash}`);
+  📜 Contract address: ${args.from}
+  🖼 NFT Contract address: ${args.nftContract}
+  🆔 Token ID: ${args.tokenId}
+  🔗 Transaction hash: ${tx.hash}`);
   }
 };
 
