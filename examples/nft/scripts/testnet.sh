@@ -6,8 +6,8 @@ set -x
 npx hardhat compile --force --quiet
 
 UNIVERSAL=$(npx hardhat deploy --name Universal --network zeta_testnet --gateway 0x6c533f7fe93fae114d0954697069df33c9b74fd7 --system-contract 0xEdf1c3275d13489aCdC6cD6eD246E72458B8795B --gas-limit 500000 --json | jq -r '.contractAddress')
-CONNECTED_BASE=$(npx hardhat deploy --name Connected --network base_sepolia --gateway 0x0c487a766110c85d301d96e33579c5b317fa4995 --json | jq -r '.contractAddress')
-CONNECTED_BNB=$(npx hardhat deploy --name Connected --network bsc_testnet --gateway 0x0c487a766110c85d301d96e33579c5b317fa4995 --json | jq -r '.contractAddress')
+CONNECTED_BASE=$(npx hardhat deploy --name Connected --network base_sepolia --gateway 0x0c487a766110c85d301d96e33579c5b317fa4995 --gas-limit 500000 --json | jq -r '.contractAddress')
+CONNECTED_BNB=$(npx hardhat deploy --name Connected --network bsc_testnet --gateway 0x0c487a766110c85d301d96e33579c5b317fa4995 --gas-limit 500000 --json | jq -r '.contractAddress')
 
 ZRC20_BASE=0x236b0DE675cC8F46AE186897fCCeFe3370C9eDeD
 ZRC20_BNB=0xd97B1de3619ed2c6BEb3860147E30cA8A7dC9891

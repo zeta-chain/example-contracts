@@ -20,9 +20,11 @@ contract Connected is
     GatewayEVM public immutable gateway;
     uint256 private _nextTokenId;
     address public counterparty;
+    uint256 public gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
+    error InvalidGasLimit();
 
     function setCounterparty(address contractAddress) external onlyOwner {
         if (contractAddress == address(0)) revert InvalidAddress();
@@ -39,10 +41,13 @@ contract Connected is
         address payable gatewayAddress,
         address owner,
         string memory name,
-        string memory symbol
+        string memory symbol,
+        uint256 gas
     ) ERC721(name, symbol) Ownable(owner) {
         if (gatewayAddress == address(0) || owner == address(0))
             revert InvalidAddress();
+        if (gas == 0) revert InvalidGasLimit();
+        gasLimit = gas;
         gateway = GatewayEVM(gatewayAddress);
     }
 
@@ -70,21 +75,23 @@ contract Connected is
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
         bytes memory message = abi.encode(destination, receiver, tokenId, uri);
-
-        RevertOptions memory revertOptions = RevertOptions(
-            address(this),
-            true,
-            address(0),
-            message,
-            0
-        );
         if (destination == address(0)) {
-            gateway.call(counterparty, message, revertOptions);
+            gateway.call(
+                counterparty,
+                message,
+                RevertOptions(address(this), false, address(0), message, 0)
+            );
         } else {
             gateway.depositAndCall{value: msg.value}(
                 counterparty,
                 message,
-                revertOptions
+                RevertOptions(
+                    address(this),
+                    true,
+                    address(0),
+                    message,
+                    gasLimit
+                )
             );
         }
 
