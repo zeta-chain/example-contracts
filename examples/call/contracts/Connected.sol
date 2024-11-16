@@ -22,6 +22,14 @@ contract Connected {
         gateway = GatewayEVM(gatewayAddress);
     }
 
+    function call(
+        address receiver,
+        bytes calldata message,
+        RevertOptions memory revertOptions
+    ) external {
+        gateway.call(receiver, message, revertOptions);
+    }
+
     function deposit(
         address receiver,
         RevertOptions memory revertOptions
@@ -58,14 +66,6 @@ contract Connected {
             revert ApprovalFailed();
         }
         gateway.depositAndCall(receiver, amount, asset, message, revertOptions);
-    }
-
-    function call(
-        address receiver,
-        bytes calldata message,
-        RevertOptions memory revertOptions
-    ) external {
-        gateway.call(receiver, message, revertOptions);
     }
 
     function depositAndCall(

@@ -39,5 +39,5 @@ jobs:
         run: |
           cd "${{ matrix.example-dir }}"
           yarn
-          chmod +x ./scripts/test.sh
-          ./scripts/test.sh localnet
+          chmod +x ./scripts/localnet.sh
+          ./scripts/localnet.sh start

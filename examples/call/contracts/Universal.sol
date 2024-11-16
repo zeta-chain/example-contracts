@@ -22,6 +22,22 @@ contract Universal is UniversalContract {
         gateway = GatewayZEVM(gatewayAddress);
     }
 
+    function call(
+        bytes memory receiver,
+        address zrc20,
+        bytes calldata message,
+        CallOptions memory callOptions,
+        RevertOptions memory revertOptions
+    ) external {
+        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(
+            callOptions.gasLimit
+        );
+        if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee))
+            revert TransferFailed();
+        IZRC20(zrc20).approve(address(gateway), gasFee);
+        gateway.call(receiver, zrc20, message, callOptions, revertOptions);
+    }
+
     function withdraw(
         bytes memory receiver,
         uint256 amount,
@@ -44,22 +60,6 @@ contract Universal is UniversalContract {
             IZRC20(gasZRC20).approve(address(gateway), gasFee);
         }
         gateway.withdraw(receiver, amount, zrc20, revertOptions);
-    }
-
-    function call(
-        bytes memory receiver,
-        address zrc20,
-        bytes calldata message,
-        CallOptions memory callOptions,
-        RevertOptions memory revertOptions
-    ) external {
-        (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(
-            callOptions.gasLimit
-        );
-        if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee))
-            revert TransferFailed();
-        IZRC20(zrc20).approve(address(gateway), gasFee);
-        gateway.call(receiver, zrc20, message, callOptions, revertOptions);
     }
 
     function withdrawAndCall(
