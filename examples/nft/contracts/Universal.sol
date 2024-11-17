@@ -125,7 +125,7 @@ contract Universal is
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
-        if (context.sender != counterparty[zrc20]) revert("Unauthorized");
+        if (context.sender != counterparty[zrc20]) revert Unauthorized();
 
         (
             address destination,

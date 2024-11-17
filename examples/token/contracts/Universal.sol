@@ -13,8 +13,7 @@ import "./shared/Events.sol";
 
 contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
     GatewayZEVM public immutable gateway;
-    SystemContract public immutable systemContract =
-        SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
+    SystemContract public immutable systemContract;
     uint256 private _nextTokenId;
     bool public isUniversal = true;
     uint256 public gasLimit;
@@ -27,7 +26,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
     mapping(address => bytes) public counterparty;
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
@@ -36,12 +35,14 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
         address owner,
         string memory name,
         string memory symbol,
-        uint256 gas
+        uint256 gas,
+        address systemContractAddress
     ) ERC20(name, symbol) Ownable(owner) {
         if (gatewayAddress == address(0) || owner == address(0))
             revert InvalidAddress();
         if (gas == 0) revert InvalidGasLimit();
         gateway = GatewayZEVM(gatewayAddress);
+        systemContract = SystemContract(systemContractAddress);
         gasLimit = gas;
     }
 
