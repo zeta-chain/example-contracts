@@ -10,18 +10,20 @@ import "./shared/Events.sol";
 contract Connected is ERC20, Ownable2Step, Events {
     GatewayEVM public immutable gateway;
     address public counterparty;
+    uint256 public gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
+    error InvalidGasLimit();
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
     function setCounterparty(address contractAddress) external onlyOwner {
         counterparty = contractAddress;
-        emit CounterpartySet(contractAddress);
+        emit SetCounterparty(contractAddress);
     }
 
     constructor(
@@ -44,26 +46,30 @@ contract Connected is ERC20, Ownable2Step, Events {
         address receiver,
         uint256 amount
     ) external payable {
+        if (receiver == address(0)) revert InvalidAddress();
         _burn(msg.sender, amount);
+
         bytes memory message = abi.encode(destination, receiver, amount);
-
-        RevertOptions memory revertOptions = RevertOptions(
-            address(this),
-            true,
-            address(0),
-            message,
-            0
-        );
-
         if (destination == address(0)) {
-            gateway.call(counterparty, message, revertOptions);
+            gateway.call(
+                counterparty,
+                message,
+                RevertOptions(address(this), false, address(0), message, 0)
+            );
         } else {
             gateway.depositAndCall{value: msg.value}(
                 counterparty,
                 message,
-                revertOptions
+                RevertOptions(
+                    address(this),
+                    true,
+                    address(0),
+                    message,
+                    gasLimit
+                )
             );
         }
+
         emit TokenTransfer(destination, receiver, amount);
     }
 
@@ -81,7 +87,14 @@ contract Connected is ERC20, Ownable2Step, Events {
         return "";
     }
 
-    function onRevert(RevertContext calldata context) external onlyGateway {}
+    function onRevert(RevertContext calldata context) external onlyGateway {
+        (address sender, uint256 amount) = abi.decode(
+            context.revertMessage,
+            (address, uint256)
+        );
+        _mint(sender, amount);
+        emit TokenTransferReverted(sender, amount);
+    }
 
     receive() external payable {}
 
