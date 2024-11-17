@@ -89,7 +89,7 @@ contract Connected is
                     address(this),
                     true,
                     address(0),
-                    message,
+                    abi.encode(receiver, tokenId, uri),
                     gasLimit
                 )
             );

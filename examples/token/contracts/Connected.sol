@@ -66,7 +66,7 @@ contract Connected is ERC20, Ownable2Step, Events {
                     address(this),
                     true,
                     address(0),
-                    message,
+                    abi.encode(receiver, amount),
                     gasLimit
                 )
             );
