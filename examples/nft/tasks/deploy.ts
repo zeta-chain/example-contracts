@@ -18,7 +18,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     signer.address,
     args.tokenName,
     args.tokenSymbol,
-    ...(args.gasLimit ? [args.gasLimit] : []),
+    args.gasLimit,
     ...(args.systemContract ? [args.systemContract] : []),
     {
       gasPrice: args.deployGasPrice,
@@ -48,7 +48,12 @@ task("deploy", "Deploy the NFT contract", main)
   .addOptionalParam("tokenName", "NFT name", "Universal NFT")
   .addOptionalParam("tokenSymbol", "NFT symbol", "UNFT")
   .addOptionalParam("name", "The contract name to deploy", "Universal")
-  .addOptionalParam("gasLimit", "Gas limit for the transaction")
+  .addOptionalParam(
+    "gasLimit",
+    "Gas limit for the transaction",
+    1000000,
+    types.int
+  )
   .addOptionalParam(
     "gateway",
     "Gateway address (default: ZetaChain Gateway)",

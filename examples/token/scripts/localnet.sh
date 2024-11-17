@@ -21,12 +21,13 @@ npx hardhat compile --force --quiet
 
 ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 5") | .address' localnet.json)
 ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 97") | .address' localnet.json)
+GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
 GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
 GATEWAY_BNB=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="bnb") | .address' localnet.json)
+SYSTEM_CONTRACT=$(jq -r '.addresses[] | select(.type=="systemContract" and .chain=="zetachain") | .address' localnet.json)
 SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
-
-CONTRACT_ZETACHAIN=$(npx hardhat deploy --network localhost --gas-limit 700000 --json | jq -r '.contractAddress')
+CONTRACT_ZETACHAIN=$(npx hardhat deploy --network localhost --gateway "$GATEWAY_ZETACHAIN" --system-contract "$SYSTEM_CONTRACT" --json | jq -r '.contractAddress')
 echo -e "\n🚀 Deployed contract on ZetaChain: $CONTRACT_ZETACHAIN"
 
 CONTRACT_ETHEREUM=$(npx hardhat deploy --name Connected --json --network localhost --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')

@@ -30,10 +30,12 @@ contract Connected is ERC20, Ownable2Step, Events {
         address payable gatewayAddress,
         address owner,
         string memory name,
-        string memory symbol
+        string memory symbol,
+        uint256 gas
     ) ERC20(name, symbol) Ownable(owner) {
         if (gatewayAddress == address(0) || owner == address(0))
             revert InvalidAddress();
+        gasLimit = gas;
         gateway = GatewayEVM(gatewayAddress);
     }
 
