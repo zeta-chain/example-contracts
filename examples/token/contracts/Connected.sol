@@ -10,7 +10,7 @@ import "./shared/Events.sol";
 contract Connected is ERC20, Ownable2Step, Events {
     GatewayEVM public immutable gateway;
     address public counterparty;
-    uint256 public gasLimit;
+    uint256 public immutable gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
