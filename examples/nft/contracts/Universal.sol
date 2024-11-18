@@ -129,15 +129,15 @@ contract Universal is
 
         (
             address destination,
-            address sender,
+            address receiver,
             uint256 tokenId,
             string memory uri
         ) = abi.decode(message, (address, address, uint256, string));
 
         if (destination == address(0)) {
-            _safeMint(sender, tokenId);
+            _safeMint(receiver, tokenId);
             _setTokenURI(tokenId, uri);
-            emit TokenTransferReceived(sender, tokenId, uri);
+            emit TokenTransferReceived(receiver, tokenId, uri);
         } else {
             (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
                 gasLimit
@@ -155,11 +155,16 @@ contract Universal is
             gateway.call(
                 abi.encodePacked(counterparty[destination]),
                 destination,
-                abi.encode(sender, tokenId, uri),
+                abi.encode(receiver, tokenId, uri),
                 CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
-            emit TokenTransferToDestination(sender, destination, tokenId, uri);
+            emit TokenTransferToDestination(
+                receiver,
+                destination,
+                tokenId,
+                uri
+            );
         }
     }
 
