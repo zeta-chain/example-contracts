@@ -19,7 +19,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     args.tokenName,
     args.tokenSymbol,
     args.gasLimit,
-    ...(args.systemContract ? [args.systemContract] : []),
+    ...(args.uniswapRouter ? [args.uniswapRouter] : []),
     {
       gasPrice: args.deployGasPrice,
     }
@@ -64,4 +64,4 @@ task("deploy", "Deploy the NFT contract", main)
     "Gas price for deploy transaction",
     "10000000000"
   )
-  .addOptionalParam("systemContract", "System contract address");
+  .addOptionalParam("uniswapRouter", "Uniswap v2 router address on ZetaChain");

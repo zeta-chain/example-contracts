@@ -23,7 +23,7 @@ contract Universal is
     Events
 {
     GatewayZEVM public immutable gateway;
-    SystemContract public immutable systemContract;
+    address public immutable uniswapRouter;
     uint256 private _nextTokenId;
     bool public isUniversal = true;
     uint256 public gasLimit;
@@ -46,16 +46,16 @@ contract Universal is
         string memory name,
         string memory symbol,
         uint256 gas,
-        address systemContractAddress
+        address uniswapRouterAddress
     ) ERC721(name, symbol) Ownable(owner) {
         if (
             gatewayAddress == address(0) ||
             owner == address(0) ||
-            systemContractAddress == address(0)
+            uniswapRouterAddress == address(0)
         ) revert InvalidAddress();
         if (gas == 0) revert InvalidGasLimit();
         gateway = GatewayZEVM(gatewayAddress);
-        systemContract = SystemContract(systemContractAddress);
+        uniswapRouter = uniswapRouterAddress;
         gasLimit = gas;
     }
 
@@ -144,7 +144,7 @@ contract Universal is
             );
 
             SwapHelperLib.swapExactTokensForTokens(
-                systemContract,
+                uniswapRouter,
                 zrc20,
                 amount,
                 destination,

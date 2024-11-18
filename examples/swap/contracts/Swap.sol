@@ -12,7 +12,7 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol
 import {GatewayZEVM} from "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 
 contract Swap is UniversalContract {
-    SystemContract public systemContract;
+    address public immutable uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
 
@@ -21,8 +21,8 @@ contract Swap is UniversalContract {
         _;
     }
 
-    constructor(address systemContractAddress, address payable gatewayAddress) {
-        systemContract = SystemContract(systemContractAddress);
+    constructor(address payable gatewayAddress, address uniswapRouterAddress) {
+        uniswapRouter = uniswapRouterAddress;
         gateway = GatewayZEVM(gatewayAddress);
     }
 
@@ -74,7 +74,7 @@ contract Swap is UniversalContract {
             swapAmount = amount - gasFee;
         } else {
             inputForGas = SwapHelperLib.swapTokensForExactTokens(
-                systemContract,
+                uniswapRouter,
                 inputToken,
                 gasFee,
                 gasZRC20,
@@ -84,7 +84,7 @@ contract Swap is UniversalContract {
         }
 
         uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
-            systemContract,
+            uniswapRouter,
             inputToken,
             swapAmount,
             targetToken,

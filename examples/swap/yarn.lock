@@ -2513,25 +2513,15 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/protocol-contracts@10.0.0-rc11":
-  version "10.0.0-rc11"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-10.0.0-rc11.tgz#53f55ead492f7b5802b1feae4e51abc75730af33"
-  integrity sha512-qWazjqnIGRngf4OmyeSIv7sHICQRdMQ1CKPIQIqxA8qFR+gHhDHSfvMdRAvgWbsfkimXOIFiHVIATypyWhviJw==
-  dependencies:
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    "@zetachain/networks" "^10.0.0"
-    ethers "^6.13.1"
-
 "@zetachain/protocol-contracts@9.0.0":
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-9.0.0.tgz#c20ad5da43f6f3676f31556b303d1cb4ea17357e"
   integrity sha512-L4A8bddlyhjaBAsIv/x1Bvxc38RJz8U8rbbBtxK5oVyOAd5Zz04ZiT3HqzO4FuKq6RGGM1uiA8jvUfmRkKchXw==
 
-"@zetachain/toolkit@13.0.0-rc7":
-  version "13.0.0-rc7"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc7.tgz#d8710dfeed6c84d7d5808de253887da3e67bf050"
-  integrity sha512-rh9q66iipRF3XJ4jlkawYqc10eA2mYgIS2rl1PiWvcqi39R1PgUzperKVwwoVmRuJi0FxE5fetP4SmqzfkfBXw==
+"@zetachain/toolkit@13.0.0-rc8":
+  version "13.0.0-rc8"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc8.tgz#1f8b975428f6f1b7bdef4ccc0a1312de81f90e7d"
+  integrity sha512-lXAyyMpgN/dsGIUTR/hi5M+6/tsnzONLAaisAnJzsrEUB4nYkoZtQCR4lwP4oWhNl4i3SK5k+bFjAfBo1DU3iw==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^2.1.1"

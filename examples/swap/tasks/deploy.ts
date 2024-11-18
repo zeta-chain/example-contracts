@@ -13,8 +13,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const factory = await hre.ethers.getContractFactory(args.name);
   const contract = await (factory as any).deploy(
-    args.systemContract,
-    args.gateway
+    args.gateway,
+    args.uniswapRouter
   );
   await contract.deployed();
 
@@ -39,11 +39,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 task("deploy", "Deploy the contract", main)
   .addFlag("json", "Output in JSON")
   .addOptionalParam("name", "Contract to deploy", "Swap")
-  .addOptionalParam(
-    "systemContract",
-    "System contract",
-    "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
-  )
+  .addOptionalParam("uniswapRouter", "Uniswap v2 Router address on ZetaChain")
   .addOptionalParam(
     "gateway",
     "Gateway address (default: ZetaChain Gateway)",
