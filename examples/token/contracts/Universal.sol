@@ -69,7 +69,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
             !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
         ) revert TransferFailed();
         IZRC20(destination).approve(address(gateway), gasFee);
-        bytes memory message = abi.encode(receiver, amount);
+        bytes memory message = abi.encode(receiver, amount, 0, msg.sender);
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -103,26 +103,31 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
     ) external override onlyGateway {
         if (keccak256(context.origin) != keccak256(counterparty[zrc20]))
             revert Unauthorized();
-        (address destination, address receiver, uint256 tokenAmount) = abi
-            .decode(message, (address, address, uint256));
+        (
+            address destination,
+            address receiver,
+            uint256 tokenAmount,
+            address sender
+        ) = abi.decode(message, (address, address, uint256, address));
         if (destination == address(0)) {
             _mint(receiver, tokenAmount);
         } else {
             (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
                 gasLimit
             );
-            SwapHelperLib.swapExactTokensForTokens(
+            uint256 out = SwapHelperLib.swapExactTokensForTokens(
                 uniswapRouter,
                 zrc20,
                 amount,
                 destination,
                 0
             );
-            IZRC20(destination).approve(address(gateway), gasFee);
-            gateway.call(
-                counterparty[destination],
+            IZRC20(destination).approve(address(gateway), out);
+            gateway.withdrawAndCall(
+                abi.encodePacked(counterparty[destination]),
+                out - gasFee,
                 destination,
-                abi.encode(receiver, tokenAmount),
+                abi.encode(receiver, tokenAmount, out - gasFee, sender),
                 CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );

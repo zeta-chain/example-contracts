@@ -115,14 +115,14 @@ contract Connected is
             address receiver,
             uint256 tokenId,
             string memory uri,
-            uint256 amount,
+            uint256 gasAmount,
             address sender
         ) = abi.decode(message, (address, uint256, string, uint256, address));
 
         _safeMint(receiver, tokenId);
         _setTokenURI(tokenId, uri);
-        if (amount > 0) {
-            (bool success, ) = sender.call{value: amount}("");
+        if (gasAmount > 0) {
+            (bool success, ) = sender.call{value: gasAmount}("");
             if (!success) revert GasTokenTransferFailed();
         }
         emit TokenTransferReceived(receiver, tokenId, uri);

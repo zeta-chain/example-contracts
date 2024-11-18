@@ -15,6 +15,7 @@ contract Connected is ERC20, Ownable2Step, Events {
     error InvalidAddress();
     error Unauthorized();
     error InvalidGasLimit();
+    error GasTokenTransferFailed();
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -51,7 +52,12 @@ contract Connected is ERC20, Ownable2Step, Events {
         if (receiver == address(0)) revert InvalidAddress();
         _burn(msg.sender, amount);
 
-        bytes memory message = abi.encode(destination, receiver, amount);
+        bytes memory message = abi.encode(
+            destination,
+            receiver,
+            amount,
+            msg.sender
+        );
         if (destination == address(0)) {
             gateway.call(
                 counterparty,
@@ -66,7 +72,7 @@ contract Connected is ERC20, Ownable2Step, Events {
                     address(this),
                     true,
                     address(0),
-                    abi.encode(receiver, amount),
+                    abi.encode(amount, msg.sender),
                     gasLimit
                 )
             );
@@ -80,22 +86,28 @@ contract Connected is ERC20, Ownable2Step, Events {
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
         if (context.sender != counterparty) revert Unauthorized();
-        (address receiver, uint256 amount) = abi.decode(
-            message,
-            (address, uint256)
-        );
+        (
+            address receiver,
+            uint256 amount,
+            uint256 gasAmount,
+            address sender
+        ) = abi.decode(message, (address, uint256, uint256, address));
         _mint(receiver, amount);
+        if (gasAmount > 0) {
+            (bool success, ) = sender.call{value: amount}("");
+            if (!success) revert GasTokenTransferFailed();
+        }
         emit TokenTransferReceived(receiver, amount);
         return "";
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (address sender, uint256 amount) = abi.decode(
+        (uint256 amount, address receiver) = abi.decode(
             context.revertMessage,
-            (address, uint256)
+            (uint256, address)
         );
-        _mint(sender, amount);
-        emit TokenTransferReverted(sender, amount);
+        _mint(receiver, amount);
+        emit TokenTransferReverted(receiver, amount);
     }
 
     receive() external payable {}

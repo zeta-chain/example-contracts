@@ -83,7 +83,13 @@ contract Universal is
             !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
         ) revert TransferFailed();
         IZRC20(destination).approve(address(gateway), gasFee);
-        bytes memory message = abi.encode(receiver, tokenId, uri, 0);
+        bytes memory message = abi.encode(
+            receiver,
+            tokenId,
+            uri,
+            0,
+            msg.sender
+        );
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -125,7 +131,6 @@ contract Universal is
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
-        revert("Method not implemented");
         if (context.sender != counterparty[zrc20]) revert Unauthorized();
 
         (
@@ -162,13 +167,8 @@ contract Universal is
                 CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
-            emit TokenTransferToDestination(
-                receiver,
-                destination,
-                tokenId,
-                uri
-            );
         }
+        emit TokenTransferToDestination(receiver, destination, tokenId, uri);
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
