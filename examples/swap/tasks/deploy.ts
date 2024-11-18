@@ -39,11 +39,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 task("deploy", "Deploy the contract", main)
   .addFlag("json", "Output in JSON")
   .addOptionalParam("name", "Contract to deploy", "Swap")
-  .addOptionalParam(
-    "uniswapRouter",
-    "Uniswap v2 Router address (default: ZetaChain TestnetGateway)",
-    "0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe"
-  )
+  .addOptionalParam("uniswapRouter", "Uniswap v2 Router address")
   .addOptionalParam(
     "gateway",
     "Gateway address (default: ZetaChain Gateway)",

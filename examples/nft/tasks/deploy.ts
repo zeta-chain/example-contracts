@@ -64,8 +64,4 @@ task("deploy", "Deploy the NFT contract", main)
     "Gas price for deploy transaction",
     "10000000000"
   )
-  .addOptionalParam(
-    "uniswapRouter",
-    "Uniswap v2 Router address (default: ZetaChain TestnetGateway)",
-    "0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe"
-  );
+  .addOptionalParam("uniswapRouter", "Uniswap v2 Router address");
