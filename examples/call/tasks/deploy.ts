@@ -38,6 +38,6 @@ task("deploy", "Deploy the contract", main)
   .addOptionalParam("name", "Contract to deploy", "Universal")
   .addOptionalParam(
     "gateway",
-    "Uniswap v2 Router address (default: ZetaChain TestnetGateway)",
+    "Gateway address (default: ZetaChain Gateway on testnet)",
     "0x6c533f7fe93fae114d0954697069df33c9b74fd7"
   );
