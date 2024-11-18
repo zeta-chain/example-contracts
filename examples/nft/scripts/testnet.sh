@@ -5,7 +5,7 @@ set -x
 
 npx hardhat compile --force --quiet
 
-UNIVERSAL=$(npx hardhat deploy --name Universal --network zeta_testnet --gateway 0x6c533f7fe93fae114d0954697069df33c9b74fd7 --system-contract 0xEdf1c3275d13489aCdC6cD6eD246E72458B8795B --gas-limit 500000 --json | jq -r '.contractAddress')
+UNIVERSAL=$(npx hardhat deploy --name Universal --network zeta_testnet --gateway 0x6c533f7fe93fae114d0954697069df33c9b74fd7 --uniswap-router 0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe --gas-limit 500000 --json | jq -r '.contractAddress')
 CONNECTED_BASE=$(npx hardhat deploy --name Connected --network base_sepolia --gateway 0x0c487a766110c85d301d96e33579c5b317fa4995 --gas-limit 500000 --json | jq -r '.contractAddress')
 CONNECTED_BNB=$(npx hardhat deploy --name Connected --network bsc_testnet --gateway 0x0c487a766110c85d301d96e33579c5b317fa4995 --gas-limit 500000 --json | jq -r '.contractAddress')
 
