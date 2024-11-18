@@ -55,8 +55,6 @@ contract Swap is UniversalContract {
         swapAndWithdraw(zrc20, amount, params.target, params.to);
     }
 
-    event Evv(address, uint256, address);
-
     function swapAndWithdraw(
         address inputToken,
         uint256 amount,
