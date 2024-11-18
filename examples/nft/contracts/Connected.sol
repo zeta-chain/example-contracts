@@ -25,6 +25,7 @@ contract Connected is
     error InvalidAddress();
     error Unauthorized();
     error InvalidGasLimit();
+    error GasTokenTransferFailed();
 
     function setCounterparty(address contractAddress) external onlyOwner {
         if (contractAddress == address(0)) revert InvalidAddress();
@@ -104,13 +105,19 @@ contract Connected is
     ) external payable onlyGateway returns (bytes4) {
         if (context.sender != counterparty) revert Unauthorized();
 
-        (address receiver, uint256 tokenId, string memory uri) = abi.decode(
-            message,
-            (address, uint256, string)
-        );
+        (
+            address receiver,
+            uint256 tokenId,
+            string memory uri,
+            uint256 amount
+        ) = abi.decode(message, (address, uint256, string, uint256));
 
         _safeMint(receiver, tokenId);
         _setTokenURI(tokenId, uri);
+        if (amount > 0) {
+            (bool success, ) = receiver.call{value: amount}("");
+            if (!success) revert GasTokenTransferFailed();
+        }
         emit TokenTransferReceived(receiver, tokenId, uri);
         return "";
     }

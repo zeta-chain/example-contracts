@@ -83,7 +83,7 @@ contract Universal is
             !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
         ) revert TransferFailed();
         IZRC20(destination).approve(address(gateway), gasFee);
-        bytes memory message = abi.encode(receiver, tokenId, uri);
+        bytes memory message = abi.encode(receiver, tokenId, uri, 0);
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -143,7 +143,7 @@ contract Universal is
                 gasLimit
             );
 
-            SwapHelperLib.swapExactTokensForTokens(
+            uint256 out = SwapHelperLib.swapExactTokensForTokens(
                 uniswapRouter,
                 zrc20,
                 amount,
@@ -151,11 +151,12 @@ contract Universal is
                 0
             );
 
-            IZRC20(destination).approve(address(gateway), gasFee);
-            gateway.call(
+            IZRC20(destination).approve(address(gateway), out);
+            gateway.withdrawAndCall(
                 abi.encodePacked(counterparty[destination]),
+                out - gasFee,
                 destination,
-                abi.encode(receiver, tokenId, uri),
+                abi.encode(receiver, tokenId, uri, out - gasFee),
                 CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
