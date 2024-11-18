@@ -125,14 +125,16 @@ contract Universal is
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
+        revert("Method not implemented");
         if (context.sender != counterparty[zrc20]) revert Unauthorized();
 
         (
             address destination,
             address receiver,
             uint256 tokenId,
-            string memory uri
-        ) = abi.decode(message, (address, address, uint256, string));
+            string memory uri,
+            address sender
+        ) = abi.decode(message, (address, address, uint256, string, address));
 
         if (destination == address(0)) {
             _safeMint(receiver, tokenId);
@@ -156,7 +158,7 @@ contract Universal is
                 abi.encodePacked(counterparty[destination]),
                 out - gasFee,
                 destination,
-                abi.encode(receiver, tokenId, uri, out - gasFee),
+                abi.encode(receiver, tokenId, uri, out - gasFee, sender),
                 CallOptions(gasLimit, false),
                 RevertOptions(address(0), false, address(0), "", 0)
             );
