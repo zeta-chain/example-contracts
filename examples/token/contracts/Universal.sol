@@ -77,7 +77,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
             address(this),
             true,
             address(0),
-            message,
+            abi.encode(amount, msg.sender),
             gasLimit
         );
 
@@ -129,16 +129,22 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
                 destination,
                 abi.encode(receiver, tokenAmount, out - gasFee, sender),
                 CallOptions(gasLimit, false),
-                RevertOptions(address(0), false, address(0), "", 0)
+                RevertOptions(
+                    address(this),
+                    true,
+                    address(0),
+                    abi.encode(amount, sender),
+                    0
+                )
             );
         }
         emit TokenTransferToDestination(destination, receiver, amount);
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (address sender, uint256 amount) = abi.decode(
+        (uint256 amount, address sender) = abi.decode(
             context.revertMessage,
-            (address, uint256)
+            (uint256, address)
         );
         _mint(sender, amount);
         emit TokenTransferReverted(sender, amount);

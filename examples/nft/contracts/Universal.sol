@@ -97,7 +97,7 @@ contract Universal is
             address(this),
             true,
             address(0),
-            message,
+            abi.encode(tokenId, uri, msg.sender),
             gasLimit
         );
 
@@ -165,16 +165,22 @@ contract Universal is
                 destination,
                 abi.encode(receiver, tokenId, uri, out - gasFee, sender),
                 CallOptions(gasLimit, false),
-                RevertOptions(address(0), false, address(0), "", 0)
+                RevertOptions(
+                    address(this),
+                    true,
+                    address(0),
+                    abi.encode(tokenId, uri, sender),
+                    0
+                )
             );
         }
         emit TokenTransferToDestination(receiver, destination, tokenId, uri);
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (address sender, uint256 tokenId, string memory uri) = abi.decode(
+        (uint256 tokenId, string memory uri, address sender) = abi.decode(
             context.revertMessage,
-            (address, uint256, string)
+            (uint256, string, address)
         );
 
         _safeMint(sender, tokenId);
