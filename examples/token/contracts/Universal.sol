@@ -133,7 +133,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
                     address(this),
                     true,
                     address(0),
-                    abi.encode(amount, sender),
+                    abi.encode(tokenAmount, sender),
                     0
                 )
             );
