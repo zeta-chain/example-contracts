@@ -16,7 +16,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
     address public immutable uniswapRouter;
     uint256 private _nextTokenId;
     bool public isUniversal = true;
-    uint256 public gasLimit;
+    uint256 public immutable gasLimit;
 
     error TransferFailed();
     error Unauthorized();

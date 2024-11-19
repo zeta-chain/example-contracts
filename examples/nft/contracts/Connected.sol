@@ -20,7 +20,7 @@ contract Connected is
     GatewayEVM public immutable gateway;
     uint256 private _nextTokenId;
     address public counterparty;
-    uint256 public gasLimit;
+    uint256 public immutable gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
