@@ -16,6 +16,7 @@ contract SwapToAnyToken is UniversalContract {
     address public immutable uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
+    error InvalidAddress();
 
     modifier onlyGateway() {
         require(msg.sender == address(gateway), "Caller is not the gateway");
@@ -23,6 +24,8 @@ contract SwapToAnyToken is UniversalContract {
     }
 
     constructor(address payable gatewayAddress, address uniswapRouterAddress) {
+        if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
+            revert InvalidAddress();
         uniswapRouter = uniswapRouterAddress;
         gateway = GatewayZEVM(gatewayAddress);
     }
