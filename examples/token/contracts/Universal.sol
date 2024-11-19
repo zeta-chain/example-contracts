@@ -38,8 +38,11 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
         uint256 gas,
         address uniswapRouterAddress
     ) ERC20(name, symbol) Ownable(owner) {
-        if (gatewayAddress == address(0) || owner == address(0))
-            revert InvalidAddress();
+        if (
+            gatewayAddress == address(0) ||
+            owner == address(0) ||
+            uniswapRouterAddress == address(0)
+        ) revert InvalidAddress();
         if (gas == 0) revert InvalidGasLimit();
         gateway = GatewayZEVM(gatewayAddress);
         uniswapRouter = uniswapRouterAddress;
