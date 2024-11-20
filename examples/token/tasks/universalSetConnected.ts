@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Connected } from "../typechain-types";
+import { Universal } from "../typechain-types";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
@@ -10,29 +10,33 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     );
   }
 
-  const contract: Connected = await hre.ethers.getContractAt(
-    "Connected",
+  const contract: Universal = await hre.ethers.getContractAt(
+    "Universal",
     args.contract
   );
 
-  const tx = await contract.setCounterparty(args.counterparty);
+  const tx = await contract.setConnected(args.zrc20, args.connected);
 
   if (args.json) {
     console.log(
       JSON.stringify({
         contractAddress: args.contract,
-        universalContract: args.counterparty,
+        zrc20: args.zrc20,
+        connectedContractAddress: args.connected,
         transactionHash: tx.hash,
       })
     );
   } else {
-    console.log(`🚀 Successfully set the universal contract.
+    console.log(`🚀 Successfully set the connected contract.
 📜 Contract address: ${args.contract}
+🔗 ZRC20 address: ${args.zrc20}
+🔗 Connected contract address: ${args.connected}
 🔗 Transaction hash: ${tx.hash}`);
   }
 };
 
-task("connected-set-counterparty", "Sets the universal contract address", main)
+task("universal-set-connected", "Sets the connected contract address", main)
   .addParam("contract", "The address of the deployed contract")
-  .addParam("counterparty", "The address of the universal contract to set")
+  .addParam("zrc20", "The ZRC20 address to link to the connected contract")
+  .addParam("connected", "The address of the connected contract to set")
   .addFlag("json", "Output the result in JSON format");

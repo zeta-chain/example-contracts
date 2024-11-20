@@ -9,7 +9,7 @@ import "./shared/Events.sol";
 
 contract Connected is ERC20, Ownable2Step, Events {
     GatewayEVM public immutable gateway;
-    address public counterparty;
+    address public universal;
     uint256 public immutable gasLimit;
 
     error InvalidAddress();
@@ -22,9 +22,10 @@ contract Connected is ERC20, Ownable2Step, Events {
         _;
     }
 
-    function setCounterparty(address contractAddress) external onlyOwner {
-        counterparty = contractAddress;
-        emit SetCounterparty(contractAddress);
+    function setUniversal(address contractAddress) external onlyOwner {
+        if (contractAddress == address(0)) revert InvalidAddress();
+        universal = contractAddress;
+        emit SetUniversal(contractAddress);
     }
 
     constructor(
@@ -60,13 +61,13 @@ contract Connected is ERC20, Ownable2Step, Events {
         );
         if (destination == address(0)) {
             gateway.call(
-                counterparty,
+                universal,
                 message,
                 RevertOptions(address(this), false, address(0), message, 0)
             );
         } else {
             gateway.depositAndCall{value: msg.value}(
-                counterparty,
+                universal,
                 message,
                 RevertOptions(
                     address(this),
@@ -85,7 +86,7 @@ contract Connected is ERC20, Ownable2Step, Events {
         MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        if (context.sender != counterparty) revert Unauthorized();
+        if (context.sender != universal) revert Unauthorized();
         (
             address receiver,
             uint256 amount,

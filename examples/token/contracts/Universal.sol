@@ -23,7 +23,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
     error InvalidAddress();
     error InvalidGasLimit();
 
-    mapping(address => bytes) public counterparty;
+    mapping(address => address) public connected;
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -49,12 +49,12 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
         gasLimit = gas;
     }
 
-    function setCounterparty(
+    function setConnected(
         address zrc20,
-        bytes memory contractAddress
+        address contractAddress
     ) external onlyOwner {
-        counterparty[zrc20] = contractAddress;
-        emit CounterpartyMappingSet(zrc20, contractAddress);
+        connected[zrc20] = contractAddress;
+        emit SetConnected(zrc20, contractAddress);
     }
 
     function transferCrossChain(
@@ -85,7 +85,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
         );
 
         gateway.call(
-            counterparty[destination],
+            abi.encodePacked(connected[destination]),
             destination,
             message,
             callOptions,
@@ -104,8 +104,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
-        if (keccak256(context.origin) != keccak256(counterparty[zrc20]))
-            revert Unauthorized();
+        if (context.sender != connected[zrc20]) revert Unauthorized();
         (
             address destination,
             address receiver,
@@ -127,7 +126,7 @@ contract Universal is ERC20, Ownable2Step, UniversalContract, Events {
             );
             IZRC20(destination).approve(address(gateway), out);
             gateway.withdrawAndCall(
-                abi.encodePacked(counterparty[destination]),
+                abi.encodePacked(connected[destination]),
                 out - gasFee,
                 destination,
                 abi.encode(receiver, tokenAmount, out - gasFee, sender),

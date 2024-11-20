@@ -64,7 +64,7 @@ contract Universal is
         address contractAddress
     ) external onlyOwner {
         connected[zrc20] = contractAddress;
-        emit ConnectedSet(zrc20, contractAddress);
+        emit SetConnected(zrc20, contractAddress);
     }
 
     function transferCrossChain(
