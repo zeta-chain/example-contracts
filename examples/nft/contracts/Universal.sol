@@ -33,7 +33,7 @@ contract Universal is
     error InvalidAddress();
     error InvalidGasLimit();
 
-    mapping(address => address) public counterparty;
+    mapping(address => address) public connected;
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -59,12 +59,12 @@ contract Universal is
         gasLimit = gas;
     }
 
-    function setCounterparty(
+    function setConnected(
         address zrc20,
         address contractAddress
     ) external onlyOwner {
-        counterparty[zrc20] = contractAddress;
-        emit CounterpartySet(zrc20, contractAddress);
+        connected[zrc20] = contractAddress;
+        emit ConnectedSet(zrc20, contractAddress);
     }
 
     function transferCrossChain(
@@ -102,7 +102,7 @@ contract Universal is
         );
 
         gateway.call(
-            abi.encodePacked(counterparty[destination]),
+            abi.encodePacked(connected[destination]),
             destination,
             message,
             callOptions,
@@ -131,7 +131,7 @@ contract Universal is
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
-        if (context.sender != counterparty[zrc20]) revert Unauthorized();
+        if (context.sender != connected[zrc20]) revert Unauthorized();
 
         (
             address destination,
@@ -160,7 +160,7 @@ contract Universal is
 
             IZRC20(destination).approve(address(gateway), out);
             gateway.withdrawAndCall(
-                abi.encodePacked(counterparty[destination]),
+                abi.encodePacked(connected[destination]),
                 out - gasFee,
                 destination,
                 abi.encode(receiver, tokenId, uri, out - gasFee, sender),

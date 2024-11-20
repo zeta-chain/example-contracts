@@ -2,7 +2,7 @@
 pragma solidity ^0.8.26;
 
 contract Events {
-    event SetCounterparty(address indexed newCounterparty);
+    event SetUniversal(address indexed universalAddress);
     event TokenMinted(address indexed to, uint256 indexed tokenId, string uri);
     event TokenTransfer(
         address indexed destination,
@@ -20,7 +20,7 @@ contract Events {
         uint256 indexed tokenId,
         string uri
     );
-    event CounterpartySet(address indexed zrc20, address contractAddress);
+    event ConnectedSet(address indexed zrc20, address contractAddress);
     event TokenTransferToDestination(
         address indexed destination,
         address indexed sender,

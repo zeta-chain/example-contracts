@@ -19,7 +19,7 @@ contract Connected is
 {
     GatewayEVM public immutable gateway;
     uint256 private _nextTokenId;
-    address public counterparty;
+    address public universal;
     uint256 public immutable gasLimit;
 
     error InvalidAddress();
@@ -27,10 +27,10 @@ contract Connected is
     error InvalidGasLimit();
     error GasTokenTransferFailed();
 
-    function setCounterparty(address contractAddress) external onlyOwner {
+    function setUniversal(address contractAddress) external onlyOwner {
         if (contractAddress == address(0)) revert InvalidAddress();
-        counterparty = contractAddress;
-        emit SetCounterparty(contractAddress);
+        universal = contractAddress;
+        emit SetUniversal(contractAddress);
     }
 
     modifier onlyGateway() {
@@ -84,13 +84,13 @@ contract Connected is
         );
         if (destination == address(0)) {
             gateway.call(
-                counterparty,
+                universal,
                 message,
                 RevertOptions(address(this), false, address(0), message, 0)
             );
         } else {
             gateway.depositAndCall{value: msg.value}(
-                counterparty,
+                universal,
                 message,
                 RevertOptions(
                     address(this),
@@ -109,7 +109,7 @@ contract Connected is
         MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        if (context.sender != counterparty) revert Unauthorized();
+        if (context.sender != universal) revert Unauthorized();
 
         (
             address receiver,
