@@ -111,6 +111,8 @@ contract Universal is UniversalContract, Ownable {
         );
     }
 
+    // onRevert is called when a contract on the destination chain reverts.
+    // onRevert sends a call back to the source chain
     function onRevert(RevertContext calldata context) external onlyGateway {
         (
             RevertOptions memory revertOptions,
@@ -130,7 +132,7 @@ contract Universal is UniversalContract, Ownable {
             0
         );
         (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
-            700000
+            onRevertGasLimit
         );
         if (out < gasFee) revert("Insufficient out amount for gas fee");
 
@@ -140,7 +142,7 @@ contract Universal is UniversalContract, Ownable {
             out - gasFee,
             destination,
             abi.encode(data, receiver, false),
-            CallOptions(700000, false),
+            CallOptions(onRevertGasLimit, false),
             RevertOptions(address(0), false, address(0), "", 0)
         );
     }

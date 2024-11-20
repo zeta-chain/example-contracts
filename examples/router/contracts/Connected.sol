@@ -75,13 +75,16 @@ contract Connected is Ownable {
         if (sender != counterparty) revert Unauthorized();
 
         if (isCall) {
+            // Handle a call from another connected chain
             emit OnCallEvent("regular call");
         } else {
+            // Handle revert
             emit OnCallEvent("revert");
         }
         return "";
     }
 
+    // onRevert is executed when router's onCall reverts
     function onRevert(
         RevertContext calldata context
     ) external payable onlyGateway {
