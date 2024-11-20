@@ -21,10 +21,14 @@ jobs:
         include:
           - project: "examples/hello"
             file: "hello.sarif"
+          - project: "examples/call"
+            file: "call.sarif"
           - project: "examples/swap"
             file: "swap.sarif"
-          - project: "omnichain/swap"
-            file: "omnichain-swap.sarif"
+          - project: "examples/nft"
+            file: "nft.sarif"
+          - project: "examples/token"
+            file: "token.sarif"
     permissions:
       contents: read
       security-events: write

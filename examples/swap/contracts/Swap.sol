@@ -12,17 +12,21 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol
 import {GatewayZEVM} from "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 
 contract Swap is UniversalContract {
-    SystemContract public systemContract;
+    address public immutable uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
+
+    error InvalidAddress();
 
     modifier onlyGateway() {
         require(msg.sender == address(gateway), "Caller is not the gateway");
         _;
     }
 
-    constructor(address systemContractAddress, address payable gatewayAddress) {
-        systemContract = SystemContract(systemContractAddress);
+    constructor(address payable gatewayAddress, address uniswapRouterAddress) {
+        if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
+            revert InvalidAddress();
+        uniswapRouter = uniswapRouterAddress;
         gateway = GatewayZEVM(gatewayAddress);
     }
 
@@ -36,7 +40,7 @@ contract Swap is UniversalContract {
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external override onlyGateway {
+    ) external onlyGateway {
         Params memory params = Params({target: address(0), to: bytes("")});
         if (context.chainID == BITCOIN) {
             params.target = BytesHelperLib.bytesToAddress(message, 0);
@@ -72,7 +76,7 @@ contract Swap is UniversalContract {
             swapAmount = amount - gasFee;
         } else {
             inputForGas = SwapHelperLib.swapTokensForExactTokens(
-                systemContract,
+                uniswapRouter,
                 inputToken,
                 gasFee,
                 gasZRC20,
@@ -82,7 +86,7 @@ contract Swap is UniversalContract {
         }
 
         uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
-            systemContract,
+            uniswapRouter,
             inputToken,
             swapAmount,
             targetToken,
@@ -112,5 +116,5 @@ contract Swap is UniversalContract {
 
     function onRevert(
         RevertContext calldata revertContext
-    ) external override onlyGateway {}
+    ) external onlyGateway {}
 }
