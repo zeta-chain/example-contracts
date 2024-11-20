@@ -91,12 +91,9 @@ contract Universal is UniversalContract, Ownable {
             gasLimit
         );
 
-        emit Data(abi.encodePacked(data, context.origin, true));
-        emit Data(abi.encode(data, context.origin, true));
-
         bytes memory m = callOptions.isArbitraryCall
-            ? abi.encodePacked(data, context.origin, true)
-            : abi.encode(data, context.origin, true);
+            ? abi.encodePacked(data, context.sender, true)
+            : abi.encode(data, context.sender, true);
 
         gateway.withdrawAndCall(
             receiver,
