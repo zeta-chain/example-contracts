@@ -6,18 +6,17 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContrac
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
-import {SystemContract} from "@zetachain/toolkit/contracts/SystemContract.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Universal is UniversalContract, Ownable {
     GatewayZEVM public immutable gateway;
-    SystemContract public immutable systemContract =
-        SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
+    address public immutable uniswapRouter;
     bool public isUniversal = true;
-    uint256 public gasLimit = 700000;
 
     error TransferFailed();
     error InsufficientOutAmount(uint256 out, uint256 gasFee);
+    error Unauthorized();
+    error InvalidAddress();
 
     mapping(address => bytes) public counterparty;
 
@@ -28,15 +27,22 @@ contract Universal is UniversalContract, Ownable {
     event Data(bytes);
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
     constructor(
         address payable gatewayAddress,
-        address initialOwner
-    ) Ownable(initialOwner) {
+        address owner,
+        address uniswapRouterAddress
+    ) Ownable(owner) {
+        if (
+            gatewayAddress == address(0) ||
+            owner == address(0) ||
+            uniswapRouterAddress == address(0)
+        ) revert InvalidAddress();
         gateway = GatewayZEVM(gatewayAddress);
+        uniswapRouter = uniswapRouterAddress;
     }
 
     function setCounterparty(
@@ -68,7 +74,7 @@ contract Universal is UniversalContract, Ownable {
             callOptions.gasLimit
         );
         uint256 out = SwapHelperLib.swapExactTokensForTokens(
-            systemContract,
+            uniswapRouter,
             zrc20,
             amount,
             destination,
@@ -88,7 +94,7 @@ contract Universal is UniversalContract, Ownable {
                 receiver,
                 data
             ),
-            gasLimit
+            callOptions.gasLimit
         );
 
         bytes memory m = callOptions.isArbitraryCall
@@ -117,7 +123,7 @@ contract Universal is UniversalContract, Ownable {
                 (RevertOptions, address, uint256, bytes, bytes)
             );
         uint256 out = SwapHelperLib.swapExactTokensForTokens(
-            systemContract,
+            uniswapRouter,
             context.asset,
             context.amount,
             destination,

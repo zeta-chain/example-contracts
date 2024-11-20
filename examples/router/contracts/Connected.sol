@@ -11,9 +11,12 @@ contract Connected is Ownable {
     uint256 private _nextTokenId;
     address public counterparty;
     address public router;
+
     event HelloEvent(string, string);
     event OnCallEvent(string);
     event OnRevertEvent(string, RevertContext);
+
+    error Unauthorized();
 
     function setCounterparty(address contractAddress) external onlyOwner {
         counterparty = contractAddress;
@@ -24,7 +27,7 @@ contract Connected is Ownable {
     }
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
@@ -63,14 +66,13 @@ contract Connected is Ownable {
         MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        if (context.sender != router) revert("Unauthorized: not router");
-        (bytes memory data, bytes memory sender, bool isCall) = abi.decode(
+        if (context.sender != router) revert Unauthorized();
+        (bytes memory data, address sender, bool isCall) = abi.decode(
             message,
-            (bytes, bytes, bool)
+            (bytes, address, bool)
         );
 
-        if (bytesToAddress(sender) != counterparty)
-            revert("Unauthorized: not counterparty");
+        if (sender != counterparty) revert Unauthorized();
 
         if (isCall) {
             emit OnCallEvent("regular call");
