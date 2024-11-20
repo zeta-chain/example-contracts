@@ -11,10 +11,12 @@ contract Universal is UniversalContract {
 
     event HelloEvent(string, string);
     event RevertEvent(string, RevertContext);
+
     error TransferFailed();
+    error Unauthorized();
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
