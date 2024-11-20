@@ -79,7 +79,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const gasAmount = ethers.utils.parseUnits(args.gasAmount, 18);
 
-  tx = await (contract as any).transferCrossChain(
+  tx = await (contract as any).sendMessage(
     args.to,
     message,
     callOptions,

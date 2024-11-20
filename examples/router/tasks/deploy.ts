@@ -15,7 +15,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const contract = await factory.deploy(
     args.gateway,
     signer.address,
-    ...(args.uniswapRouter ? [args.uniswapRouter] : [])
+    ...(args.uniswapRouter ? [args.uniswapRouter] : []),
+    ...(args.router ? [args.router] : [])
   );
   await contract.deployed();
 
@@ -43,4 +44,5 @@ task("deploy", "Deploy the NFT contract", main)
     "Gateway address (default: ZetaChain Gateway)",
     "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
   )
-  .addOptionalParam("uniswapRouter", "Uniswap v2 Router address");
+  .addOptionalParam("uniswapRouter", "Uniswap v2 Router address")
+  .addOptionalParam("router", "Router address");
