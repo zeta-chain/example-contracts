@@ -80,7 +80,7 @@ contract Universal is UniversalContract, Ownable {
             destination,
             0
         );
-        require(out >= gasFee, "Insufficient out amount for gas fee");
+
         IZRC20(destination).approve(address(gateway), out);
 
         RevertOptions memory revertOptionsUniversal = RevertOptions(
