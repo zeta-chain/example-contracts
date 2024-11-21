@@ -61,7 +61,7 @@ contract Universal is UniversalContract, Ownable {
     ) external override onlyGateway {
         (
             bytes memory receiver,
-            address destination,
+            address targetToken,
             bytes memory data,
             CallOptions memory callOptions,
             RevertOptions memory revertOptions
@@ -70,18 +70,41 @@ contract Universal is UniversalContract, Ownable {
                 (bytes, address, bytes, CallOptions, RevertOptions)
             );
 
-        (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
+        uint256 inputForGas;
+        address gasZRC20;
+        uint256 gasFee;
+        uint256 swapAmount;
+
+        (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFeeWithGasLimit(
             callOptions.gasLimit
         );
-        uint256 out = SwapHelperLib.swapExactTokensForTokens(
+        if (gasZRC20 == zrc20) {
+            swapAmount = amount - gasFee;
+        } else {
+            inputForGas = SwapHelperLib.swapTokensForExactTokens(
+                uniswapRouter,
+                zrc20,
+                gasFee,
+                gasZRC20,
+                amount
+            );
+            swapAmount = amount - inputForGas;
+        }
+
+        uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
             uniswapRouter,
             zrc20,
-            amount,
-            destination,
+            swapAmount,
+            targetToken,
             0
         );
 
-        IZRC20(destination).approve(address(gateway), out);
+        if (gasZRC20 == targetToken) {
+            IZRC20(gasZRC20).approve(address(gateway), outputAmount + gasFee);
+        } else {
+            IZRC20(gasZRC20).approve(address(gateway), gasFee);
+            IZRC20(targetToken).approve(address(gateway), outputAmount);
+        }
 
         RevertOptions memory revertOptionsUniversal = RevertOptions(
             address(this),
@@ -97,16 +120,14 @@ contract Universal is UniversalContract, Ownable {
             callOptions.gasLimit
         );
 
-        uint256 withdrawAmount = out - gasFee;
-
         bytes memory m = callOptions.isArbitraryCall
-            ? abi.encodePacked(data, context.sender, withdrawAmount, true)
-            : abi.encode(data, context.sender, withdrawAmount, true);
+            ? abi.encodePacked(data, context.sender, outputAmount, true)
+            : abi.encode(data, context.sender, outputAmount, true);
 
         gateway.withdrawAndCall(
             receiver,
-            withdrawAmount,
-            destination,
+            outputAmount,
+            targetToken,
             m,
             callOptions,
             revertOptionsUniversal

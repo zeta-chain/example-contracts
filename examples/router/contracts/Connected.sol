@@ -27,14 +27,23 @@ contract Connected is ConnectedRouter {
         uint256 amount
     ) internal override {
         emit OnMessageRevertEvent();
+        // Revert from destination chain
+    }
+
+    function onRevert(
+        RevertContext calldata context
+    ) external payable override onlyGateway {
+        if (context.sender != router) revert("Unauthorized");
+        emit OnRevertEvent("Event from onRevert()", context);
+        // Revert from ZetaChain
     }
 
     function sendMessage(
-        address destination,
+        address targetToken,
         bytes memory data,
         CallOptions memory callOptions,
         RevertOptions memory revertOptions
     ) external payable {
-        gatewaySendMessage(destination, data, callOptions, revertOptions);
+        gatewaySendMessage(targetToken, data, callOptions, revertOptions);
     }
 }

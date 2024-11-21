@@ -31,7 +31,7 @@ npx hardhat connected-set-counterparty --network localhost --contract "$CONTRACT
 npx hardhat connected-set-counterparty --network localhost --contract "$CONTRACT_BNB" --counterparty "$CONTRACT_ETHEREUM" --json &>/dev/null
 
 echo -e "\nMaking an authenticated call..."
-npx hardhat transfer --network localhost --json --from "$CONTRACT_ETHEREUM" --to "$ZRC20_BNB" --gas-amount 1 --call-on-revert --revert-address "$CONTRACT_ETHEREUM" --revert-message "hello" --types '["string"]' alice
+npx hardhat transfer --network localhost --json --from "$CONTRACT_ETHEREUM" --to 0x05BA149A7bd6dC1F937fA9046A9e05C05f3b18b0 --gas-amount 1 --call-on-revert --revert-address "$CONTRACT_ETHEREUM" --revert-message "hello" --types '["string"]' alice
 
 npx hardhat localnet-check
 

@@ -37,14 +37,14 @@ contract ConnectedRouter is Ownable {
     }
 
     function gatewaySendMessage(
-        address destination,
+        address targetToken,
         bytes memory data,
         CallOptions memory callOptions,
         RevertOptions memory revertOptions
     ) public payable {
         bytes memory message = abi.encode(
             abi.encodePacked(counterparty),
-            destination,
+            targetToken,
             data,
             callOptions,
             revertOptions
@@ -77,7 +77,7 @@ contract ConnectedRouter is Ownable {
     // onRevert is executed when router's onCall reverts
     function onRevert(
         RevertContext calldata context
-    ) external payable onlyGateway {
+    ) external payable virtual onlyGateway {
         if (context.sender != router) revert("Unauthorized");
         emit OnRevertEvent("Event from onRevert()", context);
     }
