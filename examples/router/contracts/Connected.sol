@@ -15,14 +15,16 @@ contract Connected is ConnectedRouter {
 
     function onMessageReceive(
         bytes memory data,
-        address sender
+        address sender,
+        uint256 amount
     ) internal override {
         emit OnMessageReceiveEvent();
     }
 
     function onMessageRevert(
         bytes memory data,
-        address sender
+        address sender,
+        uint256 amount
     ) internal override {
         emit OnMessageRevertEvent();
     }

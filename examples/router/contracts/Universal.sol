@@ -97,13 +97,15 @@ contract Universal is UniversalContract, Ownable {
             callOptions.gasLimit
         );
 
+        uint256 withdrawAmount = out - gasFee;
+
         bytes memory m = callOptions.isArbitraryCall
-            ? abi.encodePacked(data, context.sender, true)
-            : abi.encode(data, context.sender, true);
+            ? abi.encodePacked(data, context.sender, withdrawAmount, true)
+            : abi.encode(data, context.sender, withdrawAmount, true);
 
         gateway.withdrawAndCall(
             receiver,
-            out - gasFee,
+            withdrawAmount,
             destination,
             m,
             callOptions,
@@ -141,7 +143,7 @@ contract Universal is UniversalContract, Ownable {
             abi.encodePacked(revertOptions.revertAddress),
             out - gasFee,
             destination,
-            abi.encode(data, receiver, false),
+            abi.encode(data, receiver, out - gasFee, false),
             CallOptions(onRevertGasLimit, false),
             RevertOptions(address(0), false, address(0), "", 0)
         );

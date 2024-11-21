@@ -61,17 +61,15 @@ contract ConnectedRouter is Ownable {
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
         if (context.sender != router) revert Unauthorized();
-        (bytes memory data, address sender, bool isCall) = abi.decode(
-            message,
-            (bytes, address, bool)
-        );
+        (bytes memory data, address sender, uint256 amount, bool isCall) = abi
+            .decode(message, (bytes, address, uint256, bool));
 
         if (sender != counterparty) revert Unauthorized();
 
         if (isCall) {
-            onMessageReceive(data, sender);
+            onMessageReceive(data, sender, amount);
         } else {
-            onMessageRevert(data, sender);
+            onMessageRevert(data, sender, amount);
         }
         return "";
     }
@@ -86,14 +84,16 @@ contract ConnectedRouter is Ownable {
 
     function onMessageReceive(
         bytes memory data,
-        address sender
+        address sender,
+        uint256 amount
     ) internal virtual {
         // To be overridden in the child contract
     }
 
     function onMessageRevert(
         bytes memory data,
-        address sender
+        address sender,
+        uint256 amount
     ) internal virtual {
         // To be overridden in the child contract
     }
