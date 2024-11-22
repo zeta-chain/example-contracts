@@ -20,6 +20,8 @@ contract SwapToAnyToken is UniversalContract {
 
     error InvalidAddress();
     error Unauthorized();
+    error ApprovalFailed();
+    error TransferFailed();
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -155,10 +157,16 @@ contract SwapToAnyToken is UniversalContract {
     ) public {
         if (params.withdraw) {
             if (gasZRC20 == params.target) {
-                IZRC20(gasZRC20).approve(address(gateway), out + gasFee);
+                if (!IZRC20(gasZRC20).approve(address(gateway), out + gasFee)) {
+                    revert ApprovalFailed();
+                }
             } else {
-                IZRC20(gasZRC20).approve(address(gateway), gasFee);
-                IZRC20(params.target).approve(address(gateway), out);
+                if (!IZRC20(gasZRC20).approve(address(gateway), gasFee)) {
+                    revert ApprovalFailed();
+                }
+                if (!IZRC20(params.target).approve(address(gateway), out)) {
+                    revert ApprovalFailed();
+                }
             }
             gateway.withdraw(
                 abi.encodePacked(params.to),
@@ -173,10 +181,13 @@ contract SwapToAnyToken is UniversalContract {
                 })
             );
         } else {
-            IWETH9(params.target).transfer(
+            bool success = IWETH9(params.target).transfer(
                 address(uint160(bytes20(params.to))),
                 out
             );
+            if (!success) {
+                revert TransferFailed();
+            }
         }
     }
 

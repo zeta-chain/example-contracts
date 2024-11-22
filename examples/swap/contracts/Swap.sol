@@ -19,6 +19,7 @@ contract Swap is UniversalContract {
 
     error InvalidAddress();
     error Unauthorized();
+    error ApprovalFailed();
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -115,10 +116,23 @@ contract Swap is UniversalContract {
         address inputToken
     ) public {
         if (gasZRC20 == params.target) {
-            IZRC20(gasZRC20).approve(address(gateway), outputAmount + gasFee);
+            if (
+                !IZRC20(gasZRC20).approve(
+                    address(gateway),
+                    outputAmount + gasFee
+                )
+            ) {
+                revert ApprovalFailed();
+            }
         } else {
-            IZRC20(gasZRC20).approve(address(gateway), gasFee);
-            IZRC20(params.target).approve(address(gateway), outputAmount);
+            if (!IZRC20(gasZRC20).approve(address(gateway), gasFee)) {
+                revert ApprovalFailed();
+            }
+            if (
+                !IZRC20(params.target).approve(address(gateway), outputAmount)
+            ) {
+                revert ApprovalFailed();
+            }
         }
         gateway.withdraw(
             params.to,
