@@ -92,12 +92,21 @@ contract SwapToAnyToken is UniversalContract {
         bytes memory recipient,
         bool withdrawFlag
     ) public {
-        IZRC20(inputToken).transferFrom(msg.sender, address(this), amount);
+        bool success = IZRC20(inputToken).transferFrom(
+            msg.sender,
+            address(this),
+            amount
+        );
+        if (!success) {
+            revert TransferFailed();
+        }
+
         (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
             inputToken,
             amount,
             targetToken
         );
+
         withdraw(
             Params({
                 target: targetToken,
