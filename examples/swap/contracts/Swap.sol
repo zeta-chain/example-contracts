@@ -119,10 +119,14 @@ contract Swap is UniversalContract {
             context.revertMessage,
             (address, address)
         );
-        uint256 out = handleGasAndSwap(context.asset, context.amount, zrc20);
+        uint256 outputAmount = handleGasAndSwap(
+            context.asset,
+            context.amount,
+            zrc20
+        );
         gateway.withdraw(
             abi.encodePacked(sender),
-            out,
+            outputAmount,
             zrc20,
             RevertOptions({
                 revertAddress: sender,
@@ -134,13 +138,7 @@ contract Swap is UniversalContract {
         );
     }
 
-    // // Fallback function that reverts
-    // fallback() external payable {
-    //     revert("Fallback function triggered");
-    // }
+    fallback() external payable {}
 
-    // // Receive function that reverts (for ETH transfers)
-    // receive() external payable {
-    //     revert("ETH transfers not allowed");
-    // }
+    receive() external payable {}
 }
