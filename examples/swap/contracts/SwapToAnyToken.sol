@@ -16,6 +16,7 @@ contract SwapToAnyToken is UniversalContract {
     address public immutable uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
+    uint256 public gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
@@ -25,11 +26,16 @@ contract SwapToAnyToken is UniversalContract {
         _;
     }
 
-    constructor(address payable gatewayAddress, address uniswapRouterAddress) {
+    constructor(
+        address payable gatewayAddress,
+        address uniswapRouterAddress,
+        uint256 gasLimitAmount
+    ) {
         if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
             revert InvalidAddress();
         uniswapRouter = uniswapRouterAddress;
         gateway = GatewayZEVM(gatewayAddress);
+        gasLimit = gasLimitAmount;
     }
 
     struct Params {
@@ -163,7 +169,7 @@ contract SwapToAnyToken is UniversalContract {
                     callOnRevert: true,
                     abortAddress: address(0),
                     revertMessage: abi.encode(sender, inputToken),
-                    onRevertGasLimit: 0
+                    onRevertGasLimit: gasLimit
                 })
             );
         } else {
@@ -194,7 +200,7 @@ contract SwapToAnyToken is UniversalContract {
                 callOnRevert: false,
                 abortAddress: address(0),
                 revertMessage: "",
-                onRevertGasLimit: 0
+                onRevertGasLimit: gasLimit
             })
         );
     }
