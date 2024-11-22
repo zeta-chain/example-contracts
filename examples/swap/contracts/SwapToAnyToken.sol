@@ -69,12 +69,12 @@ contract SwapToAnyToken is UniversalContract {
             params.withdraw = withdrawFlag;
         }
 
-        (
-            uint256 outputAmount,
-            address gasZRC20,
-            uint256 gasFee
-        ) = handleGasAndSwap(zrc20, amount, params.target);
-        withdraw(params, context.sender, gasFee, gasZRC20, outputAmount, zrc20);
+        (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
+            zrc20,
+            amount,
+            params.target
+        );
+        withdraw(params, context.sender, gasFee, gasZRC20, out, zrc20);
     }
 
     function swap(
@@ -85,11 +85,11 @@ contract SwapToAnyToken is UniversalContract {
         bool withdrawFlag
     ) public {
         IZRC20(inputToken).transferFrom(msg.sender, address(this), amount);
-        (
-            uint256 outputAmount,
-            address gasZRC20,
-            uint256 gasFee
-        ) = handleGasAndSwap(inputToken, amount, targetToken);
+        (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
+            inputToken,
+            amount,
+            targetToken
+        );
         withdraw(
             Params({
                 target: targetToken,
@@ -99,7 +99,7 @@ contract SwapToAnyToken is UniversalContract {
             msg.sender,
             gasFee,
             gasZRC20,
-            outputAmount,
+            out,
             inputToken
         );
     }
@@ -129,14 +129,14 @@ contract SwapToAnyToken is UniversalContract {
             swapAmount = amount - inputForGas;
         }
 
-        uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
+        uint256 out = SwapHelperLib.swapExactTokensForTokens(
             uniswapRouter,
             inputToken,
             swapAmount,
             targetToken,
             0
         );
-        return (outputAmount, gasZRC20, gasFee);
+        return (out, gasZRC20, gasFee);
     }
 
     function withdraw(
@@ -144,22 +144,19 @@ contract SwapToAnyToken is UniversalContract {
         address sender,
         uint256 gasFee,
         address gasZRC20,
-        uint256 outputAmount,
+        uint256 out,
         address inputToken
     ) public {
         if (params.withdraw) {
             if (gasZRC20 == params.target) {
-                IZRC20(gasZRC20).approve(
-                    address(gateway),
-                    outputAmount + gasFee
-                );
+                IZRC20(gasZRC20).approve(address(gateway), out + gasFee);
             } else {
                 IZRC20(gasZRC20).approve(address(gateway), gasFee);
-                IZRC20(params.target).approve(address(gateway), outputAmount);
+                IZRC20(params.target).approve(address(gateway), out);
             }
             gateway.withdraw(
                 abi.encodePacked(params.to),
-                outputAmount,
+                out,
                 params.target,
                 RevertOptions({
                     revertAddress: address(this),
@@ -172,7 +169,7 @@ contract SwapToAnyToken is UniversalContract {
         } else {
             IWETH9(params.target).transfer(
                 address(uint160(bytes20(params.to))),
-                outputAmount
+                out
             );
         }
     }
@@ -182,7 +179,7 @@ contract SwapToAnyToken is UniversalContract {
             context.revertMessage,
             (address, address)
         );
-        (uint256 outputAmount, , ) = handleGasAndSwap(
+        (uint256 out, , ) = handleGasAndSwap(
             context.asset,
             context.amount,
             zrc20
@@ -190,7 +187,7 @@ contract SwapToAnyToken is UniversalContract {
 
         gateway.withdraw(
             abi.encodePacked(sender),
-            outputAmount,
+            out,
             zrc20,
             RevertOptions({
                 revertAddress: sender,

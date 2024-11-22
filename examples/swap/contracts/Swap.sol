@@ -57,26 +57,19 @@ contract Swap is UniversalContract {
             params.to = recipient;
         }
 
-        uint256 out = handleGasAndSwap(zrc20, amount, params.target);
-        gateway.withdraw(
-            params.to,
-            out,
-            params.target,
-            RevertOptions({
-                revertAddress: address(this),
-                callOnRevert: true,
-                abortAddress: address(0),
-                revertMessage: abi.encode(context.sender, zrc20),
-                onRevertGasLimit: 100000
-            })
+        (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
+            zrc20,
+            amount,
+            params.target
         );
+        withdraw(params, context.sender, gasFee, gasZRC20, out, zrc20);
     }
 
     function handleGasAndSwap(
         address inputToken,
         uint256 amount,
         address targetToken
-    ) internal returns (uint256) {
+    ) internal returns (uint256, address, uint256) {
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
@@ -104,7 +97,35 @@ contract Swap is UniversalContract {
             targetToken,
             0
         );
-        return outputAmount;
+        return (outputAmount, gasZRC20, gasFee);
+    }
+
+    function withdraw(
+        Params memory params,
+        address sender,
+        uint256 gasFee,
+        address gasZRC20,
+        uint256 outputAmount,
+        address inputToken
+    ) public {
+        if (gasZRC20 == params.target) {
+            IZRC20(gasZRC20).approve(address(gateway), outputAmount + gasFee);
+        } else {
+            IZRC20(gasZRC20).approve(address(gateway), gasFee);
+            IZRC20(params.target).approve(address(gateway), outputAmount);
+        }
+        gateway.withdraw(
+            params.to,
+            outputAmount,
+            params.target,
+            RevertOptions({
+                revertAddress: address(this),
+                callOnRevert: true,
+                abortAddress: address(0),
+                revertMessage: abi.encode(sender, inputToken),
+                onRevertGasLimit: 100000
+            })
+        );
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
@@ -112,14 +133,14 @@ contract Swap is UniversalContract {
             context.revertMessage,
             (address, address)
         );
-        uint256 outputAmount = handleGasAndSwap(
+        (uint256 out, , ) = handleGasAndSwap(
             context.asset,
             context.amount,
             zrc20
         );
         gateway.withdraw(
             abi.encodePacked(sender),
-            outputAmount,
+            out,
             zrc20,
             RevertOptions({
                 revertAddress: sender,
