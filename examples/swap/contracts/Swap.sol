@@ -104,13 +104,6 @@ contract Swap is UniversalContract {
             targetToken,
             0
         );
-
-        if (gasZRC20 == targetToken) {
-            IZRC20(gasZRC20).approve(address(gateway), outputAmount + gasFee);
-        } else {
-            IZRC20(gasZRC20).approve(address(gateway), gasFee);
-            IZRC20(targetToken).approve(address(gateway), outputAmount);
-        }
         return outputAmount;
     }
 
