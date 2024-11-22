@@ -1,4 +1,4 @@
-import { task } from "hardhat/config";
+import { task, types } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
@@ -14,7 +14,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const factory = await hre.ethers.getContractFactory(args.name);
   const contract = await (factory as any).deploy(
     args.gateway,
-    args.uniswapRouter
+    args.uniswapRouter,
+    args.gasLimit
   );
   await contract.deployed();
 
@@ -44,4 +45,10 @@ task("deploy", "Deploy the contract", main)
     "gateway",
     "Gateway address (default: ZetaChain Gateway)",
     "0x6c533f7fe93fae114d0954697069df33c9b74fd7"
+  )
+  .addOptionalParam(
+    "gasLimit",
+    "Gas limit for the transaction",
+    1000000,
+    types.int
   );
