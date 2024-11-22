@@ -57,15 +57,26 @@ contract Swap is UniversalContract {
             params.to = recipient;
         }
 
-        swapAndWithdraw(zrc20, amount, params.target, params.to);
+        uint256 out = handleGasAndSwap(zrc20, amount, params.target);
+        gateway.withdraw(
+            params.to,
+            out,
+            params.target,
+            RevertOptions({
+                revertAddress: address(this),
+                callOnRevert: true,
+                abortAddress: address(0),
+                revertMessage: abi.encode(context.sender, zrc20),
+                onRevertGasLimit: 100000
+            })
+        );
     }
 
-    function swapAndWithdraw(
+    function handleGasAndSwap(
         address inputToken,
         uint256 amount,
-        address targetToken,
-        bytes memory recipient
-    ) internal {
+        address targetToken
+    ) internal returns (uint256) {
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
@@ -100,13 +111,21 @@ contract Swap is UniversalContract {
             IZRC20(gasZRC20).approve(address(gateway), gasFee);
             IZRC20(targetToken).approve(address(gateway), outputAmount);
         }
+        return outputAmount;
+    }
 
+    function onRevert(RevertContext calldata context) external onlyGateway {
+        (address sender, address zrc20) = abi.decode(
+            context.revertMessage,
+            (address, address)
+        );
+        uint256 out = handleGasAndSwap(context.asset, context.amount, zrc20);
         gateway.withdraw(
-            recipient,
-            outputAmount,
-            targetToken,
+            abi.encodePacked(sender),
+            out,
+            zrc20,
             RevertOptions({
-                revertAddress: address(0),
+                revertAddress: sender,
                 callOnRevert: false,
                 abortAddress: address(0),
                 revertMessage: "",
@@ -115,7 +134,13 @@ contract Swap is UniversalContract {
         );
     }
 
-    function onRevert(
-        RevertContext calldata revertContext
-    ) external onlyGateway {}
+    // // Fallback function that reverts
+    // fallback() external payable {
+    //     revert("Fallback function triggered");
+    // }
+
+    // // Receive function that reverts (for ETH transfers)
+    // receive() external payable {
+    //     revert("ETH transfers not allowed");
+    // }
 }
