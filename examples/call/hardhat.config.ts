@@ -1,9 +1,10 @@
 import "./tasks/deploy";
-import "./tasks/deploy";
-import "./tasks/mint";
-import "./tasks/transfer";
-import "./tasks/universalSetConnected";
-import "./tasks/connectedSetUniversal";
+import "./tasks/universalCall";
+import "./tasks/connectedCall";
+import "./tasks/connectedDeposit";
+import "./tasks/connectedDepositAndCall";
+import "./tasks/universalWithdraw";
+import "./tasks/universalWithdrawAndCall";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";

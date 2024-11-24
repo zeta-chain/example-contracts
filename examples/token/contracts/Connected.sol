@@ -9,29 +9,35 @@ import "./shared/Events.sol";
 
 contract Connected is ERC20, Ownable2Step, Events {
     GatewayEVM public immutable gateway;
-    address public counterparty;
+    address public universal;
+    uint256 public immutable gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
+    error InvalidGasLimit();
+    error GasTokenTransferFailed();
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
-    function setCounterparty(address contractAddress) external onlyOwner {
-        counterparty = contractAddress;
-        emit CounterpartySet(contractAddress);
+    function setUniversal(address contractAddress) external onlyOwner {
+        if (contractAddress == address(0)) revert InvalidAddress();
+        universal = contractAddress;
+        emit SetUniversal(contractAddress);
     }
 
     constructor(
         address payable gatewayAddress,
         address owner,
         string memory name,
-        string memory symbol
+        string memory symbol,
+        uint256 gas
     ) ERC20(name, symbol) Ownable(owner) {
         if (gatewayAddress == address(0) || owner == address(0))
             revert InvalidAddress();
+        gasLimit = gas;
         gateway = GatewayEVM(gatewayAddress);
     }
 
@@ -44,26 +50,35 @@ contract Connected is ERC20, Ownable2Step, Events {
         address receiver,
         uint256 amount
     ) external payable {
+        if (receiver == address(0)) revert InvalidAddress();
         _burn(msg.sender, amount);
-        bytes memory message = abi.encode(destination, receiver, amount);
 
-        RevertOptions memory revertOptions = RevertOptions(
-            address(this),
-            true,
-            address(0),
-            message,
-            0
+        bytes memory message = abi.encode(
+            destination,
+            receiver,
+            amount,
+            msg.sender
         );
-
         if (destination == address(0)) {
-            gateway.call(counterparty, message, revertOptions);
+            gateway.call(
+                universal,
+                message,
+                RevertOptions(address(this), false, address(0), message, 0)
+            );
         } else {
             gateway.depositAndCall{value: msg.value}(
-                counterparty,
+                universal,
                 message,
-                revertOptions
+                RevertOptions(
+                    address(this),
+                    true,
+                    address(0),
+                    abi.encode(amount, msg.sender),
+                    gasLimit
+                )
             );
         }
+
         emit TokenTransfer(destination, receiver, amount);
     }
 
@@ -71,17 +86,30 @@ contract Connected is ERC20, Ownable2Step, Events {
         MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        if (context.sender != counterparty) revert Unauthorized();
-        (address receiver, uint256 amount) = abi.decode(
-            message,
-            (address, uint256)
-        );
+        if (context.sender != universal) revert Unauthorized();
+        (
+            address receiver,
+            uint256 amount,
+            uint256 gasAmount,
+            address sender
+        ) = abi.decode(message, (address, uint256, uint256, address));
         _mint(receiver, amount);
+        if (gasAmount > 0) {
+            (bool success, ) = sender.call{value: amount}("");
+            if (!success) revert GasTokenTransferFailed();
+        }
         emit TokenTransferReceived(receiver, amount);
         return "";
     }
 
-    function onRevert(RevertContext calldata context) external onlyGateway {}
+    function onRevert(RevertContext calldata context) external onlyGateway {
+        (uint256 amount, address receiver) = abi.decode(
+            context.revertMessage,
+            (uint256, address)
+        );
+        _mint(receiver, amount);
+        emit TokenTransferReverted(receiver, amount);
+    }
 
     receive() external payable {}
 

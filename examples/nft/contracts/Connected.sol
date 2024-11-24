@@ -19,15 +19,18 @@ contract Connected is
 {
     GatewayEVM public immutable gateway;
     uint256 private _nextTokenId;
-    address public counterparty;
+    address public universal;
+    uint256 public immutable gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
+    error InvalidGasLimit();
+    error GasTokenTransferFailed();
 
-    function setCounterparty(address contractAddress) external onlyOwner {
+    function setUniversal(address contractAddress) external onlyOwner {
         if (contractAddress == address(0)) revert InvalidAddress();
-        counterparty = contractAddress;
-        emit SetCounterparty(contractAddress);
+        universal = contractAddress;
+        emit SetUniversal(contractAddress);
     }
 
     modifier onlyGateway() {
@@ -39,17 +42,24 @@ contract Connected is
         address payable gatewayAddress,
         address owner,
         string memory name,
-        string memory symbol
+        string memory symbol,
+        uint256 gas
     ) ERC721(name, symbol) Ownable(owner) {
         if (gatewayAddress == address(0) || owner == address(0))
             revert InvalidAddress();
+        if (gas == 0) revert InvalidGasLimit();
+        gasLimit = gas;
         gateway = GatewayEVM(gatewayAddress);
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
-        if (to == address(0)) revert InvalidAddress();
+        uint256 hash = uint256(
+            keccak256(
+                abi.encodePacked(address(this), block.number, _nextTokenId++)
+            )
+        );
 
-        uint256 tokenId = _nextTokenId++;
+        uint256 tokenId = hash & 0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
 
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
@@ -65,23 +75,30 @@ contract Connected is
 
         string memory uri = tokenURI(tokenId);
         _burn(tokenId);
-        bytes memory message = abi.encode(destination, receiver, tokenId, uri);
-
-        RevertOptions memory revertOptions = RevertOptions(
-            address(this),
-            true,
-            address(0),
-            message,
-            0
+        bytes memory message = abi.encode(
+            destination,
+            receiver,
+            tokenId,
+            uri,
+            msg.sender
         );
-
         if (destination == address(0)) {
-            gateway.call(counterparty, message, revertOptions);
+            gateway.call(
+                universal,
+                message,
+                RevertOptions(address(this), false, address(0), message, 0)
+            );
         } else {
             gateway.depositAndCall{value: msg.value}(
-                counterparty,
+                universal,
                 message,
-                revertOptions
+                RevertOptions(
+                    address(this),
+                    true,
+                    address(0),
+                    abi.encode(receiver, tokenId, uri, msg.sender),
+                    gasLimit
+                )
             );
         }
 
@@ -92,23 +109,30 @@ contract Connected is
         MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        if (context.sender != counterparty) revert Unauthorized();
+        if (context.sender != universal) revert Unauthorized();
 
-        (address receiver, uint256 tokenId, string memory uri) = abi.decode(
-            message,
-            (address, uint256, string)
-        );
+        (
+            address receiver,
+            uint256 tokenId,
+            string memory uri,
+            uint256 gasAmount,
+            address sender
+        ) = abi.decode(message, (address, uint256, string, uint256, address));
 
         _safeMint(receiver, tokenId);
         _setTokenURI(tokenId, uri);
+        if (gasAmount > 0) {
+            (bool success, ) = sender.call{value: gasAmount}("");
+            if (!success) revert GasTokenTransferFailed();
+        }
         emit TokenTransferReceived(receiver, tokenId, uri);
         return "";
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (address sender, uint256 tokenId, string memory uri) = abi.decode(
+        (, uint256 tokenId, string memory uri, address sender) = abi.decode(
             context.revertMessage,
-            (address, uint256, string)
+            (address, uint256, string, address)
         );
 
         _safeMint(sender, tokenId);

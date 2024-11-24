@@ -23,18 +23,17 @@ contract Universal is
     Events
 {
     GatewayZEVM public immutable gateway;
-    SystemContract public immutable systemContract =
-        SystemContract(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
+    address public immutable uniswapRouter;
     uint256 private _nextTokenId;
     bool public isUniversal = true;
-    uint256 public gasLimit;
+    uint256 public immutable gasLimit;
 
     error TransferFailed();
     error Unauthorized();
     error InvalidAddress();
     error InvalidGasLimit();
 
-    mapping(address => bytes) public counterparty;
+    mapping(address => address) public connected;
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -46,21 +45,26 @@ contract Universal is
         address owner,
         string memory name,
         string memory symbol,
-        uint256 gas
+        uint256 gas,
+        address uniswapRouterAddress
     ) ERC721(name, symbol) Ownable(owner) {
-        if (gatewayAddress == address(0) || owner == address(0))
-            revert InvalidAddress();
+        if (
+            gatewayAddress == address(0) ||
+            owner == address(0) ||
+            uniswapRouterAddress == address(0)
+        ) revert InvalidAddress();
         if (gas == 0) revert InvalidGasLimit();
         gateway = GatewayZEVM(gatewayAddress);
+        uniswapRouter = uniswapRouterAddress;
         gasLimit = gas;
     }
 
-    function setCounterparty(
+    function setConnected(
         address zrc20,
-        bytes memory contractAddress
+        address contractAddress
     ) external onlyOwner {
-        counterparty[zrc20] = contractAddress;
-        emit CounterpartySet(zrc20, contractAddress);
+        connected[zrc20] = contractAddress;
+        emit SetConnected(zrc20, contractAddress);
     }
 
     function transferCrossChain(
@@ -79,7 +83,13 @@ contract Universal is
             !IZRC20(destination).transferFrom(msg.sender, address(this), gasFee)
         ) revert TransferFailed();
         IZRC20(destination).approve(address(gateway), gasFee);
-        bytes memory message = abi.encode(receiver, tokenId, uri);
+        bytes memory message = abi.encode(
+            receiver,
+            tokenId,
+            uri,
+            0,
+            msg.sender
+        );
 
         CallOptions memory callOptions = CallOptions(gasLimit, false);
 
@@ -87,12 +97,12 @@ contract Universal is
             address(this),
             true,
             address(0),
-            message,
+            abi.encode(tokenId, uri, msg.sender),
             gasLimit
         );
 
         gateway.call(
-            counterparty[destination],
+            abi.encodePacked(connected[destination]),
             destination,
             message,
             callOptions,
@@ -121,49 +131,56 @@ contract Universal is
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
-        if (keccak256(context.origin) != keccak256(counterparty[zrc20]))
-            revert("Unauthorized");
+        if (context.sender != connected[zrc20]) revert Unauthorized();
 
         (
             address destination,
-            address sender,
+            address receiver,
             uint256 tokenId,
-            string memory uri
-        ) = abi.decode(message, (address, address, uint256, string));
+            string memory uri,
+            address sender
+        ) = abi.decode(message, (address, address, uint256, string, address));
 
         if (destination == address(0)) {
-            _safeMint(sender, tokenId);
+            _safeMint(receiver, tokenId);
             _setTokenURI(tokenId, uri);
-            emit TokenTransferReceived(sender, tokenId, uri);
+            emit TokenTransferReceived(receiver, tokenId, uri);
         } else {
             (, uint256 gasFee) = IZRC20(destination).withdrawGasFeeWithGasLimit(
                 gasLimit
             );
 
-            SwapHelperLib.swapExactTokensForTokens(
-                systemContract,
+            uint256 out = SwapHelperLib.swapExactTokensForTokens(
+                uniswapRouter,
                 zrc20,
                 amount,
                 destination,
                 0
             );
 
-            IZRC20(destination).approve(address(gateway), gasFee);
-            gateway.call(
-                counterparty[destination],
+            IZRC20(destination).approve(address(gateway), out);
+            gateway.withdrawAndCall(
+                abi.encodePacked(connected[destination]),
+                out - gasFee,
                 destination,
-                abi.encode(sender, tokenId, uri),
+                abi.encode(receiver, tokenId, uri, out - gasFee, sender),
                 CallOptions(gasLimit, false),
-                RevertOptions(address(0), false, address(0), "", 0)
+                RevertOptions(
+                    address(this),
+                    true,
+                    address(0),
+                    abi.encode(tokenId, uri, sender),
+                    0
+                )
             );
-            emit TokenTransferToDestination(sender, destination, tokenId, uri);
         }
+        emit TokenTransferToDestination(receiver, destination, tokenId, uri);
     }
 
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (address sender, uint256 tokenId, string memory uri) = abi.decode(
+        (uint256 tokenId, string memory uri, address sender) = abi.decode(
             context.revertMessage,
-            (address, uint256, string)
+            (uint256, string, address)
         );
 
         _safeMint(sender, tokenId);
