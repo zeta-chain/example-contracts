@@ -22,6 +22,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ...(args.uniswapRouter ? [args.uniswapRouter] : []),
     {
       gasPrice: args.deployGasPrice,
+      gasLimit: args.deployGasLimit,
     }
   );
 
@@ -63,5 +64,10 @@ task("deploy", "Deploy the NFT contract", main)
     "deployGasPrice",
     "Gas price for deploy transaction",
     "10000000000"
+  )
+  .addOptionalParam(
+    "deployGasLimit",
+    "Gas limit for deploy transaction",
+    "5000000"
   )
   .addOptionalParam("uniswapRouter", "Uniswap v2 Router address");
