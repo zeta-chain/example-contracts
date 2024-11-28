@@ -17,6 +17,8 @@ contract ConnectedRouter is Ownable {
     event OnRevertEvent(string, RevertContext);
 
     error Unauthorized();
+    error TransferFailed();
+    error ApprovalFailed();
 
     function setCounterparty(address contractAddress) external onlyOwner {
         counterparty = contractAddress;
@@ -34,26 +36,6 @@ contract ConnectedRouter is Ownable {
     ) Ownable(ownerAddress) {
         gateway = GatewayEVM(gatewayAddress);
         router = routerAddress;
-    }
-
-    function gatewaySendMessage(
-        address targetToken,
-        bytes memory data,
-        CallOptions memory callOptions,
-        RevertOptions memory revertOptions
-    ) public payable {
-        bytes memory message = abi.encode(
-            abi.encodePacked(counterparty),
-            targetToken,
-            data,
-            callOptions,
-            revertOptions
-        );
-        gateway.depositAndCall{value: msg.value}(
-            router,
-            message,
-            revertOptions
-        );
     }
 
     function onCall(

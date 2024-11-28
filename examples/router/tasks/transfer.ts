@@ -152,4 +152,5 @@ task("transfer", "Make a cross-chain call", main)
     "function",
     "The function to call on the destination chain (only for arbitrary calls)"
   )
+  .addOptionalParam("erc20", "The address of the ERC20 token to transfer")
   .addVariadicPositionalParam("values", "The values of the parameters");

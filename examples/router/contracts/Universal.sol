@@ -18,9 +18,6 @@ contract Universal is UniversalContract, Ownable {
     error Unauthorized();
     error InvalidAddress();
 
-    mapping(address => bytes) public counterparty;
-
-    event CounterpartySet(address indexed zrc20, bytes indexed contractAddress);
     event GasFeeAndOut(uint256 gasFee, uint256 out);
     event RevertEvent(string);
 
@@ -43,14 +40,6 @@ contract Universal is UniversalContract, Ownable {
         ) revert InvalidAddress();
         gateway = GatewayZEVM(gatewayAddress);
         uniswapRouter = uniswapRouterAddress;
-    }
-
-    function setCounterparty(
-        address zrc20,
-        bytes memory contractAddress
-    ) external onlyOwner {
-        counterparty[zrc20] = contractAddress;
-        emit CounterpartySet(zrc20, contractAddress);
     }
 
     function onCall(
