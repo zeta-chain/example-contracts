@@ -1,9 +1,10 @@
 import "./tasks/deploy";
-import "./tasks/deploy";
-import "./tasks/transfer";
-import "./tasks/universalSetCounterparty";
-import "./tasks/connectedSetCounterparty";
-import "./tasks/connectedSetRouter";
+import "./tasks/universalCall";
+import "./tasks/connectedCall";
+import "./tasks/connectedDeposit";
+import "./tasks/connectedDepositAndCall";
+import "./tasks/universalWithdraw";
+import "./tasks/universalWithdrawAndCall";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
@@ -15,16 +16,7 @@ const config: HardhatUserConfig = {
   networks: {
     ...getHardhatConfigNetworks(),
   },
-  solidity: {
-    version: "0.8.26",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200,
-      },
-      viaIR: true,
-    },
-  },
+  solidity: "0.8.26",
 };
 
 export default config;

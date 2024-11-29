@@ -11,10 +11,12 @@ contract Universal is UniversalContract {
 
     event HelloEvent(string, string);
     event RevertEvent(string, RevertContext);
+
     error TransferFailed();
+    error Unauthorized();
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
@@ -32,8 +34,9 @@ contract Universal is UniversalContract {
         (, uint256 gasFee) = IZRC20(zrc20).withdrawGasFeeWithGasLimit(
             callOptions.gasLimit
         );
-        if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee))
+        if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), gasFee)) {
             revert TransferFailed();
+        }
         IZRC20(zrc20).approve(address(gateway), gasFee);
         gateway.call(receiver, zrc20, message, callOptions, revertOptions);
     }
@@ -46,8 +49,9 @@ contract Universal is UniversalContract {
     ) external {
         (address gasZRC20, uint256 gasFee) = IZRC20(zrc20).withdrawGasFee();
         uint256 target = zrc20 == gasZRC20 ? amount + gasFee : amount;
-        if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), target))
+        if (!IZRC20(zrc20).transferFrom(msg.sender, address(this), target)) {
             revert TransferFailed();
+        }
         IZRC20(zrc20).approve(address(gateway), target);
         if (zrc20 != gasZRC20) {
             if (
@@ -56,7 +60,9 @@ contract Universal is UniversalContract {
                     address(this),
                     gasFee
                 )
-            ) revert TransferFailed();
+            ) {
+                revert TransferFailed();
+            }
             IZRC20(gasZRC20).approve(address(gateway), gasFee);
         }
         gateway.withdraw(receiver, amount, zrc20, revertOptions);
@@ -83,7 +89,9 @@ contract Universal is UniversalContract {
                     address(this),
                     gasFee
                 )
-            ) revert TransferFailed();
+            ) {
+                revert TransferFailed();
+            }
             IZRC20(gasZRC20).approve(address(gateway), gasFee);
         }
         gateway.withdrawAndCall(

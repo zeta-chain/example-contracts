@@ -15,15 +15,14 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     args.contract
   );
 
-  const tx = await contract.setCounterparty(args.zrc20, args.counterparty);
-  const receipt = await tx.wait();
+  const tx = await contract.setConnected(args.zrc20, args.connected);
 
   if (args.json) {
     console.log(
       JSON.stringify({
         contractAddress: args.contract,
         zrc20: args.zrc20,
-        connectedContractAddress: args.counterparty,
+        connectedContractAddress: args.connected,
         transactionHash: tx.hash,
       })
     );
@@ -36,8 +35,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("universal-set-counterparty", "Sets the connected contract address", main)
+task("universal-set-connected", "Sets the connected contract address", main)
   .addParam("contract", "The address of the deployed contract")
   .addParam("zrc20", "The ZRC20 address to link to the connected contract")
-  .addParam("counterparty", "The address of the connected contract to set")
+  .addParam("connected", "The address of the connected contract to set")
   .addFlag("json", "Output the result in JSON format");

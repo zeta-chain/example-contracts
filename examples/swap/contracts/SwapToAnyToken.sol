@@ -18,8 +18,11 @@ contract SwapToAnyToken is UniversalContract {
     uint256 constant BITCOIN = 18332;
     error InvalidAddress();
 
+    error InvalidAddress();
+    error Unauthorized();
+
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 

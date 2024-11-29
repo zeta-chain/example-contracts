@@ -15,13 +15,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     args.contract
   );
 
-  const tx = await contract.setRouter(args.counterparty);
+  const tx = await contract.setUniversal(args.universal);
 
   if (args.json) {
     console.log(
       JSON.stringify({
         contractAddress: args.contract,
-        universalContract: args.counterparty,
+        universalContract: args.universal,
         transactionHash: tx.hash,
       })
     );
@@ -33,8 +33,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 };
 
-task("connected-set-router", "Sets the universal contract address", main)
+task("connected-set-universal", "Sets the universal contract address", main)
   .addParam("contract", "The address of the deployed contract")
-  .addParam("counterparty", "The address of the universal contract to set")
-  .addOptionalParam("name", "The contract name to interact with", "Connected")
+  .addParam("universal", "The address of the universal contract to set")
   .addFlag("json", "Output the result in JSON format");

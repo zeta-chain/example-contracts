@@ -3,18 +3,20 @@ pragma solidity 0.8.26;
 
 import {RevertContext} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/evm/GatewayEVM.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract Connected {
+    using SafeERC20 for IERC20; // Use SafeERC20 for IERC20 operations
+
     GatewayEVM public immutable gateway;
 
     event RevertEvent(string, RevertContext);
     event HelloEvent(string, string);
 
-    error TransferFailed();
-    error ApprovalFailed();
+    error Unauthorized();
 
     modifier onlyGateway() {
-        require(msg.sender == address(gateway), "Caller is not the gateway");
+        if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
@@ -43,12 +45,8 @@ contract Connected {
         address asset,
         RevertOptions memory revertOptions
     ) external {
-        if (!IERC20(asset).transferFrom(msg.sender, address(this), amount)) {
-            revert TransferFailed();
-        }
-        if (!IERC20(asset).approve(address(gateway), amount)) {
-            revert ApprovalFailed();
-        }
+        IERC20(asset).safeTransferFrom(msg.sender, address(this), amount);
+        IERC20(asset).approve(address(gateway), amount);
         gateway.deposit(receiver, amount, asset, revertOptions);
     }
 
@@ -59,12 +57,8 @@ contract Connected {
         bytes calldata message,
         RevertOptions memory revertOptions
     ) external {
-        if (!IERC20(asset).transferFrom(msg.sender, address(this), amount)) {
-            revert TransferFailed();
-        }
-        if (!IERC20(asset).approve(address(gateway), amount)) {
-            revert ApprovalFailed();
-        }
+        IERC20(asset).safeTransferFrom(msg.sender, address(this), amount);
+        IERC20(asset).approve(address(gateway), amount);
         gateway.depositAndCall(receiver, amount, asset, message, revertOptions);
     }
 
