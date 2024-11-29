@@ -83,13 +83,4 @@ contract ConnectedRouter is Ownable {
     receive() external payable {}
 
     fallback() external payable {}
-
-    function bytesToAddress(
-        bytes memory b
-    ) internal pure returns (address addr) {
-        require(b.length == 20, "Invalid bytes length for address");
-        assembly {
-            addr := mload(add(b, 20))
-        }
-    }
 }
