@@ -21,10 +21,6 @@ use the latest gateway architecture and are compatible with localnet. Learn more
 about [universal apps in the
 docs](https://www.zetachain.com/docs/developers/apps/intro/).
 
-The `omnichain` directory contains contracts that use TSS for interacting with
-universal apps. These contracts do not use the latest gateway architecture, but
-are compatible with the current testnet.
-
 ## Tutorials
 
 If you are new to ZetaChain and would like to learn how to use these example
