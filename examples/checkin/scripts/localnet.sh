@@ -37,9 +37,6 @@ npx hardhat universal-set-connected --network localhost --contract "$CONTRACT_ZE
 npx hardhat check-in --network localhost --contract "$CONTRACT_ETHEREUM" --json
 npx hardhat localnet-check
 
-npx hardhat check-in --network localhost --contract "$CONTRACT_ETHEREUM" --json
-npx hardhat localnet-check
-
 cast call "$CONTRACT_ZETACHAIN" "checkIns(address,address)(uint256)" "$SENDER" "$ZRC20_ETHEREUM"
 
 if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
