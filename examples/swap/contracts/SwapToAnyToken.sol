@@ -16,6 +16,7 @@ contract SwapToAnyToken is UniversalContract {
     address public immutable uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
+    error InvalidAddress();
 
     error InvalidAddress();
     error Unauthorized();
