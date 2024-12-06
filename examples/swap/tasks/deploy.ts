@@ -14,7 +14,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const factory = await hre.ethers.getContractFactory(args.name);
 
   const contract = await hre.upgrades.deployProxy(
-    factory,
+    factory as any,
     [args.gateway, args.uniswapRouter, args.gasLimit, signer.address],
     { kind: "uups" }
   );
