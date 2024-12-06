@@ -12,33 +12,23 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   }
 
   const factory = await hre.ethers.getContractFactory(args.name);
-  const contract = await (factory as any).deploy(
-    args.gateway,
-    args.uniswapRouter,
-    args.gasLimit
+
+  const contract = await hre.upgrades.deployProxy(
+    factory as any,
+    [args.gateway, args.uniswapRouter, args.gasLimit, signer.address],
+    { kind: "uups" }
   );
-  await contract.deployed();
 
-  if (args.json) {
-    console.log(
-      JSON.stringify({
-        contractAddress: contract.address,
-        deployer: signer.address,
-        network: network,
-        transactionHash: contract.deployTransaction.hash,
-      })
-    );
-  } else {
-    console.log(`🔑 Using account: ${signer.address}
-
-🚀 Successfully deployed contract on ${network}.
-📜 Contract address: ${contract.address}
-`);
-  }
+  console.log(
+    JSON.stringify({
+      contractAddress: contract.address,
+      deployer: signer.address,
+      network: network,
+    })
+  );
 };
 
 task("deploy", "Deploy the contract", main)
-  .addFlag("json", "Output in JSON")
   .addOptionalParam("name", "Contract to deploy", "Swap")
   .addOptionalParam("uniswapRouter", "Uniswap v2 Router address")
   .addOptionalParam(
