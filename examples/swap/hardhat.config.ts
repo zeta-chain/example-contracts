@@ -1,8 +1,8 @@
 import "./tasks/deploy";
 import "./tasks/companionSwap";
 import "./tasks/deployCompanion";
-import "./tasks/swapFromZetaChain";
-import "./tasks/swapFromEVM";
+import "./tasks/zetachainSwap";
+import "./tasks/evmGatewaySwap";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
