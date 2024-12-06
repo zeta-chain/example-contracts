@@ -16,20 +16,28 @@ contract SwapToAnyToken is UniversalContract {
     address public immutable uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
+    uint256 public immutable gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
+    error ApprovalFailed();
+    error TransferFailed();
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
-    constructor(address payable gatewayAddress, address uniswapRouterAddress) {
+    constructor(
+        address payable gatewayAddress,
+        address uniswapRouterAddress,
+        uint256 gasLimitAmount
+    ) {
         if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
             revert InvalidAddress();
         uniswapRouter = uniswapRouterAddress;
         gateway = GatewayZEVM(gatewayAddress);
+        gasLimit = gasLimitAmount;
     }
 
     struct Params {
@@ -69,80 +77,12 @@ contract SwapToAnyToken is UniversalContract {
             params.withdraw = withdrawFlag;
         }
 
-        swapAndWithdraw(
+        (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
             zrc20,
             amount,
-            params.target,
-            params.to,
-            params.withdraw
+            params.target
         );
-    }
-
-    function swapAndWithdraw(
-        address inputToken,
-        uint256 amount,
-        address targetToken,
-        bytes memory recipient,
-        bool withdraw
-    ) internal {
-        uint256 inputForGas;
-        address gasZRC20;
-        uint256 gasFee;
-        uint256 swapAmount = amount;
-
-        if (withdraw) {
-            (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
-
-            if (gasZRC20 == inputToken) {
-                swapAmount = amount - gasFee;
-            } else {
-                inputForGas = SwapHelperLib.swapTokensForExactTokens(
-                    uniswapRouter,
-                    inputToken,
-                    gasFee,
-                    gasZRC20,
-                    amount
-                );
-                swapAmount = amount - inputForGas;
-            }
-        }
-
-        uint256 outputAmount = SwapHelperLib.swapExactTokensForTokens(
-            uniswapRouter,
-            inputToken,
-            swapAmount,
-            targetToken,
-            0
-        );
-
-        if (withdraw) {
-            if (gasZRC20 == targetToken) {
-                IZRC20(gasZRC20).approve(
-                    address(gateway),
-                    outputAmount + gasFee
-                );
-            } else {
-                IZRC20(gasZRC20).approve(address(gateway), gasFee);
-                IZRC20(targetToken).approve(address(gateway), outputAmount);
-            }
-            gateway.withdraw(
-                recipient,
-                outputAmount,
-                targetToken,
-                RevertOptions({
-                    revertAddress: address(0),
-                    callOnRevert: false,
-                    abortAddress: address(0),
-                    revertMessage: "",
-                    onRevertGasLimit: 0
-                })
-            );
-        } else {
-            IWETH9(targetToken).transfer(
-                address(uint160(bytes20(recipient))),
-                outputAmount
-            );
-        }
+        withdraw(params, context.sender, gasFee, gasZRC20, out, zrc20);
     }
 
     function swap(
@@ -150,14 +90,142 @@ contract SwapToAnyToken is UniversalContract {
         uint256 amount,
         address targetToken,
         bytes memory recipient,
-        bool withdraw
+        bool withdrawFlag
     ) public {
-        IZRC20(inputToken).transferFrom(msg.sender, address(this), amount);
+        bool success = IZRC20(inputToken).transferFrom(
+            msg.sender,
+            address(this),
+            amount
+        );
+        if (!success) {
+            revert TransferFailed();
+        }
 
-        swapAndWithdraw(inputToken, amount, targetToken, recipient, withdraw);
+        (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
+            inputToken,
+            amount,
+            targetToken
+        );
+
+        withdraw(
+            Params({
+                target: targetToken,
+                to: recipient,
+                withdraw: withdrawFlag
+            }),
+            msg.sender,
+            gasFee,
+            gasZRC20,
+            out,
+            inputToken
+        );
     }
 
-    function onRevert(
-        RevertContext calldata revertContext
-    ) external onlyGateway {}
+    function handleGasAndSwap(
+        address inputToken,
+        uint256 amount,
+        address targetToken
+    ) internal returns (uint256, address, uint256) {
+        uint256 inputForGas;
+        address gasZRC20;
+        uint256 gasFee;
+        uint256 swapAmount;
+
+        (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
+
+        if (gasZRC20 == inputToken) {
+            swapAmount = amount - gasFee;
+        } else {
+            inputForGas = SwapHelperLib.swapTokensForExactTokens(
+                uniswapRouter,
+                inputToken,
+                gasFee,
+                gasZRC20,
+                amount
+            );
+            swapAmount = amount - inputForGas;
+        }
+
+        uint256 out = SwapHelperLib.swapExactTokensForTokens(
+            uniswapRouter,
+            inputToken,
+            swapAmount,
+            targetToken,
+            0
+        );
+        return (out, gasZRC20, gasFee);
+    }
+
+    function withdraw(
+        Params memory params,
+        address sender,
+        uint256 gasFee,
+        address gasZRC20,
+        uint256 out,
+        address inputToken
+    ) public {
+        if (params.withdraw) {
+            if (gasZRC20 == params.target) {
+                if (!IZRC20(gasZRC20).approve(address(gateway), out + gasFee)) {
+                    revert ApprovalFailed();
+                }
+            } else {
+                if (!IZRC20(gasZRC20).approve(address(gateway), gasFee)) {
+                    revert ApprovalFailed();
+                }
+                if (!IZRC20(params.target).approve(address(gateway), out)) {
+                    revert ApprovalFailed();
+                }
+            }
+            gateway.withdraw(
+                abi.encodePacked(params.to),
+                out,
+                params.target,
+                RevertOptions({
+                    revertAddress: address(this),
+                    callOnRevert: true,
+                    abortAddress: address(0),
+                    revertMessage: abi.encode(sender, inputToken),
+                    onRevertGasLimit: gasLimit
+                })
+            );
+        } else {
+            bool success = IWETH9(params.target).transfer(
+                address(uint160(bytes20(params.to))),
+                out
+            );
+            if (!success) {
+                revert TransferFailed();
+            }
+        }
+    }
+
+    function onRevert(RevertContext calldata context) external onlyGateway {
+        (address sender, address zrc20) = abi.decode(
+            context.revertMessage,
+            (address, address)
+        );
+        (uint256 out, , ) = handleGasAndSwap(
+            context.asset,
+            context.amount,
+            zrc20
+        );
+
+        gateway.withdraw(
+            abi.encodePacked(sender),
+            out,
+            zrc20,
+            RevertOptions({
+                revertAddress: sender,
+                callOnRevert: false,
+                abortAddress: address(0),
+                revertMessage: "",
+                onRevertGasLimit: gasLimit
+            })
+        );
+    }
+
+    fallback() external payable {}
+
+    receive() external payable {}
 }

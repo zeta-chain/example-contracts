@@ -15,20 +15,27 @@ contract Swap is UniversalContract {
     address public immutable uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
+    uint256 public immutable gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
+    error ApprovalFailed();
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
         _;
     }
 
-    constructor(address payable gatewayAddress, address uniswapRouterAddress) {
+    constructor(
+        address payable gatewayAddress,
+        address uniswapRouterAddress,
+        uint256 gasLimitAmount
+    ) {
         if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
             revert InvalidAddress();
         uniswapRouter = uniswapRouterAddress;
         gateway = GatewayZEVM(gatewayAddress);
+        gasLimit = gasLimitAmount;
     }
 
     struct Params {
@@ -57,15 +64,19 @@ contract Swap is UniversalContract {
             params.to = recipient;
         }
 
-        swapAndWithdraw(zrc20, amount, params.target, params.to);
+        (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
+            zrc20,
+            amount,
+            params.target
+        );
+        withdraw(params, context.sender, gasFee, gasZRC20, out, zrc20);
     }
 
-    function swapAndWithdraw(
+    function handleGasAndSwap(
         address inputToken,
         uint256 amount,
-        address targetToken,
-        bytes memory recipient
-    ) internal {
+        address targetToken
+    ) internal returns (uint256, address, uint256) {
         uint256 inputForGas;
         address gasZRC20;
         uint256 gasFee;
@@ -93,29 +104,75 @@ contract Swap is UniversalContract {
             targetToken,
             0
         );
+        return (outputAmount, gasZRC20, gasFee);
+    }
 
-        if (gasZRC20 == targetToken) {
-            IZRC20(gasZRC20).approve(address(gateway), outputAmount + gasFee);
+    function withdraw(
+        Params memory params,
+        address sender,
+        uint256 gasFee,
+        address gasZRC20,
+        uint256 outputAmount,
+        address inputToken
+    ) public {
+        if (gasZRC20 == params.target) {
+            if (
+                !IZRC20(gasZRC20).approve(
+                    address(gateway),
+                    outputAmount + gasFee
+                )
+            ) {
+                revert ApprovalFailed();
+            }
         } else {
-            IZRC20(gasZRC20).approve(address(gateway), gasFee);
-            IZRC20(targetToken).approve(address(gateway), outputAmount);
+            if (!IZRC20(gasZRC20).approve(address(gateway), gasFee)) {
+                revert ApprovalFailed();
+            }
+            if (
+                !IZRC20(params.target).approve(address(gateway), outputAmount)
+            ) {
+                revert ApprovalFailed();
+            }
         }
-
         gateway.withdraw(
-            recipient,
+            params.to,
             outputAmount,
-            targetToken,
+            params.target,
             RevertOptions({
-                revertAddress: address(0),
-                callOnRevert: false,
+                revertAddress: address(this),
+                callOnRevert: true,
                 abortAddress: address(0),
-                revertMessage: "",
-                onRevertGasLimit: 0
+                revertMessage: abi.encode(sender, inputToken),
+                onRevertGasLimit: gasLimit
             })
         );
     }
 
-    function onRevert(
-        RevertContext calldata revertContext
-    ) external onlyGateway {}
+    function onRevert(RevertContext calldata context) external onlyGateway {
+        (address sender, address zrc20) = abi.decode(
+            context.revertMessage,
+            (address, address)
+        );
+        (uint256 out, , ) = handleGasAndSwap(
+            context.asset,
+            context.amount,
+            zrc20
+        );
+        gateway.withdraw(
+            abi.encodePacked(sender),
+            out,
+            zrc20,
+            RevertOptions({
+                revertAddress: sender,
+                callOnRevert: false,
+                abortAddress: address(0),
+                revertMessage: "",
+                onRevertGasLimit: gasLimit
+            })
+        );
+    }
+
+    fallback() external payable {}
+
+    receive() external payable {}
 }
