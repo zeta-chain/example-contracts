@@ -14,7 +14,6 @@ contract Connected {
     event HelloEvent(string, string);
 
     error Unauthorized();
-    error ApprovalFailed();
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -47,9 +46,7 @@ contract Connected {
         RevertOptions memory revertOptions
     ) external {
         IERC20(asset).safeTransferFrom(msg.sender, address(this), amount);
-        if (!IERC20(asset).approve(address(gateway), amount)) {
-            revert ApprovalFailed();
-        }
+        IERC20(asset).approve(address(gateway), amount);
         gateway.deposit(receiver, amount, asset, revertOptions);
     }
 
