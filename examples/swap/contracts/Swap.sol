@@ -24,13 +24,23 @@ contract Swap is
 {
     address public uniswapRouter;
     GatewayZEVM public gateway;
-    uint256 constant BITCOIN = 18332;
+    uint256 constant BITCOIN = 8332;
+    uint256 constant BITCOIN_TESTNET = 18332;
     uint256 public gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
     error ApprovalFailed();
     error TransferFailed();
+
+    event TokenSwap(
+        address sender,
+        bytes indexed recipient,
+        address indexed inputToken,
+        address indexed targetToken,
+        uint256 inputAmount,
+        uint256 outputAmount
+    );
 
     modifier onlyGateway() {
         if (msg.sender != address(gateway)) revert Unauthorized();
@@ -75,7 +85,7 @@ contract Swap is
             withdraw: true
         });
 
-        if (context.chainID == BITCOIN) {
+        if (context.chainID == BITCOIN_TESTNET || context.chainID == BITCOIN) {
             params.target = BytesHelperLib.bytesToAddress(message, 0);
             params.to = abi.encodePacked(
                 BytesHelperLib.bytesToAddress(message, 20)
@@ -98,6 +108,14 @@ contract Swap is
             zrc20,
             amount,
             params.target
+        );
+        emit TokenSwap(
+            context.sender,
+            params.to,
+            zrc20,
+            params.target,
+            amount,
+            out
         );
         withdraw(params, context.sender, gasFee, gasZRC20, out, zrc20);
     }
@@ -123,7 +141,14 @@ contract Swap is
             amount,
             targetToken
         );
-
+        emit TokenSwap(
+            msg.sender,
+            recipient,
+            inputToken,
+            targetToken,
+            amount,
+            out
+        );
         withdraw(
             Params({
                 target: targetToken,
