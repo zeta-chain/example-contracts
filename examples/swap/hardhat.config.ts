@@ -1,4 +1,5 @@
 import "./tasks/deploy";
+import "./tasks/companionSwap";
 import "./tasks/swapFromZetaChain";
 import "./tasks/swapFromEVM";
 import "@zetachain/localnet/tasks";
