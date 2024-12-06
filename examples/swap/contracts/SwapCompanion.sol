@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 contract SwapCompanion {
     using SafeERC20 for IERC20;
 
+    error ApprovalFailed();
+
     GatewayEVM public immutable gateway;
 
     constructor(address payable gatewayAddress) {
@@ -35,7 +37,9 @@ contract SwapCompanion {
         bool withdraw
     ) public {
         IERC20(asset).safeTransferFrom(msg.sender, address(this), amount);
-        IERC20(asset).approve(address(gateway), amount);
+        if (!IERC20(asset).approve(address(gateway), amount)) {
+            revert ApprovalFailed();
+        }
         gateway.depositAndCall(
             universalSwapContract,
             amount,
