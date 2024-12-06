@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -e
+set -x
+set -o pipefail
 
 if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 10; fi
 
@@ -18,9 +20,6 @@ SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" --json | jq -r '.contractAddress')
 echo -e "\n🚀 Deployed Swap contract on ZetaChain: $CONTRACT_SWAP"
 
-CONTRACT_SWAPTOANY=$(npx hardhat deploy --name SwapToAnyToken --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" --json | jq -r '.contractAddress')
-echo -e "\n🚀 Deployed SwapToAny contract on ZetaChain: $CONTRACT_SWAPTOANY"
-
 npx hardhat swap-from-evm \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
@@ -33,25 +32,6 @@ npx hardhat localnet-check
 npx hardhat swap-from-evm \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
-  --amount 1 \
-  --target "$ZRC20_BNB" \
-  --recipient "$SENDER" \
-  --withdraw false
-
-npx hardhat localnet-check
-
-npx hardhat swap-from-evm \
-  --network localhost \
-  --receiver "$CONTRACT_SWAPTOANY" \
-  --amount 1 \
-  --target "$ZRC20_BNB" \
-  --recipient "$SENDER"
-
-npx hardhat localnet-check
-
-npx hardhat swap-from-evm \
-  --network localhost \
-  --receiver "$CONTRACT_SWAPTOANY" \
   --amount 1 \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER" \
@@ -61,7 +41,7 @@ npx hardhat localnet-check
 
 npx hardhat swap-from-zetachain \
   --network localhost \
-  --contract "$CONTRACT_SWAPTOANY" \
+  --contract "$CONTRACT_SWAP" \
   --amount 1 \
   --zrc20 "$ZRC20_BNB" \
   --target "$ZRC20_ETHEREUM" \
