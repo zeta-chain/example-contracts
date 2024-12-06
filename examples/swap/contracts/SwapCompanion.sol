@@ -35,7 +35,7 @@ contract SwapCompanion {
         bool withdraw
     ) public {
         IERC20(asset).safeTransferFrom(msg.sender, address(this), amount);
-        IERC20(asset).safeApprove(address(gateway), amount);
+        IERC20(asset).approve(address(gateway), amount);
         gateway.depositAndCall(
             universalSwapContract,
             amount,
