@@ -59,35 +59,3 @@ task("companion-swap", "Swap native gas tokens", main)
   .addParam("target", "ZRC-20 address of the token to swap for")
   .addParam("amount", "Amount of tokens to swap")
   .addParam("recipient", "Recipient address");
-
-// .addOptionalParam(
-//   "txOptionsGasPrice",
-//   "The gas price for the transaction",
-//   10000000000,
-//   types.int
-// )
-// .addOptionalParam(
-//   "txOptionsGasLimit",
-//   "The gas limit for the transaction",
-//   7000000,
-//   types.int
-// )
-// .addFlag("callOnRevert", "Whether to call on revert")
-// .addOptionalParam(
-//   "revertAddress",
-//   "Revert address",
-//   "0x0000000000000000000000000000000000000000"
-// )
-// .addOptionalParam("revertMessage", "Revert message", "")
-// .addParam(
-//   "receiver",
-//   "The address of the receiver contract on a connected chain"
-// )
-// .addOptionalParam(
-//   "onRevertGasLimit",
-//   "The gas limit for the revert transaction",
-//   7000000,
-//   types.int
-// )
-// .addOptionalParam("erc20", "The address of the ERC20 token to deposit")
-// .addParam("amount", "The amount of tokens to deposit");
