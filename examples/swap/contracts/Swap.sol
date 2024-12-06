@@ -12,11 +12,20 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IWZETA.sol";
 import {GatewayZEVM} from "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 
-contract Swap is UniversalContract {
-    address public immutable uniswapRouter;
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+
+contract Swap is
+    UniversalContract,
+    Initializable,
+    UUPSUpgradeable,
+    OwnableUpgradeable
+{
+    address public uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 18332;
-    uint256 public immutable gasLimit;
+    uint256 public gasLimit;
 
     error InvalidAddress();
     error Unauthorized();
@@ -28,13 +37,21 @@ contract Swap is UniversalContract {
         _;
     }
 
-    constructor(
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(
         address payable gatewayAddress,
         address uniswapRouterAddress,
-        uint256 gasLimitAmount
-    ) {
+        uint256 gasLimitAmount,
+        address owner
+    ) public initializer {
         if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
             revert InvalidAddress();
+        __UUPSUpgradeable_init();
+        __Ownable_init(owner);
         uniswapRouter = uniswapRouterAddress;
         gateway = GatewayZEVM(gatewayAddress);
         gasLimit = gasLimitAmount;
@@ -228,4 +245,8 @@ contract Swap is UniversalContract {
     fallback() external payable {}
 
     receive() external payable {}
+
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
 }
