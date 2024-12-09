@@ -42,7 +42,7 @@ npx hardhat companion-swap \
 
 npx hardhat localnet-check
 
-npx hardhat evm-gateway-swap \
+npx hardhat evm-swap \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
   --amount 1 \
@@ -51,7 +51,7 @@ npx hardhat evm-gateway-swap \
 
 npx hardhat localnet-check
 
-npx hardhat evm-gateway-swap \
+npx hardhat evm-swap \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
   --amount 1 \

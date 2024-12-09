@@ -37,7 +37,7 @@ export const evmDepositAndCall = async (
   }
 };
 
-task("evm-gateway-swap", "Swap tokens from EVM", evmDepositAndCall)
+task("evm-swap", "Swap tokens from EVM", evmDepositAndCall)
   .addParam("receiver", "Receiver address on ZetaChain")
   .addOptionalParam(
     "gatewayEvm",
