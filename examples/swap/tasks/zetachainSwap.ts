@@ -7,7 +7,7 @@ import ZRC20 from "@zetachain/protocol-contracts/abi/ZRC20.sol/ZRC20.json";
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await hre.ethers.getSigners();
 
-  const factory = await hre.ethers.getContractFactory("SwapToAnyToken");
+  const factory = await hre.ethers.getContractFactory("Swap");
   const contract = factory.attach(args.contract);
 
   const zrc20 = new ethers.Contract(args.zrc20, ZRC20.abi, signer);
@@ -29,7 +29,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   console.log(`Transaction hash: ${tx.hash}`);
 };
 
-task("swap-from-zetachain", "Swap tokens from ZetaChain", main)
+task("zetachain-swap", "Swap tokens from ZetaChain", main)
   .addFlag("json", "Output JSON")
   .addParam("contract", "Contract address")
   .addParam("amount", "Token amount to send")
