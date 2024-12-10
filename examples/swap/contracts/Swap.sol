@@ -267,10 +267,6 @@ contract Swap is
         );
     }
 
-    fallback() external payable {}
-
-    receive() external payable {}
-
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyOwner {}
