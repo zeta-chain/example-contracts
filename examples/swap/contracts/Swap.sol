@@ -32,7 +32,7 @@ contract Swap is
     error InvalidAddress();
     error Unauthorized();
     error ApprovalFailed();
-    error TransferFailed();
+    error TransferFailed(string);
     error InsufficientAmount(string);
 
     event TokenSwap(
@@ -141,7 +141,9 @@ contract Swap is
             amount
         );
         if (!success) {
-            revert TransferFailed();
+            revert TransferFailed(
+                "Failed to transfer ZRC-20 tokens from the sender to the contract"
+            );
         }
 
         (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
@@ -188,7 +190,9 @@ contract Swap is
 
         uint256 minInput = quoteMinInput(inputToken, targetToken);
         if (amount < minInput) {
-            revert InsufficientAmount("not enough tokens");
+            revert InsufficientAmount(
+                "The input amount is less than the min amount required to cover the withdraw gas fee"
+            );
         }
 
         if (gasZRC20 == inputToken) {
@@ -256,7 +260,9 @@ contract Swap is
                 out
             );
             if (!success) {
-                revert TransferFailed();
+                revert TransferFailed(
+                    "Failed to transfer target tokens to the recipient on ZetaChain"
+                );
             }
         }
     }
