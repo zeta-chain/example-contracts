@@ -297,24 +297,25 @@ contract Swap is
         address inputToken,
         address targetToken
     ) public view returns (uint256) {
-        (, uint256 gasFee) = IZRC20(targetToken).withdrawGasFee();
+        (address gasZRC20, uint256 gasFee) = IZRC20(targetToken)
+            .withdrawGasFee();
 
-        if (inputToken == targetToken) {
+        if (inputToken == gasZRC20) {
             return gasFee;
         }
 
         address zeta = IUniswapV2Router01(uniswapRouter).WETH();
 
         address[] memory path;
-        if (inputToken == zeta || targetToken == zeta) {
+        if (inputToken == zeta || gasZRC20 == zeta) {
             path = new address[](2);
             path[0] = inputToken;
-            path[1] = targetToken;
+            path[1] = gasZRC20;
         } else {
             path = new address[](3);
             path[0] = inputToken;
             path[1] = zeta;
-            path[2] = targetToken;
+            path[2] = gasZRC20;
         }
 
         uint256[] memory amountsIn = IUniswapV2Router02(uniswapRouter)
