@@ -3,6 +3,33 @@ import type { HardhatRuntimeEnvironment } from "hardhat/types";
 
 import { ZetaChainClient } from "@zetachain/toolkit/client";
 
+export const isInputAmountSufficient = async ({
+  hre,
+  client,
+  erc20,
+  amount,
+  target,
+}: any) => {
+  const inputZRC20 = await (erc20
+    ? client.getZRC20FromERC20(erc20)
+    : client.getZRC20GasToken(hre.network.name));
+
+  const minAmount = await client.getWithdrawFeeInInputToken(inputZRC20, target);
+
+  const minAmountFormatted = hre.ethers.utils.formatUnits(
+    minAmount.amount,
+    minAmount.decimals
+  );
+
+  const value = hre.ethers.utils.parseUnits(amount, minAmount.decimals);
+
+  if (value.lt(minAmount.amount)) {
+    throw new Error(
+      `Input amount ${amount} is less than minimum amount ${minAmountFormatted} required for a withdrawal to the destination chain`
+    );
+  }
+};
+
 export const evmDepositAndCall = async (
   args: any,
   hre: HardhatRuntimeEnvironment
@@ -10,6 +37,17 @@ export const evmDepositAndCall = async (
   try {
     const [signer] = await hre.ethers.getSigners();
     const client = new ZetaChainClient({ network: "testnet", signer });
+
+    if (!args.skipChecks) {
+      await isInputAmountSufficient({
+        hre,
+        client,
+        amount: args.amount,
+        erc20: args.erc20,
+        target: args.target,
+      });
+    }
+
     const tx = await client.evmDepositAndCall({
       amount: args.amount,
       erc20: args.erc20,
@@ -72,6 +110,7 @@ task("evm-swap", "Swap tokens from EVM", evmDepositAndCall)
   .addOptionalParam("revertMessage", "Revert message", "0x")
   .addParam("amount", "amount of ETH to send with the transaction")
   .addOptionalParam("erc20", "ERC-20 token address")
+  .addFlag("skipChecks", "Skip checks for minimum amount")
   .addParam("target", "ZRC-20 address of the token to swap for")
   .addParam("recipient", "Recipient address")
   .addOptionalParam(
