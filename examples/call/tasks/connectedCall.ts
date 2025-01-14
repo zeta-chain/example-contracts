@@ -5,11 +5,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
   const [signer] = await ethers.getSigners();
 
-  const txOptions = {
-    gasPrice: args.txOptionsGasPrice,
-    gasLimit: args.txOptionsGasLimit,
-  };
-
   const revertOptions = {
     abortAddress: "0x0000000000000000000000000000000000000000", // not used
     callOnRevert: args.callOnRevert,
@@ -54,8 +49,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const tx = await contract.call(
     args.receiver,
     encodedParameters,
-    revertOptions,
-    txOptions
+    revertOptions
   );
 
   await tx.wait();
@@ -68,18 +62,6 @@ task(
   main
 )
   .addParam("contract", "The address of the deployed contract")
-  .addOptionalParam(
-    "txOptionsGasPrice",
-    "The gas price for the transaction",
-    20000000000,
-    types.int
-  )
-  .addOptionalParam(
-    "txOptionsGasLimit",
-    "The gas limit for the transaction",
-    500000,
-    types.int
-  )
   .addFlag("callOnRevert", "Whether to call on revert")
   .addOptionalParam(
     "revertAddress",

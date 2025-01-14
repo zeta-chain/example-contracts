@@ -6,11 +6,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
   const [signer] = await ethers.getSigners();
 
-  const txOptions = {
-    gasPrice: args.txOptionsGasPrice,
-    gasLimit: args.txOptionsGasLimit,
-  };
-
   const revertOptions = {
     abortAddress: "0x0000000000000000000000000000000000000000", // not used
     callOnRevert: args.callOnRevert,
@@ -28,16 +23,14 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const gasZRC20Contract = new ethers.Contract(gasZRC20, ZRC20ABI.abi, signer);
   const gasFeeApprove = await gasZRC20Contract.approve(
     args.contract,
-    gasZRC20 == args.zrc20 ? gasFee.add(amount) : gasFee,
-    txOptions
+    gasZRC20 == args.zrc20 ? gasFee.add(amount) : gasFee
   );
   await gasFeeApprove.wait();
 
   if (gasZRC20 !== args.zrc20) {
     const targetTokenApprove = await zrc20.approve(
       args.contract,
-      gasFee.add(amount),
-      txOptions
+      gasFee.add(amount)
     );
     await targetTokenApprove.wait();
   }
@@ -49,8 +42,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ethers.utils.hexlify(args.receiver),
     amount,
     args.zrc20,
-    revertOptions,
-    txOptions
+    revertOptions
   );
 
   await tx.wait();

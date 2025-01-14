@@ -14,11 +14,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     throw new Error("Function is not allowed for non-arbitrary calls");
   }
 
-  const txOptions = {
-    gasPrice: args.txOptionsGasPrice,
-    gasLimit: args.txOptionsGasLimit,
-  };
-
   const callOptions = {
     isArbitraryCall: args.callOptionsIsArbitraryCall,
     gasLimit: args.callOptionsGasLimit,
@@ -73,7 +68,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     message = encodedParameters;
   }
 
-  const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
+  const gasLimit = hre.ethers.BigNumber.from(callOptions.gasLimit);
 
   const amount = hre.ethers.utils.parseUnits(args.amount, 18);
 
@@ -82,16 +77,14 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const gasZRC20Contract = new ethers.Contract(gasZRC20, ZRC20ABI.abi, signer);
   const gasFeeApprove = await gasZRC20Contract.approve(
     args.contract,
-    gasZRC20 == args.zrc20 ? gasFee.add(amount) : gasFee,
-    txOptions
+    gasZRC20 == args.zrc20 ? gasFee.add(amount) : gasFee
   );
   await gasFeeApprove.wait();
 
   if (gasZRC20 !== args.zrc20) {
     const targetTokenApprove = await zrc20.approve(
       args.contract,
-      gasFee.add(amount),
-      txOptions
+      gasFee.add(amount)
     );
     await targetTokenApprove.wait();
   }
@@ -105,8 +98,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     args.zrc20,
     message,
     callOptions,
-    revertOptions,
-    txOptions
+    revertOptions
   );
 
   await tx.wait();
@@ -120,18 +112,6 @@ task(
 )
   .addParam("contract", "The address of the deployed Hello contract")
   .addParam("zrc20", "The address of ZRC-20 to pay fees")
-  .addOptionalParam(
-    "txOptionsGasPrice",
-    "The gas price for the transaction",
-    20000000000,
-    types.int
-  )
-  .addOptionalParam(
-    "txOptionsGasLimit",
-    "The gas limit for the transaction",
-    500000,
-    types.int
-  )
   .addFlag("callOnRevert", "Whether to call on revert")
   .addOptionalParam(
     "revertAddress",

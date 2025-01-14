@@ -6,11 +6,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
   const [signer] = await ethers.getSigners();
 
-  const txOptions = {
-    gasPrice: args.txOptionsGasPrice,
-    gasLimit: args.txOptionsGasLimit,
-  };
-
   const revertOptions = {
     abortAddress: "0x0000000000000000000000000000000000000000", // not used
     callOnRevert: args.callOnRevert,
@@ -43,16 +38,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       args.receiver,
       value,
       args.erc20,
-      revertOptions,
-      txOptions
+      revertOptions
     );
   } else {
     const value = hre.ethers.utils.parseEther(args.amount);
     const method = "deposit(address,(address,bool,address,bytes,uint256))";
-    tx = await contract[method](args.receiver, revertOptions, {
-      ...txOptions,
-      value,
-    });
+    tx = await contract[method](args.receiver, revertOptions, { value });
   }
 
   await tx.wait();
@@ -61,18 +52,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 task("connected-deposit", "Deposit tokens to ZetaChain", main)
   .addParam("contract", "The address of the deployed contract")
-  .addOptionalParam(
-    "txOptionsGasPrice",
-    "The gas price for the transaction",
-    20000000000,
-    types.int
-  )
-  .addOptionalParam(
-    "txOptionsGasLimit",
-    "The gas limit for the transaction",
-    500000,
-    types.int
-  )
   .addFlag("callOnRevert", "Whether to call on revert")
   .addOptionalParam(
     "revertAddress",

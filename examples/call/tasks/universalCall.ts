@@ -6,11 +6,6 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
   const [signer] = await ethers.getSigners();
 
-  const txOptions = {
-    gasPrice: args.txOptionsGasPrice,
-    gasLimit: args.txOptionsGasLimit,
-  };
-
   const callOptions = {
     isArbitraryCall: args.callOptionsIsArbitraryCall,
     gasLimit: args.callOptionsGasLimit,
@@ -60,10 +55,10 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     ethers.utils.concat([functionSignature, encodedParameters])
   );
 
-  const gasLimit = hre.ethers.BigNumber.from(args.txOptionsGasLimit);
+  const gasLimit = hre.ethers.BigNumber.from(callOptions.gasLimit);
   const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
   const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
-  const zrc20TransferTx = await zrc20.approve(args.contract, gasFee, txOptions);
+  const zrc20TransferTx = await zrc20.approve(args.contract, gasFee);
 
   await zrc20TransferTx.wait();
 
@@ -75,8 +70,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     args.zrc20,
     message,
     callOptions,
-    revertOptions,
-    txOptions
+    revertOptions
   );
 
   await tx.wait();
@@ -90,18 +84,6 @@ task(
 )
   .addParam("contract", "The address of the deployed universal contract")
   .addParam("zrc20", "The address of ZRC-20 to pay fees")
-  .addOptionalParam(
-    "txOptionsGasPrice",
-    "The gas price for the transaction",
-    20000000000,
-    types.int
-  )
-  .addOptionalParam(
-    "txOptionsGasLimit",
-    "The gas limit for the transaction",
-    500000,
-    types.int
-  )
   .addFlag("callOnRevert", "Whether to call on revert")
   .addOptionalParam(
     "revertAddress",
@@ -116,7 +98,7 @@ task(
   .addOptionalParam(
     "onRevertGasLimit",
     "The gas limit for the revert transaction",
-    50000,
+    500000,
     types.int
   )
   .addFlag("callOptionsIsArbitraryCall", "Call any function")

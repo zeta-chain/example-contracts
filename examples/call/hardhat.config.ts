@@ -8,15 +8,15 @@ import "./tasks/universalWithdrawAndCall";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
+import * as dotenv from "dotenv";
 
-import { getHardhatConfigNetworks } from "@zetachain/networks";
+import { getHardhatConfig } from "@zetachain/toolkit/client";
 import { HardhatUserConfig } from "hardhat/config";
 
+dotenv.config();
+
 const config: HardhatUserConfig = {
-  networks: {
-    ...getHardhatConfigNetworks(),
-  },
-  solidity: "0.8.26",
+  ...getHardhatConfig({ accounts: [process.env.PRIVATE_KEY] }),
 };
 
 export default config;
