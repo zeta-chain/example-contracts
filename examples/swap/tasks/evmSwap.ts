@@ -98,13 +98,13 @@ task("evm-swap", "Swap tokens from EVM", evmDepositAndCall)
   .addOptionalParam(
     "gasLimit",
     "The gas limit for the transaction",
-    7000000,
+    50000,
     types.int
   )
   .addOptionalParam(
     "onRevertGasLimit",
     "The gas limit for the revert transaction",
-    7000000,
+    50000,
     types.int
   )
   .addOptionalParam("revertMessage", "Revert message", "0x")

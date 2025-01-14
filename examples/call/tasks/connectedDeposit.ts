@@ -64,13 +64,13 @@ task("connected-deposit", "Deposit tokens to ZetaChain", main)
   .addOptionalParam(
     "txOptionsGasPrice",
     "The gas price for the transaction",
-    10000000000,
+    20000000000,
     types.int
   )
   .addOptionalParam(
     "txOptionsGasLimit",
     "The gas limit for the transaction",
-    7000000,
+    500000,
     types.int
   )
   .addFlag("callOnRevert", "Whether to call on revert")
@@ -87,7 +87,7 @@ task("connected-deposit", "Deposit tokens to ZetaChain", main)
   .addOptionalParam(
     "onRevertGasLimit",
     "The gas limit for the revert transaction",
-    7000000,
+    500000,
     types.int
   )
   .addOptionalParam("erc20", "The address of the ERC20 token to deposit")

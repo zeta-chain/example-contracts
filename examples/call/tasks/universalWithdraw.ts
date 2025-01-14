@@ -63,13 +63,13 @@ task("universal-withdraw", "Withdraw ZRC-20", main)
   .addOptionalParam(
     "txOptionsGasPrice",
     "The gas price for the transaction",
-    10000000000,
+    20000000000,
     types.int
   )
   .addOptionalParam(
     "txOptionsGasLimit",
     "The gas limit for the transaction",
-    7000000,
+    500000,
     types.int
   )
   .addFlag("callOnRevert", "Whether to call on revert")
@@ -86,7 +86,7 @@ task("universal-withdraw", "Withdraw ZRC-20", main)
   .addOptionalParam(
     "onRevertGasLimit",
     "The gas limit for the revert transaction",
-    7000000,
+    500000,
     types.int
   )
   .addParam("name", "The name of the contract", "Universal")
