@@ -8,10 +8,10 @@ import "./tasks/universalWithdrawAndCall";
 import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
-import * as dotenv from "dotenv";
 
-import { getHardhatConfig } from "@zetachain/toolkit/client";
 import { HardhatUserConfig } from "hardhat/config";
+import { getHardhatConfig } from "@zetachain/toolkit/client";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 

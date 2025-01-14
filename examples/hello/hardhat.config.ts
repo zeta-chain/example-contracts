@@ -3,14 +3,14 @@ import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@zetachain/toolkit/tasks";
 
-import { getHardhatConfigNetworks } from "@zetachain/networks";
 import { HardhatUserConfig } from "hardhat/config";
+import { getHardhatConfig } from "@zetachain/toolkit/client";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const config: HardhatUserConfig = {
-  networks: {
-    ...getHardhatConfigNetworks(),
-  },
-  solidity: "0.8.26",
+  ...getHardhatConfig({ accounts: [process.env.PRIVATE_KEY] }),
 };
 
 export default config;
