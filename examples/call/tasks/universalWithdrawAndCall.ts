@@ -109,9 +109,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     txOptions
   );
 
-  console.log(`Transaction hash: ${tx.hash}`);
   await tx.wait();
-  console.log("gatewayCall executed successfully");
+  console.log(`Transaction hash: ${tx.hash}`);
 };
 
 task(
