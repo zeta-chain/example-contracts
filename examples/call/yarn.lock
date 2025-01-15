@@ -2381,7 +2381,7 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/toolkit@^13.0.0-rc13":
+"@zetachain/toolkit@13.0.0-rc13":
   version "13.0.0-rc13"
   resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc13.tgz#86cea04ff0f7ba48a96630660adf053e73ee882c"
   integrity sha512-yS6XSC/d8VmuY/2L0pkENMZocPBNIbBcJQrJhw072rp9pBUBK1bLlllNDKcoKpVWOy8rkL7FQuhXIM1rG14amw==
