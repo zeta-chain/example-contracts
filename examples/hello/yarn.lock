@@ -2381,10 +2381,10 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/toolkit@13.0.0-rc13":
-  version "13.0.0-rc13"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc13.tgz#86cea04ff0f7ba48a96630660adf053e73ee882c"
-  integrity sha512-yS6XSC/d8VmuY/2L0pkENMZocPBNIbBcJQrJhw072rp9pBUBK1bLlllNDKcoKpVWOy8rkL7FQuhXIM1rG14amw==
+"@zetachain/toolkit@13.0.0-rc15":
+  version "13.0.0-rc15"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc15.tgz#ffeea733ba4cf29552409fdfaa2777eeb400c6db"
+  integrity sha512-hn4sDqMTQOIZ4axyZPMFfuvVIpAsnjziOacknnnUl+520VgT9Oryit7iv6q/jrhjjzvh1naNeWo07ZVD3Wj8tg==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^2.1.1"
