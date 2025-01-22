@@ -76,6 +76,7 @@ contract Connected {
 
     function hello(string memory message) external payable {
         emit HelloEvent("Hello on EVM", message);
+        revert("Hello revert");
     }
 
     function onCall(

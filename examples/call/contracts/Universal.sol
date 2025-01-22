@@ -6,11 +6,21 @@ import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContrac
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
 
+struct AbortContext {
+    bytes sender;
+    address asset;
+    uint256 amount;
+    bool outgoing;
+    uint256 chainID;
+    bytes revertMessage;
+}
+
 contract Universal is UniversalContract {
     GatewayZEVM public immutable gateway;
 
     event HelloEvent(string, string);
     event RevertEvent(string, RevertContext);
+    event AbortEvent(string, AbortContext);
 
     error TransferFailed();
     error Unauthorized();
@@ -140,6 +150,7 @@ contract Universal is UniversalContract {
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
+        revert();
         string memory name = abi.decode(message, (string));
         emit HelloEvent("Hello on ZetaChain", name);
     }
@@ -148,5 +159,10 @@ contract Universal is UniversalContract {
         RevertContext calldata revertContext
     ) external onlyGateway {
         emit RevertEvent("Revert on ZetaChain", revertContext);
+        revert();
+    }
+
+    function onAbort(AbortContext calldata abortContext) external {
+        emit AbortEvent("Revert on ZetaChain", abortContext);
     }
 }
