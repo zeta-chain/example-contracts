@@ -7,7 +7,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await ethers.getSigners();
 
   const revertOptions = {
-    abortAddress: "0x0000000000000000000000000000000000000000", // not used
+    abortAddress: args.abortAddress,
     callOnRevert: args.callOnRevert,
     onRevertGasLimit: args.onRevertGasLimit,
     revertAddress: args.revertAddress,
@@ -58,6 +58,7 @@ task("connected-deposit", "Deposit tokens to ZetaChain", main)
     "Revert address",
     "0x0000000000000000000000000000000000000000"
   )
+
   .addOptionalParam("revertMessage", "Revert message", "")
   .addParam(
     "receiver",
@@ -68,6 +69,11 @@ task("connected-deposit", "Deposit tokens to ZetaChain", main)
     "The gas limit for the revert transaction",
     500000,
     types.int
+  )
+  .addOptionalParam(
+    "abortAddress",
+    "Abort address",
+    "0x0000000000000000000000000000000000000000"
   )
   .addOptionalParam("erc20", "The address of the ERC20 token to deposit")
   .addParam("amount", "The amount of tokens to deposit");

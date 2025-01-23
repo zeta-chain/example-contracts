@@ -12,7 +12,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   };
 
   const revertOptions = {
-    abortAddress: "0x0000000000000000000000000000000000000000", // not used
+    abortAddress: args.abortAddress,
     callOnRevert: args.callOnRevert,
     onRevertGasLimit: args.onRevertGasLimit,
     revertAddress: args.revertAddress,
@@ -118,6 +118,11 @@ task(
     "The gas limit for the call",
     2000000,
     types.int
+  )
+  .addOptionalParam(
+    "abortAddress",
+    "Abort address",
+    "0x0000000000000000000000000000000000000000"
   )
   .addParam("function", `Function to call (example: "hello(string)")`)
   .addParam("name", "The name of the contract", "Universal")

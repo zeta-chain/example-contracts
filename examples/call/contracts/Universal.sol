@@ -158,11 +158,11 @@ contract Universal is UniversalContract {
     function onRevert(
         RevertContext calldata revertContext
     ) external onlyGateway {
-        emit RevertEvent("Revert on ZetaChain", revertContext);
         revert();
+        emit RevertEvent("Revert on ZetaChain", revertContext);
     }
 
     function onAbort(AbortContext calldata abortContext) external {
-        emit AbortEvent("Revert on ZetaChain", abortContext);
+        emit AbortEvent("Abort on ZetaChain", abortContext);
     }
 }

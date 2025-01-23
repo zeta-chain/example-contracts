@@ -6,7 +6,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await ethers.getSigners();
 
   const revertOptions = {
-    abortAddress: "0x0000000000000000000000000000000000000000", // not used
+    abortAddress: args.abortAddress,
     callOnRevert: args.callOnRevert,
     onRevertGasLimit: args.onRevertGasLimit,
     revertAddress: args.revertAddress,
@@ -64,7 +64,7 @@ task(
   .addParam("contract", "The address of the deployed contract")
   .addFlag("callOnRevert", "Whether to call on revert")
   .addOptionalParam(
-    "revertAddress",
+    "abortAddress",
     "Revert address",
     "0x0000000000000000000000000000000000000000"
   )
@@ -78,6 +78,11 @@ task(
     "The gas limit for the revert transaction",
     500000,
     types.int
+  )
+  .addOptionalParam(
+    "revertAddress",
+    "Revert address",
+    "0x0000000000000000000000000000000000000000"
   )
   .addParam("name", "The name of the contract", "Connected")
   .addParam("types", `The types of the parameters (example: '["string"]')`)

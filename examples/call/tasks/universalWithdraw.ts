@@ -7,7 +7,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const [signer] = await ethers.getSigners();
 
   const revertOptions = {
-    abortAddress: "0x0000000000000000000000000000000000000000", // not used
+    abortAddress: args.abortAddress,
     callOnRevert: args.callOnRevert,
     onRevertGasLimit: args.onRevertGasLimit,
     revertAddress: args.revertAddress,
@@ -80,6 +80,11 @@ task("universal-withdraw", "Withdraw ZRC-20", main)
     "The gas limit for the revert transaction",
     500000,
     types.int
+  )
+  .addOptionalParam(
+    "abortAddress",
+    "Abort address",
+    "0x0000000000000000000000000000000000000000"
   )
   .addParam("name", "The name of the contract", "Universal")
   .addParam("amount", "Amount of ZRC-20 to withdraw");

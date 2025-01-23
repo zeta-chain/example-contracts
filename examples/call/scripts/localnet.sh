@@ -39,13 +39,13 @@ echo -e "🚀 Deployed contract on Ethereum: $CONTRACT_ETHEREUM"
 
 # npx hardhat localnet-check
 
-npx hardhat connected-call \
-  --contract "$CONTRACT_ETHEREUM" \
-  --receiver "$CONTRACT_ZETACHAIN" \
-  --network localhost \
-  --types '["string"]' alice
+# npx hardhat connected-call \
+#   --contract "$CONTRACT_ETHEREUM" \
+#   --receiver "$CONTRACT_ZETACHAIN" \
+#   --network localhost \
+#   --types '["string"]' alice
 
-npx hardhat localnet-check
+# npx hardhat localnet-check
 
 # npx hardhat connected-deposit-and-call \
 #   --contract "$CONTRACT_ETHEREUM" \
@@ -106,5 +106,96 @@ npx hardhat localnet-check
 #   --types '["string"]' hello
 
 # npx hardhat localnet-check
+
+# TESTING ONABORT
+# Dont't forget to add revert() in the contracts where needed
+
+# The amount is not enough to cover the withdraw fee, so this will call onAbort
+npx hardhat connected-deposit-and-call \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --amount 0.00000001 \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --revert-address "$CONTRACT_ETHEREUM" \
+  --call-on-revert \
+  --types '["string"]' alice
+
+npx hardhat localnet-check
+
+# Trigger onAbort
+npx hardhat connected-call \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --revert-address "$CONTRACT_ETHEREUM" \
+  --call-on-revert \
+  --types '["string"]' alice
+
+npx hardhat localnet-check
+
+# Should trigger onAbort
+npx hardhat universal-withdraw-and-call \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --amount 1 \
+  --call-on-revert \
+  --revert-address "$CONTRACT_ZETACHAIN" \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --types '["string"]' hello
+
+npx hardhat localnet-check
+
+# callOnRevert is not set, should transfer tokens to revertAddress
+npx hardhat universal-withdraw-and-call \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --amount 1 \
+  --revert-address "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --types '["string"]' hello
+
+npx hardhat localnet-check
+
+# callOnRevert is not set, revertAddress is zero, should transfer tokens to and call abortAddress
+npx hardhat universal-withdraw-and-call \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --amount 1 \
+  --revert-address 0x0000000000000000000000000000000000000000 \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --types '["string"]' hello
+
+npx hardhat localnet-check
+
+npx hardhat universal-call \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --function "hello(string)" \
+  --network localhost \
+  --call-on-revert \
+  --revert-address "$CONTRACT_ZETACHAIN" \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --types '["string"]' alice
+
+npx hardhat localnet-check
+
+# callOnRevert is false, should transfer tokens to revertAddress
+npx hardhat connected-deposit-and-call \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --amount 1 \
+  --revert-address "$CONTRACT_ETHEREUM" \
+  --types '["string"]' alice
+
+npx hardhat localnet-check
 
 if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
