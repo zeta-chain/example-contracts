@@ -1,3 +1,3 @@
-# Hello Example
+# Call Example
 
-Tutorial: https://www.zetachain.com/docs/developers/tutorials/call/
+Tutorial: https://www.zetachain.com/docs/developers/tutorials/call
