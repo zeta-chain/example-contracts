@@ -1,7 +1,7 @@
 {
-  "name": "example-template",
+  "name": "token",
   "version": "1.0.0",
-  "description": "",
+  "description": "Universal Token enables ERC-20 tokens to minted and transferred between connected chains",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

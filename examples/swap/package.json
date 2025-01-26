@@ -1,7 +1,7 @@
 {
-  "name": "example-template",
+  "name": "swap",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cross-chain swap contract enabling token exchanges between Ethereum, Solana, Bitcoin, and other blockchains.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

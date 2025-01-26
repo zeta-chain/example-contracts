@@ -1,7 +1,7 @@
 {
-  "name": "example-template",
+  "name": "nft",
   "version": "1.0.0",
-  "description": "",
+  "description": "Universal NFT enables non-fungible ERC-721 tokens to minted and transferred between connected chains.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
