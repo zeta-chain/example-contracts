@@ -2320,15 +2320,15 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@4.0.0-rc6":
-  version "4.0.0-rc6"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-4.0.0-rc6.tgz#9b36f5ab0e8fac766d63cfca4b1cab6a263bdd5d"
-  integrity sha512-DGKspMAJZLUrgNirc3NzFYg9jRfaOyuF5ePj85D93qAA//f8lOsXpmh/6Bvq/MrEscCLpVavgVP7+ePy4KJ2Fw==
+"@zetachain/localnet@5.0.0-rc1":
+  version "5.0.0-rc1"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-5.0.0-rc1.tgz#920803084156a7b86fe763541b83a24833fb54d6"
+  integrity sha512-HHQ01dp9fxoA8WBBEXLmh5p/GMqVdd/0oYkdzzFZQ52UNXi+ucc4B/wdpBlKwub06r6Q8edPXiPfOjGPFthcMQ==
   dependencies:
     "@inquirer/prompts" "^5.5.0"
     "@uniswap/v2-core" "^1.0.1"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/protocol-contracts" "11.0.0-rc3"
+    "@zetachain/protocol-contracts" "11.0.0-rc4"
     ansis "^3.3.2"
     concurrently "^8.2.2"
     ethers "^6.13.2"
