@@ -158,7 +158,6 @@ contract Universal is UniversalContract {
     function onRevert(
         RevertContext calldata revertContext
     ) external onlyGateway {
-        revert();
         emit RevertEvent("Revert on ZetaChain", revertContext);
     }
 
