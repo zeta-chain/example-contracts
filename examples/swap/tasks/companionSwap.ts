@@ -8,7 +8,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const factory = (await hre.ethers.getContractFactory("SwapCompanion")) as any;
   const contract = factory.attach(args.contract).connect(signer);
-
+  const recipient = hre.ethers.utils.toUtf8Bytes(args.recipient);
   let tx;
   if (args.erc20) {
     const erc20Contract = new ethers.Contract(
@@ -26,7 +26,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     tx = await contract.swapERC20(
       args.universalContract,
       args.target,
-      args.recipient,
+      recipient,
       args.amount,
       args.erc20,
       args.withdraw
@@ -36,7 +36,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     tx = await contract.swapNativeGas(
       args.universalContract,
       args.target,
-      args.recipient,
+      recipient,
       args.withdraw,
       { value }
     );
