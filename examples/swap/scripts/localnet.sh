@@ -36,7 +36,6 @@ npx hardhat localnet:solana-deposit-and-call \
   --receiver "$CONTRACT_SWAP" \
   --amount 1 \
   --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
-  --network localhost
 
 npx hardhat localnet-check
 
@@ -90,4 +89,4 @@ npx hardhat localnet-check
 
 # npx hardhat localnet-check
 
-# if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
+if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
