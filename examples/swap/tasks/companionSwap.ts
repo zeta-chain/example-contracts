@@ -8,7 +8,9 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const factory = (await hre.ethers.getContractFactory("SwapCompanion")) as any;
   const contract = factory.attach(args.contract).connect(signer);
-  const recipient = hre.ethers.utils.toUtf8Bytes(args.recipient);
+  const recipient = hre.ethers.utils.isAddress(args.recipient)
+    ? args.recipient
+    : hre.ethers.utils.toUtf8Bytes(args.recipient);
   let tx;
   if (args.erc20) {
     const erc20Contract = new ethers.Contract(

@@ -39,54 +39,54 @@ npx hardhat localnet:solana-deposit-and-call \
 
 npx hardhat localnet-check
 
-# npx hardhat companion-swap \
-#   --network localhost \
-#   --contract "$COMPANION" \
-#   --universal-contract "$CONTRACT_SWAP" \
-#   --amount 1 \
-#   --target "$ZRC20_BNB" \
-#   --recipient "$SENDER"
+npx hardhat companion-swap \
+  --network localhost \
+  --contract "$COMPANION" \
+  --universal-contract "$CONTRACT_SWAP" \
+  --amount 1 \
+  --target "$ZRC20_BNB" \
+  --recipient "$SENDER"
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat companion-swap \
-#   --network localhost \
-#   --contract "$COMPANION" \
-#   --universal-contract "$CONTRACT_SWAP" \
-#   --amount 1 \
-#   --erc20 "$USDC_ETHEREUM" \
-#   --target "$ZRC20_BNB" \
-#   --recipient "$SENDER"
+npx hardhat companion-swap \
+  --network localhost \
+  --contract "$COMPANION" \
+  --universal-contract "$CONTRACT_SWAP" \
+  --amount 1 \
+  --erc20 "$USDC_ETHEREUM" \
+  --target "$ZRC20_BNB" \
+  --recipient "$SENDER"
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat evm-swap \
-#   --network localhost \
-#   --receiver "$CONTRACT_SWAP" \
-#   --amount 1 \
-#   --target "$ZRC20_BNB" \
-#   --recipient "$SENDER"
+npx hardhat evm-swap \
+  --network localhost \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 1 \
+  --target "$ZRC20_BNB" \
+  --recipient "$SENDER"
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat evm-swap \
-#   --network localhost \
-#   --receiver "$CONTRACT_SWAP" \
-#   --amount 1 \
-#   --target "$ZRC20_BNB" \
-#   --recipient "$SENDER" \
-#   --withdraw false
+npx hardhat evm-swap \
+  --network localhost \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 1 \
+  --target "$ZRC20_BNB" \
+  --recipient "$SENDER" \
+  --withdraw false
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat zetachain-swap \
-#   --network localhost \
-#   --contract "$CONTRACT_SWAP" \
-#   --amount 1 \
-#   --zrc20 "$ZRC20_BNB" \
-#   --target "$ZRC20_ETHEREUM" \
-#   --recipient "$SENDER"
+npx hardhat zetachain-swap \
+  --network localhost \
+  --contract "$CONTRACT_SWAP" \
+  --amount 1 \
+  --zrc20 "$ZRC20_BNB" \
+  --target "$ZRC20_ETHEREUM" \
+  --recipient "$SENDER"
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
 if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
