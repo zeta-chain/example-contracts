@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 10; fi
+if [ "$1" = "start" ]; then npx hardhat localnet & sleep 10; fi
 
 echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
@@ -21,21 +21,6 @@ SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
 CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" | jq -r '.contractAddress')
 COMPANION=$(npx hardhat deploy-companion --gateway "$GATEWAY_ETHEREUM" --network localhost --json | jq -r '.contractAddress')
-
-npx hardhat companion-swap \
-  --network localhost \
-  --contract "$COMPANION" \
-  --universal-contract "$CONTRACT_SWAP" \
-  --amount 1 \
-  --target "$ZRC20_SOL" \
-  --recipient "8Sw9oNHHyEyAfQHC41QeFBRMhxG6HmFjNQnSbRvsXGb2"
-
-npx hardhat localnet-check
-
-npx hardhat localnet:solana-deposit-and-call \
-  --receiver "$CONTRACT_SWAP" \
-  --amount 1 \
-  --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
 
 npx hardhat localnet-check
 
@@ -88,5 +73,30 @@ npx hardhat zetachain-swap \
   --recipient "$SENDER"
 
 npx hardhat localnet-check
+
+# TESTING REVERTS
+
+# npx hardhat companion-swap \
+#   --network localhost \
+#   --contract "$COMPANION" \
+#   --universal-contract 0x0000000000000000000000000000000000000001 \
+#   --amount 1 \
+#   --target "$ZRC20_SOL" \
+#   --recipient "8Sw9oNHHyEyAfQHC41QeFBRMhxG6HmFjNQnSbRvsXGb2"
+
+# npx hardhat localnet-check
+
+# npx hardhat localnet:solana-deposit-and-call \
+#   --receiver 0x0000000000000000000000000000000000000001 \
+#   --amount 1 \
+#   --types '["address", "bytes", "bool"]' 0x0000000000000000000000000000000000000001 0x0000000000000000000000000000000000000001 true
+
+# npx hardhat localnet-check
+
+# npx hardhat localnet:solana-deposit \
+#   --receiver "$CONTRACT_SWAP" \
+#   --amount 1
+
+# npx hardhat localnet-check
 
 if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
