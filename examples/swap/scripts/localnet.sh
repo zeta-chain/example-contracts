@@ -22,6 +22,21 @@ SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" | jq -r '.contractAddress')
 COMPANION=$(npx hardhat deploy-companion --gateway "$GATEWAY_ETHEREUM" --network localhost --json | jq -r '.contractAddress')
 
+npx hardhat companion-swap \
+  --network localhost \
+  --contract "$COMPANION" \
+  --universal-contract "$CONTRACT_SWAP" \
+  --amount 1 \
+  --target "$ZRC20_SOL" \
+  --recipient "8Sw9oNHHyEyAfQHC41QeFBRMhxG6HmFjNQnSbRvsXGb2"
+
+npx hardhat localnet-check
+
+npx hardhat localnet:solana-deposit-and-call \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 1 \
+  --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
+
 npx hardhat localnet-check
 
 npx hardhat companion-swap \
