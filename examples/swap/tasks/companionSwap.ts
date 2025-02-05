@@ -29,7 +29,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
       args.universalContract,
       args.target,
       recipient,
-      args.amount,
+      value,
       args.erc20,
       args.withdraw
     );

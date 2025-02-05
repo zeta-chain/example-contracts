@@ -25,8 +25,8 @@ COMPANION=$(npx hardhat deploy-companion --gateway "$GATEWAY_ETHEREUM" --network
 npx hardhat evm-swap \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
-  --amount 1 \
-  --target "$USDC_ETHEREUM" \
+  --amount 0.1 \
+  --target "$ZRC20_USDC" \
   --recipient "$SENDER"
 
 npx hardhat localnet-check
@@ -35,7 +35,7 @@ npx hardhat companion-swap \
   --network localhost \
   --contract "$COMPANION" \
   --universal-contract "$CONTRACT_SWAP" \
-  --amount 1 \
+  --amount 0.1 \
   --target "$ZRC20_SOL" \
   --recipient "8Sw9oNHHyEyAfQHC41QeFBRMhxG6HmFjNQnSbRvsXGb2"
 
@@ -43,7 +43,7 @@ npx hardhat localnet-check
 
 npx hardhat localnet:solana-deposit-and-call \
   --receiver "$CONTRACT_SWAP" \
-  --amount 1 \
+  --amount 0.1 \
   --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
 
 npx hardhat localnet-check
@@ -52,7 +52,7 @@ npx hardhat companion-swap \
   --network localhost \
   --contract "$COMPANION" \
   --universal-contract "$CONTRACT_SWAP" \
-  --amount 1 \
+  --amount 0.1 \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER"
 
@@ -62,7 +62,7 @@ npx hardhat companion-swap \
   --network localhost \
   --contract "$COMPANION" \
   --universal-contract "$CONTRACT_SWAP" \
-  --amount 1 \
+  --amount 0.1 \
   --erc20 "$USDC_ETHEREUM" \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER"
@@ -72,7 +72,7 @@ npx hardhat localnet-check
 npx hardhat evm-swap \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
-  --amount 1 \
+  --amount 0.1 \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER"
 
@@ -81,7 +81,7 @@ npx hardhat localnet-check
 npx hardhat evm-swap \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
-  --amount 1 \
+  --amount 0.1 \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER" \
   --withdraw false
@@ -91,7 +91,7 @@ npx hardhat localnet-check
 npx hardhat zetachain-swap \
   --network localhost \
   --contract "$CONTRACT_SWAP" \
-  --amount 1 \
+  --amount 0.1 \
   --zrc20 "$ZRC20_BNB" \
   --target "$ZRC20_ETHEREUM" \
   --recipient "$SENDER"
