@@ -22,16 +22,18 @@ CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$G
 COMPANION=$(npx hardhat deploy-companion --gateway "$GATEWAY_ETHEREUM" --network localhost --json | jq -r '.contractAddress')
 
 npx hardhat companion-swap \
+  --skip-checks \
   --network localhost \
   --contract "$COMPANION" \
   --universal-contract "$CONTRACT_SWAP" \
   --amount 1 \
   --target "$ZRC20_BNB" \
-  --recipient "$SENDER"
+  --recipient "$SENDER" 
 
 npx hardhat localnet-check
 
 npx hardhat companion-swap \
+  --skip-checks \
   --network localhost \
   --contract "$COMPANION" \
   --universal-contract "$CONTRACT_SWAP" \
@@ -43,6 +45,7 @@ npx hardhat companion-swap \
 npx hardhat localnet-check
 
 npx hardhat evm-swap \
+  --skip-checks \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
   --amount 1 \
@@ -52,6 +55,7 @@ npx hardhat evm-swap \
 npx hardhat localnet-check
 
 npx hardhat evm-swap \
+  --skip-checks \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
   --amount 1 \

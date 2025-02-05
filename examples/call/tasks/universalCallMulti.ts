@@ -56,18 +56,28 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   );
 
   const gasLimit = hre.ethers.BigNumber.from(callOptions.gasLimit);
-  const zrc20 = new ethers.Contract(args.zrc20, ZRC20ABI.abi, signer);
-  const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
-  const zrc20TransferTx = await zrc20.approve(args.contract, gasFee);
-
-  await zrc20TransferTx.wait();
-
   const factory = (await hre.ethers.getContractFactory(args.name)) as any;
   const contract = factory.attach(args.contract);
 
-  const tx = await contract.call(
-    ethers.utils.hexlify(args.receiver),
-    args.zrc20,
+  const zrc20Array = JSON.parse(args.zrc20Array);
+  const zrc20Contracts = zrc20Array.map(
+    (address: string) => new ethers.Contract(address, ZRC20ABI.abi, signer)
+  );
+
+  for (const zrc20 of zrc20Contracts) {
+    const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(gasLimit);
+    const zrc20TransferTx = await zrc20.approve(args.contract, gasFee);
+    await zrc20TransferTx.wait();
+  }
+
+  const encodedReceivers = ethers.utils.defaultAbiCoder.encode(
+    ["address[]"],
+    [JSON.parse(args.receiverArray)]
+  );
+
+  const tx = await contract.callMulti(
+    encodedReceivers,
+    zrc20Array,
     message,
     callOptions,
     revertOptions
@@ -78,12 +88,12 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 };
 
 task(
-  "universal-call",
-  "Make a call from a universal app to a contract on a connected chain",
+  "universal-call-multi",
+  "Make a multi-call from a universal app to a contract on connected chains",
   main
 )
   .addParam("contract", "The address of the deployed universal contract")
-  .addParam("zrc20", "The address of ZRC-20 to pay fees")
+  .addParam("zrc20Array", "The array of ZRC-20 addresses to pay fees", "[]")
   .addFlag("callOnRevert", "Whether to call on revert")
   .addOptionalParam(
     "revertAddress",
@@ -92,8 +102,9 @@ task(
   )
   .addOptionalParam("revertMessage", "Revert message", "0x")
   .addParam(
-    "receiver",
-    "The address of the receiver contract on a connected chain"
+    "receiverArray",
+    "The addresses of the receiver contract on a connected chain",
+    "[]"
   )
   .addOptionalParam(
     "onRevertGasLimit",
@@ -105,7 +116,7 @@ task(
   .addOptionalParam(
     "callOptionsGasLimit",
     "The gas limit for the call",
-    500000,
+    2000000,
     types.int
   )
   .addParam("function", `Function to call (example: "hello(string)")`)

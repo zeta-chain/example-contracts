@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -e
+set -x
+set -o pipefail
 
 if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 10; fi
 
