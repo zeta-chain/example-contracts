@@ -10,7 +10,7 @@ echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
 
 ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 5") | .address' localnet.json)
-USDC_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ERC-20" and .chain=="ethereum") | .address' localnet.json)
+USDC_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ERC-20 USDC" and .chain=="ethereum") | .address' localnet.json)
 ZRC20_USDC=$(jq -r '.addresses[] | select(.type=="ZRC-20 USDC on 97") | .address' localnet.json)
 ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 97") | .address' localnet.json)
 ZRC20_SOL=$(jq -r '.addresses[] | select(.type=="ZRC-20 SOL on 901") | .address' localnet.json)
@@ -21,6 +21,15 @@ SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
 CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" | jq -r '.contractAddress')
 COMPANION=$(npx hardhat deploy-companion --gateway "$GATEWAY_ETHEREUM" --network localhost --json | jq -r '.contractAddress')
+
+npx hardhat evm-swap \
+  --network localhost \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 1 \
+  --target "$USDC_ETHEREUM" \
+  --recipient "$SENDER"
+
+npx hardhat localnet-check
 
 npx hardhat companion-swap \
   --network localhost \
