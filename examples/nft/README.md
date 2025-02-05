@@ -1,3 +1,3 @@
-# Universal NFT Example
+# Universal NFT
 
-https://www.zetachain.com/docs/developers/standards/nft/
+Learn more: https://www.zetachain.com/docs/developers/standards/nft
