@@ -5,6 +5,7 @@ import {SystemContract, IZRC20} from "@zetachain/toolkit/contracts/SystemContrac
 import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {BytesHelperLib} from "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 
 import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
@@ -31,7 +32,8 @@ contract Swap is
     error InvalidAddress();
     error Unauthorized();
     error ApprovalFailed();
-    error TransferFailed();
+    error TransferFailed(string);
+    error InsufficientAmount(string);
 
     event TokenSwap(
         address sender,
@@ -73,6 +75,9 @@ contract Swap is
         bool withdraw;
     }
 
+    /**
+     * @notice Swap tokens from a connected chain to another connected chain or ZetaChain
+     */
     function onCall(
         MessageContext calldata context,
         address zrc20,
@@ -120,6 +125,9 @@ contract Swap is
         withdraw(params, context.sender, gasFee, gasZRC20, out, zrc20);
     }
 
+    /**
+     * @notice Swap tokens from ZetaChain optionally withdrawing to a connected chain
+     */
     function swap(
         address inputToken,
         uint256 amount,
@@ -133,7 +141,9 @@ contract Swap is
             amount
         );
         if (!success) {
-            revert TransferFailed();
+            revert TransferFailed(
+                "Failed to transfer ZRC-20 tokens from the sender to the contract"
+            );
         }
 
         (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
@@ -163,6 +173,9 @@ contract Swap is
         );
     }
 
+    /**
+     * @notice Swaps enough tokens to pay gas fees, then swaps the remainder to the target token
+     */
     function handleGasAndSwap(
         address inputToken,
         uint256 amount,
@@ -174,6 +187,13 @@ contract Swap is
         uint256 swapAmount;
 
         (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
+
+        uint256 minInput = quoteMinInput(inputToken, targetToken);
+        if (amount < minInput) {
+            revert InsufficientAmount(
+                "The input amount is less than the min amount required to cover the withdraw gas fee"
+            );
+        }
 
         if (gasZRC20 == inputToken) {
             swapAmount = amount - gasFee;
@@ -198,6 +218,9 @@ contract Swap is
         return (out, gasZRC20, gasFee);
     }
 
+    /**
+     * @notice Transfer tokens to the recipient on ZetaChain or withdraw to a connected chain
+     */
     function withdraw(
         Params memory params,
         address sender,
@@ -237,11 +260,17 @@ contract Swap is
                 out
             );
             if (!success) {
-                revert TransferFailed();
+                revert TransferFailed(
+                    "Failed to transfer target tokens to the recipient on ZetaChain"
+                );
             }
         }
     }
 
+    /**
+     * @notice onRevert handles an edge-case when a swap fails when the recipient
+     * on the destination chain is a contract that cannot accept tokens.
+     */
     function onRevert(RevertContext calldata context) external onlyGateway {
         (address sender, address zrc20) = abi.decode(
             context.revertMessage,
@@ -265,6 +294,40 @@ contract Swap is
                 onRevertGasLimit: gasLimit
             })
         );
+    }
+
+    /**
+     * @notice Returns the minimum amount of input tokens required to cover the gas fee for withdrawal
+     */
+    function quoteMinInput(
+        address inputToken,
+        address targetToken
+    ) public view returns (uint256) {
+        (address gasZRC20, uint256 gasFee) = IZRC20(targetToken)
+            .withdrawGasFee();
+
+        if (inputToken == gasZRC20) {
+            return gasFee;
+        }
+
+        address zeta = IUniswapV2Router01(uniswapRouter).WETH();
+
+        address[] memory path;
+        if (inputToken == zeta || gasZRC20 == zeta) {
+            path = new address[](2);
+            path[0] = inputToken;
+            path[1] = gasZRC20;
+        } else {
+            path = new address[](3);
+            path[0] = inputToken;
+            path[1] = zeta;
+            path[2] = gasZRC20;
+        }
+
+        uint256[] memory amountsIn = IUniswapV2Router02(uniswapRouter)
+            .getAmountsIn(gasFee, path);
+
+        return amountsIn[0];
     }
 
     function _authorizeUpgrade(
