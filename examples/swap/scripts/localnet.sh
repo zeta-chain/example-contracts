@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-if [ "$1" = "start" ]; then npx hardhat localnet & sleep 10; fi
+if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 10; fi
 
 echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
