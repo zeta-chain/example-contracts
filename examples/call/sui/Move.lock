@@ -2,10 +2,11 @@
 
 [move]
 version = 3
-manifest_digest = "075DE0B04AFA7263F3516450867979DDB4C6940B76F2FB45B296EDDBD186B222"
-deps_digest = "F8BBB0CCB2491CA29A3DF03D6F92277A4F3574266507ACD77214D37ECA3F3082"
+manifest_digest = "A325778D28564BD772B116FD7F2A50315281D04DCA703A6E8800CCE8EF0ED937"
+deps_digest = "3C4103934B1E040BB6B23F1D610B4EF9F2F1166A50A104EADCF77467C004C600"
 dependencies = [
   { id = "Sui", name = "Sui" },
+  { id = "gateway", name = "gateway" },
 ]
 
 [[move.package]]
@@ -20,6 +21,14 @@ dependencies = [
   { id = "MoveStdlib", name = "MoveStdlib" },
 ]
 
+[[move.package]]
+id = "gateway"
+source = { git = "https://github.com/zeta-chain/protocol-contracts-sui.git", rev = "main", subdir = "" }
+
+dependencies = [
+  { id = "Sui", name = "Sui" },
+]
+
 [move.toolchain-version]
 compiler-version = "1.42.2"
 edition = "2024.beta"
@@ -29,6 +38,6 @@ flavor = "sui"
 
 [env.local]
 chain-id = "4f79e3ab"
-original-published-id = "0x5d124b24ea6e55734ee72c0f36b3dbbf47a75a9206d0e757e10176639de776fe"
-latest-published-id = "0x5d124b24ea6e55734ee72c0f36b3dbbf47a75a9206d0e757e10176639de776fe"
+original-published-id = "0x0000000000000000000000000000000000000000000000000000000000000000"
+latest-published-id = "0x0c05f375babf9417c5baa540a12ab03997e26264d76f07a1576d739b2f44d3cc"
 published-version = "1"

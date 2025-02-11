@@ -3,6 +3,7 @@ module call::hello_world {
     use sui::object::{Self, UID};
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
+    use foo::deposit;
 
     /// An object that contains an arbitrary string
     public struct HelloWorldObject has key, store {
