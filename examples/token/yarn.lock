@@ -2472,10 +2472,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@6.0.0-rc5":
-  version "6.0.0-rc5"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-6.0.0-rc5.tgz#ebb2abfea80ae260ae96320bda29c28c288dd5d4"
-  integrity sha512-iZeJpS11dARW8wbPEAWsx98vLH1ZissBHgZK9X+gEa2iZNC/LomFS6SS3oKoyqFzLzDA8boBWjKnYu0GZldkuw==
+"@zetachain/localnet@6.0.0-rc6":
+  version "6.0.0-rc6"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-6.0.0-rc6.tgz#4cb8ce2f3388019b2d90ef74de87e271ceb9cfc1"
+  integrity sha512-3AMK/ya9SJxBENeGs1+bZtVwXgDZCuTTOP2cfxHq90qPwrpMeZnHGhhm9PCcLhoodXDOx8z+S/4vkzWRj9ghdw==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
@@ -2550,12 +2550,12 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/standard-contracts@1.0.0-rc4":
-  version "1.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/@zetachain/standard-contracts/-/standard-contracts-1.0.0-rc4.tgz#e6f833bb3afa4202fb274f1fe7a9a700567e9b7f"
-  integrity sha512-PZjDsGp2mXWpiGaK04RNkL9aDtiMSYCB+S0g/hq2ffJfQYZi04Njt/ziPqBzRPaSl8qjTw2R/1O+AB9lKNGCKA==
+"@zetachain/standard-contracts@1.0.0-rc6":
+  version "1.0.0-rc6"
+  resolved "https://registry.yarnpkg.com/@zetachain/standard-contracts/-/standard-contracts-1.0.0-rc6.tgz#c67728dbe39bcf2816644d4a7699ffe7e4b339dd"
+  integrity sha512-M5cbfZVVota665yv8HNPa2MMHaPduVRLTKLja9cCjAV1AV0TqUujtrswGB5UIUk4J1mnLdo9MZr6uHFKalr5+A==
   dependencies:
-    typescript "^5.7.3"
+    validator "^13.12.0"
 
 "@zetachain/toolkit@13.0.0-rc15":
   version "13.0.0-rc15"
@@ -7489,7 +7489,7 @@ typescript@5.5.4:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.4.tgz#d9852d6c82bad2d2eda4fd74a5762a8f5909e9ba"
   integrity sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==
 
-typescript@>=4.5.0, typescript@^5.7.3:
+typescript@>=4.5.0:
   version "5.7.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.7.3.tgz#919b44a7dbb8583a9b856d162be24a54bf80073e"
   integrity sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==
