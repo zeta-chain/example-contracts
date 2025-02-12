@@ -36,7 +36,7 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Install Anchor (Solana)
-        uses: metadaoproject/setup-anchor@v1.2
+        uses: metadaoproject/setup-anchor@v3.1
 
       - name: Run Test Script
         run: |
