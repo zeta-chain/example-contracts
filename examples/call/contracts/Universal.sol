@@ -41,6 +41,36 @@ contract Universal is UniversalContract {
         gateway.call(receiver, zrc20, message, callOptions, revertOptions);
     }
 
+    function callMulti(
+        bytes[] memory receiverArray,
+        address[] memory zrc20Array,
+        bytes calldata messages,
+        CallOptions memory callOptions,
+        RevertOptions memory revertOptions
+    ) external {
+        for (uint256 i = 0; i < zrc20Array.length; i++) {
+            (, uint256 gasFee) = IZRC20(zrc20Array[i])
+                .withdrawGasFeeWithGasLimit(callOptions.gasLimit);
+            if (
+                !IZRC20(zrc20Array[i]).transferFrom(
+                    msg.sender,
+                    address(this),
+                    gasFee
+                )
+            ) {
+                revert TransferFailed();
+            }
+            IZRC20(zrc20Array[i]).approve(address(gateway), gasFee);
+            gateway.call(
+                receiverArray[i],
+                zrc20Array[i],
+                messages,
+                callOptions,
+                revertOptions
+            );
+        }
+    }
+
     function withdraw(
         bytes memory receiver,
         uint256 amount,

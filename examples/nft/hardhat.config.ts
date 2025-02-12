@@ -1,21 +1,32 @@
-import "./tasks/deploy";
-import "./tasks/deploy";
-import "./tasks/mint";
-import "./tasks/transfer";
-import "./tasks/universalSetConnected";
-import "./tasks/connectedSetUniversal";
-import "@zetachain/localnet/tasks";
 import "@nomicfoundation/hardhat-toolbox";
-import "@zetachain/toolkit/tasks";
-
-import { getHardhatConfigNetworks } from "@zetachain/networks";
 import { HardhatUserConfig } from "hardhat/config";
+import * as dotenv from "dotenv";
+
+import "@zetachain/standard-contracts/tasks/nft";
+import "@zetachain/localnet/tasks";
+import "@zetachain/toolkit/tasks";
+import { getHardhatConfig } from "@zetachain/toolkit/client";
+
+import "@nomiclabs/hardhat-ethers";
+import "@openzeppelin/hardhat-upgrades";
+
+dotenv.config();
 
 const config: HardhatUserConfig = {
-  networks: {
-    ...getHardhatConfigNetworks(),
+  ...getHardhatConfig({ accounts: [process.env.PRIVATE_KEY] }),
+  solidity: {
+    compilers: [
+      {
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
+        },
+        version: "0.8.26",
+      },
+    ],
   },
-  solidity: "0.8.26",
 };
 
 export default config;

@@ -1,14 +1,13 @@
 {
-  "name": "example-template",
+  "name": "swap",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cross-chain swap contract enabling token exchanges between Ethereum, Solana, Bitcoin, and other blockchains.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:fix": "npx eslint . --ext .js,.ts --fix",
     "lint": "npx eslint . --ext .js,.ts",
-    "deploy:localnet": "npx hardhat compile --force && npx hardhat deploy --network localhost --gateway 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-    "deploy-any:localnet": "npx hardhat compile --force && npx hardhat deploy --name SwapToAnyToken --network localhost --gateway 0x9A676e781A523b5d0C0e43731313A708CB607508"
+    "deploy:localnet": "npx hardhat compile --force && npx hardhat deploy --network localhost --gateway 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
   },
   "keywords": [],
   "author": "",
@@ -58,7 +57,7 @@
     "@solana-developers/helpers": "^2.4.0",
     "@solana/spl-memo": "^0.2.5",
     "@solana/web3.js": "^1.95.8",
-    "@zetachain/protocol-contracts": "11.0.0-rc3",
-    "@zetachain/toolkit": "13.0.0-rc8"
+    "@zetachain/networks": "10.0.0-rc4",
+    "@zetachain/toolkit": "13.0.0-rc15"
   }
 }

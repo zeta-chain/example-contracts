@@ -1,6 +1,8 @@
 import ERC20_ABI from "@openzeppelin/contracts/build/contracts/ERC20.json";
 import { task, types } from "hardhat/config";
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
+import { isInputAmountSufficient } from "./evmSwap";
+import { ZetaChainClient } from "@zetachain/toolkit/client";
 
 const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const { ethers } = hre;
@@ -11,6 +13,19 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
   const recipient = hre.ethers.utils.isAddress(args.recipient)
     ? args.recipient
     : hre.ethers.utils.toUtf8Bytes(args.recipient);
+
+  const client = new ZetaChainClient({ network: "testnet", signer });
+
+  if (!args.skipChecks) {
+    await isInputAmountSufficient({
+      hre,
+      client,
+      amount: args.amount,
+      erc20: args.erc20,
+      target: args.target,
+    });
+  }
+
   let tx;
   if (args.erc20) {
     const erc20Contract = new ethers.Contract(
@@ -60,4 +75,5 @@ task("companion-swap", "Swap native gas tokens", main)
   .addOptionalParam("erc20", "ERC-20 token address")
   .addParam("target", "ZRC-20 address of the token to swap for")
   .addParam("amount", "Amount of tokens to swap")
+  .addFlag("skipChecks", "Skip checks for minimum amount")
   .addParam("recipient", "Recipient address");
