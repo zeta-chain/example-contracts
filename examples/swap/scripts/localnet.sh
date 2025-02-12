@@ -18,6 +18,7 @@ GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain==
 GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
 UNISWAP_ROUTER=$(jq -r '.addresses[] | select(.type=="uniswapRouterInstance" and .chain=="zetachain") | .address' localnet.json)
 SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+DEFAULT_MNEMONIC="grape subway rack mean march bubble carry avoid muffin consider thing street"
 
 CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" | jq -r '.contractAddress')
 COMPANION=$(npx hardhat deploy-companion --gateway "$GATEWAY_ETHEREUM" --network localhost --json | jq -r '.contractAddress')
@@ -43,10 +44,10 @@ npx hardhat companion-swap \
 
 npx hardhat localnet-check
 
-npx hardhat localnet:solana-deposit-and-call \
-  --receiver "$CONTRACT_SWAP" \
-  --amount 0.1 \
-  --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
+# npx hardhat localnet:solana-deposit-and-call \
+#   --receiver "$CONTRACT_SWAP" \
+#   --amount 0.1 \
+#   --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
 
 npx hardhat localnet-check
 

@@ -35,6 +35,9 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
+      - name: Install Anchor (Solana)
+        uses: metadaoproject/setup-anchor@v1.2
+
       - name: Run Test Script
         run: |
           cd "${{ matrix.example-dir }}"
