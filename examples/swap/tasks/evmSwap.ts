@@ -98,7 +98,7 @@ task("evm-swap", "Swap tokens from EVM", evmDepositAndCall)
   .addOptionalParam(
     "gasLimit",
     "The gas limit for the transaction",
-    50000,
+    500000,
     types.int
   )
   .addOptionalParam(

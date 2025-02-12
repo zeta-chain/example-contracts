@@ -27,6 +27,7 @@ npx hardhat evm-swap \
   --receiver "$CONTRACT_SWAP" \
   --amount 0.1 \
   --target "$ZRC20_USDC" \
+  --skip-checks \
   --recipient "$SENDER"
 
 npx hardhat localnet-check
@@ -51,6 +52,7 @@ npx hardhat localnet-check
 
 npx hardhat companion-swap \
   --network localhost \
+  --skip-checks \
   --contract "$COMPANION" \
   --universal-contract "$CONTRACT_SWAP" \
   --amount 0.1 \
@@ -127,4 +129,4 @@ npx hardhat localnet-check
 
 # npx hardhat localnet-check
 
-if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
+# if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
