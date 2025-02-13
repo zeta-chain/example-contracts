@@ -1,15 +1,15 @@
 module call::hello_world {
-    use std::ascii;
-    use sui::tx_context::{Self, TxContext};
-    use sui::coin::Coin;
-    use gateway::gateway::deposit_impl;
+    use sui::event;
 
-    public entry fun gateway_deposit<T>(
-        gateway: &mut gateway::gateway::Gateway,
-        coin: Coin<T>,
-        receiver: ascii::String,
+    public struct HelloEvent has copy, drop {
+        message: vector<u8>,
+    }
+
+    public entry fun hello(
+        gateway: &gateway::gateway::Gateway,
         ctx: &mut TxContext
     ) {
-        deposit_impl(gateway, coin, receiver, ctx);
+        let event = HelloEvent {message: b"Hello, Sui!"};
+        event::emit(event);
     }
 }
