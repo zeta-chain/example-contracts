@@ -1865,7 +1865,7 @@
     rpc-websockets "^9.0.2"
     superstruct "^2.0.2"
 
-"@solana/web3.js@^1.95.8":
+"@solana/web3.js@^1.95.4", "@solana/web3.js@^1.95.8":
   version "1.98.0"
   resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.98.0.tgz#21ecfe8198c10831df6f0cfde7f68370d0405917"
   integrity sha512-nz3Q5OeyGFpFCR+erX2f6JPt3sKhzhYcSycBCSPkWjzSVDh/Rr1FqTVMRe58FKO16/ivTUcuJjeS5MyBvpkbzA==
@@ -2320,17 +2320,21 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@4.0.0-rc6":
-  version "4.0.0-rc6"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-4.0.0-rc6.tgz#9b36f5ab0e8fac766d63cfca4b1cab6a263bdd5d"
-  integrity sha512-DGKspMAJZLUrgNirc3NzFYg9jRfaOyuF5ePj85D93qAA//f8lOsXpmh/6Bvq/MrEscCLpVavgVP7+ePy4KJ2Fw==
+"@zetachain/localnet@6.0.0-rc4":
+  version "6.0.0-rc4"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-6.0.0-rc4.tgz#eb381fb31a1b7a4e15b16b65c470191220de6b0c"
+  integrity sha512-rYiuQEmoopkVzKBV95PtE926Krx+lAP9vJM5bOmUqGwhtQAv/CIK0qGopoNsyNkFK9C6RWALvICO9Tj+AFCeHA==
   dependencies:
+    "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
+    "@solana/web3.js" "^1.95.4"
     "@uniswap/v2-core" "^1.0.1"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/protocol-contracts" "11.0.0-rc3"
+    "@zetachain/protocol-contracts" "11.0.0-rc4"
     ansis "^3.3.2"
+    bs58 "^6.0.0"
     concurrently "^8.2.2"
+    elliptic "6.5.7"
     ethers "^6.13.2"
     hardhat "^2.22.8"
     wait-on "^7.2.0"
@@ -3634,6 +3638,19 @@ elliptic@6.5.4:
   version "6.5.4"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.4.tgz#da37cebd31e79a1367e941b592ed1fbebd58abbb"
   integrity sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==
+  dependencies:
+    bn.js "^4.11.9"
+    brorand "^1.1.0"
+    hash.js "^1.0.0"
+    hmac-drbg "^1.0.1"
+    inherits "^2.0.4"
+    minimalistic-assert "^1.0.1"
+    minimalistic-crypto-utils "^1.0.1"
+
+elliptic@6.5.7:
+  version "6.5.7"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.7.tgz#8ec4da2cb2939926a1b9a73619d768207e647c8b"
+  integrity sha512-ESVCtTwiA+XhY3wyh24QqRGBoP3rEdDUl3EDUUo9tft074fi19IrdpH7hLCMMP3CIj7jb3W96rn8lt/BqIlt5Q==
   dependencies:
     bn.js "^4.11.9"
     brorand "^1.1.0"
