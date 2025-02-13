@@ -1,6 +1,6 @@
 [package]
 name = "call"
-edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
+edition = "2024.beta"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
@@ -8,4 +8,9 @@ gateway = { git = "https://github.com/zeta-chain/protocol-contracts-sui.git", re
 
 [addresses]
 call = "0x0"
-gateway = "0x2c8aa332520a3c3984c84c9acedeaee5421a327e031692530724b4f280516c8f"
+
+[dev-addresses]
+gateway = "0xab4d0f505bfec34035d501e9f8b1dc54da5065c3481e02c39aa6228441649ed3"
+
+# [published-at]
+# gateway = "0xab4d0f505bfec34035d501e9f8b1dc54da5065c3481e02c39aa6228441649ed3"

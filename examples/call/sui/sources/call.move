@@ -1,23 +1,15 @@
 module call::hello_world {
-    use std::string;
-    use sui::object::{Self, UID};
-    use sui::transfer;
+    use std::ascii;
     use sui::tx_context::{Self, TxContext};
-    use gateway::gateway::deposit;
+    use sui::coin::Coin;
+    use gateway::gateway::deposit_impl;
 
-    /// An object that contains an arbitrary string
-    public struct HelloWorldObject has key, store {
-        id: UID,
-        /// A string contained in the object
-        text: string::String,
-    }
-
-    /// Creates a new HelloWorldObject and transfers it to the transaction sender
-    public entry fun mint(ctx: &mut TxContext) {
-        let object = HelloWorldObject {
-            id: object::new(ctx),
-            text: string::utf8(b"Hello, World!"),
-        };
-        transfer::public_transfer(object, tx_context::sender(ctx));
+    public entry fun gateway_deposit<T>(
+        gateway: &mut gateway::gateway::Gateway,
+        coin: Coin<T>,
+        receiver: ascii::String,
+        ctx: &mut TxContext
+    ) {
+        deposit_impl(gateway, coin, receiver, ctx);
     }
 }
