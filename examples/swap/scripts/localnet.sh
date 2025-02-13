@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 10; fi
+if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 20; fi
 
 echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
@@ -44,10 +44,10 @@ npx hardhat companion-swap \
 
 npx hardhat localnet-check
 
-# npx hardhat localnet:solana-deposit-and-call \
-#   --receiver "$CONTRACT_SWAP" \
-#   --amount 0.1 \
-#   --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
+npx hardhat localnet:solana-deposit-and-call \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 0.1 \
+  --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
 
 npx hardhat localnet-check
 
@@ -130,4 +130,4 @@ npx hardhat localnet-check
 
 # npx hardhat localnet-check
 
-# if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
+if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
