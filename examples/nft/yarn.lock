@@ -2494,10 +2494,10 @@
     hardhat "^2.22.8"
     wait-on "^7.2.0"
 
-"@zetachain/networks@10.0.0-rc4":
-  version "10.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-10.0.0-rc4.tgz#9af65c87aac0811b420ecb71eb9adc9da3d0865f"
-  integrity sha512-QFa6TrUO3RkkOE/qGnvtNBEywCqTUgF/z2XGWsRSG6+f8QwDM49A1591KyJ72JBQENYQUheLHAwSjMMWd5LlRg==
+"@zetachain/networks@13.0.0-rc1":
+  version "13.0.0-rc1"
+  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-13.0.0-rc1.tgz#c43acb879a966102cd570cb80a2f60e5166c9f3c"
+  integrity sha512-3P7+tMfwtL9+yPnqa/juxHM48H67rnu2c0ZCpmn18jkpJCTw9OBta+g5jqsTe01RpxqYrGk/1OkmkfPkileEMA==
   dependencies:
     dotenv "^16.1.4"
 
@@ -2557,10 +2557,10 @@
   dependencies:
     validator "^13.12.0"
 
-"@zetachain/toolkit@13.0.0-rc15":
-  version "13.0.0-rc15"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc15.tgz#ffeea733ba4cf29552409fdfaa2777eeb400c6db"
-  integrity sha512-hn4sDqMTQOIZ4axyZPMFfuvVIpAsnjziOacknnnUl+520VgT9Oryit7iv6q/jrhjjzvh1naNeWo07ZVD3Wj8tg==
+"@zetachain/toolkit@13.0.0-rc17":
+  version "13.0.0-rc17"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc17.tgz#83a1eafe39b7492c4259872ca3d31904564ca0a1"
+  integrity sha512-lCpzjQgLb42J/E5Vvuvzy6j+Y2XCLA/a13P0KqmCrXr3wnxb6TE1+wyG+eQ4wOtAtkdBzEZc3lIC9bHzNm3I2g==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^2.1.1"
@@ -2572,7 +2572,7 @@
     "@solana/web3.js" "^1.95.3"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
     "@zetachain/faucet-cli" "^4.1.1"
-    "@zetachain/networks" "10.0.0-rc4"
+    "@zetachain/networks" "13.0.0-rc1"
     "@zetachain/protocol-contracts" "11.0.0-rc4"
     "@zetachain/protocol-contracts-solana" "2.0.0-rc1"
     axios "^1.4.0"
