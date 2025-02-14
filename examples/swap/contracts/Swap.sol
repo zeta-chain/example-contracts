@@ -258,14 +258,21 @@ contract Swap is
                 })
             );
         } else {
-            bool success = IWETH9(params.target).transfer(
-                address(uint160(bytes20(params.to))),
-                out
-            );
-            if (!success) {
-                revert TransferFailed(
-                    "Failed to transfer target tokens to the recipient on ZetaChain"
+            address zeta = IUniswapV2Router01(uniswapRouter).WETH();
+            if (params.target == zeta) {
+                IWETH9(zeta).approve(address(this), out);
+                IWETH9(zeta).withdraw(out);
+                payable(address(uint160(bytes20(params.to)))).transfer(out);
+            } else {
+                bool success = IWETH9(params.target).transfer(
+                    address(uint160(bytes20(params.to))),
+                    out
                 );
+                if (!success) {
+                    revert TransferFailed(
+                        "Failed to transfer target tokens to the recipient on ZetaChain"
+                    );
+                }
             }
         }
     }
@@ -337,4 +344,6 @@ contract Swap is
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyOwner {}
+
+    receive() external payable {}
 }
