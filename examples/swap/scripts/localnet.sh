@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 10; fi
+if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 15; fi
 
 echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
@@ -14,6 +14,7 @@ USDC_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ERC-20 USDC" and .chain=="e
 ZRC20_USDC=$(jq -r '.addresses[] | select(.type=="ZRC-20 USDC on 97") | .address' localnet.json)
 ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 97") | .address' localnet.json)
 ZRC20_SOL=$(jq -r '.addresses[] | select(.type=="ZRC-20 SOL on 901") | .address' localnet.json)
+WZETA=$(jq -r '.addresses[] | select(.type=="wzeta" and .chain=="zetachain") | .address' localnet.json)
 GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
 GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
 UNISWAP_ROUTER=$(jq -r '.addresses[] | select(.type=="uniswapRouterInstance" and .chain=="zetachain") | .address' localnet.json)
@@ -22,6 +23,17 @@ DEFAULT_MNEMONIC="grape subway rack mean march bubble carry avoid muffin conside
 
 CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" | jq -r '.contractAddress')
 COMPANION=$(npx hardhat deploy-companion --gateway "$GATEWAY_ETHEREUM" --network localhost --json | jq -r '.contractAddress')
+
+npx hardhat evm-swap \
+  --network localhost \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 0.1 \
+  --target "$WZETA" \
+  --skip-checks \
+  --withdraw false \
+  --recipient "$SENDER"
+
+npx hardhat localnet-check
 
 npx hardhat evm-swap \
   --network localhost \
