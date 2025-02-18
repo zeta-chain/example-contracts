@@ -29,6 +29,7 @@ npx hardhat evm-swap \
   --receiver "$CONTRACT_SWAP" \
   --amount 0.1 \
   --target "$WZETA" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
   --skip-checks \
   --withdraw false \
   --recipient "$SENDER"
@@ -39,6 +40,7 @@ npx hardhat evm-swap \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
   --amount 0.1 \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
   --target "$ZRC20_USDC" \
   --skip-checks \
   --recipient "$SENDER"

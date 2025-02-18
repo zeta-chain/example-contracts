@@ -77,11 +77,7 @@ export const evmDepositAndCall = async (
 
 task("evm-swap", "Swap tokens from EVM", evmDepositAndCall)
   .addParam("receiver", "Receiver address on ZetaChain")
-  .addOptionalParam(
-    "gatewayEvm",
-    "contract address of gateway on EVM",
-    "0x610178dA211FEF7D417bC0e6FeD39F05609AD788"
-  )
+  .addParam("gatewayEvm", "contract address of gateway on EVM")
   .addFlag("callOnRevert", "Whether to call on revert")
   .addOptionalParam(
     "revertAddress",
