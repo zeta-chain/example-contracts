@@ -93,6 +93,7 @@ npx hardhat evm-swap \
   --network localhost \
   --receiver "$CONTRACT_SWAP" \
   --amount 0.1 \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER"
 
@@ -104,6 +105,7 @@ npx hardhat evm-swap \
   --receiver "$CONTRACT_SWAP" \
   --amount 0.1 \
   --target "$ZRC20_BNB" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
   --recipient "$SENDER" \
   --withdraw false
 
