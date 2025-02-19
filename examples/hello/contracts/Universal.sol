@@ -24,7 +24,6 @@ contract Universal is UniversalContract {
         uint256 amount,
         bytes calldata message
     ) external override onlyGateway {
-        revert();
         string memory name = abi.decode(message, (string));
         emit HelloEvent("Hello: ", name);
     }
