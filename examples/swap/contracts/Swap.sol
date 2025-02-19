@@ -112,7 +112,8 @@ contract Swap is
         (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
             zrc20,
             amount,
-            params.target
+            params.target,
+            params.withdraw
         );
         emit TokenSwap(
             context.sender,
@@ -149,7 +150,8 @@ contract Swap is
         (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
             inputToken,
             amount,
-            targetToken
+            targetToken,
+            withdrawFlag
         );
         emit TokenSwap(
             msg.sender,
@@ -179,33 +181,34 @@ contract Swap is
     function handleGasAndSwap(
         address inputToken,
         uint256 amount,
-        address targetToken
+        address targetToken,
+        bool withdraw
     ) internal returns (uint256, address, uint256) {
         uint256 inputForGas;
         address gasZRC20;
-        uint256 gasFee;
-        uint256 swapAmount;
+        uint256 gasFee = 0;
+        uint256 swapAmount = amount;
 
-        (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
-
-        uint256 minInput = quoteMinInput(inputToken, targetToken);
-        if (amount < minInput) {
-            revert InsufficientAmount(
-                "The input amount is less than the min amount required to cover the withdraw gas fee"
-            );
-        }
-
-        if (gasZRC20 == inputToken) {
-            swapAmount = amount - gasFee;
-        } else {
-            inputForGas = SwapHelperLib.swapTokensForExactTokens(
-                uniswapRouter,
-                inputToken,
-                gasFee,
-                gasZRC20,
-                amount
-            );
-            swapAmount = amount - inputForGas;
+        if (withdraw) {
+            (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
+            uint256 minInput = quoteMinInput(inputToken, targetToken);
+            if (amount < minInput) {
+                revert InsufficientAmount(
+                    "The input amount is less than the min amount required to cover the withdraw gas fee"
+                );
+            }
+            if (gasZRC20 == inputToken) {
+                swapAmount = amount - gasFee;
+            } else {
+                inputForGas = SwapHelperLib.swapTokensForExactTokens(
+                    uniswapRouter,
+                    inputToken,
+                    gasFee,
+                    gasZRC20,
+                    amount
+                );
+                swapAmount = amount - inputForGas;
+            }
         }
 
         uint256 out = SwapHelperLib.swapExactTokensForTokens(
@@ -279,7 +282,8 @@ contract Swap is
         (uint256 out, , ) = handleGasAndSwap(
             context.asset,
             context.amount,
-            zrc20
+            zrc20,
+            true
         );
 
         gateway.withdraw(
