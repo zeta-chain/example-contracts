@@ -2494,13 +2494,6 @@
     hardhat "^2.22.8"
     wait-on "^7.2.0"
 
-"@zetachain/networks@10.0.0-rc4":
-  version "10.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-10.0.0-rc4.tgz#9af65c87aac0811b420ecb71eb9adc9da3d0865f"
-  integrity sha512-QFa6TrUO3RkkOE/qGnvtNBEywCqTUgF/z2XGWsRSG6+f8QwDM49A1591KyJ72JBQENYQUheLHAwSjMMWd5LlRg==
-  dependencies:
-    dotenv "^16.1.4"
-
 "@zetachain/networks@13.0.0-rc1":
   version "13.0.0-rc1"
   resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-13.0.0-rc1.tgz#c43acb879a966102cd570cb80a2f60e5166c9f3c"
