@@ -1910,7 +1910,7 @@
   dependencies:
     "@solana/codecs" "2.0.0-rc.1"
 
-"@solana/spl-token@^0.4.6", "@solana/spl-token@^0.4.8":
+"@solana/spl-token@^0.4.12", "@solana/spl-token@^0.4.6", "@solana/spl-token@^0.4.8":
   version "0.4.12"
   resolved "https://registry.yarnpkg.com/@solana/spl-token/-/spl-token-0.4.12.tgz#09361f9c8116f277b177dbcae7e3a273a19cd48a"
   integrity sha512-K6CxzSoO1vC+WBys25zlSDaW0w4UFZO/IvEZquEI35A/PjqXNQHeVigmDCZYEJfESvYarKwsr8tYr/29lPtvaw==
@@ -2472,18 +2472,19 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@6.0.0-rc8":
-  version "6.0.0-rc8"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-6.0.0-rc8.tgz#ee9b9b3f24ca9a908c61eb97118021e059f6b527"
-  integrity sha512-s6syRd3EvyQfcTUSjCIWLBGrQ7lt0LBvc0slg+eDAlgkHVF78ezG2L66mSIn5Qms7MO6qF8OCTnshef+kkebKg==
+"@zetachain/localnet@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-6.0.1.tgz#7bcd8196668002441f31dd56e9c0e49a00889094"
+  integrity sha512-Rz6SyWgS0lKiKTkbvNnodnbJ0nFviDFHwN+ndkxX+sqglROVQGcLCe2wnm8BjaDQsMENRiz8hxO7qYTVFi9rIw==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
     "@mysten/sui" "^0.0.0-experimental-20250131013137"
+    "@solana/spl-token" "^0.4.12"
     "@solana/web3.js" "^1.95.4"
     "@uniswap/v2-core" "^1.0.1"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/protocol-contracts" "11.0.0-rc5"
+    "@zetachain/protocol-contracts" "11.0.0"
     ansis "^3.3.2"
     bip39 "^3.1.0"
     bs58 "^6.0.0"
@@ -2492,6 +2493,7 @@
     elliptic "6.5.7"
     ethers "^6.13.2"
     hardhat "^2.22.8"
+    js-sha256 "^0.11.0"
     wait-on "^7.2.0"
 
 "@zetachain/networks@13.0.0-rc1":
@@ -2520,6 +2522,16 @@
     ethereumjs-util "^7.1.5"
     secp256k1 "^5.0.0"
 
+"@zetachain/protocol-contracts@11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0.tgz#4889044ae2f5db3f38d052a869775d17798f273e"
+  integrity sha512-BKkLLru4ZJzOh0G2kBYqzjzvb6nvH8c/FlT0Py4f5TAMnrw4h5PnhKMJbWjznv+e2LJ/I9PPpCeqB9zPfGoJPA==
+  dependencies:
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    "@zetachain/networks" "^10.0.0"
+    ethers "5.6.8"
+
 "@zetachain/protocol-contracts@11.0.0-rc3":
   version "11.0.0-rc3"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0-rc3.tgz#9b719391d0728fd1b4e046c5f496180a45ecf0d5"
@@ -2534,16 +2546,6 @@
   version "11.0.0-rc4"
   resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0-rc4.tgz#2e2df98734793873e9c50629f6ec9f5eec6f9f54"
   integrity sha512-7MJzEyUad7JgHucveIhtU8aaPkoMMzsfhKkh9MDMdxUzlaOmmxrQw2hi5B2b7UPxw2K9vFffkmIox6gd6c1+Yw==
-  dependencies:
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    "@zetachain/networks" "^10.0.0"
-    ethers "5.6.8"
-
-"@zetachain/protocol-contracts@11.0.0-rc5":
-  version "11.0.0-rc5"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0-rc5.tgz#b55119e6cade29c4f266eb029d8879b968f87f63"
-  integrity sha512-+bjeTvSzuchWEIxrZ7IbOb8ERhZ+PtgmyOSSFcwhhyAOonYxNlM+1M/mSNAk5i3cdZyJTINzhk7H603/RQSeqA==
   dependencies:
     "@openzeppelin/contracts" "^5.0.2"
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
@@ -5583,6 +5585,11 @@ js-cookie@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.2.1.tgz#69e106dc5d5806894562902aa5baec3744e9b2b8"
   integrity sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==
+
+js-sha256@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/js-sha256/-/js-sha256-0.11.0.tgz#256a921d9292f7fe98905face82e367abaca9576"
+  integrity sha512-6xNlKayMZvds9h1Y1VWc0fQHQ82BxTXizWPEtEeGvmOUYpBRy4gbWroHLpzowe6xiQhHpelCQiE7HEdznyBL9Q==
 
 js-sha3@0.8.0, js-sha3@^0.8.0:
   version "0.8.0"
