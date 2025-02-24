@@ -47,6 +47,41 @@ npx hardhat evm-swap \
 
 npx hardhat localnet-check
 
+npx hardhat evm-swap \
+  --network localhost \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 0.1 \
+  --target "$ZRC20_BNB" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
+  --skip-checks \
+  --erc20 "$USDC_ETHEREUM" \
+  --recipient "$SENDER"
+
+npx hardhat localnet-check
+
+npx hardhat evm-swap \
+  --skip-checks \
+  --network localhost \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 0.1 \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
+  --target "$ZRC20_BNB" \
+  --recipient "$SENDER"
+
+npx hardhat localnet-check
+
+npx hardhat evm-swap \
+  --skip-checks \
+  --network localhost \
+  --receiver "$CONTRACT_SWAP" \
+  --amount 0.1 \
+  --target "$ZRC20_BNB" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
+  --recipient "$SENDER" \
+  --withdraw false
+
+npx hardhat localnet-check
+
 npx hardhat companion-swap \
   --skip-checks \
   --network localhost \
@@ -85,29 +120,6 @@ npx hardhat companion-swap \
   --erc20 "$USDC_ETHEREUM" \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER"
-
-npx hardhat localnet-check
-
-npx hardhat evm-swap \
-  --skip-checks \
-  --network localhost \
-  --receiver "$CONTRACT_SWAP" \
-  --amount 0.1 \
-  --gateway-evm "$GATEWAY_ETHEREUM" \
-  --target "$ZRC20_BNB" \
-  --recipient "$SENDER"
-
-npx hardhat localnet-check
-
-npx hardhat evm-swap \
-  --skip-checks \
-  --network localhost \
-  --receiver "$CONTRACT_SWAP" \
-  --amount 0.1 \
-  --target "$ZRC20_BNB" \
-  --gateway-evm "$GATEWAY_ETHEREUM" \
-  --recipient "$SENDER" \
-  --withdraw false
 
 npx hardhat localnet-check
 
