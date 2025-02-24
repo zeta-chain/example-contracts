@@ -133,6 +133,38 @@ npx hardhat zetachain-swap \
 
 npx hardhat localnet-check
 
+# SUI deposit to ZetaChain
+# npx hardhat localnet:sui-deposit \
+#   --mnemonic "grape subway rack mean march bubble carry avoid muffin consider thing street" \
+#   --gateway 0x8d6363911564aa624ca1600d3bd0e094b33d5a97fb7f825092480dbf0f4a01ba \
+#   --module 0x28737b339892206e07689dc9abb99d7eeb1ade916c400b5853e3a56cce27987b \
+#   --receiver 0x0355B7B8cb128fA5692729Ab3AAa199C1753f726 \
+#   --amount 100000000
+
+# SUI to SOL
+# npx hardhat localnet:sui-deposit-and-call \
+#   --mnemonic "grape subway rack mean march bubble carry avoid muffin consider thing street" \
+#   --gateway 0x8d6363911564aa624ca1600d3bd0e094b33d5a97fb7f825092480dbf0f4a01ba \
+#   --module 0x28737b339892206e07689dc9abb99d7eeb1ade916c400b5853e3a56cce27987b \
+#   --receiver 0x0355B7B8cb128fA5692729Ab3AAa199C1753f726 \
+#   --amount 100000000 \
+#   --types '["address", "bytes", "bool"]' 0x777915D031d1e8144c90D025C594b3b8Bf07a08d 8Sw9oNHHyEyAfQHC41QeFBRMhxG6HmFjNQnSbRvsXGb2 true
+
+# SOL to SUI
+# npx hardhat localnet:solana-deposit-and-call \
+#   --receiver 0x0355B7B8cb128fA5692729Ab3AAa199C1753f726 \
+#   --amount 0.1 \
+#   --types '["address", "bytes", "bool"]' 0xe573a6e11f8506620F123DBF930222163D46BCB6 0x2fec3fafe08d2928a6b8d9a6a77590856c458d984ae090ccbd4177ac13729e65 true
+
+# SPL to SUI
+# npx hardhat localnet:solana-deposit-and-call \
+#   --receiver 0x0355B7B8cb128fA5692729Ab3AAa199C1753f726 \
+#   --mint HgpR36oSMi8SmQauUpvcE9kpfHXLn6PMKrYFtNjPAafU \
+#   --to 4wehnswdQJFnsxiZ9pt5RU9mPy4Yqvgn86XPgXeHiszn \
+#   --from  6DmpL65bceSPQvXbKqoh8qEiz1EeBHmTP1i5B87rgVw7 \
+#   --amount 0.1 \
+#   --types '["address", "bytes", "bool"]' 0xe573a6e11f8506620F123DBF930222163D46BCB6 0x2fec3fafe08d2928a6b8d9a6a77590856c458d984ae090ccbd4177ac13729e65 true
+
 # TESTING REVERTS
 
 # npx hardhat companion-swap \
