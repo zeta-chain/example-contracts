@@ -2552,12 +2552,10 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/standard-contracts@1.0.0-rc6":
-  version "1.0.0-rc6"
-  resolved "https://registry.yarnpkg.com/@zetachain/standard-contracts/-/standard-contracts-1.0.0-rc6.tgz#c67728dbe39bcf2816644d4a7699ffe7e4b339dd"
-  integrity sha512-M5cbfZVVota665yv8HNPa2MMHaPduVRLTKLja9cCjAV1AV0TqUujtrswGB5UIUk4J1mnLdo9MZr6uHFKalr5+A==
-  dependencies:
-    validator "^13.12.0"
+"@zetachain/standard-contracts@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/standard-contracts/-/standard-contracts-1.0.0.tgz#c27594fd9d449ce3347948a01e57e75e05687b9f"
+  integrity sha512-L/HKlOGBDdB2W4bGR1q01DyL0wZZPPKWBWGmNLjKtcoGmp0U30sgwcIkTNJj8cdwvADzYbu9qbua8fkVptn5QQ==
 
 "@zetachain/toolkit@13.0.0-rc17":
   version "13.0.0-rc17"
