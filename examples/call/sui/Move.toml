@@ -4,7 +4,7 @@ edition = "2024.beta"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
-gateway = { git = "https://github.com/zeta-chain/protocol-contracts-sui.git", rev = "main" }
+gateway = { local = "/Users/fadeev/.localnet/protocol-contracts-sui"}
 
 [addresses]
 call = "0x0"

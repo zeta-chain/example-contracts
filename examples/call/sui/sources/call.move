@@ -1,15 +1,16 @@
 module call::hello_world {
     use sui::event;
+    use std::ascii::String;
+    use gateway::gateway::Gateway;
+    use sui::tx_context;
+    use sui::coin::Coin;
 
-    public struct HelloEvent has copy, drop {
-        message: vector<u8>,
-    }
-
-    public entry fun hello(
-        gateway: &gateway::gateway::Gateway,
-        ctx: &mut TxContext
+    public entry fun hello<T>(
+        gateway: &mut Gateway,
+        coin: Coin<T>,
+        receiver: String,
+        ctx: &mut tx_context::TxContext
     ) {
-        let event = HelloEvent {message: b"Hello, Sui!"};
-        event::emit(event);
+        gateway.deposit(coin, receiver, ctx);
     }
 }
