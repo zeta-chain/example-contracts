@@ -27,9 +27,9 @@ pub mod connected {
         let message = String::from_utf8(data).map_err(|_| ErrorCode::InvalidDataFormat)?;
         pda.last_message = message;
 
-        // Transfer some portion of lamports transferred from gateway to another account
-        pda.sub_lamports(amount / 2)?;
-        ctx.accounts.random_wallet.add_lamports(amount / 2)?;
+        // // Transfer some portion of lamports transferred from gateway to another account
+        // pda.sub_lamports(amount / 2)?;
+        // ctx.accounts.random_wallet.add_lamports(amount / 2)?;
 
         msg!(
             "On call executed with amount {}, sender {:?} and message {}",
@@ -62,7 +62,7 @@ pub struct OnCall<'info> {
     pub gateway_pda: UncheckedAccount<'info>,
 
     /// CHECK: Test contract
-    pub random_wallet: UncheckedAccount<'info>,
+    // pub random_wallet: UncheckedAccount<'info>,
 
     pub system_program: Program<'info, System>,
 }
