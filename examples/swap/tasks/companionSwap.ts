@@ -10,6 +10,9 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const factory = (await hre.ethers.getContractFactory("SwapCompanion")) as any;
   const contract = factory.attach(args.contract).connect(signer);
+  const recipient = hre.ethers.utils.isAddress(args.recipient)
+    ? args.recipient
+    : hre.ethers.utils.toUtf8Bytes(args.recipient);
 
   const client = new ZetaChainClient({ network: "testnet", signer });
 
@@ -40,8 +43,8 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     tx = await contract.swapERC20(
       args.universalContract,
       args.target,
-      args.recipient,
-      args.amount,
+      recipient,
+      value,
       args.erc20,
       args.withdraw
     );
@@ -50,7 +53,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
     tx = await contract.swapNativeGas(
       args.universalContract,
       args.target,
-      args.recipient,
+      recipient,
       args.withdraw,
       { value }
     );
