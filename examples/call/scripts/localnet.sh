@@ -23,6 +23,9 @@ echo -e "\n🚀 Deployed contract on ZetaChain: $CONTRACT_ZETACHAIN"
 CONTRACT_ETHEREUM=$(npx hardhat deploy --name Connected --json --network localhost --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')
 echo -e "🚀 Deployed contract on Ethereum: $CONTRACT_ETHEREUM"
 
+CONTRACT_SOL=9BjVGjn28E58LgSi547JYEpqpgRoo1TErkbyXiRSNDQy
+cd solana && anchor build && npx ts-node setup/main.ts && cd -
+
 npx hardhat connected-deposit \
   --contract "$CONTRACT_ETHEREUM" \
   --receiver "$CONTRACT_ZETACHAIN" \
@@ -190,6 +193,16 @@ npx hardhat zetachain-withdraw-and-call \
   --amount 1 \
   --network localhost \
   --call-options-is-arbitrary-call \
+  --types '["string"]' hello
+
+npx hardhat localnet-check
+
+npx hardhat zetachain-withdraw-and-call \
+  --receiver "$CONTRACT_SOL" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_SOL" \
+  --amount 1 \
+  --network localhost \
   --types '["string"]' hello
 
 npx hardhat localnet-check
