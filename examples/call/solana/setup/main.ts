@@ -3,7 +3,7 @@ import { exec } from "child_process";
 import path from "path";
 import util from "util";
 
-import Connected_IDL from "./idl/connected.json";
+import Connected_IDL from "../target/idl/connected.json";
 const execAsync = util.promisify(exec);
 
 process.env.ANCHOR_WALLET = path.resolve(
@@ -13,13 +13,12 @@ process.env.ANCHOR_WALLET = path.resolve(
 process.env.ANCHOR_PROVIDER_URL = "http://localhost:8899";
 anchor.setProvider(anchor.AnchorProvider.env());
 
+const deployPath = path.resolve(__dirname, "../target/deploy/");
+const keypairPath = path.join(deployPath, "connected-keypair.json");
+const programPath = path.join(deployPath, "connected.so");
 async function setup() {
   const { stdout } = await execAsync(
-    `solana program deploy --program-id ${path.resolve(
-      __dirname
-    )}/connected-keypair.json ${path.resolve(
-      __dirname
-    )}/connected.so --url localhost`
+    `solana program deploy --program-id ${keypairPath} ${programPath} --url localhost`
   );
   console.log(`Connected program deployment output: ${stdout}`);
   await new Promise((r) => setTimeout(r, 1000));
