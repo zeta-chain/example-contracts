@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "92567F2249335B96876E4FEC301704AC6B746C1D5F44947A0F024FE423E48D55"
+manifest_digest = "14A2399375F938EA73D29140B8CA371887691345F38828DAEC376BDB3CF2C9A3"
 deps_digest = "3C4103934B1E040BB6B23F1D610B4EF9F2F1166A50A104EADCF77467C004C600"
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -23,7 +23,7 @@ dependencies = [
 
 [[move.package]]
 id = "gateway"
-source = { local = "/Users/fadeev/.localnet/protocol-contracts-sui" }
+source = { local = "/usr/local/share/localnet/protocol-contracts-sui" }
 
 dependencies = [
   { id = "Sui", name = "Sui" },
@@ -38,6 +38,6 @@ flavor = "sui"
 
 [env.local]
 chain-id = "59d1348f"
-original-published-id = "0x600fdaee785adff344985de556ef567f6419c8c6208be10ba634e14902fd4979"
-latest-published-id = "0x600fdaee785adff344985de556ef567f6419c8c6208be10ba634e14902fd4979"
+original-published-id = "0xdd50c511be921a3f6870394c63d432a86373e2ded4d9058e9d94d743aee42eed"
+latest-published-id = "0xdd50c511be921a3f6870394c63d432a86373e2ded4d9058e9d94d743aee42eed"
 published-version = "1"
