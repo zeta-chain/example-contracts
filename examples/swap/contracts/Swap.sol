@@ -26,7 +26,7 @@ contract Swap is
     address public uniswapRouter;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 8332;
-    uint256 constant BITCOIN_TESTNET = 18332;
+    uint256 constant BITCOIN_TESTNET = 18334;
     uint256 public gasLimit;
 
     error InvalidAddress();
