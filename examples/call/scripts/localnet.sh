@@ -207,14 +207,14 @@ npx hardhat zetachain-withdraw-and-call \
 
 npx hardhat localnet-check
 
-npx hardhat zetachain-withdraw-and-call \
-  --receiver "$CONTRACT_ETHEREUM" \
-  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-  --zrc20 "$ZRC20_ETHEREUM" \
-  --amount 1 \
-  --network localhost \
-  --types '["string"]' hello
+# npx hardhat zetachain-withdraw-and-call \
+#   --receiver "$CONTRACT_ETHEREUM" \
+#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+#   --zrc20 "$ZRC20_ETHEREUM" \
+#   --amount 1 \
+#   --network localhost \
+#   --types '["string"]' hello
 
-npx hardhat localnet-check
+# npx hardhat localnet-check
 
 if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
