@@ -14,7 +14,7 @@ process.env.ANCHOR_PROVIDER_URL = "http://localhost:8899";
 anchor.setProvider(anchor.AnchorProvider.env());
 
 const deployPath = path.resolve(__dirname, "../target/deploy/");
-const keypairPath = path.join(deployPath, "connected-keypair.json");
+const keypairPath = `${path.resolve(__dirname)}/connected-keypair.json`;
 const programPath = path.join(deployPath, "connected.so");
 async function setup() {
   const { stdout } = await execAsync(
