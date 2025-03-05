@@ -13,6 +13,8 @@ ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 5") | .addre
 ERC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ERC-20 USDC" and .chain=="ethereum") | .address' localnet.json)
 ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 97") | .address' localnet.json)
 ZRC20_SOL=$(jq -r '.addresses[] | select(.type=="ZRC-20 SOL on 901") | .address' localnet.json)
+ZRC20_SPL=$(jq -r '.addresses[] | select(.type=="ZRC-20 USDC on 901") | .address' localnet.json)
+USDC_SPL=$(jq -r '.addresses[] | select(.type=="SPL-20 USDC") | .address' localnet.json)
 GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
 GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
 SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
@@ -197,14 +199,25 @@ npx hardhat zetachain-withdraw-and-call \
 
 npx hardhat localnet-check
 
-VALUES=$(npx ts-node solana/setup/encodeCallArgs.ts)
+ENCODED_ACCOUNTS_AND_DATA=$(npx ts-node solana/setup/encodeCallArgs.ts "sol" "$USDC_SPL")
 npx hardhat zetachain-withdraw-and-call \
   --receiver "$CONTRACT_SOL" \
   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
   --zrc20 "$ZRC20_SOL" \
   --amount 1 \
   --network localhost \
-  --types '["bytes"]' $VALUES
+  --types '["bytes"]' $ENCODED_ACCOUNTS_AND_DATA
+
+npx hardhat localnet-check
+
+ENCODED_ACCOUNTS_AND_DATA=$(npx ts-node solana/setup/encodeCallArgs.ts "spl" "$USDC_SPL")
+npx hardhat zetachain-withdraw-and-call \
+  --receiver "$CONTRACT_SOL" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_SPL" \
+  --amount 1 \
+  --network localhost \
+  --types '["bytes"]' $ENCODED_ACCOUNTS_AND_DATA
 
 npx hardhat localnet-check
 

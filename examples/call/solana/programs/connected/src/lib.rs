@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use std::mem::size_of;
+use anchor_spl::token::{Mint, Token, TokenAccount};
 
 declare_id!("9BjVGjn28E58LgSi547JYEpqpgRoo1TErkbyXiRSNDQy");
 
@@ -27,16 +28,22 @@ pub mod connected {
         let message = String::from_utf8(data).map_err(|_| ErrorCode::InvalidDataFormat)?;
         pda.last_message = message;
 
-        // // Transfer some portion of lamports transferred from gateway to another account
-        // pda.sub_lamports(amount / 2)?;
-        // ctx.accounts.random_wallet.add_lamports(amount / 2)?;
-
-        msg!(
-            "On call executed with amount {}, sender {:?} and message {}",
-            amount,
-            pda.last_sender,
-            pda.last_message
-        );
+        if pda.last_message == "sol" {
+            msg!(
+                "On call sol executed with amount {}, sender {:?} and message {}",
+                amount,
+                pda.last_sender,
+                pda.last_message
+            );
+        } else {
+            msg!(
+                "On call spl executed with amount {}, spl {:?}, sender {:?} and message {}",
+                amount,
+                ctx.accounts.mint_account,
+                pda.last_sender,
+                pda.last_message
+            );
+        }
 
         Ok(())
     }
@@ -58,11 +65,15 @@ pub struct OnCall<'info> {
     #[account(mut, seeds = [b"connected"], bump)]
     pub pda: Account<'info, Pda>,
 
+    #[account(mut)]
+    pub pda_ata: Account<'info, TokenAccount>,
+
+    pub mint_account: Account<'info, Mint>,
+
     /// CHECK: Test contract
     pub gateway_pda: UncheckedAccount<'info>,
 
-    /// CHECK: Test contract
-    // pub random_wallet: UncheckedAccount<'info>,
+    pub token_program: Program<'info, Token>,
 
     pub system_program: Program<'info, System>,
 }
