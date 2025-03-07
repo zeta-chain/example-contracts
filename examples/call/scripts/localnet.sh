@@ -26,7 +26,7 @@ CONTRACT_ETHEREUM=$(npx hardhat deploy --name Connected --json --network localho
 echo -e "🚀 Deployed contract on Ethereum: $CONTRACT_ETHEREUM"
 
 CONTRACT_SOL=9BjVGjn28E58LgSi547JYEpqpgRoo1TErkbyXiRSNDQy
-cd solana && anchor build && npx ts-node setup/main.ts && cd -
+cd solana && anchor build && npx ts-node setup/main.ts "$USDC_SPL" && cd -
 
 npx hardhat connected-deposit \
   --contract "$CONTRACT_ETHEREUM" \

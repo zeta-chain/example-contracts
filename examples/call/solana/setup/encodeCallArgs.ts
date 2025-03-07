@@ -1,11 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { ethers } from "ethers";
-const GATEWAY = new anchor.web3.PublicKey(
-  "94U5AHQMKkV5txNJ17QPXWoh474PheGou6cNP2FEuL1d"
-);
-const CONNECTED_PROGRAM = new anchor.web3.PublicKey(
-  "9BjVGjn28E58LgSi547JYEpqpgRoo1TErkbyXiRSNDQy"
-);
+import { CONNECTED_PROGRAM, GATEWAY } from "./constants";
 
 async function encode() {
   const { getAssociatedTokenAddress } = await import("@solana/spl-token");
@@ -18,16 +13,16 @@ async function encode() {
 
   const [pdaAccount] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("meta", "utf-8")],
-    GATEWAY
+    new anchor.web3.PublicKey(GATEWAY)
   );
   const [connectedPdaAccount] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("connected", "utf-8")],
-    CONNECTED_PROGRAM
+    new anchor.web3.PublicKey(CONNECTED_PROGRAM)
   );
 
   const connectedPdaATA = await getAssociatedTokenAddress(
     mintPubkey,
-    pdaAccount,
+    connectedPdaAccount,
     true
   );
 
