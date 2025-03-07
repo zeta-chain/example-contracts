@@ -9,12 +9,12 @@ export const CONNECTED_PROGRAM = new anchor.web3.PublicKey(
 
 export const [pdaAccount] = anchor.web3.PublicKey.findProgramAddressSync(
   [Buffer.from("meta", "utf-8")],
-  new anchor.web3.PublicKey(GATEWAY)
+  GATEWAY
 );
 export const [connectedPdaAccount] =
   anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("connected", "utf-8")],
-    new anchor.web3.PublicKey(CONNECTED_PROGRAM)
+    CONNECTED_PROGRAM
   );
 
 // NOTE: same payer as in localnet
