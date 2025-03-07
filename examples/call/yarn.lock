@@ -1921,7 +1921,32 @@
     "@solana/wallet-standard-core" "^1.1.2"
     "@solana/wallet-standard-wallet-adapter" "^1.1.4"
 
+<<<<<<< HEAD
+"@solana/web3.js@^1.32.0", "@solana/web3.js@^1.68.0", "@solana/web3.js@^1.95.2", "@solana/web3.js@^1.95.3":
+  version "1.95.8"
+  resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.95.8.tgz#2d49abda23f7a79a3cc499ab6680f7be11786ee1"
+  integrity sha512-sBHzNh7dHMrmNS5xPD1d0Xa2QffW/RXaxu/OysRXBfwTp+LYqGGmMtCYYwrHPrN5rjAmJCsQRNAwv4FM0t3B6g==
+  dependencies:
+    "@babel/runtime" "^7.25.0"
+    "@noble/curves" "^1.4.2"
+    "@noble/hashes" "^1.4.0"
+    "@solana/buffer-layout" "^4.0.1"
+    agentkeepalive "^4.5.0"
+    bigint-buffer "^1.1.5"
+    bn.js "^5.2.1"
+    borsh "^0.7.0"
+    bs58 "^4.0.1"
+    buffer "6.0.3"
+    fast-stable-stringify "^1.0.0"
+    jayson "^4.1.1"
+    node-fetch "^2.7.0"
+    rpc-websockets "^9.0.2"
+    superstruct "^2.0.2"
+
+"@solana/web3.js@^1.95.4", "@solana/web3.js@^1.95.8":
+=======
 "@solana/web3.js@^1.32.0", "@solana/web3.js@^1.68.0", "@solana/web3.js@^1.95.3", "@solana/web3.js@^1.95.4", "@solana/web3.js@^1.95.8", "@solana/web3.js@^1.98.0":
+>>>>>>> main
   version "1.98.0"
   resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.98.0.tgz#21ecfe8198c10831df6f0cfde7f68370d0405917"
   integrity sha512-nz3Q5OeyGFpFCR+erX2f6JPt3sKhzhYcSycBCSPkWjzSVDh/Rr1FqTVMRe58FKO16/ivTUcuJjeS5MyBvpkbzA==
@@ -2381,6 +2406,22 @@
     typescript "5.5.4"
     zod "3.22.4"
 
+<<<<<<< HEAD
+"@zetachain/localnet@6.0.0-rc4":
+  version "6.0.0-rc4"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-6.0.0-rc4.tgz#eb381fb31a1b7a4e15b16b65c470191220de6b0c"
+  integrity sha512-rYiuQEmoopkVzKBV95PtE926Krx+lAP9vJM5bOmUqGwhtQAv/CIK0qGopoNsyNkFK9C6RWALvICO9Tj+AFCeHA==
+  dependencies:
+    "@coral-xyz/anchor" "^0.30.1"
+    "@inquirer/prompts" "^5.5.0"
+    "@solana/web3.js" "^1.95.4"
+    "@uniswap/v2-core" "^1.0.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
+    "@zetachain/protocol-contracts" "11.0.0-rc4"
+    ansis "^3.3.2"
+    bs58 "^6.0.0"
+    concurrently "^8.2.2"
+=======
 "@zetachain/localnet@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-6.0.1.tgz#7bcd8196668002441f31dd56e9c0e49a00889094"
@@ -2399,6 +2440,7 @@
     bs58 "^6.0.0"
     concurrently "^8.2.2"
     ed25519-hd-key "^1.3.0"
+>>>>>>> main
     elliptic "6.5.7"
     ethers "^6.13.2"
     hardhat "^2.22.8"
