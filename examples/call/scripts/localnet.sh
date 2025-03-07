@@ -197,15 +197,16 @@ npx hardhat zetachain-withdraw-and-call \
 
 npx hardhat localnet-check
 
-# npx hardhat zetachain-withdraw-and-call \
-#   --receiver "$CONTRACT_SOL" \
-#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-#   --zrc20 "$ZRC20_SOL" \
-#   --amount 1 \
-#   --network localhost \
-#   --types '["string"]' hello
+VALUES=$(npx ts-node solana/setup/encodeCallArgs.ts)
+npx hardhat zetachain-withdraw-and-call \
+  --receiver "$CONTRACT_SOL" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_SOL" \
+  --amount 1 \
+  --network localhost \
+  --types '["bytes"]' $VALUES
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
 npx hardhat zetachain-withdraw-and-call \
   --receiver "$CONTRACT_ETHEREUM" \
