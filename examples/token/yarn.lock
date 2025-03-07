@@ -2484,10 +2484,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@7.0.0-rc1":
-  version "7.0.0-rc1"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-7.0.0-rc1.tgz#cae4beeb8302587f5bf28b85169cc2e093c5cadb"
-  integrity sha512-8exONQAd0GdIaXCL/QWmGcUuQ4p+r0shE9f7tScT2r6G0fsTmd6qW2r3rF0cH1jXXX+tQnh2IBB4BJax1fQULA==
+"@zetachain/localnet@7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-7.0.0.tgz#ec40a2424b0d3d7095e094696738f09a19ccde4f"
+  integrity sha512-UE/EaOB8U1VuxnHFK4oaZvSYv8eypHoUrOIb6B0Hr0B7uRKZcFcsukqMg/ApuV7alGC20+1tphVIVbk/4xOvvQ==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
