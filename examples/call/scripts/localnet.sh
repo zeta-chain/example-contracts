@@ -23,8 +23,8 @@ echo -e "\n🚀 Deployed contract on ZetaChain: $CONTRACT_ZETACHAIN"
 CONTRACT_ETHEREUM=$(npx hardhat deploy --name Connected --json --network localhost --gateway "$GATEWAY_ETHEREUM" | jq -r '.contractAddress')
 echo -e "🚀 Deployed contract on Ethereum: $CONTRACT_ETHEREUM"
 
-CONTRACT_SOL=9BjVGjn28E58LgSi547JYEpqpgRoo1TErkbyXiRSNDQy
-cd solana && anchor build && npx ts-node setup/main.ts && cd -
+# CONTRACT_SOL=9BjVGjn28E58LgSi547JYEpqpgRoo1TErkbyXiRSNDQy
+# cd solana && anchor build && npx ts-node setup/main.ts && cd -
 
 npx hardhat connected-deposit \
   --contract "$CONTRACT_ETHEREUM" \
