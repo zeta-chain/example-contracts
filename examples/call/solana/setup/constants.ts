@@ -7,6 +7,16 @@ export const CONNECTED_PROGRAM = new anchor.web3.PublicKey(
   "9BjVGjn28E58LgSi547JYEpqpgRoo1TErkbyXiRSNDQy"
 );
 
+export const [pdaAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+  [Buffer.from("meta", "utf-8")],
+  new anchor.web3.PublicKey(GATEWAY)
+);
+export const [connectedPdaAccount] =
+  anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("connected", "utf-8")],
+    new anchor.web3.PublicKey(CONNECTED_PROGRAM)
+  );
+
 // NOTE: same payer as in localnet
 const PAYER_SECRET_KEY = [
   241, 170, 134, 107, 198, 204, 4, 113, 117, 201, 246, 19, 196, 39, 229, 23, 73,

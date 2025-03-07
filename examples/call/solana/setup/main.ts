@@ -4,7 +4,7 @@ import path from "path";
 import util from "util";
 
 import Connected_IDL from "../target/idl/connected.json";
-import { CONNECTED_PROGRAM, GATEWAY, payer } from "./constants";
+import { connectedPdaAccount, payer, pdaAccount } from "./constants";
 
 const deployPath = path.resolve(__dirname, "../target/deploy/");
 const keypairPath = `${path.resolve(__dirname)}/connected-keypair.json`;
@@ -37,15 +37,6 @@ async function setup() {
   console.log(`Connected program deployment output: ${stdout}`);
   await new Promise((r) => setTimeout(r, 1000));
 
-  const [pdaAccount] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("meta", "utf-8")],
-    GATEWAY
-  );
-  const [connectedPdaAccount] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("connected", "utf-8")],
-    CONNECTED_PROGRAM
-  );
-
   await getOrCreateAssociatedTokenAccount(
     anchor.getProvider().connection,
     payer,
@@ -53,6 +44,7 @@ async function setup() {
     connectedPdaAccount,
     true
   );
+
   await getOrCreateAssociatedTokenAccount(
     anchor.getProvider().connection,
     payer,

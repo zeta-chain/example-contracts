@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { ethers } from "ethers";
-import { CONNECTED_PROGRAM, GATEWAY } from "./constants";
+import { connectedPdaAccount, pdaAccount } from "./constants";
 
 async function encode() {
   const { getAssociatedTokenAddress } = await import("@solana/spl-token");
@@ -10,15 +10,6 @@ async function encode() {
   // this script abi encodes accounts and data to be passed to connected programs
   // in protocol this encoded bytes array is passed to GatewayZEVM.withdrawAndCall
   const mintPubkey = new anchor.web3.PublicKey(mint);
-
-  const [pdaAccount] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("meta", "utf-8")],
-    new anchor.web3.PublicKey(GATEWAY)
-  );
-  const [connectedPdaAccount] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("connected", "utf-8")],
-    new anchor.web3.PublicKey(CONNECTED_PROGRAM)
-  );
 
   const connectedPdaATA = await getAssociatedTokenAddress(
     mintPubkey,
