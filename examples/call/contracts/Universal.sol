@@ -11,6 +11,7 @@ contract Universal is UniversalContract {
 
     event HelloEvent(string, string);
     event RevertEvent(string, RevertContext);
+    event AbortEvent(string, AbortContext);
 
     error TransferFailed();
     error Unauthorized();
@@ -144,9 +145,11 @@ contract Universal is UniversalContract {
         emit HelloEvent("Hello on ZetaChain", name);
     }
 
-    function onRevert(
-        RevertContext calldata revertContext
-    ) external onlyGateway {
-        emit RevertEvent("Revert on ZetaChain", revertContext);
+    function onRevert(RevertContext calldata context) external onlyGateway {
+        emit RevertEvent("Revert on ZetaChain", context);
+    }
+
+    function onAbort(AbortContext calldata context) external onlyGateway {
+        emit AbortEvent("Abort on ZetaChain", context);
     }
 }

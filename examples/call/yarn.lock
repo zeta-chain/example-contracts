@@ -2173,17 +2173,6 @@
     "@solana/spl-token-metadata" "^0.1.6"
     buffer "^6.0.3"
 
-"@solana/spl-token@^0.4.13":
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/@solana/spl-token/-/spl-token-0.4.13.tgz#8f65c3c2b315e1a00a91b8d0f60922c6eb71de62"
-  integrity sha512-cite/pYWQZZVvLbg5lsodSovbetK/eA24gaR0eeUeMuBAMNrT8XFCwaygKy0N2WSg3gSyjjNpIeAGBAKZaY/1w==
-  dependencies:
-    "@solana/buffer-layout" "^4.0.0"
-    "@solana/buffer-layout-utils" "^0.2.0"
-    "@solana/spl-token-group" "^0.0.7"
-    "@solana/spl-token-metadata" "^0.1.6"
-    buffer "^6.0.3"
-
 "@solana/wallet-adapter-base@^0.9.23":
   version "0.9.23"
   resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-base/-/wallet-adapter-base-0.9.23.tgz#3b17c28afd44e173f44f658bf9700fd637e12a11"
@@ -2793,20 +2782,20 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/protocol-contracts@11.0.0-rc3":
-  version "11.0.0-rc3"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0-rc3.tgz#9b719391d0728fd1b4e046c5f496180a45ecf0d5"
-  integrity sha512-Q8lOFOi7S1wdOfOBZPTxsOoyV6kyWwYEhg4vk+HmB36n0Q6A2VvTI7qmw8rxCvq0a5BUASC8IYx0+HzsOPvNOw==
+"@zetachain/protocol-contracts@11.0.0-rc4":
+  version "11.0.0-rc4"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0-rc4.tgz#2e2df98734793873e9c50629f6ec9f5eec6f9f54"
+  integrity sha512-7MJzEyUad7JgHucveIhtU8aaPkoMMzsfhKkh9MDMdxUzlaOmmxrQw2hi5B2b7UPxw2K9vFffkmIox6gd6c1+Yw==
   dependencies:
     "@openzeppelin/contracts" "^5.0.2"
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/protocol-contracts@11.0.0-rc4":
-  version "11.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0-rc4.tgz#2e2df98734793873e9c50629f6ec9f5eec6f9f54"
-  integrity sha512-7MJzEyUad7JgHucveIhtU8aaPkoMMzsfhKkh9MDMdxUzlaOmmxrQw2hi5B2b7UPxw2K9vFffkmIox6gd6c1+Yw==
+"@zetachain/protocol-contracts@12.0.0-rc1":
+  version "12.0.0-rc1"
+  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-12.0.0-rc1.tgz#ecbf1e700448b2452d8de72778c711d0bb42938b"
+  integrity sha512-0LZ8tumrdbUk3G8vxihSs2BSoDrTXrJKqaHUitbDy2f3VpLC2qc8lneLj12eHSDLWp8fhVXJH467PDfWzsYamw==
   dependencies:
     "@openzeppelin/contracts" "^5.0.2"
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
