@@ -28,24 +28,24 @@ echo -e "🚀 Deployed contract on Ethereum: $CONTRACT_ETHEREUM"
 CONTRACT_SOL=9BjVGjn28E58LgSi547JYEpqpgRoo1TErkbyXiRSNDQy
 cd solana && anchor build && npx ts-node setup/main.ts "$USDC_SPL" && cd -
 
-# npx hardhat connected-deposit \
-#   --contract "$CONTRACT_ETHEREUM" \
-#   --receiver "$CONTRACT_ZETACHAIN" \
-#   --network localhost \
-#   --abort-address "$CONTRACT_ZETACHAIN" \
-#   --amount 1
+npx hardhat connected-deposit \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --amount 1
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat connected-deposit \
-#   --contract "$CONTRACT_ETHEREUM" \
-#   --receiver "$CONTRACT_ZETACHAIN" \
-#   --network localhost \
-#   --erc20 "$ERC20_ETHEREUM" \
-#   --abort-address "$CONTRACT_ZETACHAIN" \
-#   --amount 1
+npx hardhat connected-deposit \
+  --contract "$CONTRACT_ETHEREUM" \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --network localhost \
+  --erc20 "$ERC20_ETHEREUM" \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --amount 1
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
 npx hardhat connected-call \
   --contract "$CONTRACT_ETHEREUM" \
@@ -77,167 +77,167 @@ npx hardhat connected-deposit-and-call \
 
 npx hardhat localnet-check
 
-# npx hardhat universal-withdraw \
-#   --contract "$CONTRACT_ZETACHAIN" \
-#   --receiver "$CONTRACT_ETHEREUM" \
-#   --zrc20 "$ZRC20_ETHEREUM" \
-#   --network localhost \
-#   --abort-address "$CONTRACT_ZETACHAIN" \
-#   --amount 1
+npx hardhat universal-withdraw \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --amount 1
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat universal-call \
-#   --contract "$CONTRACT_ZETACHAIN" \
-#   --receiver "$CONTRACT_ETHEREUM" \
-#   --zrc20 "$ZRC20_ETHEREUM" \
-#   --function "hello(string)" \
-#   --network localhost \
-#   --abort-address "$CONTRACT_ZETACHAIN" \
-#   --types '["string"]' alice
+npx hardhat universal-call \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --function "hello(string)" \
+  --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --types '["string"]' alice
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat universal-withdraw-and-call \
-#   --contract "$CONTRACT_ZETACHAIN" \
-#   --receiver "$CONTRACT_ETHEREUM" \
-#   --zrc20 "$ZRC20_ETHEREUM" \
-#   --function "hello(string)" \
-#   --amount 1 \
-#   --network localhost \
-#   --call-options-is-arbitrary-call \
-#   --abort-address "$CONTRACT_ZETACHAIN" \
-#   --types '["string"]' hello
+npx hardhat universal-withdraw-and-call \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --function "hello(string)" \
+  --amount 1 \
+  --network localhost \
+  --call-options-is-arbitrary-call \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --types '["string"]' hello
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat universal-withdraw-and-call \
-#   --contract "$CONTRACT_ZETACHAIN" \
-#   --receiver "$CONTRACT_ETHEREUM" \
-#   --zrc20 "$ZRC20_ETHEREUM" \
-#   --amount 1 \
-#   --network localhost \
-#   --abort-address "$CONTRACT_ZETACHAIN" \
-#   --types '["string"]' hello
+npx hardhat universal-withdraw-and-call \
+  --contract "$CONTRACT_ZETACHAIN" \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --amount 1 \
+  --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
+  --types '["string"]' hello
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# # Testing toolkit methods
+# Testing toolkit methods
 
-# npx hardhat evm-deposit \
-#   --receiver "$CONTRACT_ZETACHAIN" \
-#   --gateway-evm "$GATEWAY_ETHEREUM" \
-#   --network localhost \
-#   --amount 1
+npx hardhat evm-deposit \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
+  --network localhost \
+  --amount 1
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat evm-deposit \
-#   --receiver "$CONTRACT_ZETACHAIN" \
-#   --gateway-evm "$GATEWAY_ETHEREUM" \
-#   --network localhost \
-#   --erc20 "$ERC20_ETHEREUM" \
-#   --amount 1
+npx hardhat evm-deposit \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
+  --network localhost \
+  --erc20 "$ERC20_ETHEREUM" \
+  --amount 1
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat evm-call \
-#   --receiver "$CONTRACT_ZETACHAIN" \
-#   --gateway-evm "$GATEWAY_ETHEREUM" \
-#   --network localhost \
-#   --types '["string"]' alice
+npx hardhat evm-call \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
+  --network localhost \
+  --types '["string"]' alice
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat evm-deposit-and-call \
-#   --receiver "$CONTRACT_ZETACHAIN" \
-#   --gateway-evm "$GATEWAY_ETHEREUM" \
-#   --network localhost \
-#   --amount 1 \
-#   --types '["string"]' alice
+npx hardhat evm-deposit-and-call \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
+  --network localhost \
+  --amount 1 \
+  --types '["string"]' alice
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat evm-deposit-and-call \
-#   --receiver "$CONTRACT_ZETACHAIN" \
-#   --gateway-evm "$GATEWAY_ETHEREUM" \
-#   --network localhost \
-#   --amount 1 \
-#   --erc20 "$ERC20_ETHEREUM" \
-#   --types '["string"]' alice
+npx hardhat evm-deposit-and-call \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --gateway-evm "$GATEWAY_ETHEREUM" \
+  --network localhost \
+  --amount 1 \
+  --erc20 "$ERC20_ETHEREUM" \
+  --types '["string"]' alice
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat zetachain-withdraw \
-#   --receiver "$CONTRACT_ETHEREUM" \
-#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-#   --zrc20 "$ZRC20_ETHEREUM" \
-#   --network localhost \
-#   --amount 1
+npx hardhat zetachain-withdraw \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --network localhost \
+  --amount 1
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat zetachain-withdraw \
-#   --receiver "DrexsvCMH9WWjgnjVbx1iFf3YZcKadupFmxnZLfSyotd" \
-#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-#   --zrc20 "$ZRC20_SOL" \
-#   --network localhost \
-#   --amount 1
+npx hardhat zetachain-withdraw \
+  --receiver "DrexsvCMH9WWjgnjVbx1iFf3YZcKadupFmxnZLfSyotd" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_SOL" \
+  --network localhost \
+  --amount 1
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat zetachain-call \
-#   --receiver "$CONTRACT_ETHEREUM" \
-#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-#   --zrc20 "$ZRC20_ETHEREUM" \
-#   --function "hello(string)" \
-#   --network localhost \
-#   --types '["string"]' alice
+npx hardhat zetachain-call \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --function "hello(string)" \
+  --network localhost \
+  --types '["string"]' alice
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat zetachain-withdraw-and-call \
-#   --receiver "$CONTRACT_ETHEREUM" \
-#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-#   --zrc20 "$ZRC20_ETHEREUM" \
-#   --function "hello(string)" \
-#   --amount 1 \
-#   --network localhost \
-#   --call-options-is-arbitrary-call \
-#   --types '["string"]' hello
+npx hardhat zetachain-withdraw-and-call \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --function "hello(string)" \
+  --amount 1 \
+  --network localhost \
+  --call-options-is-arbitrary-call \
+  --types '["string"]' hello
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# ENCODED_ACCOUNTS_AND_DATA=$(npx ts-node solana/setup/encodeCallArgs.ts "sol" "$USDC_SPL")
-# npx hardhat zetachain-withdraw-and-call \
-#   --receiver "$CONTRACT_SOL" \
-#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-#   --zrc20 "$ZRC20_SOL" \
-#   --amount 1 \
-#   --network localhost \
-#   --types '["bytes"]' $ENCODED_ACCOUNTS_AND_DATA
+ENCODED_ACCOUNTS_AND_DATA=$(npx ts-node solana/setup/encodeCallArgs.ts "sol" "$USDC_SPL")
+npx hardhat zetachain-withdraw-and-call \
+  --receiver "$CONTRACT_SOL" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_SOL" \
+  --amount 1 \
+  --network localhost \
+  --types '["bytes"]' $ENCODED_ACCOUNTS_AND_DATA
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# ENCODED_ACCOUNTS_AND_DATA=$(npx ts-node solana/setup/encodeCallArgs.ts "spl" "$USDC_SPL")
-# npx hardhat zetachain-withdraw-and-call \
-#   --receiver "$CONTRACT_SOL" \
-#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-#   --zrc20 "$ZRC20_SPL" \
-#   --amount 1 \
-#   --network localhost \
-#   --types '["bytes"]' $ENCODED_ACCOUNTS_AND_DATA
+ENCODED_ACCOUNTS_AND_DATA=$(npx ts-node solana/setup/encodeCallArgs.ts "spl" "$USDC_SPL")
+npx hardhat zetachain-withdraw-and-call \
+  --receiver "$CONTRACT_SOL" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_SPL" \
+  --amount 1 \
+  --network localhost \
+  --types '["bytes"]' $ENCODED_ACCOUNTS_AND_DATA
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
-# npx hardhat zetachain-withdraw-and-call \
-#   --receiver "$CONTRACT_ETHEREUM" \
-#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-#   --zrc20 "$ZRC20_ETHEREUM" \
-#   --amount 1 \
-#   --network localhost \
-#   --types '["string"]' hello
+npx hardhat zetachain-withdraw-and-call \
+  --receiver "$CONTRACT_ETHEREUM" \
+  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --zrc20 "$ZRC20_ETHEREUM" \
+  --amount 1 \
+  --network localhost \
+  --types '["string"]' hello
 
-# npx hardhat localnet-check
+npx hardhat localnet-check
 
 if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
