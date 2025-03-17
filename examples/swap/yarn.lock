@@ -2484,10 +2484,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-7.0.0.tgz#ec40a2424b0d3d7095e094696738f09a19ccde4f"
-  integrity sha512-UE/EaOB8U1VuxnHFK4oaZvSYv8eypHoUrOIb6B0Hr0B7uRKZcFcsukqMg/ApuV7alGC20+1tphVIVbk/4xOvvQ==
+"@zetachain/localnet@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/localnet/-/localnet-7.1.0.tgz#f754fbdf068ae756f74512baa2b7ad20dc6b2132"
+  integrity sha512-v3JGJ4ywaZ69DTUlOrO8c/owPa1SHS7cptoZf0FHsR31cY8NV6ZR8Q/WnQjRElJS2SlQgWe3HJ6D0KQtHSLNgA==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
@@ -2496,7 +2496,7 @@
     "@solana/web3.js" "^1.95.4"
     "@uniswap/v2-core" "^1.0.1"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/protocol-contracts" "11.0.0"
+    "@zetachain/protocol-contracts" "12.0.0-rc1"
     ansis "^3.3.2"
     bip39 "^3.1.0"
     bs58 "^6.0.0"
@@ -2536,16 +2536,6 @@
     elliptic "^6.5.7"
     ethereumjs-util "^7.1.5"
     secp256k1 "^5.0.0"
-
-"@zetachain/protocol-contracts@11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0.tgz#4889044ae2f5db3f38d052a869775d17798f273e"
-  integrity sha512-BKkLLru4ZJzOh0G2kBYqzjzvb6nvH8c/FlT0Py4f5TAMnrw4h5PnhKMJbWjznv+e2LJ/I9PPpCeqB9zPfGoJPA==
-  dependencies:
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    "@zetachain/networks" "^10.0.0"
-    ethers "5.6.8"
 
 "@zetachain/protocol-contracts@11.0.0-rc4":
   version "11.0.0-rc4"
