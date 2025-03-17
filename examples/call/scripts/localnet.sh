@@ -32,6 +32,7 @@ npx hardhat connected-deposit \
   --contract "$CONTRACT_ETHEREUM" \
   --receiver "$CONTRACT_ZETACHAIN" \
   --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --amount 1
 
 npx hardhat localnet-check
@@ -41,6 +42,7 @@ npx hardhat connected-deposit \
   --receiver "$CONTRACT_ZETACHAIN" \
   --network localhost \
   --erc20 "$ERC20_ETHEREUM" \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --amount 1
 
 npx hardhat localnet-check
@@ -49,6 +51,7 @@ npx hardhat connected-call \
   --contract "$CONTRACT_ETHEREUM" \
   --receiver "$CONTRACT_ZETACHAIN" \
   --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
 npx hardhat localnet-check
@@ -58,6 +61,7 @@ npx hardhat connected-deposit-and-call \
   --receiver "$CONTRACT_ZETACHAIN" \
   --network localhost \
   --amount 1 \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
 npx hardhat localnet-check
@@ -68,6 +72,7 @@ npx hardhat connected-deposit-and-call \
   --network localhost \
   --amount 1 \
   --erc20 "$ERC20_ETHEREUM" \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
 npx hardhat localnet-check
@@ -77,6 +82,7 @@ npx hardhat universal-withdraw \
   --receiver "$CONTRACT_ETHEREUM" \
   --zrc20 "$ZRC20_ETHEREUM" \
   --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --amount 1
 
 npx hardhat localnet-check
@@ -87,6 +93,7 @@ npx hardhat universal-call \
   --zrc20 "$ZRC20_ETHEREUM" \
   --function "hello(string)" \
   --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
 npx hardhat localnet-check
@@ -99,6 +106,7 @@ npx hardhat universal-withdraw-and-call \
   --amount 1 \
   --network localhost \
   --call-options-is-arbitrary-call \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' hello
 
 npx hardhat localnet-check
@@ -109,6 +117,7 @@ npx hardhat universal-withdraw-and-call \
   --zrc20 "$ZRC20_ETHEREUM" \
   --amount 1 \
   --network localhost \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' hello
 
 npx hardhat localnet-check
