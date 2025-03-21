@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 
-
 async function encode() {
   // this script abi encodes type arguments, objects and the message to be passed to the Sui connected contract
   // in protocol this encoded bytes array is passed to GatewayZEVM.withdrawAndCall
@@ -11,7 +10,7 @@ async function encode() {
 
   // accounts and data are abi encoded
   const encoded = ethers.utils.defaultAbiCoder.encode(
-    ["tuple(string[] typeArguments, byte32[] objects, bytes message)"],
+    ["tuple(string[] typeArguments, bytes32[] objects, bytes message)"],
     [[typeArguments, objects, message]]
   );
 
