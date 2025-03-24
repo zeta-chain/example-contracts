@@ -5,7 +5,9 @@ import {SystemContract, IZRC20} from "@zetachain/toolkit/contracts/SystemContrac
 import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {BytesHelperLib} from "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
+import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 
 import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
@@ -24,10 +26,12 @@ contract Swap is
     OwnableUpgradeable
 {
     address public uniswapRouter;
+    address public wzeta;
     GatewayZEVM public gateway;
     uint256 constant BITCOIN = 8332;
     uint256 constant BITCOIN_TESTNET = 18334;
     uint256 public gasLimit;
+    uint24 public constant POOL_FEE = 3000; // 0.3% fee tier
 
     error InvalidAddress();
     error Unauthorized();
@@ -58,13 +62,18 @@ contract Swap is
         address payable gatewayAddress,
         address uniswapRouterAddress,
         uint256 gasLimitAmount,
-        address owner
+        address owner,
+        address wzetaAddress
     ) public initializer {
-        if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
-            revert InvalidAddress();
+        if (
+            gatewayAddress == address(0) ||
+            uniswapRouterAddress == address(0) ||
+            wzetaAddress == address(0)
+        ) revert InvalidAddress();
         __UUPSUpgradeable_init();
         __Ownable_init(owner);
         uniswapRouter = uniswapRouterAddress;
+        wzeta = wzetaAddress;
         gateway = GatewayZEVM(gatewayAddress);
         gasLimit = gasLimitAmount;
     }
@@ -191,34 +200,160 @@ contract Swap is
 
         if (withdraw) {
             (gasZRC20, gasFee) = IZRC20(targetToken).withdrawGasFee();
-            uint256 minInput = quoteMinInput(inputToken, targetToken);
-            if (amount < minInput) {
-                revert InsufficientAmount(
-                    "The input amount is less than the min amount required to cover the withdraw gas fee"
-                );
-            }
             if (gasZRC20 == inputToken) {
+                if (amount < gasFee) {
+                    revert InsufficientAmount(
+                        "The input amount is less than the gas fee required for withdrawal"
+                    );
+                }
                 swapAmount = amount - gasFee;
             } else {
-                inputForGas = SwapHelperLib.swapTokensForExactTokens(
-                    uniswapRouter,
+                inputForGas = swapTokensForExactTokens(
                     inputToken,
                     gasFee,
-                    gasZRC20,
-                    amount
+                    gasZRC20
                 );
+                if (amount < inputForGas) {
+                    revert InsufficientAmount(
+                        "The input amount is less than the amount required to cover the gas fee"
+                    );
+                }
                 swapAmount = amount - inputForGas;
             }
         }
 
-        uint256 out = SwapHelperLib.swapExactTokensForTokens(
-            uniswapRouter,
+        uint256 out = swapExactTokensForTokens(
             inputToken,
             swapAmount,
-            targetToken,
-            0
+            targetToken
         );
         return (out, gasZRC20, gasFee);
+    }
+
+    /**
+     * @notice Swap exact tokens for tokens using Uniswap V3
+     */
+    function swapExactTokensForTokens(
+        address inputToken,
+        uint256 amountIn,
+        address outputToken
+    ) internal returns (uint256) {
+        // Approve router to spend input tokens
+        IERC20(inputToken).approve(uniswapRouter, amountIn);
+
+        // Try direct swap first
+        try
+            ISwapRouter(uniswapRouter).exactInputSingle(
+                ISwapRouter.ExactInputSingleParams({
+                    tokenIn: inputToken,
+                    tokenOut: outputToken,
+                    fee: POOL_FEE,
+                    recipient: address(this),
+                    deadline: block.timestamp + 15 minutes,
+                    amountIn: amountIn,
+                    amountOutMinimum: 0, // Let Uniswap handle slippage
+                    sqrtPriceLimitX96: 0
+                })
+            )
+        returns (uint256 amountOut) {
+            return amountOut;
+        } catch {
+            // If direct swap fails, try through WZETA
+            // First swap: inputToken -> WZETA
+            uint256 wzetaAmount = ISwapRouter(uniswapRouter).exactInputSingle(
+                ISwapRouter.ExactInputSingleParams({
+                    tokenIn: inputToken,
+                    tokenOut: wzeta,
+                    fee: POOL_FEE,
+                    recipient: address(this),
+                    deadline: block.timestamp + 15 minutes,
+                    amountIn: amountIn,
+                    amountOutMinimum: 0, // Let Uniswap handle slippage
+                    sqrtPriceLimitX96: 0
+                })
+            );
+
+            // Approve router to spend WZETA
+            IERC20(wzeta).approve(uniswapRouter, wzetaAmount);
+
+            // Second swap: WZETA -> outputToken
+            return
+                ISwapRouter(uniswapRouter).exactInputSingle(
+                    ISwapRouter.ExactInputSingleParams({
+                        tokenIn: wzeta,
+                        tokenOut: outputToken,
+                        fee: POOL_FEE,
+                        recipient: address(this),
+                        deadline: block.timestamp + 15 minutes,
+                        amountIn: wzetaAmount,
+                        amountOutMinimum: 0, // Let Uniswap handle slippage
+                        sqrtPriceLimitX96: 0
+                    })
+                );
+        }
+    }
+
+    /**
+     * @notice Swap tokens for exact tokens using Uniswap V3
+     */
+    function swapTokensForExactTokens(
+        address inputToken,
+        uint256 amountOut,
+        address outputToken
+    ) internal returns (uint256) {
+        // Approve router to spend input tokens
+        IERC20(inputToken).approve(uniswapRouter, type(uint256).max);
+
+        // Try direct swap first
+        try
+            ISwapRouter(uniswapRouter).exactOutputSingle(
+                ISwapRouter.ExactOutputSingleParams({
+                    tokenIn: inputToken,
+                    tokenOut: outputToken,
+                    fee: POOL_FEE,
+                    recipient: address(this),
+                    deadline: block.timestamp + 15 minutes,
+                    amountOut: amountOut,
+                    amountInMaximum: type(uint256).max, // Let Uniswap handle slippage
+                    sqrtPriceLimitX96: 0
+                })
+            )
+        returns (uint256 amountIn) {
+            return amountIn;
+        } catch {
+            // If direct swap fails, try through WZETA
+            // First swap: inputToken -> WZETA
+            uint256 wzetaAmount = ISwapRouter(uniswapRouter).exactOutputSingle(
+                ISwapRouter.ExactOutputSingleParams({
+                    tokenIn: inputToken,
+                    tokenOut: wzeta,
+                    fee: POOL_FEE,
+                    recipient: address(this),
+                    deadline: block.timestamp + 15 minutes,
+                    amountOut: amountOut,
+                    amountInMaximum: type(uint256).max, // Let Uniswap handle slippage
+                    sqrtPriceLimitX96: 0
+                })
+            );
+
+            // Approve router to spend WZETA
+            IERC20(wzeta).approve(uniswapRouter, wzetaAmount);
+
+            // Second swap: WZETA -> outputToken
+            return
+                ISwapRouter(uniswapRouter).exactOutputSingle(
+                    ISwapRouter.ExactOutputSingleParams({
+                        tokenIn: wzeta,
+                        tokenOut: outputToken,
+                        fee: POOL_FEE,
+                        recipient: address(this),
+                        deadline: block.timestamp + 15 minutes,
+                        amountOut: amountOut,
+                        amountInMaximum: type(uint256).max, // Let Uniswap handle slippage
+                        sqrtPriceLimitX96: 0
+                    })
+                );
+        }
     }
 
     /**
@@ -298,40 +433,6 @@ contract Swap is
                 onRevertGasLimit: gasLimit
             })
         );
-    }
-
-    /**
-     * @notice Returns the minimum amount of input tokens required to cover the gas fee for withdrawal
-     */
-    function quoteMinInput(
-        address inputToken,
-        address targetToken
-    ) public view returns (uint256) {
-        (address gasZRC20, uint256 gasFee) = IZRC20(targetToken)
-            .withdrawGasFee();
-
-        if (inputToken == gasZRC20) {
-            return gasFee;
-        }
-
-        address zeta = IUniswapV2Router01(uniswapRouter).WETH();
-
-        address[] memory path;
-        if (inputToken == zeta || gasZRC20 == zeta) {
-            path = new address[](2);
-            path[0] = inputToken;
-            path[1] = gasZRC20;
-        } else {
-            path = new address[](3);
-            path[0] = inputToken;
-            path[1] = zeta;
-            path[2] = gasZRC20;
-        }
-
-        uint256[] memory amountsIn = IUniswapV2Router02(uniswapRouter)
-            .getAmountsIn(gasFee, path);
-
-        return amountsIn[0];
     }
 
     function _authorizeUpgrade(
