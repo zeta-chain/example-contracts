@@ -6,7 +6,7 @@ async function encode() {
 
   const args = process.argv.slice(2);
 
-  if (args.length < 3) {
+  if (args.length != 3) {
     throw new Error(`invalid argument number, expected 3, got ${args.length}`);
   }
 
