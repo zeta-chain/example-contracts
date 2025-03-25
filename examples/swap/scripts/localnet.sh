@@ -21,7 +21,7 @@ UNISWAP_ROUTER=$(jq -r '.addresses[] | select(.type=="uniswapV3Router" and .chai
 SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 DEFAULT_MNEMONIC="grape subway rack mean march bubble carry avoid muffin consider thing street"
 
-CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" --wzeta "$WZETA" | jq -r '.contractAddress')
+CONTRACT_SWAP=$(npx hardhat deploy --name Swap --network localhost --gateway "$GATEWAY_ZETACHAIN" --uniswap-router "$UNISWAP_ROUTER" | jq -r '.contractAddress')
 COMPANION=$(npx hardhat deploy-companion --gateway "$GATEWAY_ETHEREUM" --network localhost --json | jq -r '.contractAddress')
 
 npx hardhat evm-swap \

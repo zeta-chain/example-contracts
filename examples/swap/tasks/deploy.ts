@@ -15,13 +15,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const contract = await hre.upgrades.deployProxy(
     factory as any,
-    [
-      args.gateway,
-      args.uniswapRouter,
-      args.gasLimit,
-      signer.address,
-      args.wzeta,
-    ],
+    [args.gateway, args.uniswapRouter, args.gasLimit, signer.address],
     { kind: "uups" }
   );
 
@@ -47,5 +41,4 @@ task("deploy", "Deploy the contract", main)
     "Gas limit for the transaction",
     1000000,
     types.int
-  )
-  .addOptionalParam("wzeta", "WZETA token address");
+  );
