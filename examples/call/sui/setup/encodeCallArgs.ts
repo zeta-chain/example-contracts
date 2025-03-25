@@ -26,5 +26,5 @@ async function encode() {
 }
 
 encode().catch((err) =>
-  console.error(`Encode args for sui examples error: ${err}, usage: encodeCall.ts <typeArguments> <objects> <message>`,)
+  console.error(`Encode args for sui examples error: ${err}, usage: encodeCall.ts <commaSeparatedTypeArguments> <commaSeparatedObjectIDs> <message>`,)
 );
