@@ -16,7 +16,7 @@ async function encode() {
   );
   const message = args[2];
 
-  // accounts and data are abi encoded
+  // values are abi encoded
   const encoded = ethers.utils.defaultAbiCoder.encode(
     ["tuple(string[] typeArguments, bytes32[] objects, bytes message)"],
     [[typeArguments, objects, message]]
