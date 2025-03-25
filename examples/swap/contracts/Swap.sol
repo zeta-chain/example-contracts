@@ -258,38 +258,26 @@ contract Swap is
         returns (uint256 amountOut) {
             return amountOut;
         } catch {
-            // If direct swap fails, try through WZETA
-            // First swap: inputToken -> WZETA
-            uint256 wzetaAmount = ISwapRouter(uniswapRouter).exactInputSingle(
-                ISwapRouter.ExactInputSingleParams({
-                    tokenIn: inputToken,
-                    tokenOut: wzeta,
-                    fee: POOL_FEE,
+            // If direct swap fails, try through WZETA using exactInput for multi-hop
+            // The path is encoded as (tokenIn, fee, WZETA, fee, tokenOut)
+            bytes memory path = abi.encodePacked(
+                inputToken,
+                POOL_FEE,
+                wzeta,
+                POOL_FEE,
+                outputToken
+            );
+
+            ISwapRouter.ExactInputParams memory params = ISwapRouter
+                .ExactInputParams({
+                    path: path,
                     recipient: address(this),
                     deadline: block.timestamp + 15 minutes,
                     amountIn: amountIn,
-                    amountOutMinimum: 0, // Let Uniswap handle slippage
-                    sqrtPriceLimitX96: 0
-                })
-            );
+                    amountOutMinimum: 0 // Let Uniswap handle slippage
+                });
 
-            // Approve router to spend WZETA
-            IERC20(wzeta).approve(uniswapRouter, wzetaAmount);
-
-            // Second swap: WZETA -> outputToken
-            return
-                ISwapRouter(uniswapRouter).exactInputSingle(
-                    ISwapRouter.ExactInputSingleParams({
-                        tokenIn: wzeta,
-                        tokenOut: outputToken,
-                        fee: POOL_FEE,
-                        recipient: address(this),
-                        deadline: block.timestamp + 15 minutes,
-                        amountIn: wzetaAmount,
-                        amountOutMinimum: 0, // Let Uniswap handle slippage
-                        sqrtPriceLimitX96: 0
-                    })
-                );
+            return ISwapRouter(uniswapRouter).exactInput(params);
         }
     }
 
@@ -321,38 +309,26 @@ contract Swap is
         returns (uint256 amountIn) {
             return amountIn;
         } catch {
-            // If direct swap fails, try through WZETA
-            // First swap: inputToken -> WZETA
-            uint256 wzetaAmount = ISwapRouter(uniswapRouter).exactOutputSingle(
-                ISwapRouter.ExactOutputSingleParams({
-                    tokenIn: inputToken,
-                    tokenOut: wzeta,
-                    fee: POOL_FEE,
+            // If direct swap fails, try through WZETA using exactOutput for multi-hop
+            // The path is encoded as (tokenOut, fee, WZETA, fee, tokenIn) in reverse order
+            bytes memory path = abi.encodePacked(
+                outputToken,
+                POOL_FEE,
+                wzeta,
+                POOL_FEE,
+                inputToken
+            );
+
+            ISwapRouter.ExactOutputParams memory params = ISwapRouter
+                .ExactOutputParams({
+                    path: path,
                     recipient: address(this),
                     deadline: block.timestamp + 15 minutes,
                     amountOut: amountOut,
-                    amountInMaximum: type(uint256).max, // Let Uniswap handle slippage
-                    sqrtPriceLimitX96: 0
-                })
-            );
+                    amountInMaximum: type(uint256).max // Let Uniswap handle slippage
+                });
 
-            // Approve router to spend WZETA
-            IERC20(wzeta).approve(uniswapRouter, wzetaAmount);
-
-            // Second swap: WZETA -> outputToken
-            return
-                ISwapRouter(uniswapRouter).exactOutputSingle(
-                    ISwapRouter.ExactOutputSingleParams({
-                        tokenIn: wzeta,
-                        tokenOut: outputToken,
-                        fee: POOL_FEE,
-                        recipient: address(this),
-                        deadline: block.timestamp + 15 minutes,
-                        amountOut: amountOut,
-                        amountInMaximum: type(uint256).max, // Let Uniswap handle slippage
-                        sqrtPriceLimitX96: 0
-                    })
-                );
+            return ISwapRouter(uniswapRouter).exactOutput(params);
         }
     }
 
