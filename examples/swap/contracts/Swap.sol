@@ -17,6 +17,10 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
+interface IMintableERC20 {
+    function mint(address to, uint256 amount) external;
+}
+
 contract Swap is
     UniversalContract,
     Initializable,
@@ -28,6 +32,7 @@ contract Swap is
     uint256 constant BITCOIN = 8332;
     uint256 constant BITCOIN_TESTNET = 18334;
     uint256 public gasLimit;
+    address public rewardToken;
 
     error InvalidAddress();
     error Unauthorized();
@@ -58,15 +63,22 @@ contract Swap is
         address payable gatewayAddress,
         address uniswapRouterAddress,
         uint256 gasLimitAmount,
-        address owner
+        address owner,
+        address rewardTokenAddress
     ) public initializer {
-        if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
-            revert InvalidAddress();
+        if (
+            gatewayAddress == address(0) ||
+            uniswapRouterAddress == address(0) ||
+            rewardTokenAddress == address(0)
+        ) revert InvalidAddress();
+
         __UUPSUpgradeable_init();
         __Ownable_init(owner);
+
         uniswapRouter = uniswapRouterAddress;
         gateway = GatewayZEVM(gatewayAddress);
         gasLimit = gasLimitAmount;
+        rewardToken = rewardTokenAddress;
     }
 
     struct Params {
@@ -124,6 +136,7 @@ contract Swap is
             out
         );
         withdraw(params, context.sender, gasFee, gasZRC20, out, zrc20);
+        IMintableERC20(rewardToken).mint(context.sender, 1 ether);
     }
 
     /**
@@ -173,6 +186,7 @@ contract Swap is
             out,
             inputToken
         );
+        IMintableERC20(rewardToken).mint(msg.sender, 1 ether);
     }
 
     /**

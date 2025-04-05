@@ -15,7 +15,13 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
   const contract = await hre.upgrades.deployProxy(
     factory as any,
-    [args.gateway, args.uniswapRouter, args.gasLimit, signer.address],
+    [
+      args.gateway,
+      args.uniswapRouter,
+      args.gasLimit,
+      signer.address,
+      args.rewardToken,
+    ],
     { kind: "uups" }
   );
 
@@ -41,4 +47,9 @@ task("deploy", "Deploy the contract", main)
     "Gas limit for the transaction",
     1000000,
     types.int
+  )
+  .addOptionalParam(
+    "rewardToken",
+    "Reward token address",
+    "0xF14773cc4bF0c5aeA0e50d14E00a5d266267f4A6"
   );
