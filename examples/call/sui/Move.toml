@@ -7,5 +7,5 @@ Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-fram
 gateway = { local = "/usr/local/share/localnet/protocol-contracts-sui"}
 
 [addresses]
-call = "0x0"
+connected = "0x0"
 gateway = "_"
