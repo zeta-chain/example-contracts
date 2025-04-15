@@ -17,7 +17,7 @@ ZRC20_SOL=$(jq -r '.addresses[] | select(.type=="ZRC-20 SOL on 901") | .address'
 WZETA=$(jq -r '.addresses[] | select(.type=="wzeta" and .chain=="zetachain") | .address' localnet.json)
 GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
 GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
-UNISWAP_ROUTER=$(jq -r '.addresses[] | select(.type=="uniswapRouterInstance" and .chain=="zetachain") | .address' localnet.json)
+UNISWAP_ROUTER=$(jq -r '.addresses[] | select(.type=="uniswapV3Router" and .chain=="zetachain") | .address' localnet.json)
 SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 DEFAULT_MNEMONIC="grape subway rack mean march bubble carry avoid muffin consider thing street"
 
