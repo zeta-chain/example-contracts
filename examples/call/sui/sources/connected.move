@@ -1,3 +1,11 @@
+/// This module provides two main functionalities:
+/// 1. An on_call function that gets executed when a call is made from ZetaChain.
+///    This function replicates Cetus's swap functionality, maintaining the same
+///    parameter structure and behavior for seamless integration with Cetus pools.
+///
+/// 2. Examples of how to use the ZetaChain gateway to make calls from Sui to
+///    universal contracts on ZetaChain through the deposit and deposit_and_call
+///    functions.
 module connected::connected;
 
 use connected::cetusmock::{GlobalConfig, Partner, Pool, Clock, swap_a2b};
