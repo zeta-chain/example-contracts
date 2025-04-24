@@ -30,7 +30,7 @@ const main = async (args: any, hre: HardhatRuntimeEnvironment) => {
 
 task("deploy", "Deploy the contract", main)
   .addOptionalParam("name", "Contract to deploy", "Swap")
-  .addOptionalParam("uniswapRouter", "Uniswap v2 Router address")
+  .addOptionalParam("uniswapRouter", "Uniswap v3 Router address")
   .addOptionalParam(
     "gateway",
     "Gateway address (default: ZetaChain Gateway)",
