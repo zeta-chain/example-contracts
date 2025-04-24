@@ -28,14 +28,10 @@ public entry fun on_call<SOURCE_COIN, TARGET_COIN>(
         ctx,
     );
 
-    let receiver = decode_receiver(data);
+    let receiver = from_bytes(data);
 
     // transfer the coins to the provided address
     transfer::public_transfer(coins_out, receiver)
-}
-
-fun decode_receiver(data: vector<u8>): address {
-    from_bytes(data)
 }
 
 // Deposit and Call Example
