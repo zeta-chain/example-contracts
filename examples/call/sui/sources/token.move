@@ -9,9 +9,9 @@ fun init(witness: TOKEN, ctx: &mut TxContext) {
         witness,
         6,
         b"TOKEN",
-        b"",
-        b"",
-        option::none(),
+        b"TOKEN",
+        b"An example token",
+        option::none(), // url: no URL provided for this example token
         ctx,
     );
     transfer::public_freeze_object(metadata);
