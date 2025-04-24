@@ -18,7 +18,7 @@ fun init(witness: TOKEN, ctx: &mut TxContext) {
     transfer::public_transfer(treasury, ctx.sender())
 }
 
-public entry fun mint(
+public entry fun mint_and_transfer(
     treasury_cap: &mut TreasuryCap<TOKEN>,
     amount: u64,
     recipient: address,
