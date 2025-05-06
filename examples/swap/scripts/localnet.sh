@@ -4,7 +4,9 @@ set -e
 set -x
 set -o pipefail
 
-yarn zetachain localnet start --skip sui ton solana --exit-on-error & sleep 15
+yarn zetachain localnet start --skip sui ton solana --exit-on-error &
+
+while [ ! -f "localnet.json" ]; do sleep 1; done
 
 npx hardhat compile --force --quiet
 
