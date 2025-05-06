@@ -61,6 +61,6 @@
     "@zetachain/networks": "13.0.0-rc1",
     "@zetachain/protocol-contracts": "13.0.0",
     "@zetachain/protocol-contracts-solana": "2.0.0-rc1",
-    "zetachain": "3.0.0-rc5"
+    "zetachain": "^3.0.0"
   }
 }
