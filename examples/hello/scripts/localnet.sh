@@ -2,10 +2,10 @@
 
 set -e
 set -x
+set -o pipefail
 
-if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 20; fi
+yarn zetachain localnet start --skip sui ton solana --exit-on-error & sleep 15
 
-echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
 
 GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
@@ -20,6 +20,6 @@ npx hardhat evm-call \
   --network localhost \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
-if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
+yarn zetachain localnet stop

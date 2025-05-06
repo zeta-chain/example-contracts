@@ -4,9 +4,8 @@ set -e
 set -x
 set -o pipefail
 
-if [ "$1" = "start" ]; then npx hardhat localnet & sleep 20; fi
+yarn zetachain localnet start --skip sui ton solana --exit-on-error & sleep 15
 
-echo -e "\n🚀 Compiling contracts..."
 npx hardhat compile --force --quiet
 
 ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 5") | .address' localnet.json)
@@ -35,7 +34,7 @@ npx hardhat connected-deposit \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --amount 1
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat connected-deposit \
   --contract "$CONTRACT_ETHEREUM" \
@@ -45,7 +44,7 @@ npx hardhat connected-deposit \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --amount 1
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat connected-call \
   --contract "$CONTRACT_ETHEREUM" \
@@ -54,7 +53,7 @@ npx hardhat connected-call \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat connected-deposit-and-call \
   --contract "$CONTRACT_ETHEREUM" \
@@ -64,7 +63,7 @@ npx hardhat connected-deposit-and-call \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat connected-deposit-and-call \
   --contract "$CONTRACT_ETHEREUM" \
@@ -75,7 +74,7 @@ npx hardhat connected-deposit-and-call \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat universal-withdraw \
   --contract "$CONTRACT_ZETACHAIN" \
@@ -85,7 +84,7 @@ npx hardhat universal-withdraw \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --amount 1
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat universal-call \
   --contract "$CONTRACT_ZETACHAIN" \
@@ -96,7 +95,7 @@ npx hardhat universal-call \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat universal-withdraw-and-call \
   --contract "$CONTRACT_ZETACHAIN" \
@@ -109,7 +108,7 @@ npx hardhat universal-withdraw-and-call \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' hello
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat universal-withdraw-and-call \
   --contract "$CONTRACT_ZETACHAIN" \
@@ -120,7 +119,7 @@ npx hardhat universal-withdraw-and-call \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' hello
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 # Testing toolkit methods
 
@@ -130,7 +129,7 @@ npx hardhat evm-deposit \
   --network localhost \
   --amount 1
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat evm-deposit \
   --receiver "$CONTRACT_ZETACHAIN" \
@@ -139,7 +138,7 @@ npx hardhat evm-deposit \
   --erc20 "$ERC20_ETHEREUM" \
   --amount 1
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat evm-call \
   --receiver "$CONTRACT_ZETACHAIN" \
@@ -147,7 +146,7 @@ npx hardhat evm-call \
   --network localhost \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat evm-deposit-and-call \
   --receiver "$CONTRACT_ZETACHAIN" \
@@ -156,7 +155,7 @@ npx hardhat evm-deposit-and-call \
   --amount 1 \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat evm-deposit-and-call \
   --receiver "$CONTRACT_ZETACHAIN" \
@@ -166,7 +165,7 @@ npx hardhat evm-deposit-and-call \
   --erc20 "$ERC20_ETHEREUM" \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat zetachain-withdraw \
   --receiver "$CONTRACT_ETHEREUM" \
@@ -175,16 +174,16 @@ npx hardhat zetachain-withdraw \
   --network localhost \
   --amount 1
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
-npx hardhat zetachain-withdraw \
-  --receiver "DrexsvCMH9WWjgnjVbx1iFf3YZcKadupFmxnZLfSyotd" \
-  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
-  --zrc20 "$ZRC20_SOL" \
-  --network localhost \
-  --amount 1
+# npx hardhat zetachain-withdraw \
+#   --receiver "DrexsvCMH9WWjgnjVbx1iFf3YZcKadupFmxnZLfSyotd" \
+#   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+#   --zrc20 "$ZRC20_SOL" \
+#   --network localhost \
+#   --amount 1
 
-npx hardhat localnet-check
+# yarn zetachain localnet check
 
 npx hardhat zetachain-call \
   --receiver "$CONTRACT_ETHEREUM" \
@@ -194,7 +193,7 @@ npx hardhat zetachain-call \
   --network localhost \
   --types '["string"]' alice
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat zetachain-withdraw-and-call \
   --receiver "$CONTRACT_ETHEREUM" \
@@ -206,7 +205,7 @@ npx hardhat zetachain-withdraw-and-call \
   --call-options-is-arbitrary-call \
   --types '["string"]' hello
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 # ENCODED_ACCOUNTS_AND_DATA=$(npx ts-node solana/setup/encodeCallArgs.ts "sol" "$USDC_SPL")
 # npx hardhat zetachain-withdraw-and-call \
@@ -217,7 +216,7 @@ npx hardhat localnet-check
 #   --network localhost \
 #   --types '["bytes"]' $ENCODED_ACCOUNTS_AND_DATA
 
-# npx hardhat localnet-check
+# yarn zetachain localnet check
 
 # ENCODED_ACCOUNTS_AND_DATA=$(npx ts-node solana/setup/encodeCallArgs.ts "spl" "$USDC_SPL")
 # npx hardhat zetachain-withdraw-and-call \
@@ -228,7 +227,7 @@ npx hardhat localnet-check
 #   --network localhost \
 #   --types '["bytes"]' $ENCODED_ACCOUNTS_AND_DATA
 
-# npx hardhat localnet-check
+# yarn zetachain localnet check
 
 npx hardhat zetachain-withdraw-and-call \
   --receiver "$CONTRACT_ETHEREUM" \
@@ -238,6 +237,6 @@ npx hardhat zetachain-withdraw-and-call \
   --network localhost \
   --types '["string"]' hello
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
-if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
+yarn zetachain localnet stop
