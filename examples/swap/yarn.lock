@@ -3255,6 +3255,16 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
+"@zetachain/protocol-contracts@13.0.0":
+  version "13.0.0"
+  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-13.0.0.tgz#dc194144b21bd333c6939cb7b6fa60f103bf8735"
+  integrity sha512-gqylJeCI4rt6VYVpyr+5wXaUVHmLpr7WiGO6weJX2sOlwOlUk4+HSeRUgI3muK+k3CrY6igCETx/EP3UGMLf+Q==
+  dependencies:
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    "@zetachain/networks" "^10.0.0"
+    ethers "6.13.5"
+
 "@zetachain/protocol-contracts@13.0.0-rc1":
   version "13.0.0-rc1"
   resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-13.0.0-rc1.tgz#24eb7cbfbe14e1d2b9fdcf8701885d8e10e0652a"
