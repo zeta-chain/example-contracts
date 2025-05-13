@@ -34,6 +34,7 @@ contract Swap is
     error ApprovalFailed();
     error TransferFailed(string);
     error InsufficientAmount(string);
+    error InvalidMessageLength();
 
     event TokenSwap(
         bytes sender,
@@ -91,13 +92,16 @@ contract Swap is
         });
 
         if (context.chainID == BITCOIN_TESTNET || context.chainID == BITCOIN) {
+            if (message.length < 41) revert InvalidMessageLength();
             params.target = BytesHelperLib.bytesToAddress(message, 0);
-            params.to = abi.encodePacked(
-                BytesHelperLib.bytesToAddress(message, 20)
-            );
-            if (message.length >= 41) {
-                params.withdraw = BytesHelperLib.bytesToBool(message, 40);
+            params.to = new bytes(message.length - 21);
+            for (uint256 i = 0; i < message.length - 21; i++) {
+                params.to[i] = message[20 + i];
             }
+            params.withdraw = BytesHelperLib.bytesToBool(
+                message,
+                message.length - 1
+            );
         } else {
             (
                 address targetToken,
