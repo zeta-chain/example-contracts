@@ -37,7 +37,7 @@ contract Swap is
     error InvalidMessageLength();
 
     event TokenSwap(
-        address sender,
+        bytes sender,
         bytes indexed recipient,
         address indexed inputToken,
         address indexed targetToken,
@@ -158,7 +158,7 @@ contract Swap is
             withdrawFlag
         );
         emit TokenSwap(
-            msg.sender,
+            abi.encodePacked(msg.sender),
             recipient,
             inputToken,
             targetToken,
@@ -171,7 +171,7 @@ contract Swap is
                 to: recipient,
                 withdraw: withdrawFlag
             }),
-            msg.sender,
+            abi.encodePacked(msg.sender),
             gasFee,
             gasZRC20,
             out,
@@ -230,7 +230,7 @@ contract Swap is
      */
     function withdraw(
         Params memory params,
-        address sender,
+        bytes memory sender,
         uint256 gasFee,
         address gasZRC20,
         uint256 out,
@@ -279,9 +279,9 @@ contract Swap is
      * on the destination chain is a contract that cannot accept tokens.
      */
     function onRevert(RevertContext calldata context) external onlyGateway {
-        (address sender, address zrc20) = abi.decode(
+        (bytes memory sender, address zrc20) = abi.decode(
             context.revertMessage,
-            (address, address)
+            (bytes, address)
         );
         (uint256 out, , ) = handleGasAndSwap(
             context.asset,
@@ -291,11 +291,11 @@ contract Swap is
         );
 
         gateway.withdraw(
-            abi.encodePacked(sender),
+            sender,
             out,
             zrc20,
             RevertOptions({
-                revertAddress: sender,
+                revertAddress: address(bytes20(sender)),
                 callOnRevert: false,
                 abortAddress: address(0),
                 revertMessage: "",

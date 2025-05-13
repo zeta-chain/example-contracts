@@ -4,16 +4,17 @@ set -e
 set -x
 set -o pipefail
 
-if [ "$1" = "start" ]; then npx hardhat localnet --exit-on-error & sleep 20; fi
+yarn zetachain localnet start --skip sui ton solana --exit-on-error &
 
-echo -e "\n🚀 Compiling contracts..."
+while [ ! -f "localnet.json" ]; do sleep 1; done
+
 npx hardhat compile --force --quiet
 
 ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 5") | .address' localnet.json)
 USDC_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ERC-20 USDC" and .chain=="ethereum") | .address' localnet.json)
 ZRC20_USDC=$(jq -r '.addresses[] | select(.type=="ZRC-20 USDC on 97") | .address' localnet.json)
 ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 97") | .address' localnet.json)
-ZRC20_SOL=$(jq -r '.addresses[] | select(.type=="ZRC-20 SOL on 901") | .address' localnet.json)
+# ZRC20_SOL=$(jq -r '.addresses[] | select(.type=="ZRC-20 SOL on 901") | .address' localnet.json)
 WZETA=$(jq -r '.addresses[] | select(.type=="wzeta" and .chain=="zetachain") | .address' localnet.json)
 GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
 GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
@@ -34,7 +35,7 @@ npx hardhat evm-swap \
   --withdraw false \
   --recipient "$SENDER"
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat evm-swap \
   --network localhost \
@@ -45,7 +46,7 @@ npx hardhat evm-swap \
   --skip-checks \
   --recipient "$SENDER"
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat evm-swap \
   --network localhost \
@@ -57,7 +58,7 @@ npx hardhat evm-swap \
   --erc20 "$USDC_ETHEREUM" \
   --recipient "$SENDER"
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat evm-swap \
   --skip-checks \
@@ -68,7 +69,7 @@ npx hardhat evm-swap \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER"
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat evm-swap \
   --skip-checks \
@@ -80,25 +81,25 @@ npx hardhat evm-swap \
   --recipient "$SENDER" \
   --withdraw false
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
-npx hardhat companion-swap \
-  --skip-checks \
-  --network localhost \
-  --contract "$COMPANION" \
-  --universal-contract "$CONTRACT_SWAP" \
-  --amount 0.1 \
-  --target "$ZRC20_SOL" \
-  --recipient "8Sw9oNHHyEyAfQHC41QeFBRMhxG6HmFjNQnSbRvsXGb2"
+# npx hardhat companion-swap \
+#   --skip-checks \
+#   --network localhost \
+#   --contract "$COMPANION" \
+#   --universal-contract "$CONTRACT_SWAP" \
+#   --amount 0.1 \
+#   --target "$ZRC20_SOL" \
+#   --recipient "8Sw9oNHHyEyAfQHC41QeFBRMhxG6HmFjNQnSbRvsXGb2"
 
-npx hardhat localnet-check
+# yarn zetachain localnet check
 
-npx hardhat localnet:solana-deposit-and-call \
-  --receiver "$CONTRACT_SWAP" \
-  --amount 0.1 \
-  --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
+# npx hardhat localnet:solana-deposit-and-call \
+#   --receiver "$CONTRACT_SWAP" \
+#   --amount 0.1 \
+#   --types '["address", "bytes", "bool"]' "$ZRC20_ETHEREUM" "$SENDER" true
 
-npx hardhat localnet-check
+# yarn zetachain localnet check
 
 npx hardhat companion-swap \
   --network localhost \
@@ -109,7 +110,7 @@ npx hardhat companion-swap \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER" 
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat companion-swap \
   --skip-checks \
@@ -121,7 +122,7 @@ npx hardhat companion-swap \
   --target "$ZRC20_BNB" \
   --recipient "$SENDER"
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 npx hardhat zetachain-swap \
   --network localhost \
@@ -131,7 +132,7 @@ npx hardhat zetachain-swap \
   --target "$ZRC20_ETHEREUM" \
   --recipient "$SENDER"
 
-npx hardhat localnet-check
+yarn zetachain localnet check
 
 # SUI deposit to ZetaChain
 # npx hardhat localnet:sui-deposit \
@@ -175,19 +176,19 @@ npx hardhat localnet-check
 #   --target "$ZRC20_SOL" \
 #   --recipient "8Sw9oNHHyEyAfQHC41QeFBRMhxG6HmFjNQnSbRvsXGb2"
 
-# npx hardhat localnet-check
+# yarn zetachain localnet check
 
 # npx hardhat localnet:solana-deposit-and-call \
 #   --receiver 0x0000000000000000000000000000000000000001 \
 #   --amount 1 \
 #   --types '["address", "bytes", "bool"]' 0x0000000000000000000000000000000000000001 0x0000000000000000000000000000000000000001 true
 
-# npx hardhat localnet-check
+# yarn zetachain localnet check
 
 # npx hardhat localnet:solana-deposit \
 #   --receiver "$CONTRACT_SWAP" \
 #   --amount 1
 
-# npx hardhat localnet-check
+# yarn zetachain localnet check
 
-if [ "$1" = "start" ]; then npx hardhat localnet-stop; fi
+yarn zetachain localnet stop
