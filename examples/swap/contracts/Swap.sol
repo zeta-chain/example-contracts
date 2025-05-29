@@ -60,7 +60,7 @@ contract Swap is
         address uniswapRouterAddress,
         uint256 gasLimitAmount,
         address owner
-    ) public initializer {
+    ) external initializer {
         if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
             revert InvalidAddress();
         __UUPSUpgradeable_init();
@@ -139,7 +139,7 @@ contract Swap is
         address targetToken,
         bytes memory recipient,
         bool withdrawFlag
-    ) public {
+    ) external{
         bool success = IZRC20(inputToken).transferFrom(
             msg.sender,
             address(this),
@@ -235,7 +235,7 @@ contract Swap is
         address gasZRC20,
         uint256 out,
         address inputToken
-    ) public {
+    ) internal {
         if (params.withdraw) {
             if (gasZRC20 == params.target) {
                 if (!IZRC20(gasZRC20).approve(address(gateway), out + gasFee)) {
