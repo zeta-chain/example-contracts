@@ -12,7 +12,7 @@ const main = async (options: any) => {
   const tx = await contract.deposit(
     options.receiver,
     createRevertOptions(options),
-    { value: ethers.parseEther(options.amount) }
+    { value: ethers.parseEther(options.amount), gasLimit: options.gasLimit }
   );
   await tx.wait();
 

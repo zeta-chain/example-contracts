@@ -18,7 +18,7 @@ const main = async (options: any) => {
     options.receiver,
     message,
     createRevertOptions(options),
-    { value: ethers.parseEther(options.amount) }
+    { value: ethers.parseEther(options.amount), gasLimit: options.gasLimit }
   );
   await tx.wait();
 

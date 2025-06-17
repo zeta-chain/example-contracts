@@ -17,7 +17,8 @@ const main = async (options: any) => {
   const tx = await contract.call(
     options.receiver,
     message,
-    createRevertOptions(options)
+    createRevertOptions(options),
+    { gasLimit: options.gasLimit }
   );
   await tx.wait();
 

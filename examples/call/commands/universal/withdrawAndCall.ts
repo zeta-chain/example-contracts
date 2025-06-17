@@ -1,7 +1,11 @@
 import { ethers } from "ethers";
 
-import { createCommand, createRevertOptions, getAbi } from "../common";
-import ZRC20ABI from "@zetachain/protocol-contracts/abi/ZRC20.sol/ZRC20.json";
+import {
+  approveZRC20,
+  createCommand,
+  createRevertOptions,
+  getAbi,
+} from "../common";
 
 const main = async (options: any) => {
   const provider = new ethers.JsonRpcProvider(options.rpc);
@@ -19,16 +23,17 @@ const main = async (options: any) => {
   const { abi } = getAbi(options.name);
   const contract = new ethers.Contract(options.contract, abi, signer);
 
-  const zrc20 = new ethers.Contract(options.zrc20, ZRC20ABI.abi, signer);
-  const [, gasFee] = await zrc20.withdrawGasFeeWithGasLimit(
+  const { decimals } = await approveZRC20(
+    options.zrc20,
+    options.contract,
+    options.amount,
+    signer,
     options.callOptionsGasLimit
   );
-  const zrc20TransferTx = await zrc20.approve(options.contract, gasFee);
 
-  await zrc20TransferTx.wait();
-
-  const tx = await contract.call(
+  const tx = await contract.withdrawAndCall(
     options.receiver,
+    ethers.parseUnits(options.amount, decimals),
     options.zrc20,
     payload,
     {
@@ -43,7 +48,9 @@ const main = async (options: any) => {
   console.log(`✅ Transaction sent: ${tx.hash}`);
 };
 
-export const universalCallCommand = createCommand("universal-call")
+export const universalWithdrawAndCallCommand = createCommand(
+  "universal-withdraw-and-call"
+)
   .requiredOption("-t, --types <types...>", "Parameter types as JSON string")
   .requiredOption("-v, --values <values...>", "The values of the parameters")
   .option("--call-options-is-arbitrary-call", "Call any function", false)
@@ -52,5 +59,6 @@ export const universalCallCommand = createCommand("universal-call")
     "--function <function>",
     `Function to call (example: "hello(string)")`
   )
+  .requiredOption("--amount <number>", "Amount to withdraw")
   .option("--zrc20 <address>", "The address of ZRC-20 to pay fees")
   .action(main);
