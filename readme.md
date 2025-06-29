@@ -19,7 +19,7 @@ contracts. A universal app is a smart contract on ZetaChain that is natively
 connected to other blockchains like Ethereum, BNB and Bitcoin. These contracts
 use the latest gateway architecture and are compatible with localnet. Learn more
 about [universal apps in the
-docs](https://www.zetachain.com/docs/developers/apps/intro/).
+docs](https://www.zetachain.com/docs/start/app/).
 
 ## Tutorials
 
