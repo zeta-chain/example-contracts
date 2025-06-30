@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {SystemContract, IZRC20} from "@zetachain/toolkit/contracts/SystemContract.sol";
+import {IZRC20} from "node_modules/@zetachain/protocol-contracts/contracts/zevm/interfaces/IZRC20.sol";
 import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {BytesHelperLib} from "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
@@ -119,14 +119,21 @@ contract Swap is
             params.withdraw
         );
         emit TokenSwap(
-            context.sender,
+            abi.encodePacked(context.sender),
             params.to,
             zrc20,
             params.target,
             amount,
             out
         );
-        withdraw(params, context.sender, gasFee, gasZRC20, out, zrc20);
+        withdraw(
+            params,
+            abi.encodePacked(context.sender),
+            gasFee,
+            gasZRC20,
+            out,
+            zrc20
+        );
     }
 
     /**
@@ -138,7 +145,7 @@ contract Swap is
         address targetToken,
         bytes memory recipient,
         bool withdrawFlag
-    ) external{
+    ) external {
         bool success = IZRC20(inputToken).transferFrom(
             msg.sender,
             address(this),

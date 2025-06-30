@@ -82,7 +82,8 @@ contract Connected {
         MessageContext calldata context,
         bytes calldata message
     ) external payable onlyGateway returns (bytes4) {
-        emit HelloEvent("Hello on EVM from onCall()", "hey");
+        string memory name = abi.decode(message, (string));
+        emit HelloEvent("Hello on EVM from onCall()", name);
         return "";
     }
 
