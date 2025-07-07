@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-import "../../../FoundrySetup.t.sol";
+import "@zetachain/toolkit/contracts/testing/FoundrySetup.t.sol";
 import "../contracts/ZetaChainUniversalToken.sol";
-import "../contracts/EVMUniversalToken.sol";
+import "../contracts/EVMUniversalToken.sol" as EVMUniversalTokenTest;
 import {RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract UniversalTokenTest is FoundrySetup {
     ZetaChainUniversalToken public zToken;
-    EVMUniversalToken public ethToken;
-    EVMUniversalToken public bnbToken;
+    EVMUniversalTokenTest.EVMUniversalToken public ethToken;
+    EVMUniversalTokenTest.EVMUniversalToken public bnbToken;
     address owner = makeAddr("Owner");
 
     function setUp() public override {
@@ -38,9 +38,9 @@ contract UniversalTokenTest is FoundrySetup {
         zToken = ZetaChainUniversalToken(payable(proxy));
 
         // Ethereum Setup
-        EVMUniversalToken ethImpl = new EVMUniversalToken();
+        EVMUniversalTokenTest.EVMUniversalToken ethImpl = new EVMUniversalTokenTest.EVMUniversalToken();
         bytes memory ethInitData = abi.encodeWithSelector(
-            EVMUniversalToken.initialize.selector,
+            EVMUniversalTokenTest.EVMUniversalToken.initialize.selector,
             owner,
             "TestEthToken",
             "TET",
@@ -53,12 +53,12 @@ contract UniversalTokenTest is FoundrySetup {
                 ethInitData
             )
         );
-        ethToken = EVMUniversalToken(payable(ethProxy));
+        ethToken = EVMUniversalTokenTest.EVMUniversalToken(payable(ethProxy));
 
         // BNB Setup
-        EVMUniversalToken bnbImpl = new EVMUniversalToken();
+        EVMUniversalTokenTest.EVMUniversalToken bnbImpl = new EVMUniversalTokenTest.EVMUniversalToken();
         bytes memory bnbInitData = abi.encodeWithSelector(
-            EVMUniversalToken.initialize.selector,
+            EVMUniversalTokenTest.EVMUniversalToken.initialize.selector,
             owner,
             "TestBnbToken",
             "TBT",
@@ -71,7 +71,7 @@ contract UniversalTokenTest is FoundrySetup {
                 bnbInitData
             )
         );
-        bnbToken = EVMUniversalToken(payable(bnbProxy));
+        bnbToken = EVMUniversalTokenTest.EVMUniversalToken(payable(bnbProxy));
         
         zToken.setConnected(eth_eth.zrc20, abi.encodePacked(address(ethToken)));
         zToken.setConnected(bnb_bnb.zrc20, abi.encodePacked(address(bnbToken)));

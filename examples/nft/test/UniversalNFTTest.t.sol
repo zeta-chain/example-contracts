@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-import "../../../FoundrySetup.t.sol";
+import "@zetachain/toolkit/contracts/testing/FoundrySetup.t.sol";
 import "../contracts/ZetaChainUniversalNFT.sol";
-import "../contracts/EVMUniversalNFT.sol";
+import "../contracts/EVMUniversalNFT.sol" as EVMUniversalNFTTest;
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract UniversalNFTTest is FoundrySetup {
     ZetaChainUniversalNFT public zNFT;
-    EVMUniversalNFT public ethNFT;
-    EVMUniversalNFT public bnbNFT;
+    EVMUniversalNFTTest.EVMUniversalNFT public ethNFT;
+    EVMUniversalNFTTest.EVMUniversalNFT public bnbNFT;
 
     address owner = makeAddr("Owner");
 
@@ -33,9 +33,9 @@ contract UniversalNFTTest is FoundrySetup {
         zNFT = ZetaChainUniversalNFT(payable(zProxy));
 
         // Deploy ETH NFT
-        EVMUniversalNFT ethImpl = new EVMUniversalNFT();
+        EVMUniversalNFTTest.EVMUniversalNFT ethImpl = new EVMUniversalNFTTest.EVMUniversalNFT();
         bytes memory ethInit = abi.encodeWithSelector(
-            EVMUniversalNFT.initialize.selector,
+            EVMUniversalNFTTest.EVMUniversalNFT.initialize.selector,
             owner,
             "EthNFT",
             "ENFT",
@@ -43,12 +43,12 @@ contract UniversalNFTTest is FoundrySetup {
             500000
         );
         address ethProxy = address(new ERC1967Proxy(address(ethImpl), ethInit));
-        ethNFT = EVMUniversalNFT(payable(ethProxy));
+        ethNFT = EVMUniversalNFTTest.EVMUniversalNFT(payable(ethProxy));
 
         // Deploy BNB NFT
-        EVMUniversalNFT bnbImpl = new EVMUniversalNFT();
+        EVMUniversalNFTTest.EVMUniversalNFT bnbImpl = new EVMUniversalNFTTest.EVMUniversalNFT();
         bytes memory bnbInit = abi.encodeWithSelector(
-            EVMUniversalNFT.initialize.selector,
+            EVMUniversalNFTTest.EVMUniversalNFT.initialize.selector,
             owner,
             "BnbNFT",
             "BNFT",
@@ -56,7 +56,7 @@ contract UniversalNFTTest is FoundrySetup {
             500000
         );
         address bnbProxy = address(new ERC1967Proxy(address(bnbImpl), bnbInit));
-        bnbNFT = EVMUniversalNFT(payable(bnbProxy));
+        bnbNFT = EVMUniversalNFTTest.EVMUniversalNFT(payable(bnbProxy));
 
         // Connect NFTs
         zNFT.setConnected(eth_eth.zrc20, abi.encodePacked(address(ethNFT)));
@@ -71,8 +71,11 @@ contract UniversalNFTTest is FoundrySetup {
         address alice = makeAddr("Alice");
         deal(alice, 1 ether);
         vm.startPrank(owner);
-        uint256 tokenId = ethNFT.safeMint(alice, "ipfs://example");
+        ethNFT.safeMint(alice, "ipfs://example");
         vm.stopPrank();
+
+        // Get the token ID by checking the balance and enumerating
+        uint256 tokenId = ethNFT.tokenOfOwnerByIndex(alice, 0);
 
         assertEq(ethNFT.ownerOf(tokenId), alice);
 
@@ -88,8 +91,11 @@ contract UniversalNFTTest is FoundrySetup {
         address alice = makeAddr("Alice");
         deal(alice, 1 ether);
         vm.startPrank(owner);
-        uint256 tokenId = zNFT.safeMint(alice, "ipfs://zeta");
+        zNFT.safeMint(alice, "ipfs://zeta");
         vm.stopPrank();
+
+        // Get the token ID by checking the balance and enumerating
+        uint256 tokenId = zNFT.tokenOfOwnerByIndex(alice, 0);
 
         assertEq(zNFT.ownerOf(tokenId), alice);
 
@@ -101,15 +107,18 @@ contract UniversalNFTTest is FoundrySetup {
         );
         assertEq(ethNFT.ownerOf(tokenId), makeAddr("Bob"));
         vm.expectRevert();
-        zNFT.ownerOf(tokenId); // Đã bị burn trên Zeta
+        zNFT.ownerOf(tokenId);
     }
 
     function test_transfer_bnb_to_eth() public {
         address alice = makeAddr("Alice");
         deal(alice, 1 ether);
         vm.startPrank(owner);
-        uint256 tokenId = bnbNFT.safeMint(alice, "ipfs://bnb");
+        bnbNFT.safeMint(alice, "ipfs://bnb");
         vm.stopPrank();
+
+        // Get the token ID by checking the balance and enumerating
+        uint256 tokenId = bnbNFT.tokenOfOwnerByIndex(alice, 0);
 
         vm.prank(alice);
         bnbNFT.transferCrossChain{value: 1 ether}(
@@ -123,6 +132,3 @@ contract UniversalNFTTest is FoundrySetup {
         bnbNFT.ownerOf(tokenId);
     }
 }
-
-
-// forge test --match-path "contracts/examples/nft/test/UniversalNFTTest.t.sol" -vvv
