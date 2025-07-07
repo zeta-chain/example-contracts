@@ -5,12 +5,12 @@ import * as dotenv from "dotenv";
 import "./tasks";
 import "@zetachain/localnet/tasks";
 import "@zetachain/toolkit/tasks";
-import { getHardhatConfig } from "@zetachain/toolkit/client";
+import { getHardhatConfig } from "@zetachain/toolkit/utils";
 
 dotenv.config();
 
 const config: HardhatUserConfig = {
-  ...getHardhatConfig({ accounts: [process.env.PRIVATE_KEY] }),
+  ...getHardhatConfig({ accounts: [process.env.PRIVATE_KEY || ""] }),
 };
 
 export default config;
