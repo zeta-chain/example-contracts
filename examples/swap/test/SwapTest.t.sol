@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-import "../../../FoundrySetup.t.sol";
-import "../../../mock/ERC20Mock.sol";
-import "../../../mock/ZRC20Mock.sol";
+import "@zetachain/toolkit/contracts/testing/FoundrySetup.t.sol";
+import "@zetachain/toolkit/contracts/testing/mock/ERC20Mock.sol";
+import "@zetachain/toolkit/contracts/testing/mock/ZRC20Mock.sol";
 import "../contracts/Swap.sol";
 import {SwapCompanion} from "../contracts/SwapCompanion.sol";
 import {console} from "forge-std/console.sol";
@@ -19,7 +19,7 @@ contract SwapTest is FoundrySetup {
 
     function setUp() public override {
         super.setUp();
-    
+
         deal(owner, 1_000_000 ether);
         vm.startPrank(owner);
 
@@ -35,8 +35,12 @@ contract SwapTest is FoundrySetup {
         address sProxy = address(new ERC1967Proxy(address(sImpl), sInitData));
         swap = Swap(payable(sProxy));
 
-        ethCompanion = new SwapCompanion(payable(address(evmSetup.wrapGatewayEVM(chainIdETH))));
-        bnbCompanion = new SwapCompanion(payable(address(evmSetup.wrapGatewayEVM(chainIdBNB))));
+        ethCompanion = new SwapCompanion(
+            payable(address(evmSetup.wrapGatewayEVM(chainIdETH)))
+        );
+        bnbCompanion = new SwapCompanion(
+            payable(address(evmSetup.wrapGatewayEVM(chainIdBNB)))
+        );
 
         vm.stopPrank();
 
@@ -54,8 +58,16 @@ contract SwapTest is FoundrySetup {
             chainIdETH,
             18
         );
-        nodeLogicMock.setAssetToZRC20(chainIdETH, eth_testToken1.asset, eth_testToken1.zrc20);
-        nodeLogicMock.setZRC20ToAsset(chainIdETH, eth_testToken1.zrc20, eth_testToken1.asset);
+        nodeLogicMock.setAssetToZRC20(
+            chainIdETH,
+            eth_testToken1.asset,
+            eth_testToken1.zrc20
+        );
+        nodeLogicMock.setZRC20ToAsset(
+            chainIdETH,
+            eth_testToken1.zrc20,
+            eth_testToken1.asset
+        );
 
         bnb_testToken2 = tokenSetup.createToken(
             TokenSetup.Contracts({
@@ -70,9 +82,17 @@ contract SwapTest is FoundrySetup {
             chainIdBNB,
             18
         );
-        nodeLogicMock.setAssetToZRC20(chainIdBNB, bnb_testToken2.asset, bnb_testToken2.zrc20);
-        nodeLogicMock.setZRC20ToAsset(chainIdBNB, bnb_testToken2.zrc20, bnb_testToken2.asset);
-        
+        nodeLogicMock.setAssetToZRC20(
+            chainIdBNB,
+            bnb_testToken2.asset,
+            bnb_testToken2.zrc20
+        );
+        nodeLogicMock.setZRC20ToAsset(
+            chainIdBNB,
+            bnb_testToken2.zrc20,
+            bnb_testToken2.asset
+        );
+
         console.log("eth_testToken1.asset", eth_testToken1.asset);
         console.log("bnb_testToken2.asset", bnb_testToken2.asset);
         zetaSetup.uniswapV2AddLiquidity(
@@ -91,7 +111,7 @@ contract SwapTest is FoundrySetup {
         address bob = makeAddr("Bob");
         deal(alice, 1 ether);
         ZRC20Mock(bnb_testToken2.zrc20).mint(alice, 100 ether);
-        
+
         vm.prank(alice);
         ZRC20Mock(bnb_testToken2.zrc20).approve(address(swap), 50 ether);
         vm.prank(alice);
@@ -102,8 +122,14 @@ contract SwapTest is FoundrySetup {
             abi.encodePacked(bob),
             true
         );
-        console.log("Alice balance:", ZRC20Mock(bnb_testToken2.zrc20).balanceOf(alice));
-        console.log("Bob balance:", ERC20Mock(eth_testToken1.asset).balanceOf(bob));
+        console.log(
+            "Alice balance:",
+            ZRC20Mock(bnb_testToken2.zrc20).balanceOf(alice)
+        );
+        console.log(
+            "Bob balance:",
+            ERC20Mock(eth_testToken1.asset).balanceOf(bob)
+        );
         assertEq(ZRC20Mock(bnb_testToken2.zrc20).balanceOf(alice), 50 ether);
         assertGt(ERC20Mock(eth_testToken1.asset).balanceOf(bob), 5 ether);
     }
@@ -113,9 +139,12 @@ contract SwapTest is FoundrySetup {
         address bob = makeAddr("Bob");
         deal(alice, 1 ether);
         ERC20Mock(eth_testToken1.asset).mint(alice, 100 ether);
-        
+
         vm.prank(alice);
-        ERC20Mock(eth_testToken1.asset).approve(address(ethCompanion), 50 ether);
+        ERC20Mock(eth_testToken1.asset).approve(
+            address(ethCompanion),
+            50 ether
+        );
         vm.prank(alice);
         ethCompanion.swapERC20(
             address(swap),
@@ -127,8 +156,14 @@ contract SwapTest is FoundrySetup {
         );
         // vm.stopPrank();
 
-        console.log("Alice balance:", ZRC20Mock(bnb_testToken2.zrc20).balanceOf(alice));
-        console.log("Bob balance:", ERC20Mock(eth_testToken1.asset).balanceOf(bob));
+        console.log(
+            "Alice balance:",
+            ZRC20Mock(bnb_testToken2.zrc20).balanceOf(alice)
+        );
+        console.log(
+            "Bob balance:",
+            ERC20Mock(eth_testToken1.asset).balanceOf(bob)
+        );
         assertEq(ZRC20Mock(eth_testToken1.asset).balanceOf(alice), 50 ether);
         assertGt(ERC20Mock(bnb_testToken2.asset).balanceOf(bob), 0);
     }
@@ -138,9 +173,12 @@ contract SwapTest is FoundrySetup {
         address bob = makeAddr("Bob");
         deal(alice, 1 ether);
         ERC20Mock(eth_testToken1.asset).mint(alice, 100 ether);
-        
+
         vm.prank(alice);
-        ERC20Mock(eth_testToken1.asset).approve(address(ethCompanion), 50 ether);
+        ERC20Mock(eth_testToken1.asset).approve(
+            address(ethCompanion),
+            50 ether
+        );
         vm.prank(alice);
         ethCompanion.swapERC20(
             address(swap),
@@ -152,8 +190,14 @@ contract SwapTest is FoundrySetup {
         );
         // vm.stopPrank();
 
-        console.log("Alice balance:", ZRC20Mock(bnb_testToken2.zrc20).balanceOf(alice));
-        console.log("Bob balance:", ERC20Mock(eth_testToken1.asset).balanceOf(bob));
+        console.log(
+            "Alice balance:",
+            ZRC20Mock(bnb_testToken2.zrc20).balanceOf(alice)
+        );
+        console.log(
+            "Bob balance:",
+            ERC20Mock(eth_testToken1.asset).balanceOf(bob)
+        );
         assertEq(ZRC20Mock(eth_testToken1.asset).balanceOf(alice), 50 ether);
         assertGt(ERC20Mock(bnb_testToken2.zrc20).balanceOf(bob), 0);
     }
@@ -162,7 +206,7 @@ contract SwapTest is FoundrySetup {
         address alice = makeAddr("Alice");
         address bob = makeAddr("Bob");
         deal(alice, 1 ether);
-        
+
         vm.prank(alice);
         ethCompanion.swapNativeGas{value: 0.1 ether}(
             address(swap),
@@ -173,7 +217,10 @@ contract SwapTest is FoundrySetup {
         // vm.stopPrank();
 
         console.log("Alice balance:", address(alice).balance);
-        console.log("Bob balance:", ERC20Mock(bnb_testToken2.zrc20).balanceOf(bob));
+        console.log(
+            "Bob balance:",
+            ERC20Mock(bnb_testToken2.zrc20).balanceOf(bob)
+        );
         assertEq(address(alice).balance, 0.9 ether);
         assertGt(ERC20Mock(bnb_testToken2.zrc20).balanceOf(bob), 0);
     }
@@ -182,7 +229,7 @@ contract SwapTest is FoundrySetup {
         address alice = makeAddr("Alice");
         address bob = makeAddr("Bob");
         deal(alice, 1 ether);
-        
+
         vm.prank(alice);
         ethCompanion.swapNativeGas{value: 0.1 ether}(
             address(swap),
@@ -193,7 +240,10 @@ contract SwapTest is FoundrySetup {
         // vm.stopPrank();
 
         console.log("Alice balance:", address(alice).balance);
-        console.log("Bob balance:", ERC20Mock(bnb_testToken2.asset).balanceOf(bob));
+        console.log(
+            "Bob balance:",
+            ERC20Mock(bnb_testToken2.asset).balanceOf(bob)
+        );
         assertEq(address(alice).balance, 0.9 ether);
         assertGt(ERC20Mock(bnb_testToken2.asset).balanceOf(bob), 0);
     }
@@ -202,7 +252,7 @@ contract SwapTest is FoundrySetup {
         address alice = makeAddr("Alice");
         address bob = makeAddr("Bob");
         deal(alice, 1 ether);
-        
+
         vm.prank(alice);
         ethCompanion.swapNativeGas{value: 0.1 ether}(
             address(swap),
