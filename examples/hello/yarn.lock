@@ -3210,7 +3210,7 @@
 
 "@zetachain/protocol-contracts-solana@2.0.0-rc1":
   version "2.0.0-rc1"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts-solana/-/protocol-contracts-solana-2.0.0-rc1.tgz#6dec49165a5a711c4aa5cec41ac3eed259b0e276"
+  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts-solana/-/protocol-contracts-solana-2.0.0-rc1.tgz#6dec49165a5a711c4aa5cec41ac3eed259b0e276"
   integrity sha512-49mjRwXcIZfNXPcG9e8XUY2ve6kxJLqbB7CIlTT+IZFW5RzXnoUclynycQeOLEJrpaVVSFz8q0s1alnv/zVvMQ==
   dependencies:
     "@coral-xyz/anchor" "^0.30.0"
