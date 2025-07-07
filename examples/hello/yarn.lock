@@ -47,6 +47,11 @@
   resolved "https://registry.yarnpkg.com/@coral-xyz/anchor-errors/-/anchor-errors-0.30.1.tgz#bdfd3a353131345244546876eb4afc0e125bec30"
   integrity sha512-9Mkradf5yS5xiLWrl9WrpjqOrAV+/W2RQHDlbnAZBivoGpOs1ECjoDCkVk4aRG8ZdiFiB8zQEVlxf+8fKkmSfQ==
 
+"@coral-xyz/anchor-errors@^0.31.1":
+  version "0.31.1"
+  resolved "https://registry.npmjs.org/@coral-xyz/anchor-errors/-/anchor-errors-0.31.1.tgz#d635cbac2533973ae6bfb5d3ba1de89ce5aece2d"
+  integrity sha512-NhNEku4F3zzUSBtrYz84FzYWm48+9OvmT1Hhnwr6GnPQry2dsEqH/ti/7ASjjpoFTWRnPXrjAIT1qM6Isop+LQ==
+
 "@coral-xyz/anchor@0.30.0":
   version "0.30.0"
   resolved "https://registry.yarnpkg.com/@coral-xyz/anchor/-/anchor-0.30.0.tgz#52acdba504b0008f1026d3a4bbbcb2d4feb5c69e"
@@ -88,10 +93,37 @@
     superstruct "^0.15.4"
     toml "^3.0.0"
 
+"@coral-xyz/anchor@^0.31.1":
+  version "0.31.1"
+  resolved "https://registry.npmjs.org/@coral-xyz/anchor/-/anchor-0.31.1.tgz#0fdeebf45a3cb2e47e8ebbb815ca98542152962c"
+  integrity sha512-QUqpoEK+gi2S6nlYc2atgT2r41TT3caWr/cPUEL8n8Md9437trZ68STknq897b82p5mW0XrTBNOzRbmIRJtfsA==
+  dependencies:
+    "@coral-xyz/anchor-errors" "^0.31.1"
+    "@coral-xyz/borsh" "^0.31.1"
+    "@noble/hashes" "^1.3.1"
+    "@solana/web3.js" "^1.69.0"
+    bn.js "^5.1.2"
+    bs58 "^4.0.1"
+    buffer-layout "^1.2.2"
+    camelcase "^6.3.0"
+    cross-fetch "^3.1.5"
+    eventemitter3 "^4.0.7"
+    pako "^2.0.3"
+    superstruct "^0.15.4"
+    toml "^3.0.0"
+
 "@coral-xyz/borsh@^0.30.0", "@coral-xyz/borsh@^0.30.1":
   version "0.30.1"
   resolved "https://registry.yarnpkg.com/@coral-xyz/borsh/-/borsh-0.30.1.tgz#869d8833abe65685c72e9199b8688477a4f6b0e3"
   integrity sha512-aaxswpPrCFKl8vZTbxLssA2RvwX2zmKLlRCIktJOwW+VpVwYtXRtlWiIP+c2pPRKneiTiWCN2GEMSH9j1zTlWQ==
+  dependencies:
+    bn.js "^5.1.2"
+    buffer-layout "^1.2.0"
+
+"@coral-xyz/borsh@^0.31.1":
+  version "0.31.1"
+  resolved "https://registry.npmjs.org/@coral-xyz/borsh/-/borsh-0.31.1.tgz#5328e1e0921b75d7f4a62dd3f61885a938bc7241"
+  integrity sha512-9N8AU9F0ubriKfNE3g1WF0/4dtlGXoBN/hd1PvbNBamBNwRgHxH4P+o3Zt7rSEloW1HUs6LfZEchlx9fW7POYw==
   dependencies:
     bn.js "^5.1.2"
     buffer-layout "^1.2.0"
@@ -2250,6 +2282,13 @@
   dependencies:
     "@solana/errors" "2.0.0-rc.1"
 
+"@solana/codecs-core@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/@solana/codecs-core/-/codecs-core-2.1.1.tgz#5d09d7f35b0266789d7c1f9306c08051128a6a64"
+  integrity sha512-iPQW3UZ2Vi7QFBo2r9tw0NubtH8EdrhhmZulx6lC8V5a+qjaxovtM/q/UW2BTNpqqHLfO0tIcLyBLrNH4HTWPg==
+  dependencies:
+    "@solana/errors" "2.1.1"
+
 "@solana/codecs-data-structures@2.0.0-rc.1":
   version "2.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@solana/codecs-data-structures/-/codecs-data-structures-2.0.0-rc.1.tgz#d47b2363d99fb3d643f5677c97d64a812982b888"
@@ -2266,6 +2305,14 @@
   dependencies:
     "@solana/codecs-core" "2.0.0-rc.1"
     "@solana/errors" "2.0.0-rc.1"
+
+"@solana/codecs-numbers@^2.1.0":
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/@solana/codecs-numbers/-/codecs-numbers-2.1.1.tgz#b7a69024e2397e236bbfb11b75ff4a077236b9d2"
+  integrity sha512-m20IUPJhPUmPkHSlZ2iMAjJ7PaYUvlMtFhCQYzm9BEBSI6OCvXTG3GAPpAnSGRBfg5y+QNqqmKn4QHU3B6zzCQ==
+  dependencies:
+    "@solana/codecs-core" "2.1.1"
+    "@solana/errors" "2.1.1"
 
 "@solana/codecs-strings@2.0.0-rc.1":
   version "2.0.0-rc.1"
@@ -2294,6 +2341,14 @@
   dependencies:
     chalk "^5.3.0"
     commander "^12.1.0"
+
+"@solana/errors@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/@solana/errors/-/errors-2.1.1.tgz#009ebf387b0c014a8fc60a59d65757fef942e4fd"
+  integrity sha512-sj6DaWNbSJFvLzT8UZoabMefQUfSW/8tXK7NTiagsDmh+Q87eyQDDC9L3z+mNmx9b6dEf6z660MOIplDD2nfEw==
+  dependencies:
+    chalk "^5.4.1"
+    commander "^13.1.0"
 
 "@solana/options@2.0.0-rc.1":
   version "2.0.0-rc.1"
@@ -2450,7 +2505,7 @@
     rpc-websockets "^9.0.2"
     superstruct "^2.0.2"
 
-"@solana/web3.js@^1.32.0", "@solana/web3.js@^1.68.0", "@solana/web3.js@^1.95.3", "@solana/web3.js@^1.95.4", "@solana/web3.js@^1.95.8", "@solana/web3.js@^1.98.0":
+"@solana/web3.js@^1.32.0", "@solana/web3.js@^1.68.0", "@solana/web3.js@^1.95.4", "@solana/web3.js@^1.95.8", "@solana/web3.js@^1.98.0":
   version "1.98.0"
   resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.98.0.tgz#21ecfe8198c10831df6f0cfde7f68370d0405917"
   integrity sha512-nz3Q5OeyGFpFCR+erX2f6JPt3sKhzhYcSycBCSPkWjzSVDh/Rr1FqTVMRe58FKO16/ivTUcuJjeS5MyBvpkbzA==
@@ -2461,6 +2516,27 @@
     "@solana/buffer-layout" "^4.0.1"
     agentkeepalive "^4.5.0"
     bigint-buffer "^1.1.5"
+    bn.js "^5.2.1"
+    borsh "^0.7.0"
+    bs58 "^4.0.1"
+    buffer "6.0.3"
+    fast-stable-stringify "^1.0.0"
+    jayson "^4.1.1"
+    node-fetch "^2.7.0"
+    rpc-websockets "^9.0.2"
+    superstruct "^2.0.2"
+
+"@solana/web3.js@^1.69.0":
+  version "1.98.2"
+  resolved "https://registry.npmjs.org/@solana/web3.js/-/web3.js-1.98.2.tgz#45167a5cfb64436944bf4dc1e8be8482bd6d4c14"
+  integrity sha512-BqVwEG+TaG2yCkBMbD3C4hdpustR4FpuUFRPUmqRZYYlPI9Hg4XMWxHWOWRzHE9Lkc9NDjzXFX7lDXSgzC7R1A==
+  dependencies:
+    "@babel/runtime" "^7.25.0"
+    "@noble/curves" "^1.4.2"
+    "@noble/hashes" "^1.4.0"
+    "@solana/buffer-layout" "^4.0.1"
+    "@solana/codecs-numbers" "^2.1.0"
+    agentkeepalive "^4.5.0"
     bn.js "^5.2.1"
     borsh "^0.7.0"
     bs58 "^4.0.1"
@@ -2502,6 +2578,13 @@
   dependencies:
     symbol.inspect "1.0.1"
 
+"@ton/core@^0.60.1":
+  version "0.60.1"
+  resolved "https://registry.npmjs.org/@ton/core/-/core-0.60.1.tgz#cc9a62fb308d7597b1217dc8e44c7e2dcc0aceaa"
+  integrity sha512-8FwybYbfkk57C3l9gvnlRhRBHbLYmeu0LbB1z9N+dhDz0Z+FJW8w0TJlks8CgHrAFxsT3FlR2LsqFnsauMp38w==
+  dependencies:
+    symbol.inspect "1.0.1"
+
 "@ton/crypto-primitives@2.1.0":
   version "2.1.0"
   resolved "https://registry.npmjs.org/@ton/crypto-primitives/-/crypto-primitives-2.1.0.tgz#8c9277c250b59aae3c819e0d6bd61e44d998e9ca"
@@ -2509,7 +2592,7 @@
   dependencies:
     jssha "3.2.0"
 
-"@ton/crypto@3.3.0":
+"@ton/crypto@3.3.0", "@ton/crypto@^3.3.0":
   version "3.3.0"
   resolved "https://registry.npmjs.org/@ton/crypto/-/crypto-3.3.0.tgz#019103df6540fbc1d8102979b4587bc85ff9779e"
   integrity sha512-/A6CYGgA/H36OZ9BbTaGerKtzWp50rg67ZCH2oIjV1NcrBaCK9Z343M+CxedvM7Haf3f/Ee9EhxyeTp0GKMUpA==
@@ -2522,6 +2605,17 @@
   version "15.1.0"
   resolved "https://registry.npmjs.org/@ton/ton/-/ton-15.1.0.tgz#a760b1492dd3e5896238b7154f7377f4e51fa086"
   integrity sha512-almetcfTu7jLjcNcEEPB7wAc8yl90ES1M//sOr1QE+kv7RbmEvMkaPSc7kFxzs10qrjIPKxlodBJlMSWP5LuVQ==
+  dependencies:
+    axios "^1.6.7"
+    dataloader "^2.0.0"
+    symbol.inspect "1.0.1"
+    teslabot "^1.3.0"
+    zod "^3.21.4"
+
+"@ton/ton@^15.2.1":
+  version "15.3.1"
+  resolved "https://registry.npmjs.org/@ton/ton/-/ton-15.3.1.tgz#c20688b27eb8ce8474610843804a7599679c38a2"
+  integrity sha512-+UuvbE0o0VIU/0W90STO+emRIDr3Vs39LdbX5ySm/Ra+RQJSiH0KX6TDOFqWDmD2Wzk4/zw21KwSiZ6Xjk8zlw==
   dependencies:
     axios "^1.6.7"
     dataloader "^2.0.0"
@@ -3093,10 +3187,10 @@
     sudo-prompt "^9.2.1"
     wait-on "^7.2.0"
 
-"@zetachain/networks@13.0.0-rc1":
-  version "13.0.0-rc1"
-  resolved "https://registry.yarnpkg.com/@zetachain/networks/-/networks-13.0.0-rc1.tgz#c43acb879a966102cd570cb80a2f60e5166c9f3c"
-  integrity sha512-3P7+tMfwtL9+yPnqa/juxHM48H67rnu2c0ZCpmn18jkpJCTw9OBta+g5jqsTe01RpxqYrGk/1OkmkfPkileEMA==
+"@zetachain/networks@14.0.0-rc1":
+  version "14.0.0-rc1"
+  resolved "https://registry.npmjs.org/@zetachain/networks/-/networks-14.0.0-rc1.tgz#b1085778136d0cdeea6a707e38869efadc0ab204"
+  integrity sha512-glTskelKYgeVaj7lKsWQLqO1LrTZ57Akep6bsJsdZNN9jsLZRYiWR6BMdR70BUZZLh8VwV5mLb8+fgEueVdPnQ==
   dependencies:
     dotenv "^16.1.4"
 
@@ -3126,6 +3220,18 @@
     ethereumjs-util "^7.1.5"
     secp256k1 "^5.0.0"
 
+"@zetachain/protocol-contracts-solana@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts-solana/-/protocol-contracts-solana-5.0.0.tgz#42f7f1746286ec52b1a8f17a194f351e1d4c47c7"
+  integrity sha512-mE1TYeKsBcDCQQBV2Rn/g/p9NbDgoCjvEpBuVAEm5PMRPjN7FPwV1NrLGu4PV7JQM1uMU4SmSvEjX96wwEd+rQ==
+  dependencies:
+    "@coral-xyz/anchor" "^0.31.1"
+    "@solana/spl-memo" "^0.2.5"
+    "@solana/spl-token" "^0.4.6"
+    elliptic "^6.6.1"
+    ethereumjs-util "^7.1.5"
+    secp256k1 "^5.0.0"
+
 "@zetachain/protocol-contracts-ton@1.0.0-rc3":
   version "1.0.0-rc3"
   resolved "https://registry.npmjs.org/@zetachain/protocol-contracts-ton/-/protocol-contracts-ton-1.0.0-rc3.tgz#c493ab76de60549de0a6ca814a33d4464de9c1b3"
@@ -3133,15 +3239,12 @@
   dependencies:
     ethers "^6.13.2"
 
-"@zetachain/protocol-contracts@11.0.0-rc4":
-  version "11.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/@zetachain/protocol-contracts/-/protocol-contracts-11.0.0-rc4.tgz#2e2df98734793873e9c50629f6ec9f5eec6f9f54"
-  integrity sha512-7MJzEyUad7JgHucveIhtU8aaPkoMMzsfhKkh9MDMdxUzlaOmmxrQw2hi5B2b7UPxw2K9vFffkmIox6gd6c1+Yw==
+"@zetachain/protocol-contracts-ton@1.0.0-rc4":
+  version "1.0.0-rc4"
+  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts-ton/-/protocol-contracts-ton-1.0.0-rc4.tgz#8e755b9fce079f1772bf42ae5c874db6f6c96908"
+  integrity sha512-6HWR2FPp9L/Xsby4IrVfXK73I+85ci0gWrlKLnpF8kNABfLUi2nxbV03t36DAVdqpXYRSz8jG/Qn5cmC1Y8Q/w==
   dependencies:
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    "@zetachain/networks" "^10.0.0"
-    ethers "5.6.8"
+    ethers "^6.13.2"
 
 "@zetachain/protocol-contracts@12.0.0-rc1":
   version "12.0.0-rc1"
@@ -3173,6 +3276,16 @@
     "@zetachain/networks" "^10.0.0"
     ethers "6.13.5"
 
+"@zetachain/protocol-contracts@13.1.0-rc3":
+  version "13.1.0-rc3"
+  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-13.1.0-rc3.tgz#23e637dd53147701033f50079ce0b93f8c14cf37"
+  integrity sha512-8nrIOOBl2PXt6TNkrSDjqZxJwd2u8PmQKY3vJo0a4gQgCoKYT44gGvLk8TVp8cjnP/OJStbmIQt/NKZhk1188g==
+  dependencies:
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    "@zetachain/networks" "^10.0.0"
+    ethers "6.13.5"
+
 "@zetachain/protocol-contracts@^12.0.0":
   version "12.0.0"
   resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-12.0.0.tgz#42897490f4ec798213e5ef06dcc464a21f944771"
@@ -3183,45 +3296,10 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/toolkit@13.0.0-rc17":
-  version "13.0.0-rc17"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-13.0.0-rc17.tgz#83a1eafe39b7492c4259872ca3d31904564ca0a1"
-  integrity sha512-lCpzjQgLb42J/E5Vvuvzy6j+Y2XCLA/a13P0KqmCrXr3wnxb6TE1+wyG+eQ4wOtAtkdBzEZc3lIC9bHzNm3I2g==
-  dependencies:
-    "@coral-xyz/anchor" "^0.30.1"
-    "@inquirer/prompts" "^2.1.1"
-    "@inquirer/select" "1.1.3"
-    "@nomiclabs/hardhat-ethers" "^2.2.3"
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    "@solana/wallet-adapter-react" "^0.15.35"
-    "@solana/web3.js" "^1.95.3"
-    "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/faucet-cli" "^4.1.1"
-    "@zetachain/networks" "13.0.0-rc1"
-    "@zetachain/protocol-contracts" "11.0.0-rc4"
-    "@zetachain/protocol-contracts-solana" "2.0.0-rc1"
-    axios "^1.4.0"
-    bech32 "^2.0.0"
-    bip39 "^3.1.0"
-    bitcoinjs-lib "^6.1.3"
-    bs58 "^6.0.0"
-    dotenv "16.0.3"
-    ecpair "^2.1.0"
-    envfile "^6.18.0"
-    ethers "^5.4.7"
-    eventemitter3 "^5.0.1"
-    form-data "^4.0.0"
-    handlebars "4.7.7"
-    hardhat "^2.15.0"
-    isomorphic-fetch "^3.0.0"
-    lodash "^4.17.21"
-    moment "^2.29.4"
-    ora "5.4.1"
-    spinnies "^0.5.1"
-    tiny-secp256k1 "^2.2.3"
-    web3 "^4.15.0"
-    ws "^8.17.1"
+"@zetachain/standard-contracts@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-2.0.1.tgz#aefd28bb81f1f05b183bd73dc62bd68e456a6ebf"
+  integrity sha512-SHV9a1bSgy8litI/LRZ4VIus7Gsjy0wj3n9bZeIsEydn0C5NNZxYO4XW+P06dlEyDQjtcVJQHoQOyHkodBoVsQ==
 
 "@zetachain/toolkit@13.0.1-rc1":
   version "13.0.1-rc1"
@@ -3243,6 +3321,101 @@
     "@zetachain/networks" "^13.0.0"
     "@zetachain/protocol-contracts" "^12.0.0"
     "@zetachain/protocol-contracts-solana" "2.0.0-rc1"
+    axios "^1.4.0"
+    bech32 "^2.0.0"
+    bip39 "^3.1.0"
+    bitcoinjs-lib "^6.1.7"
+    bs58 "^6.0.0"
+    commander "^13.1.0"
+    dotenv "16.0.3"
+    ecpair "^2.1.0"
+    envfile "^6.18.0"
+    ethers "^6.13.2"
+    eventemitter3 "^5.0.1"
+    form-data "^4.0.0"
+    handlebars "4.7.7"
+    hardhat "^2.22.8"
+    lodash "^4.17.21"
+    ora "5.4.1"
+    spinnies "^0.5.1"
+    tiny-secp256k1 "^2.2.3"
+    web3 "^4.15.0"
+    zod "^3.24.2"
+
+"@zetachain/toolkit@16.0.0-rc1":
+  version "16.0.0-rc1"
+  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.0.0-rc1.tgz#9c4cc3ea96fdbda069987490cd6284ff7054de50"
+  integrity sha512-qdhrFR3SCrq73iSsu8pS2UlcvnfmX0C821DFZ0USf6hCLZIRsdvL6N/Z9vOdYtoglNN40oQh6/biT2oy+SkR8Q==
+  dependencies:
+    "@coral-xyz/anchor" "^0.30.1"
+    "@ethersproject/units" "^5.8.0"
+    "@inquirer/prompts" "^2.1.1"
+    "@inquirer/select" "1.1.3"
+    "@mysten/sui" "^1.28.2"
+    "@nomiclabs/hardhat-ethers" "^2.2.3"
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    "@solana/wallet-adapter-react" "^0.15.35"
+    "@solana/web3.js" "1.95.8"
+    "@ton/core" "^0.60.1"
+    "@ton/crypto" "^3.3.0"
+    "@ton/ton" "^15.2.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
+    "@uniswap/v3-periphery" "^1.4.4"
+    "@zetachain/faucet-cli" "^4.1.1"
+    "@zetachain/networks" "14.0.0-rc1"
+    "@zetachain/protocol-contracts" "13.0.0"
+    "@zetachain/protocol-contracts-solana" "^5.0.0"
+    "@zetachain/protocol-contracts-ton" "1.0.0-rc4"
+    "@zetachain/standard-contracts" "^2.0.1"
+    "@zetachain/toolkit" "^15.0.2"
+    axios "^1.4.0"
+    bech32 "^2.0.0"
+    bip39 "^3.1.0"
+    bitcoinjs-lib "^6.1.7"
+    bs58 "^6.0.0"
+    commander "^13.1.0"
+    dotenv "16.0.3"
+    ecpair "^2.1.0"
+    envfile "^6.18.0"
+    ethers "^6.13.2"
+    eventemitter3 "^5.0.1"
+    form-data "^4.0.0"
+    handlebars "4.7.7"
+    hardhat "^2.22.8"
+    lodash "^4.17.21"
+    ora "5.4.1"
+    spinnies "^0.5.1"
+    table "^6.9.0"
+    tiny-secp256k1 "^2.2.3"
+    web3 "^4.15.0"
+    zod "^3.24.2"
+
+"@zetachain/toolkit@^15.0.2":
+  version "15.0.2"
+  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-15.0.2.tgz#d62b2ab7bf618cfb2ba566861b39969e0a63a1b6"
+  integrity sha512-mkaMXTGFKGDBL4Fh2ZDpMznf73eaWaBYVNmXbyKgIR0nOk+DtY8HEwLoy6J/quha/mNwV25D1Db7mI2ieRCgew==
+  dependencies:
+    "@coral-xyz/anchor" "^0.30.1"
+    "@ethersproject/units" "^5.8.0"
+    "@inquirer/prompts" "^2.1.1"
+    "@inquirer/select" "1.1.3"
+    "@mysten/sui" "^1.28.2"
+    "@nomiclabs/hardhat-ethers" "^2.2.3"
+    "@openzeppelin/contracts" "^5.0.2"
+    "@openzeppelin/contracts-upgradeable" "^5.0.2"
+    "@solana/wallet-adapter-react" "^0.15.35"
+    "@solana/web3.js" "1.95.8"
+    "@ton/core" "^0.60.1"
+    "@ton/crypto" "^3.3.0"
+    "@ton/ton" "^15.2.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
+    "@uniswap/v3-periphery" "^1.4.4"
+    "@zetachain/faucet-cli" "^4.1.1"
+    "@zetachain/networks" "14.0.0-rc1"
+    "@zetachain/protocol-contracts" "13.1.0-rc3"
+    "@zetachain/protocol-contracts-solana" "^5.0.0"
+    "@zetachain/protocol-contracts-ton" "1.0.0-rc4"
     axios "^1.4.0"
     bech32 "^2.0.0"
     bip39 "^3.1.0"
@@ -3722,7 +3895,7 @@ bip39@^3.1.0:
   dependencies:
     "@noble/hashes" "^1.2.0"
 
-bitcoinjs-lib@^6.1.3, bitcoinjs-lib@^6.1.7:
+bitcoinjs-lib@^6.1.7:
   version "6.1.7"
   resolved "https://registry.yarnpkg.com/bitcoinjs-lib/-/bitcoinjs-lib-6.1.7.tgz#0f98dec1333d658574eefa455295668cfae38bb0"
   integrity sha512-tlf/r2DGMbF7ky1MgUqXHzypYHakkEnm0SZP23CJKIqNY/5uNAnMbFhMJdhjrL/7anfb/U8+AlpdjPWjPnAalg==
@@ -4644,7 +4817,7 @@ elliptic@6.5.7:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
-elliptic@6.6.1, elliptic@^6.5.2, elliptic@^6.5.7:
+elliptic@6.6.1, elliptic@^6.5.2, elliptic@^6.5.7, elliptic@^6.6.1:
   version "6.6.1"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.6.1.tgz#3b8ffb02670bf69e382c7f65bf524c97c5405c06"
   integrity sha512-RaddvvMatK2LJHqFJ+YA4WysVN5Ita9E35botqIYspQ4TkRAlCicdzKOjlyv/1Za5RyTNn7di//eEV0uTAfe3g==
@@ -5815,7 +5988,7 @@ hardhat-watcher@^2.1.1:
   dependencies:
     chokidar "^3.5.3"
 
-hardhat@^2.15.0, hardhat@^2.17.2, hardhat@^2.22.8:
+hardhat@^2.17.2, hardhat@^2.22.8:
   version "2.22.18"
   resolved "https://registry.yarnpkg.com/hardhat/-/hardhat-2.22.18.tgz#e299a26a67b521bbb225370eb47a032d4e097e3a"
   integrity sha512-2+kUz39gvMo56s75cfLBhiFedkQf+gXdrwCcz4R/5wW0oBdwiyfj2q9BIkMoaA0WIGYYMU2I1Cc4ucTunhfjzw==
@@ -6343,14 +6516,6 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
 
-isomorphic-fetch@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-3.0.0.tgz#0267b005049046d2421207215d45d6a262b8b8b4"
-  integrity sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==
-  dependencies:
-    node-fetch "^2.6.1"
-    whatwg-fetch "^3.4.1"
-
 isomorphic-ws@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz#55fd4cd6c5e6491e76dc125938dd863f5cd4f2dc"
@@ -6799,11 +6964,6 @@ mocha@^10.0.0, mocha@^10.2.0:
     yargs-parser "^20.2.9"
     yargs-unparser "^2.0.0"
 
-moment@^2.29.4:
-  version "2.30.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
-  integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
-
 ms@^2.0.0, ms@^2.1.1, ms@^2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
@@ -6888,7 +7048,7 @@ node-emoji@^2.2.0:
     emojilib "^2.4.0"
     skin-tone "^2.0.0"
 
-node-fetch@^2.6.1, node-fetch@^2.7.0:
+node-fetch@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
@@ -8172,7 +8332,7 @@ table-layout@^1.0.2:
     typical "^5.2.0"
     wordwrapjs "^4.0.0"
 
-table@^6.8.0:
+table@^6.8.0, table@^6.9.0:
   version "6.9.0"
   resolved "https://registry.yarnpkg.com/table/-/table-6.9.0.tgz#50040afa6264141c7566b3b81d4d82c47a8668f5"
   integrity sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==
@@ -8935,11 +9095,6 @@ webidl-conversions@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
   integrity sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==
-
-whatwg-fetch@^3.4.1:
-  version "3.6.20"
-  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.20.tgz#580ce6d791facec91d37c72890995a0b48d31c70"
-  integrity sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==
 
 whatwg-url@^5.0.0:
   version "5.0.0"
