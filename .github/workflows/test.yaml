@@ -38,4 +38,6 @@ jobs:
       - name: Run Test Script
         run: |
           cd "${{ matrix.example-dir }}"
-          yarn && forge soldeer update
+          yarn
+          forge soldeer update
+          forge test
