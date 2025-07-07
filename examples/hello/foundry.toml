@@ -9,5 +9,7 @@ verbosity = 3
 fs_permissions = [{ access = "read", path = "./node_modules" }]
 
 [dependencies]
-forge-std = { version = "1.9.2" }
+forge-std = "1.9.2"
 
+[soldeer]
+remappings_generate = true
