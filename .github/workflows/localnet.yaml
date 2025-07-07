@@ -38,6 +38,12 @@ jobs:
       - name: Install Anchor (Solana)
         uses: metadaoproject/setup-anchor@v3.1
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "21"
+          registry-url: "https://registry.npmjs.org"
+
       - name: Run Test Script
         run: |
           cd "${{ matrix.example-dir }}"
