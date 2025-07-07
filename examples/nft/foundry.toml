@@ -2,10 +2,14 @@
 src = 'contracts'
 out = 'out'
 viaIR = true
-libs = ['node_modules', 'lib']
+libs = ['node_modules', "dependencies"]
 test = 'test'
 cache_path  = 'cache_forge'
 verbosity = 3
+fs_permissions = [{ access = "read", path = "./node_modules" }]
+remappings = [
+  "forge-std/=dependencies/forge-std-1.9.7/src/",
+]
 
 [dependencies]
-forge-std = { version = "1.9.2" }
+forge-std = "1.9.7"
