@@ -6,6 +6,8 @@ libs = ['node_modules', 'lib']
 test = 'test'
 cache_path  = 'cache_forge'
 verbosity = 3
+fs_permissions = [{ access = "read", path = "./node_modules" }]
 
 [dependencies]
 forge-std = { version = "1.9.2" }
+
