@@ -94,6 +94,7 @@ npx hardhat universal-call \
   --zrc20 "$ZRC20_ETHEREUM" \
   --function "hello(string)" \
   --network localhost \
+  --call-options-is-arbitrary-call \
   --abort-address "$CONTRACT_ZETACHAIN" \
   --types '["string"]' alice
 
@@ -236,6 +237,7 @@ npx hardhat zetachain-withdraw-and-call \
   --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
   --zrc20 "$ZRC20_ETHEREUM" \
   --amount 1 \
+  --abort-address "$CONTRACT_ZETACHAIN" \
   --network localhost \
   --types '["string"]' hello
 
