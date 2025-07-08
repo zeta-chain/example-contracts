@@ -45,7 +45,6 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Build projects
-        continue-on-error: true
         run: yarn build
 
       - name: Run Slither on ${{ matrix.project}}
