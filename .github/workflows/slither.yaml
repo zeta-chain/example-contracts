@@ -36,7 +36,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "21"
+          node-version: "22"
 
       - name: Install Dependencies
         run: yarn install
@@ -52,7 +52,7 @@ jobs:
         with:
           ignore-compile: true
           sarif: ${{ matrix.file}}
-          node-version: "21"
+          node-version: "22"
           target: ${{ matrix.project}}
           fail-on: none
 
