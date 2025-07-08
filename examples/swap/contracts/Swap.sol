@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {IZRC20} from "node_modules/@zetachain/protocol-contracts/contracts/zevm/interfaces/IZRC20.sol";
+import {IZRC20} from "@zetachain/protocol-contracts/contracts/zevm/interfaces/IZRC20.sol";
 import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {BytesHelperLib} from "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
