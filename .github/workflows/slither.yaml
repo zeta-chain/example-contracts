@@ -50,7 +50,6 @@ jobs:
 
       - name: Run Slither on ${{ matrix.project}}
         uses: crytic/slither-action@main
-        continue-on-error: true
         with:
           ignore-compile: true
           sarif: ${{ matrix.file}}
