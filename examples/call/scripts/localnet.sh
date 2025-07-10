@@ -4,21 +4,20 @@ set -e
 set -x
 set -o pipefail
 
-yarn zetachain localnet start --force-kill --skip sui ton solana --exit-on-error &
+yarn zetachain localnet start --force-kill --exit-on-error &
 
 while [ ! -f "localnet.json" ]; do sleep 1; done
 
 npx hardhat compile --force --quiet
 
-ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 5") | .address' localnet.json)
+ZRC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ZRC-20 ETH on 11155112") | .address' localnet.json)
 ERC20_ETHEREUM=$(jq -r '.addresses[] | select(.type=="ERC-20 USDC" and .chain=="ethereum") | .address' localnet.json)
-ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 97") | .address' localnet.json)
-ZRC20_SPL=$(jq -r '.addresses[] | select(.type=="ZRC-20 USDC on 901") | .address' localnet.json)
-USDC_SPL=$(jq -r '.addresses[] | select(.type=="SPL-20 USDC") | .address' localnet.json)
-GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gatewayEVM" and .chain=="ethereum") | .address' localnet.json)
-GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gatewayZEVM" and .chain=="zetachain") | .address' localnet.json)
+ZRC20_BNB=$(jq -r '.addresses[] | select(.type=="ZRC-20 BNB on 98") | .address' localnet.json)
+GATEWAY_ETHEREUM=$(jq -r '.addresses[] | select(.type=="gateway" and .chain=="ethereum") | .address' localnet.json)
+GATEWAY_ZETACHAIN=$(jq -r '.addresses[] | select(.type=="gateway" and .chain=="zetachain") | .address' localnet.json)
 SENDER=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-
+PRIVATE_KEY=$(jq -r '.private_keys[0]' ~/.zetachain/localnet/anvil.json)
+  
 CONTRACT_ZETACHAIN=$(npx hardhat deploy --name Universal --network localhost --gateway "$GATEWAY_ZETACHAIN" --json | jq -r '.contractAddress')
 echo -e "\n🚀 Deployed contract on ZetaChain: $CONTRACT_ZETACHAIN"
 
@@ -122,56 +121,71 @@ yarn zetachain localnet check
 
 # Testing toolkit methods
 
-npx hardhat evm-deposit \
+yarn zetachain evm deposit \
   --receiver "$CONTRACT_ZETACHAIN" \
-  --gateway-evm "$GATEWAY_ETHEREUM" \
-  --network localhost \
-  --amount 1
-
-yarn zetachain localnet check
-
-npx hardhat evm-deposit \
-  --receiver "$CONTRACT_ZETACHAIN" \
-  --gateway-evm "$GATEWAY_ETHEREUM" \
-  --network localhost \
-  --erc20 "$ERC20_ETHEREUM" \
-  --amount 1
-
-yarn zetachain localnet check
-
-npx hardhat evm-call \
-  --receiver "$CONTRACT_ZETACHAIN" \
-  --gateway-evm "$GATEWAY_ETHEREUM" \
-  --network localhost \
-  --types '["string"]' alice
-
-yarn zetachain localnet check
-
-npx hardhat evm-deposit-and-call \
-  --receiver "$CONTRACT_ZETACHAIN" \
-  --gateway-evm "$GATEWAY_ETHEREUM" \
-  --network localhost \
+  --gateway "$GATEWAY_ETHEREUM" \
+  --rpc http://localhost:8545 \
   --amount 1 \
-  --types '["string"]' alice
+  --yes \
+  --private-key "$PRIVATE_KEY"
 
 yarn zetachain localnet check
 
-npx hardhat evm-deposit-and-call \
+yarn zetachain evm deposit \
   --receiver "$CONTRACT_ZETACHAIN" \
-  --gateway-evm "$GATEWAY_ETHEREUM" \
-  --network localhost \
+  --gateway "$GATEWAY_ETHEREUM" \
+  --rpc http://localhost:8545 \
+  --erc20 "$ERC20_ETHEREUM" \
+  --amount 1 \
+  --yes \
+  --private-key "$PRIVATE_KEY"
+
+yarn zetachain localnet check
+
+yarn zetachain evm call \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --gateway "$GATEWAY_ETHEREUM" \
+  --rpc http://localhost:8545 \
+  --types string \
+  --values alice \
+  --yes \
+  --private-key "$PRIVATE_KEY"
+
+yarn zetachain localnet check
+
+yarn zetachain evm deposit-and-call \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --gateway "$GATEWAY_ETHEREUM" \
+  --rpc http://localhost:8545 \
+  --amount 1 \
+  --types string \
+  --values alice \
+  --yes \
+  --private-key "$PRIVATE_KEY"
+
+yarn zetachain localnet check
+
+yarn zetachain evm deposit-and-call \
+  --receiver "$CONTRACT_ZETACHAIN" \
+  --gateway "$GATEWAY_ETHEREUM" \
+  --rpc http://localhost:8545 \
   --amount 1 \
   --erc20 "$ERC20_ETHEREUM" \
-  --types '["string"]' alice
+  --types string \
+  --values alice \
+  --yes \
+  --private-key "$PRIVATE_KEY"
 
 yarn zetachain localnet check
 
-npx hardhat zetachain-withdraw \
+yarn zetachain zetachain withdraw \
   --receiver "$CONTRACT_ETHEREUM" \
-  --gateway-zeta-chain "$GATEWAY_ZETACHAIN" \
+  --gateway "$GATEWAY_ZETACHAIN" \
   --zrc20 "$ZRC20_ETHEREUM" \
-  --network localhost \
-  --amount 1
+  --rpc http://localhost:8545 \
+  --amount 1 \
+  --yes \
+  --private-key "$PRIVATE_KEY"
 
 yarn zetachain localnet check
 
