@@ -131,16 +131,17 @@ yarn zetachain evm deposit \
 
 yarn zetachain localnet check
 
-yarn zetachain evm deposit \
-  --receiver "$CONTRACT_ZETACHAIN" \
-  --gateway "$GATEWAY_ETHEREUM" \
-  --rpc http://localhost:8545 \
-  --erc20 "$ERC20_ETHEREUM" \
-  --amount 1 \
-  --yes \
-  --private-key "$PRIVATE_KEY"
+# doesn't work yet
+# yarn zetachain evm deposit \
+#   --receiver "$CONTRACT_ZETACHAIN" \
+#   --gateway "$GATEWAY_ETHEREUM" \
+#   --rpc http://localhost:8545 \
+#   --erc20 "$ERC20_ETHEREUM" \
+#   --amount 1 \
+#   --yes \
+#   --private-key "$PRIVATE_KEY"
 
-yarn zetachain localnet check
+# yarn zetachain localnet check
 
 yarn zetachain evm call \
   --receiver "$CONTRACT_ZETACHAIN" \
