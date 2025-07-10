@@ -5,7 +5,7 @@ import * as dotenv from "dotenv";
 import "@zetachain/standard-contracts/tasks/token";
 import "@zetachain/localnet/tasks";
 import "@zetachain/toolkit/tasks";
-import { getHardhatConfig } from "@zetachain/toolkit/client";
+import { getHardhatConfig } from "@zetachain/toolkit/utils";
 
 import "@nomiclabs/hardhat-ethers";
 import "@openzeppelin/hardhat-upgrades";
@@ -13,7 +13,7 @@ import "@openzeppelin/hardhat-upgrades";
 dotenv.config();
 
 const config: HardhatUserConfig = {
-  ...getHardhatConfig({ accounts: [process.env.PRIVATE_KEY] }),
+  ...getHardhatConfig({ accounts: [process.env.PRIVATE_KEY || ""] }),
   solidity: {
     compilers: [
       {
