@@ -166,18 +166,18 @@ yarn zetachain evm deposit-and-call \
 
 yarn zetachain localnet check
 
-yarn zetachain evm deposit-and-call \
-  --receiver "$CONTRACT_ZETACHAIN" \
-  --gateway "$GATEWAY_ETHEREUM" \
-  --rpc http://localhost:8545 \
-  --amount 1 \
-  --erc20 "$ERC20_ETHEREUM" \
-  --types string \
-  --values alice \
-  --yes \
-  --private-key "$PRIVATE_KEY"
+# yarn zetachain evm deposit-and-call \
+#   --receiver "$CONTRACT_ZETACHAIN" \
+#   --gateway "$GATEWAY_ETHEREUM" \
+#   --rpc http://localhost:8545 \
+#   --amount 1 \
+#   --erc20 "$ERC20_ETHEREUM" \
+#   --types string \
+#   --values alice \
+#   --yes \
+#   --private-key "$PRIVATE_KEY"
 
-yarn zetachain localnet check
+# yarn zetachain localnet check
 
 yarn zetachain zetachain withdraw \
   --receiver "$CONTRACT_ETHEREUM" \
