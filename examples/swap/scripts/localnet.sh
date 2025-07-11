@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-yarn zetachain localnet start --force-kill --exit-on-error --verbosity debug &
+yarn zetachain localnet start --force-kill --exit-on-error &
 
 while [ ! -f "localnet.json" ]; do sleep 1; done
 
