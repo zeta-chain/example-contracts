@@ -131,7 +131,7 @@ yarn zetachain evm deposit \
 
 yarn zetachain localnet check
 
-# doesn't work yet
+# Fixed in https://github.com/zeta-chain/toolkit/pull/387
 # yarn zetachain evm deposit \
 #   --receiver "$CONTRACT_ZETACHAIN" \
 #   --gateway "$GATEWAY_ETHEREUM" \
