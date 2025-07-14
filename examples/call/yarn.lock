@@ -3047,10 +3047,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@12.0.0":
-  version "12.0.0"
-  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-12.0.0.tgz#b45676fa8b73388fa5f2455d7b6372d44b422208"
-  integrity sha512-+e66OqZFu4mBTlU88cipI+xA5x40VuEO6Odn7XTreK2RLjgobXby8dzSYPep751eY10Mo/NFEzKCCst3qoQTGg==
+"@zetachain/localnet@12.0.1":
+  version "12.0.1"
+  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-12.0.1.tgz#a4146a50865683f4cb5a029a278528076c8dc48d"
+  integrity sha512-Sdg5idbRXhs3qYf+6qNW0gqd3uvFOaQ4ufAuEq1ibaXq4T9nTnsiRZypdwds0afCi2tiRcq9AA3D/NIAlhg9EQ==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
@@ -9400,12 +9400,12 @@ yoctocolors-cjs@^2.1.2:
   resolved "https://registry.npmjs.org/yoctocolors-cjs/-/yoctocolors-cjs-2.1.2.tgz#f4b905a840a37506813a7acaa28febe97767a242"
   integrity sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==
 
-zetachain@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.0.0.tgz#e7369b9ca420580c659ec77628834442e49cb75e"
-  integrity sha512-fCV4Mt1Dh8UpPeZZPYRntqw2gfF62PtqP08J9X3JCiiXZ/2nZ2no3HuX0UKB+IB5h9uDB6d0/6KBg3CyVAzJZQ==
+zetachain@6.0.1:
+  version "6.0.1"
+  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.0.1.tgz#362cdbcf790d76b9e7d592f0cca3c4ba0314e3ae"
+  integrity sha512-vRVvFSneNfdfZn0Sb96ZdTr9tWsJIGL6Bt22BOVTJFv5JtKL8IGLGuB12igEfgbjLteLrkxpuEF9l5r90YTkqQ==
   dependencies:
-    "@zetachain/localnet" "12.0.0"
+    "@zetachain/localnet" "12.0.1"
     "@zetachain/toolkit" "16.0.0"
     commander "^13.1.0"
     fs-extra "^11.3.0"
