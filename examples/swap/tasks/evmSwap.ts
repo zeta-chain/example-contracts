@@ -64,7 +64,7 @@ export const evmDepositAndCall = async (
         gasPrice: args.gasPrice,
       },
       types: ["address", "bytes", "bool"],
-      values: [args.target, args.recipient, JSON.stringify(args.withdraw)],
+      values: [args.target, args.recipient, args.withdraw],
     });
     if (tx) {
       const receipt = await tx.wait();
