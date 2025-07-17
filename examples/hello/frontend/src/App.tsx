@@ -1,7 +1,7 @@
 import './App.css';
 
 import { evmCall } from '@zetachain/toolkit/chains/evm';
-import { ethers } from 'ethers';
+import { ethers, ZeroAddress } from 'ethers';
 import { useMemo, useState } from 'react';
 
 import { WalletSelectionModal } from './components/WalletSelectionModal';
@@ -62,20 +62,23 @@ function App() {
 
                   const result = await evmCall(
                     {
-                      receiver: '0xc15725fD586489A23E1D52d43301918420Fb964c',
+                      receiver: '0x61a184EB30D29eD0395d1ADF38CC7d2F966c4A82',
                       types: ['string'],
                       values: ['hello'],
                       revertOptions: {
                         callOnRevert: false,
-                        revertAddress: account,
-                        revertMessage: 'Reverted :(',
-                        abortAddress: account,
-                        onRevertGasLimit: 10000,
+                        revertAddress: ZeroAddress,
+                        revertMessage: '',
+                        abortAddress: ZeroAddress,
+                        onRevertGasLimit: 1000000,
                       },
                     },
                     {
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       signer: signer as any,
+                      txOptions: {
+                        gasLimit: 1000000,
+                      },
                     }
                   );
 
@@ -104,3 +107,27 @@ function App() {
 }
 
 export default App;
+
+// yarn zetachain evm call \
+//   --receiver 0x61a184EB30D29eD0395d1ADF38CC7d2F966c4A82 \
+//   --chain-id 84532 \
+//   --types "string" \
+//   --values "hello" \
+//   --call-on-revert \
+//   --on-revert-gas-limit 1000000 \
+//   --revert-address 0x0000000000000000000000000000000000000000 \
+//   --revert-message "" \
+//   --abort-address 0x0000000000000000000000000000000000000000 \
+//   --gas-limit 1000000 \
+//   --name "alice"
+// npx zetachain evm call \
+//   --receiver 0x61a184EB30D29eD0395d1ADF38CC7d2F966c4A82 \
+//   --chain-id 84532 \
+//   --types "string" \
+//   --values "hello" \
+//   --on-revert-gas-limit 1000000 \
+//   --revert-address 0x0000000000000000000000000000000000000000 \
+//   --revert-message "" \
+//   --abort-address 0x0000000000000000000000000000000000000000 \
+//   --gas-limit 1000000 \
+//   --name "alice"
