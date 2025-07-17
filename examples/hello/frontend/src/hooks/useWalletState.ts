@@ -1,11 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useWalletEvents } from './useWalletEvents';
 import type { EIP6963ProviderDetail } from '../types/wallet';
+import { SUPPORTED_CHAIN_IDS } from '../constants/chains';
 
 export const useWalletState = (provider: EIP6963ProviderDetail | null) => {
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<string | null>(null);
+
+  const decimalChainId = useMemo(() => {
+    if (!chainId) return null;
+    return Number(chainId);
+  }, [chainId]);
+
+  const isSupportedChain = useMemo(() => {
+    if (decimalChainId === null) return false;
+    return SUPPORTED_CHAIN_IDS.includes(decimalChainId);
+  }, [decimalChainId]);
 
   const handleAccountsChanged = useCallback((accounts: string[]) => {
     if (accounts.length === 0) {
@@ -57,5 +68,7 @@ export const useWalletState = (provider: EIP6963ProviderDetail | null) => {
   return {
     account,
     chainId,
+    decimalChainId,
+    isSupportedChain,
   };
 }; 

@@ -17,7 +17,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     connectWallet,
     disconnectWallet,
   } = useWalletConnection(providers);
-  const { account } = useWalletState(selectedProvider);
+  const { account, isSupportedChain, decimalChainId } = useWalletState(selectedProvider);
 
   return (
     <WalletContext.Provider
@@ -27,6 +27,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         connecting,
         reconnecting,
         isConnected,
+        isSupportedChain,
+        decimalChainId,
         error,
         connectWallet,
         disconnectWallet,
