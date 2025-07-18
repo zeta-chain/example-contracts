@@ -1,21 +1,30 @@
+import './ConnectedContent.css';
+
 import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { ethers, ZeroAddress } from 'ethers';
 
+import type { SupportedChain } from './constants/chains';
 import type { EIP6963ProviderDetail } from './types/wallet';
 
 interface ConnectedContentProps {
-  account: string;
   selectedProvider: EIP6963ProviderDetail;
+  supportedChain: SupportedChain;
 }
 
 export function ConnectedContent({
-  account,
   selectedProvider,
+  supportedChain,
 }: ConnectedContentProps) {
   return (
     <div className="main-container">
-      <p>Connected Account: {account}</p>
+      <h1>Ready to say "Hello" on: {supportedChain.name}</h1>
+      <p>
+        This transaction will emit a cross-chain "HelloEvent" event on ZetaChain
+        testnet's Universal Hello contract.
+      </p>
       <button
+        type="button"
+        className="call-button"
         onClick={async () => {
           const ethersProvider = new ethers.BrowserProvider(
             selectedProvider.provider
@@ -52,7 +61,7 @@ export function ConnectedContent({
           console.debug('result', result);
         }}
       >
-        Call
+        Evm Call 🚀
       </button>
     </div>
   );

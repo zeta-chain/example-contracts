@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { ConnectedContent } from './ConnectedContent';
+import { SUPPORTED_CHAINS } from './constants/chains';
 import { DisconnectedContent } from './DisconnectedContent';
 import { useWallet } from './hooks/useWallet';
 
@@ -13,6 +14,10 @@ export function AppContent() {
     decimalChainId,
   } = useWallet();
 
+  const supportedChain = SUPPORTED_CHAINS.find(
+    (chain) => chain.chainId === decimalChainId
+  );
+
   const shouldDisplayUnsupportedChainWarning = useMemo(() => {
     return isConnected && !isSupportedChain && decimalChainId !== null;
   }, [isConnected, isSupportedChain, decimalChainId]);
@@ -21,7 +26,7 @@ export function AppContent() {
     return <DisconnectedContent />;
   }
 
-  if (shouldDisplayUnsupportedChainWarning) {
+  if (shouldDisplayUnsupportedChainWarning || !supportedChain) {
     return (
       <div className="main-container">
         <p style={{ color: 'red' }}>Unsupported Chain Id: {decimalChainId}</p>
@@ -30,6 +35,9 @@ export function AppContent() {
   }
 
   return (
-    <ConnectedContent account={account} selectedProvider={selectedProvider} />
+    <ConnectedContent
+      selectedProvider={selectedProvider}
+      supportedChain={supportedChain}
+    />
   );
 }

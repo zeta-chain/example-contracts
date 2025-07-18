@@ -1,4 +1,9 @@
-const SUPPORTED_CHAINS = [
+export interface SupportedChain {
+  name: string;
+  chainId: number;
+}
+
+export const SUPPORTED_CHAINS: SupportedChain[] = [
   {
     name: 'Ethereum Sepolia',
     chainId: 11155111,
