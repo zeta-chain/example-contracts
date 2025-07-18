@@ -1,0 +1,10 @@
+.disconnected-content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 80px);
+  justify-content: center;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 2rem;
+}

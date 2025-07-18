@@ -2,46 +2,32 @@ import './AppContent.css';
 
 import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { ethers, ZeroAddress } from 'ethers';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import { WalletSelectionModal } from './components/WalletSelectionModal';
+import { DisconnectedContent } from './DisconnectedContent';
 import { useWallet } from './hooks/useWallet';
-import type { EIP6963ProviderDetail } from './types/wallet';
 
 export function AppContent() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
-    providers,
     isConnected,
     account,
-    connectWallet,
     disconnectWallet,
     error,
-    connecting,
     selectedProvider,
     isSupportedChain,
     decimalChainId,
   } = useWallet();
 
-  const handleConnectClick = () => {
-    if (providers.length > 0) {
-      setIsModalOpen(true);
-    } else {
-      alert('No wallet providers found. Please install a wallet extension.');
-    }
-  };
-
-  const handleSelectProvider = (provider: EIP6963ProviderDetail) => {
-    connectWallet(provider);
-    setIsModalOpen(false);
-  };
-
   const shouldDisplayUnsupportedChainWarning = useMemo(() => {
     return isConnected && !isSupportedChain && decimalChainId !== null;
   }, [isConnected, isSupportedChain, decimalChainId]);
 
+  if (!isConnected) {
+    return <DisconnectedContent />;
+  }
+
   return (
-    <>
+    <div>
       <h1>EVM Wallet Connection</h1>
       <div className="card">
         {error && <p style={{ color: 'red' }}>Error: {error}</p>}
@@ -94,19 +80,9 @@ export function AppContent() {
             )}
             <button onClick={disconnectWallet}>Disconnect</button>
           </div>
-        ) : (
-          <button onClick={handleConnectClick} disabled={connecting}>
-            {connecting ? 'Connecting...' : 'Connect Wallet'}
-          </button>
-        )}
+        ) : null}
       </div>
-      <WalletSelectionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        providers={providers}
-        onConnect={handleSelectProvider}
-      />
-    </>
+    </div>
   );
 }
 
