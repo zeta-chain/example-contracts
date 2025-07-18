@@ -88,3 +88,15 @@ p {
     font-size: 1.75rem;
   }
 }
+
+.main-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  gap: 2.5rem;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+}

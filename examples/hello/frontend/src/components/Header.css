@@ -1,0 +1,25 @@
+.header-container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  left: 0;
+  padding: 1rem;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 100;
+}
+
+.header-logo {
+  width: 100px;
+}
+
+@media (min-width: 768px) {
+  .header-container {
+    padding: 2rem;
+  }
+
+  .header-logo {
+    width: 160px;
+  }
+}

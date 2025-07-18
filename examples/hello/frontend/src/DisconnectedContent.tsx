@@ -1,5 +1,3 @@
-import './DisconnectedContent.css';
-
 import { useState } from 'react';
 
 import { WalletSelectionModal } from './components/WalletSelectionModal';
@@ -24,7 +22,7 @@ export function DisconnectedContent() {
   };
 
   return (
-    <div className="disconnected-content">
+    <div className="main-container">
       <h1>Say "Hello" cross-chain in one click</h1>
       <p>
         Connect your EVM wallet and trigger the Universal Hello contract already

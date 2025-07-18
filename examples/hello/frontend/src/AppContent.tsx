@@ -11,7 +11,6 @@ export function AppContent() {
   const {
     isConnected,
     account,
-    disconnectWallet,
     error,
     selectedProvider,
     isSupportedChain,
@@ -78,7 +77,6 @@ export function AppContent() {
                 Call
               </button>
             )}
-            <button onClick={disconnectWallet}>Disconnect</button>
           </div>
         ) : null}
       </div>
