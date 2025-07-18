@@ -1,5 +1,6 @@
 :root {
   --primary-color: #004937;
+  --primary-color-rgb: 0, 73, 55;
   --primary-light: #f9f9fb;
   --danger-color: #bc3c3c;
 
@@ -50,6 +51,19 @@ h3 {
   font-size: 2rem;
   font-style: normal;
   font-weight: 400;
+}
+
+input {
+  background-color: var(--primary-color);
+  border: 4px solid var(--primary-light);
+  color: var(--primary-light);
+  font-family: 'Handjet', sans-serif;
+  text-align: left;
+
+  &::placeholder {
+    color: var(--primary-light);
+    opacity: 0.5;
+  }
 }
 
 .subheading {
