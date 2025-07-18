@@ -6,7 +6,7 @@
   padding: 1rem;
   position: fixed;
   top: 0;
-  width: calc(100vw - 2rem);
+  width: calc(100vw);
   z-index: 100;
 }
 
@@ -40,7 +40,7 @@
   background-color: var(--primary-light);
   display: flex;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
 }
 
 .header-chain-icon-container {
