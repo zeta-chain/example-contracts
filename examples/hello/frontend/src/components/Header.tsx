@@ -1,5 +1,6 @@
 import './Header.css';
 
+import { SUPPORTED_CHAINS } from '../constants/chains';
 import { useWallet } from '../hooks/useWallet';
 import { IconZetaChainLogo } from './IconZetaChainLogo';
 
@@ -8,7 +9,12 @@ const truncateAddress = (address: string) => {
 };
 
 export const Header = () => {
-  const { account, disconnectWallet, selectedProvider } = useWallet();
+  const { account, disconnectWallet, decimalChainId, selectedProvider } =
+    useWallet();
+
+  const supportedChain = SUPPORTED_CHAINS.find(
+    (chain) => chain.chainId === decimalChainId
+  );
 
   return (
     <div className="header-container">
@@ -16,12 +22,23 @@ export const Header = () => {
       {!!account && (
         <div className="header-connected-container">
           <div>
-            <img
-              src={selectedProvider?.info.icon}
-              alt={selectedProvider?.info.name}
-              className="header-provider-icon"
-            />
-            <span className="lg-only">{truncateAddress(account)}</span>
+            <div className="header-chain-icon-container">
+              <img
+                src={
+                  supportedChain?.icon || '/logos/network-placeholder-logo.svg'
+                }
+                alt={supportedChain?.name || 'Unsupported network'}
+                className="header-chain-icon"
+              />
+            </div>
+            <div className="header-provider-container">
+              <img
+                src={selectedProvider?.info.icon}
+                alt={selectedProvider?.info.name}
+                className="header-provider-icon"
+              />
+              <span className="lg-only">{truncateAddress(account)}</span>
+            </div>
           </div>
           <button
             className="header-disconnect-button"
