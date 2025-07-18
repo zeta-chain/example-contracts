@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import type { SupportedChain } from './constants/chains';
 import type { EIP6963ProviderDetail } from './types/wallet';
+import { truncateAddress } from './utils/truncate';
 
 interface ConnectedContentProps {
   selectedProvider: EIP6963ProviderDetail;
@@ -18,6 +19,9 @@ export function ConnectedContent({
 }: ConnectedContentProps) {
   const MAX_STRING_LENGTH = 20;
   const [stringValue, setStringValue] = useState('');
+  const [connectedChainHash, setConnectedChainHash] = useState(
+    '0xf0f0a35525298018c10a84f9af8003647881ead90e9e336f05ee2aca1f17b9a8'
+  );
 
   const handleEvmCall = async () => {
     const ethersProvider = new ethers.BrowserProvider(
@@ -51,8 +55,24 @@ export function ConnectedContent({
 
     const result = await evmCall(evmCallParams, evmCallOptions);
 
-    console.debug('result', result);
+    setConnectedChainHash(result.hash);
   };
+
+  if (connectedChainHash) {
+    return (
+      <div className="main-container">
+        <h1>
+          Transaction Hash: {truncateAddress(connectedChainHash)}
+          <a
+            href={`${supportedChain.explorerUrl}${connectedChainHash}`}
+            target="_blank"
+          >
+            {supportedChain.name} explorer.
+          </a>
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="main-container">

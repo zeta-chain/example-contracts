@@ -2,11 +2,8 @@ import './Header.css';
 
 import { SUPPORTED_CHAINS } from '../constants/chains';
 import { useWallet } from '../hooks/useWallet';
+import { truncateAddress } from '../utils/truncate';
 import { IconZetaChainLogo } from './IconZetaChainLogo';
-
-const truncateAddress = (address: string) => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
 
 export const Header = () => {
   const { account, disconnectWallet, decimalChainId, selectedProvider } =
