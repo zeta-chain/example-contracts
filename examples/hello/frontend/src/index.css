@@ -1,16 +1,26 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --primary-color: #004937;
+  --primary-light: #f9f9fb;
 
+  font-family: 'Handjet', sans-serif;
+  font-size: 16px;
+
+  background-color: var(--primary-color);
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--primary-light);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .handjet {
@@ -25,18 +35,32 @@ h1,
 h2,
 h3 {
   font-family: 'Silkscreen', sans-serif;
-  font-weight: 400;
-  font-style: normal;
   font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.subheading {
+  font-family: 'Silkscreen', sans-serif;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
 }
 
 button {
-  font-family: 'Silkscreen', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 1rem;
-  padding: 1rem 2rem;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
   cursor: pointer;
+  font-family: 'Silkscreen', sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  padding: 1rem 2rem;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 p {
@@ -48,7 +72,8 @@ p {
   h1,
   h2,
   h3 {
-    font-size: 4rem;
+    font-size: 3rem;
+    line-height: 1.2;
   }
 
   p {
@@ -57,5 +82,9 @@ p {
 
   button {
     font-size: 1rem;
+  }
+
+  .subheading {
+    font-size: 1.75rem;
   }
 }

@@ -29,7 +29,7 @@ export function AppContent() {
   return (
     <div>
       <h1>EVM Wallet Connection</h1>
-      <div className="card">
+      <div>
         {error && <p style={{ color: 'red' }}>Error: {error}</p>}
         {shouldDisplayUnsupportedChainWarning && (
           <p style={{ color: 'red' }}>Unsupported Chain Id: {decimalChainId}</p>

@@ -12,9 +12,9 @@
 }
 
 .modal-content {
-  background-color: #242424;
+  background-color: #004937;
+  border: 4px solid var(--primary-light);
   padding: 2rem;
-  border-radius: 8px;
   width: 90%;
   max-width: 400px;
   display: flex;
@@ -26,6 +26,10 @@
   margin-top: 0;
 }
 
+.modal-title {
+  margin-bottom: 1rem;
+}
+
 .provider-list {
   display: flex;
   flex-direction: column;
@@ -33,22 +37,20 @@
 }
 
 .provider-button {
-  display: flex;
   align-items: center;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  cursor: pointer;
+  display: flex;
   gap: 1rem;
   padding: 0.75rem;
-  background-color: #3a3a3a;
-  border: 1px solid #555;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  color: white;
   text-align: left;
+  transition: all 0.2s;
   width: 100%;
 }
 
 .provider-button:hover {
-  background-color: #4a4a4a;
+  opacity: 0.8;
 }
 
 .provider-icon {
@@ -59,4 +61,4 @@
 .close-button {
   margin-top: 1rem;
   align-self: flex-end;
-} 
+}

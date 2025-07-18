@@ -1,5 +1,6 @@
-import type { EIP6963ProviderDetail } from '../types/wallet';
 import './WalletSelectionModal.css';
+
+import type { EIP6963ProviderDetail } from '../types/wallet';
 
 interface WalletSelectionModalProps {
   isOpen: boolean;
@@ -19,7 +20,7 @@ export const WalletSelectionModal = ({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>Select a Wallet</h2>
+        <h2 className="subheading modal-title">Select a Wallet</h2>
         <div className="provider-list">
           {providers.map((provider) => (
             <button
@@ -42,4 +43,4 @@ export const WalletSelectionModal = ({
       </div>
     </div>
   );
-}; 
+};

@@ -30,7 +30,7 @@ export function DisconnectedContent() {
         Connect your EVM wallet and trigger the Universal Hello contract already
         live on ZetaChain testnet from any of our supported EVM chains.
       </p>
-      <div className="card">
+      <div>
         {error && <p style={{ color: 'red' }}>Error: {error}</p>}
         <button onClick={handleConnectClick} disabled={connecting}>
           {connecting ? 'Connecting...' : 'Connect Wallet'}
