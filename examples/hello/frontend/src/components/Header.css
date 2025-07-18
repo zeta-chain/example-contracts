@@ -15,6 +15,28 @@
   width: 100px;
 }
 
+.header-connected-container {
+  align-items: center;
+  display: flex;
+}
+
+.header-connected-container > div {
+  align-items: center;
+  background-color: var(--primary-light);
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+
+  span {
+    color: var(--primary-color);
+    user-select: none;
+  }
+}
+
+.header-provider-icon {
+  width: 1.25rem;
+}
+
 .header-disconnect-button {
   background-color: var(--danger-color);
   color: var(--primary-light);
@@ -36,7 +58,8 @@
     width: 160px;
   }
 
-  .header-disconnect-button {
+  .header-disconnect-button,
+  .header-connected-container > div {
     font-size: 1.25rem;
     padding: 1rem 1.5rem;
   }

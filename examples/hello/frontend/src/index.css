@@ -10,6 +10,8 @@
   color-scheme: light dark;
   color: var(--primary-light);
 
+  width: 100vw;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
