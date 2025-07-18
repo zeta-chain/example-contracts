@@ -75,7 +75,12 @@ export function ConnectedContent({
               }
             }}
           />
-          <button type="button" className="call-button" onClick={handleEvmCall}>
+          <button
+            type="button"
+            className="call-button"
+            onClick={handleEvmCall}
+            disabled={!stringValue.length}
+          >
             Evm Call 🚀
           </button>
         </div>
