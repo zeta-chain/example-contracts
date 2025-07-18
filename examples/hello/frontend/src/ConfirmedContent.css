@@ -1,0 +1,20 @@
+.transaction-hash-container {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.transaction-hash-link {
+  align-items: center;
+  color: var(--primary-200);
+  display: flex;
+  gap: 0.25rem;
+
+  svg {
+    color: var(--primary-200);
+  }
+}
+
+.transaction-hash-status {
+  font-size: 1.5rem;
+}
