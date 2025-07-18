@@ -19,9 +19,7 @@ export function ConnectedContent({
 }: ConnectedContentProps) {
   const MAX_STRING_LENGTH = 20;
   const [stringValue, setStringValue] = useState('');
-  const [connectedChainTxHash, setConnectedChainTxHash] = useState(
-    '0xf708dd607e0a4663e1f2d0b13c97141de8c4e6ed698004c94f4851d5c2f19b5d'
-  );
+  const [connectedChainTxHash, setConnectedChainTxHash] = useState('');
   const [connectedChainTxResult, setConnectedChainTxResult] = useState<
     number | null
   >(null);

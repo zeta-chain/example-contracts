@@ -1,7 +1,22 @@
 .transaction-hash-container {
   align-items: center;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   gap: 0.5rem;
+}
+
+.transaction-hash-container > div {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+
+  p,
+  a {
+    text-align: center;
+    white-space: nowrap;
+  }
 }
 
 .transaction-hash-link {
@@ -17,4 +32,10 @@
 
 .transaction-hash-status {
   font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .transaction-hash-container {
+    flex-direction: row;
+  }
 }

@@ -47,3 +47,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(
   (chain) => chain.chainId
 );
+
+export const ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL =
+  'https://zetachain-testnet.blockscout.com/tx/';
