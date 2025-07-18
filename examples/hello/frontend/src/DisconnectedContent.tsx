@@ -23,7 +23,7 @@ export function DisconnectedContent() {
 
   return (
     <div className="main-container">
-      <h1>Say "Hello" cross-chain in one click</h1>
+      <h1>Say "Hello" cross-chain!</h1>
       <p>
         Connect your EVM wallet and trigger the Universal Hello contract already
         live on ZetaChain testnet from any of our supported EVM chains.

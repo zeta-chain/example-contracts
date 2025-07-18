@@ -10,8 +10,13 @@ export const Header = () => {
     <div className="header-container">
       <IconZetaChainLogo className="header-logo" />
       {isConnected && (
-        <button type="button" onClick={disconnectWallet}>
-          Disconnect
+        <button
+          className="header-disconnect-button"
+          type="button"
+          onClick={disconnectWallet}
+        >
+          <span className="sm-only">X</span>
+          <span className="lg-only">Disconnect</span>
         </button>
       )}
     </div>

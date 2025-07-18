@@ -6,12 +6,25 @@
   padding: 1rem;
   position: fixed;
   top: 0;
-  width: 100vw;
+  width: calc(100vw - 2rem);
   z-index: 100;
 }
 
 .header-logo {
+  image-rendering: pixelated;
   width: 100px;
+}
+
+.header-disconnect-button {
+  background-color: var(--danger-color);
+  color: var(--primary-light);
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 @media (min-width: 768px) {
@@ -21,5 +34,10 @@
 
   .header-logo {
     width: 160px;
+  }
+
+  .header-disconnect-button {
+    font-size: 1.25rem;
+    padding: 1rem 1.5rem;
   }
 }
