@@ -18,6 +18,8 @@ export function ConnectedContent({
   supportedChain,
 }: ConnectedContentProps) {
   const MAX_STRING_LENGTH = 20;
+  const [isUserSigningTx, setIsUserSigningTx] = useState(false);
+  const [isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
   const [stringValue, setStringValue] = useState('');
   const [connectedChainTxHash, setConnectedChainTxHash] = useState('');
   const [connectedChainTxResult, setConnectedChainTxResult] = useState<
@@ -25,41 +27,66 @@ export function ConnectedContent({
   >(null);
 
   const handleEvmCall = async () => {
-    const ethersProvider = new ethers.BrowserProvider(
-      selectedProvider.provider
-    );
-    const signer = (await ethersProvider.getSigner()) as ethers.AbstractSigner;
+    try {
+      const ethersProvider = new ethers.BrowserProvider(
+        selectedProvider.provider
+      );
+      const signer =
+        (await ethersProvider.getSigner()) as ethers.AbstractSigner;
 
-    const helloUniversalContractAddress =
-      '0x61a184EB30D29eD0395d1ADF38CC7d2F966c4A82';
+      const helloUniversalContractAddress =
+        '0x61a184EB30D29eD0395d1ADF38CC7d2F966c4A82';
 
-    const evmCallParams = {
-      receiver: helloUniversalContractAddress,
-      types: ['string'],
-      values: [stringValue],
-      revertOptions: {
-        callOnRevert: false,
-        revertAddress: ZeroAddress,
-        revertMessage: '',
-        abortAddress: ZeroAddress,
-        onRevertGasLimit: 1000000,
-      },
-    };
+      const evmCallParams = {
+        receiver: helloUniversalContractAddress,
+        types: ['string'],
+        values: [stringValue],
+        revertOptions: {
+          callOnRevert: false,
+          revertAddress: ZeroAddress,
+          revertMessage: '',
+          abortAddress: ZeroAddress,
+          onRevertGasLimit: 1000000,
+        },
+      };
 
-    const evmCallOptions = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      signer: signer as any,
-      txOptions: {
-        gasLimit: 1000000,
-      },
-    };
+      const evmCallOptions = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        signer: signer as any,
+        txOptions: {
+          gasLimit: 1000000,
+        },
+      };
 
-    const result = await evmCall(evmCallParams, evmCallOptions);
-    const receipt = await result.wait();
+      setIsUserSigningTx(true);
 
-    setConnectedChainTxHash(result.hash);
-    setConnectedChainTxResult(receipt?.status ?? null);
+      const result = await evmCall(evmCallParams, evmCallOptions);
+
+      setIsTxReceiptLoading(true);
+
+      const receipt = await result.wait();
+
+      setConnectedChainTxHash(result.hash);
+      setConnectedChainTxResult(receipt?.status ?? null);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUserSigningTx(false);
+      setIsTxReceiptLoading(false);
+    }
   };
+
+  if (isUserSigningTx) {
+    return (
+      <div className="main-container">
+        <h1>
+          {isTxReceiptLoading
+            ? `Waiting for transaction receipt on ${supportedChain.name}...`
+            : 'Sign transaction in your wallet...'}
+        </h1>
+      </div>
+    );
+  }
 
   if (connectedChainTxHash) {
     return (
@@ -84,33 +111,39 @@ export function ConnectedContent({
         This transaction will emit a cross-chain "HelloEvent" event on ZetaChain
         testnet's Universal Hello contract.
       </p>
-      <div className="input-container">
-        <div className="input-container-inner">
-          <input
-            name="message-input"
-            className="call-input"
-            type="text"
-            placeholder="Enter your message"
-            value={stringValue}
-            onChange={(e) => {
-              if (e.target.value.length <= MAX_STRING_LENGTH) {
-                setStringValue(e.target.value);
-              }
-            }}
-          />
-          <button
-            type="button"
-            className="call-button"
-            onClick={handleEvmCall}
-            disabled={!stringValue.length}
-          >
-            Evm Call 🚀
-          </button>
+      {isUserSigningTx ? (
+        <div className="input-container">
+          <p>Signing transaction...</p>
         </div>
-        <span className="input-counter">
-          {stringValue.length} / {MAX_STRING_LENGTH} characters
-        </span>
-      </div>
+      ) : (
+        <div className="input-container">
+          <div className="input-container-inner">
+            <input
+              name="message-input"
+              className="call-input"
+              type="text"
+              placeholder="Enter your message"
+              value={stringValue}
+              onChange={(e) => {
+                if (e.target.value.length <= MAX_STRING_LENGTH) {
+                  setStringValue(e.target.value);
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="call-button"
+              onClick={handleEvmCall}
+              disabled={!stringValue.length}
+            >
+              Evm Call 🚀
+            </button>
+          </div>
+          <span className="input-counter">
+            {stringValue.length} / {MAX_STRING_LENGTH} characters
+          </span>
+        </div>
+      )}
     </div>
   );
 }

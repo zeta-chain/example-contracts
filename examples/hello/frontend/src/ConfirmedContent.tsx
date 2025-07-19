@@ -76,7 +76,7 @@ export function ConfirmedContent({
     };
 
     poll();
-    const intervalId = setInterval(poll, 10000);
+    const intervalId = setInterval(poll, 15000);
 
     return () => {
       clearInterval(intervalId);
