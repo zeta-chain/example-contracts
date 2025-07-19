@@ -1,6 +1,5 @@
-import './WalletSelectionModal.css';
-
 import type { EIP6963ProviderDetail } from '../types/wallet';
+import { Modal } from './Modal';
 
 interface WalletSelectionModalProps {
   isOpen: boolean;
@@ -15,32 +14,24 @@ export const WalletSelectionModal = ({
   providers,
   onConnect,
 }: WalletSelectionModalProps) => {
-  if (!isOpen) return null;
-
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2 className="subheading modal-title">Select a Wallet</h2>
-        <div className="provider-list">
-          {providers.map((provider) => (
-            <button
-              key={provider.info.uuid}
-              className="provider-button"
-              onClick={() => onConnect(provider)}
-            >
-              <img
-                src={provider.info.icon}
-                alt={provider.info.name}
-                className="provider-icon"
-              />
-              <span>{provider.info.name}</span>
-            </button>
-          ))}
-        </div>
-        <button className="close-button" onClick={onClose}>
-          Close
-        </button>
+    <Modal isOpen={isOpen} onClose={onClose} title="Select a Wallet">
+      <div className="item-list">
+        {providers.map((provider) => (
+          <button
+            key={provider.info.uuid}
+            className="item-button"
+            onClick={() => onConnect(provider)}
+          >
+            <img
+              src={provider.info.icon}
+              alt={provider.info.name}
+              className="item-icon"
+            />
+            <span>{provider.info.name}</span>
+          </button>
+        ))}
       </div>
-    </div>
+    </Modal>
   );
 };
