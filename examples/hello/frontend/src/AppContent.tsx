@@ -4,6 +4,7 @@ import { ConnectedContent } from './ConnectedContent';
 import { SUPPORTED_CHAINS } from './constants/chains';
 import { DisconnectedContent } from './DisconnectedContent';
 import { useWallet } from './hooks/useWallet';
+import { UnsupportedNetworkContent } from './UnsupportedNetworkContent';
 
 export function AppContent() {
   const {
@@ -28,9 +29,8 @@ export function AppContent() {
 
   if (shouldDisplayUnsupportedChainWarning || !supportedChain) {
     return (
-      <div className="main-container">
-        <p style={{ color: 'red' }}>Unsupported Chain Id: {decimalChainId}</p>
-      </div>
+      // Type assertion is safe because we know decimalChainId is not null
+      <UnsupportedNetworkContent decimalChainId={decimalChainId as number} />
     );
   }
 
