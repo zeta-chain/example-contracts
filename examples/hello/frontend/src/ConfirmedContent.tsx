@@ -125,7 +125,7 @@ export function ConfirmedContent({
             </div>
           </>
         ) : (
-          <p>Waiting for ZetaChain transaction...</p>
+          <p>⏳ Waiting for ZetaChain transaction...</p>
         )}
       </div>
       <button
