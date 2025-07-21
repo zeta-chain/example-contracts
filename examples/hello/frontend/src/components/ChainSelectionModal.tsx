@@ -13,11 +13,7 @@ export const ChainSelectionModal = ({
   onSwitchChain,
 }: ChainSelectionModalProps) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Switch to a supported network"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Switch network">
       <div className="item-list">
         {SUPPORTED_CHAINS.map((chain) => (
           <button
