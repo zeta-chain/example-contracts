@@ -85,7 +85,7 @@ const main = async (options: any) => {
     tx = await contract.functions[
       "sendMessage(bytes,address,uint256,address,bytes,uint256,(address,bool,address,bytes,uint256))"
     ](
-      options.receiver,
+      options.targetContract,
       options.targetToken,
       amount,
       options.erc20,
@@ -101,7 +101,7 @@ const main = async (options: any) => {
     tx = await contract.functions[
       "sendMessage(bytes,address,bytes,uint256,(address,bool,address,bytes,uint256))"
     ](
-      options.receiver,
+      options.targetContract,
       options.targetToken,
       message,
       options.callGasLimit,
@@ -118,7 +118,7 @@ const main = async (options: any) => {
   console.log(
     JSON.stringify({
       contractAddress: options.contract,
-      receiver: options.receiver,
+      targetContract: options.targetContract,
       targetToken: options.targetToken,
       message: message,
       transactionHash: tx.hash,
@@ -134,7 +134,7 @@ export const message = new Command("message")
   .requiredOption("-r, --rpc <url>", "RPC URL")
   .requiredOption("-k, --private-key <key>", "Private key")
   .requiredOption("-c, --contract <address>", "Contract address")
-  .requiredOption("-t, --receiver <address>", "Receiver address")
+  .requiredOption("-t, --target-contract <address>", "Target contract address")
   .requiredOption("-g, --target-token <address>", "Target token address")
   .requiredOption("-a, --gas-amount <amount>", "Gas amount to send", "0")
   .option("-m, --message <message>", "Message to send (hex format)")
