@@ -95,9 +95,7 @@ const main = async (options: any) => {
       txOptions
     );
   } else {
-    // Handle both gasAmount and amount parameters
-    const gasAmount = ethers.utils.parseUnits(options.amount, 18);
-    // Use the native gas version of sendMessage
+    const amount = ethers.utils.parseUnits(options.amount, 18);
     tx = await contract.functions[
       "sendMessage(bytes,address,bytes,uint256,(address,bool,address,bytes,uint256))"
     ](
@@ -108,7 +106,7 @@ const main = async (options: any) => {
       revertOptions,
       {
         ...txOptions,
-        value: gasAmount,
+        value: amount,
       }
     );
   }
@@ -122,9 +120,8 @@ const main = async (options: any) => {
       targetToken: options.targetToken,
       message: message,
       transactionHash: tx.hash,
-      gasAmount: options.gasAmount,
-      erc20: options.erc20,
       amount: options.amount,
+      erc20: options.erc20,
     })
   );
 };
@@ -136,7 +133,6 @@ export const message = new Command("message")
   .requiredOption("-c, --contract <address>", "Contract address")
   .requiredOption("-t, --target-contract <address>", "Target contract address")
   .requiredOption("-g, --target-token <address>", "Target token address")
-  .requiredOption("-a, --gas-amount <amount>", "Gas amount to send", "0")
   .option("-m, --message <message>", "Message to send (hex format)")
   .option("-e, --erc20 <address>", "ERC20 token address for token transfer")
   .option("-n, --amount <amount>", "Amount of ERC20 tokens to transfer")
