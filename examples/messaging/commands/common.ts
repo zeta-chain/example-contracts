@@ -1,25 +1,3 @@
-import { Command } from "commander";
-
-/**
- * Get ABI from contract artifacts
- */
-export const getAbi = (name: string) => {
-  const fs = require("fs");
-  const path = require("path");
-
-  try {
-    const artifactPath = path.join(
-      __dirname,
-      `../artifacts/contracts/${name}.sol/${name}.json`
-    );
-    const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf8"));
-    return { abi: artifact.abi };
-  } catch (error) {
-    console.warn(`Warning: Could not load ABI for ${name}`);
-    return { abi: [] };
-  }
-};
-
 /**
  * Load contract artifacts (ABI and bytecode)
  */
