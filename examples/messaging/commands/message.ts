@@ -14,10 +14,6 @@ const main = async (options: any) => {
     gasLimit: options.gasLimit,
   };
 
-  if (options.isArbitraryCall && !options.function) {
-    throw new Error("You must provide a function to call");
-  }
-
   let message;
 
   if (options.values && options.types) {
@@ -42,14 +38,7 @@ const main = async (options: any) => {
       valuesArray
     );
 
-    if (options.isArbitraryCall && options.function) {
-      const functionSignature = ethers.utils.id(options.function).slice(0, 10);
-      message = ethers.utils.hexlify(
-        ethers.utils.concat([functionSignature, encodedParameters])
-      );
-    } else {
-      message = encodedParameters;
-    }
+    message = encodedParameters;
   } else {
     // If no values/types provided, use the message directly
     message = options.message || "0x";
@@ -139,7 +128,6 @@ export const message = new Command("message")
   .option("-l, --call-gas-limit <limit>", "Gas limit for the call", "1000000")
   .option("-p, --gas-price <price>", "Gas price", "10000000000")
   .option("-i, --gas-limit <limit>", "Gas limit", "10000000")
-  .option("-f, --function <function>", "Function to call on destination chain")
   .option("-y, --types <types...>", "Parameter types (JSON array)")
   .option("-v, --values <values...>", "Parameter values")
   .option(
@@ -155,5 +143,4 @@ export const message = new Command("message")
   .option("-s, --revert-message <message>", "Revert message", "0x")
   .option("-u, --on-revert-gas-limit <limit>", "On revert gas limit", "1000000")
   .option("--call-on-revert", "Whether to call on revert", false)
-  .option("--is-arbitrary-call", "Whether this is an arbitrary call")
   .action(main);
