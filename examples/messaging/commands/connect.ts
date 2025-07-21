@@ -10,16 +10,16 @@ const main = async (options: any) => {
   const contract = new ethers.Contract(options.contract, abi, signer);
 
   const tx = await contract.setConnected(
-    options.zrc20,
-    ethers.utils.arrayify(options.connected)
+    options.targetChainId,
+    ethers.utils.arrayify(options.targetContract)
   );
   await tx.wait();
 
   console.log(
     JSON.stringify({
       contractAddress: options.contract,
-      zrc20: options.zrc20,
-      connected: options.connected,
+      chainId: options.targetChainId,
+      connected: options.targetContract,
       transactionHash: tx.hash,
     })
   );
@@ -30,6 +30,6 @@ export const connect = new Command("connect")
   .requiredOption("-r, --rpc <url>", "RPC URL")
   .requiredOption("-k, --private-key <key>", "Private key")
   .requiredOption("-c, --contract <address>", "Contract address")
-  .requiredOption("-z, --zrc20 <address>", "ZRC20 token address")
-  .requiredOption("-a, --connected <address>", "Connected contract address")
+  .requiredOption("--target-chain-id <number>", "Target chain ID")
+  .requiredOption("-a, --target-contract <address>", "Target contract address")
   .action(main);

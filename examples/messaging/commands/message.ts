@@ -38,7 +38,7 @@ const main = async (options: any) => {
     });
 
     const encodedParameters = ethers.utils.defaultAbiCoder.encode(
-      JSON.parse(options.types),
+      options.types,
       valuesArray
     );
 
@@ -136,6 +136,7 @@ export const message = new Command("message")
   .requiredOption("-c, --contract <address>", "Contract address")
   .requiredOption("-t, --receiver <address>", "Receiver address")
   .requiredOption("-g, --target-token <address>", "Target token address")
+  .requiredOption("-a, --gas-amount <amount>", "Gas amount to send", "0")
   .option("-m, --message <message>", "Message to send (hex format)")
   .option("-e, --erc20 <address>", "ERC20 token address for token transfer")
   .option("-n, --amount <amount>", "Amount of ERC20 tokens to transfer")
@@ -143,7 +144,7 @@ export const message = new Command("message")
   .option("-p, --gas-price <price>", "Gas price", "10000000000")
   .option("-i, --gas-limit <limit>", "Gas limit", "10000000")
   .option("-f, --function <function>", "Function to call on destination chain")
-  .option("-y, --types <types>", "Parameter types (JSON array)")
+  .option("-y, --types <types...>", "Parameter types (JSON array)")
   .option("-v, --values <values...>", "Parameter values")
   .option(
     "-b, --abort-address <address>",

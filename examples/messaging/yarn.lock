@@ -3640,10 +3640,10 @@
     "@zetachain/networks" "^10.0.0"
     ethers "5.6.8"
 
-"@zetachain/standard-contracts@3.0.0-rc1":
-  version "3.0.0-rc1"
-  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-3.0.0-rc1.tgz#3f3295b87e9d2802b01849d6a30f01f3a5397204"
-  integrity sha512-HMXO9pfiAGksWssKS/XvMsHyIbdhtMdBDWwsPQiTHEkVIh/EOnIF7e6S5iwYyGU26XJhbrx0dxlEIzB5dPyLBQ==
+"@zetachain/standard-contracts@3.0.0-rc2":
+  version "3.0.0-rc2"
+  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-3.0.0-rc2.tgz#1ef1b8c360cad4151a291943cc0b5343ccad2dbd"
+  integrity sha512-1iFFsrD0pBOqqsymlKNHQwANrzEiZgpCBTkj2WnPHDh3rZ7lyW00CCnKi7QvM+lGwm9W5E06N5sylIfx62JLTA==
 
 "@zetachain/standard-contracts@^2.0.1":
   version "2.0.1"
