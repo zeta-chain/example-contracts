@@ -32,7 +32,11 @@ export const deploy = new Command("deploy")
   .description("Deploy a messaging contract")
   .requiredOption("-r, --rpc <url>", "RPC URL")
   .requiredOption("-k, --private-key <key>", "Private key")
-  .requiredOption("-g, --gateway <address>", "Gateway address")
+  .requiredOption(
+    "-g, --gateway <address>",
+    "Gateway address",
+    "0x0c487a766110c85d301d96e33579c5b317fa4995"
+  )
   .requiredOption(
     "-t, --router <address>",
     "Router address",
