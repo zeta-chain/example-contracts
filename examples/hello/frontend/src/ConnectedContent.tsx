@@ -51,8 +51,7 @@ export function ConnectedContent({
       };
 
       const evmCallOptions = {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        signer: signer as any,
+        signer,
         txOptions: {
           gasLimit: 1000000,
         },
