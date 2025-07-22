@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { loadContractArtifacts } from "./common";
 import { Command } from "commander";
+import ERC20_ABI from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
 const main = async (options: any) => {
   const provider = new ethers.providers.JsonRpcProvider(options.rpc);
@@ -57,14 +58,7 @@ const main = async (options: any) => {
   let tx;
 
   if (options.erc20) {
-    const erc20 = new ethers.Contract(
-      options.erc20,
-      [
-        "function approve(address spender, uint256 amount) returns (bool)",
-        "function transferFrom(address from, address to, uint256 amount) returns (bool)",
-      ],
-      signer
-    );
+    const erc20 = new ethers.Contract(options.erc20, ERC20_ABI.abi, signer);
 
     const amount = ethers.utils.parseUnits(options.amount, 18);
     const approveTx = await erc20.approve(options.contract, amount);
@@ -128,7 +122,7 @@ export const message = new Command("message")
   .option("-l, --call-gas-limit <limit>", "Gas limit for the call", "1000000")
   .option("-p, --gas-price <price>", "Gas price", "10000000000")
   .option("-i, --gas-limit <limit>", "Gas limit", "10000000")
-  .option("-y, --types <types...>", "Parameter types (JSON array)")
+  .option("-y, --types <types...>", "Parameter types")
   .option("-v, --values <values...>", "Parameter values")
   .option(
     "-b, --abort-address <address>",
