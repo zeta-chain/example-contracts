@@ -1,0 +1,157 @@
+:root {
+  --primary-color: #004937;
+  --primary-200: #00a87d;
+  --primary-color-rgb: 0, 73, 55;
+  --primary-light: #f9f9fb;
+  --danger-color: #bc3c3c;
+
+  font-family: 'Handjet', sans-serif;
+  font-size: 16px;
+
+  background-color: var(--primary-color);
+  color-scheme: light dark;
+  color: var(--primary-light);
+
+  width: 100vw;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+#root {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  width: 100vw;
+}
+
+.handjet {
+  font-family: 'Handjet', sans-serif;
+}
+
+.silkscreen {
+  font-family: 'Silkscreen', sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Silkscreen', sans-serif;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+input {
+  background-color: var(--primary-color);
+  border: 4px solid var(--primary-light);
+  color: var(--primary-light);
+  font-family: 'Handjet', sans-serif;
+  text-align: left;
+
+  &::placeholder {
+    color: var(--primary-light);
+    opacity: 0.5;
+  }
+}
+
+.subheading {
+  font-family: 'Silkscreen', sans-serif;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+button {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  cursor: pointer;
+  font-family: 'Silkscreen', sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  padding: 1rem 2rem;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+p,
+a {
+  font-family: 'Handjet', sans-serif;
+  font-size: 1.5rem;
+}
+
+a {
+  color: var(--primary-200);
+}
+
+.main-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  gap: 2.5rem;
+  justify-content: center;
+  padding: 0 2rem;
+  max-width: 100vw;
+  min-height: calc(100vh - 80px);
+}
+
+.sm-only {
+  display: block;
+}
+
+.lg-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  h1,
+  h2,
+  h3 {
+    font-size: 3rem;
+    line-height: 1.2;
+  }
+
+  p,
+  a {
+    font-size: 2.25rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
+
+  .main-container {
+    max-width: 80vw;
+  }
+
+  .subheading {
+    font-size: 1.75rem;
+  }
+
+  .lg-only {
+    display: block;
+  }
+
+  .sm-only {
+    display: none;
+  }
+}
