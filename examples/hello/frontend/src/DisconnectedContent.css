@@ -6,6 +6,12 @@
   justify-content: center;
 }
 
+.hero-content-container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 32px;
+}
+
 .hero-content-header {
   display: flex;
   flex-direction: column;
@@ -52,9 +58,19 @@
   text-align: left;
 }
 
+.hero-content-animation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media (min-width: 768px) {
   .hero-content {
     gap: 24px;
+  }
+
+  .hero-content-container {
+    flex-direction: row;
   }
 
   .hero-content-header {

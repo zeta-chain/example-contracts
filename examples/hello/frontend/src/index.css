@@ -12,7 +12,6 @@
 
   font-family: 'Inter', sans-serif;
   font-size: 16px;
-  width: 100vw;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -61,9 +60,7 @@
 #root {
   align-items: center;
   display: flex;
-  height: 100vh;
   justify-content: center;
-  width: 100vw;
 }
 
 .Inter {
@@ -133,7 +130,7 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 32px 64px;
+  margin: 88px 32px 64px;
 }
 
 .sm-only {
@@ -171,9 +168,8 @@ a {
   }
 
   .main-container {
-    flex-direction: row;
     gap: 32px;
-    margin: 0 80px 64px;
+    margin: 140px 80px 64px;
   }
 
   .subheading {
@@ -191,6 +187,6 @@ a {
 
 @media (min-width: 1168px) {
   .main-container {
-    margin: 0 172px 64px;
+    margin: 140px 172px 64px;
   }
 }

@@ -6,7 +6,7 @@
   padding: 1rem;
   position: fixed;
   top: 0;
-  width: calc(100vw);
+  width: 100%;
   z-index: 100;
 }
 
