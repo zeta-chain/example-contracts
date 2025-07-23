@@ -4,6 +4,8 @@
   --primary-color-rgb: 0, 73, 55;
   --primary-dark: #000000;
   --primary-light: #ffffff;
+  --text-secondary-light: #696e75;
+  --text-secondary-dark: #a9acb0;
   --button-light: #00a87d;
   --button-dark: #b0ff61;
   --danger-color: #bc3c3c;
@@ -130,14 +132,7 @@ a {
   align-items: center;
   display: flex;
   flex-direction: column;
-  font-size: 2rem;
-  font-style: normal;
-  font-weight: 400;
-  gap: 2.5rem;
   justify-content: center;
-  padding: 0 2rem;
-  max-width: 100vw;
-  min-height: calc(100vh - 80px);
 }
 
 .sm-only {
@@ -175,7 +170,9 @@ a {
   }
 
   .main-container {
-    max-width: 80vw;
+    flex-direction: row;
+    gap: 32px;
+    margin: 0 172px 64px;
   }
 
   .subheading {

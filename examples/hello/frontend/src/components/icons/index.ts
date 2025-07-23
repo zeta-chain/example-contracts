@@ -1,3 +1,4 @@
+export * from './IconAnimation';
 export * from './IconExternalLink';
 export * from './IconThemeMoon';
 export * from './IconThemeSun';
