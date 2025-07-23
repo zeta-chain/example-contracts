@@ -3,7 +3,6 @@ import './Header.css';
 import { SUPPORTED_CHAINS } from '../constants/chains';
 import { useWallet } from '../hooks/useWallet';
 import { truncateAddress } from '../utils/truncate';
-import { IconZetaChainLogo } from './IconZetaChainLogo';
 import { ThemeToggle } from './ThemeToggle';
 
 export const Header = () => {
@@ -16,7 +15,6 @@ export const Header = () => {
 
   return (
     <div className="header-container">
-      <IconZetaChainLogo className="header-logo" />
       <div className="header-controls">
         <ThemeToggle />
         {!!account && (

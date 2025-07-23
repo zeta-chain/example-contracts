@@ -2,7 +2,7 @@ import './ConfirmedContent.css';
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { IconExternalLink } from './components/IconExternalLink';
+import { IconExternalLink } from './components/icons';
 import {
   type SupportedChain,
   ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL,

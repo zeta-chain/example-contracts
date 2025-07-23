@@ -2,7 +2,8 @@
   --primary-color: #004937;
   --primary-200: #00a87d;
   --primary-color-rgb: 0, 73, 55;
-  --primary-light: #f9f9fb;
+  --primary-dark: #000000;
+  --primary-light: #ffffff;
   --danger-color: #bc3c3c;
 
   font-family: 'Inter', sans-serif;
@@ -17,7 +18,7 @@
 
 /* Dark theme (default) */
 :root[data-theme='dark'] {
-  --bg-color: var(--primary-color);
+  --bg-color: var(--primary-dark);
   --text-color: var(--primary-light);
   --button-bg: var(--primary-light);
   --button-text: var(--primary-color);
@@ -30,7 +31,7 @@
 /* Light theme */
 :root[data-theme='light'] {
   --bg-color: var(--primary-light);
-  --text-color: var(--primary-color);
+  --text-color: var(--primary-dark);
   --button-bg: var(--primary-color);
   --button-text: var(--primary-light);
   --input-bg: var(--primary-light);
@@ -151,6 +152,7 @@ a {
   h3 {
     font-size: 3rem;
     line-height: 1.2;
+    font-weight: 700;
   }
 
   p,

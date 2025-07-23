@@ -1,9 +1,7 @@
 .header-container {
   align-items: center;
-  background-color: var(--header-bg);
-  backdrop-filter: blur(10px);
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   left: 0;
   padding: 1rem;
   position: fixed;
