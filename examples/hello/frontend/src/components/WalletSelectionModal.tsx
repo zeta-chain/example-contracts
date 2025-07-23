@@ -15,7 +15,7 @@ export const WalletSelectionModal = ({
   onConnect,
 }: WalletSelectionModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Select a Wallet">
+    <Modal isOpen={isOpen} onClose={onClose} title="Connect a Wallet">
       <div className="item-list">
         {providers.map((provider) => (
           <button

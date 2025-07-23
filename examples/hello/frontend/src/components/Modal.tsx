@@ -2,6 +2,8 @@ import './Modal.css';
 
 import type { ReactNode } from 'react';
 
+import { IconCloseModal } from './icons/IconCloseModal';
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,10 +17,10 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2 className="subheading modal-title">{title}</h2>
+        <h2 className="modal-title">{title}</h2>
         {children}
         <button className="close-button" onClick={onClose}>
-          Close
+          <IconCloseModal />
         </button>
       </div>
     </div>
