@@ -133,6 +133,7 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 0 32px 64px;
 }
 
 .sm-only {
@@ -172,7 +173,7 @@ a {
   .main-container {
     flex-direction: row;
     gap: 32px;
-    margin: 0 172px 64px;
+    margin: 0 80px 64px;
   }
 
   .subheading {
@@ -185,5 +186,11 @@ a {
 
   .sm-only {
     display: none;
+  }
+}
+
+@media (min-width: 1168px) {
+  .main-container {
+    margin: 0 172px 64px;
   }
 }

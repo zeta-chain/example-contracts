@@ -62,10 +62,24 @@
   }
 
   .hero-content-header-title {
-    font-size: 80px;
+    font-size: 56px;
   }
 
   .hero-content-description {
     font-size: 18px;
+  }
+
+  .hero-content-animation {
+    min-width: 380px;
+  }
+}
+
+@media (min-width: 1168px) {
+  .hero-content-header-title {
+    font-size: 80px;
+  }
+
+  .hero-content-animation {
+    min-width: 568px;
   }
 }

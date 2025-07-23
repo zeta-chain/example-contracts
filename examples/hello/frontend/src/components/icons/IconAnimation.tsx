@@ -13,6 +13,9 @@ const IconAnimation = ({
       viewBox="0 0 568 184"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      style={{
+        width: '100%',
+      }}
       {...otherProps}
     >
       <rect

@@ -18,7 +18,9 @@ export const Header = () => {
     <div className="header-container">
       <div className="header-controls">
         {!account ? (
-          <ConnectWallet />
+          <div className="lg-only">
+            <ConnectWallet />
+          </div>
         ) : (
           <div className="header-connected-container">
             <div>
