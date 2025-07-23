@@ -10,7 +10,7 @@ import type { EIP6963ProviderDetail } from './types/wallet';
 
 interface ConnectedContentProps {
   selectedProvider: EIP6963ProviderDetail;
-  supportedChain: SupportedChain;
+  supportedChain: SupportedChain | undefined;
 }
 
 export function ConnectedContent({
@@ -74,6 +74,10 @@ export function ConnectedContent({
       setIsTxReceiptLoading(false);
     }
   };
+
+  if (!supportedChain) {
+    return <div>Unsupported network</div>;
+  }
 
   if (isUserSigningTx) {
     return (
