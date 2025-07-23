@@ -1,5 +1,7 @@
 .header-container {
   align-items: center;
+  background-color: var(--header-bg);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-between;
   left: 0;
@@ -13,6 +15,12 @@
 .header-logo {
   image-rendering: pixelated;
   width: 100px;
+}
+
+.header-controls {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
 }
 
 .header-connected-container {
@@ -71,6 +79,10 @@
 
   .header-logo {
     width: 160px;
+  }
+
+  .header-controls {
+    gap: 1.5rem;
   }
 
   .header-disconnect-button {

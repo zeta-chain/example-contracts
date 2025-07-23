@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.83.0",
     "@zetachain/toolkit": "16.0.1-rc3",
     "ethers": "^6.13.2",
     "react": "^19.1.0",

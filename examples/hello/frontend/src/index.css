@@ -7,17 +7,41 @@
 
   font-family: 'Handjet', sans-serif;
   font-size: 16px;
-
-  background-color: var(--primary-color);
-  color-scheme: light dark;
-  color: var(--primary-light);
-
   width: 100vw;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark theme (default) */
+:root[data-theme='dark'] {
+  --bg-color: var(--primary-color);
+  --text-color: var(--primary-light);
+  --button-bg: var(--primary-light);
+  --button-text: var(--primary-color);
+  --input-bg: var(--primary-color);
+  --input-border: var(--primary-light);
+  --input-text: var(--primary-light);
+  --header-bg: transparent;
+}
+
+/* Light theme */
+:root[data-theme='light'] {
+  --bg-color: var(--primary-light);
+  --text-color: var(--primary-color);
+  --button-bg: var(--primary-color);
+  --button-text: var(--primary-light);
+  --input-bg: var(--primary-light);
+  --input-border: var(--primary-color);
+  --input-text: var(--primary-color);
+  --header-bg: rgba(249, 249, 251, 0.95);
+}
+
+:root {
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 * {
@@ -52,17 +76,18 @@ h3 {
   font-size: 2rem;
   font-style: normal;
   font-weight: 400;
+  color: var(--text-color);
 }
 
 input {
-  background-color: var(--primary-color);
-  border: 4px solid var(--primary-light);
-  color: var(--primary-light);
+  background-color: var(--input-bg);
+  border: 4px solid var(--input-border);
+  color: var(--input-text);
   font-family: 'Handjet', sans-serif;
   text-align: left;
 
   &::placeholder {
-    color: var(--primary-light);
+    color: var(--input-text);
     opacity: 0.5;
   }
 }
@@ -72,11 +97,12 @@ input {
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;
+  color: var(--text-color);
 }
 
 button {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
+  background-color: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
   font-family: 'Silkscreen', sans-serif;
   font-size: 1rem;
@@ -94,6 +120,7 @@ p,
 a {
   font-family: 'Handjet', sans-serif;
   font-size: 1.5rem;
+  color: var(--text-color);
 }
 
 a {

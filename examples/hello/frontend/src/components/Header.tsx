@@ -4,6 +4,7 @@ import { SUPPORTED_CHAINS } from '../constants/chains';
 import { useWallet } from '../hooks/useWallet';
 import { truncateAddress } from '../utils/truncate';
 import { IconZetaChainLogo } from './IconZetaChainLogo';
+import { ThemeToggle } from './ThemeToggle';
 
 export const Header = () => {
   const { account, disconnectWallet, decimalChainId, selectedProvider } =
@@ -16,36 +17,40 @@ export const Header = () => {
   return (
     <div className="header-container">
       <IconZetaChainLogo className="header-logo" />
-      {!!account && (
-        <div className="header-connected-container">
-          <div>
-            <div className="header-chain-icon-container">
-              <img
-                src={
-                  supportedChain?.icon || '/logos/network-placeholder-logo.svg'
-                }
-                alt={supportedChain?.name || 'Unsupported network'}
-                className="header-chain-icon"
-              />
+      <div className="header-controls">
+        <ThemeToggle />
+        {!!account && (
+          <div className="header-connected-container">
+            <div>
+              <div className="header-chain-icon-container">
+                <img
+                  src={
+                    supportedChain?.icon ||
+                    '/logos/network-placeholder-logo.svg'
+                  }
+                  alt={supportedChain?.name || 'Unsupported network'}
+                  className="header-chain-icon"
+                />
+              </div>
+              <div className="header-provider-container">
+                <img
+                  src={selectedProvider?.info.icon}
+                  alt={selectedProvider?.info.name}
+                  className="header-provider-icon"
+                />
+                <span className="lg-only">{truncateAddress(account)}</span>
+              </div>
             </div>
-            <div className="header-provider-container">
-              <img
-                src={selectedProvider?.info.icon}
-                alt={selectedProvider?.info.name}
-                className="header-provider-icon"
-              />
-              <span className="lg-only">{truncateAddress(account)}</span>
-            </div>
+            <button
+              className="header-disconnect-button"
+              type="button"
+              onClick={disconnectWallet}
+            >
+              <span>X</span>
+            </button>
           </div>
-          <button
-            className="header-disconnect-button"
-            type="button"
-            onClick={disconnectWallet}
-          >
-            <span>X</span>
-          </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
