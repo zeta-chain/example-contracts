@@ -21,10 +21,6 @@
   gap: 1rem;
 }
 
-.header-connect-wallet-button {
-  min-width: 200px;
-}
-
 .header-connected-container {
   align-items: center;
   display: flex;
