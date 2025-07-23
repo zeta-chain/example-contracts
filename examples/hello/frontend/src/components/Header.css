@@ -21,6 +21,10 @@
   gap: 1rem;
 }
 
+.header-connect-wallet-button {
+  min-width: 200px;
+}
+
 .header-connected-container {
   align-items: center;
   display: flex;
@@ -80,7 +84,7 @@
   }
 
   .header-controls {
-    gap: 1.5rem;
+    gap: 8px;
   }
 
   .header-disconnect-button {

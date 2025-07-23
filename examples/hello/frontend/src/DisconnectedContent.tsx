@@ -6,7 +6,7 @@ import type { EIP6963ProviderDetail } from './types/wallet';
 
 export function DisconnectedContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { providers, connectWallet, error, connecting } = useWallet();
+  const { providers, connectWallet, connecting } = useWallet();
 
   const handleConnectClick = () => {
     if (providers.length > 0) {
@@ -29,7 +29,6 @@ export function DisconnectedContent() {
         live on ZetaChain testnet from any of our supported EVM chains.
       </p>
       <div>
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
         <button onClick={handleConnectClick} disabled={connecting}>
           {connecting ? 'Connecting...' : 'Connect Wallet'}
         </button>

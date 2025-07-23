@@ -3,6 +3,8 @@ import './Header.css';
 import { SUPPORTED_CHAINS } from '../constants/chains';
 import { useWallet } from '../hooks/useWallet';
 import { truncateAddress } from '../utils/truncate';
+import { Button } from './Button';
+import { IconWallet } from './icons';
 import { ThemeToggle } from './ThemeToggle';
 
 export const Header = () => {
@@ -16,8 +18,14 @@ export const Header = () => {
   return (
     <div className="header-container">
       <div className="header-controls">
-        <ThemeToggle />
-        {!!account && (
+        {!account ? (
+          <Button
+            icon={<IconWallet />}
+            className="header-connect-wallet-button"
+          >
+            Connect Wallet
+          </Button>
+        ) : (
           <div className="header-connected-container">
             <div>
               <div className="header-chain-icon-container">
@@ -48,6 +56,7 @@ export const Header = () => {
             </button>
           </div>
         )}
+        <ThemeToggle />
       </div>
     </div>
   );

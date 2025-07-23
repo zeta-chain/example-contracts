@@ -4,6 +4,8 @@
   --primary-color-rgb: 0, 73, 55;
   --primary-dark: #000000;
   --primary-light: #ffffff;
+  --button-light: #00a87d;
+  --button-dark: #b0ff61;
   --danger-color: #bc3c3c;
 
   font-family: 'Inter', sans-serif;
@@ -144,6 +146,14 @@ a {
 
 .lg-only {
   display: none;
+}
+
+.text-primary-light {
+  color: var(--primary-light);
+}
+
+.text-primary-dark {
+  color: var(--primary-dark);
 }
 
 @media (min-width: 768px) {
