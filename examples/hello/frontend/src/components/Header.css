@@ -49,15 +49,6 @@
   padding: 0.5rem;
 }
 
-.header-chain-icon-container {
-  align-items: center;
-  background-color: var(--primary-color);
-  border: 2px solid var(--primary-light);
-  display: flex;
-  justify-content: center;
-  padding: calc(0.5rem - 2.2px);
-}
-
 .header-disconnect-button {
   background-color: var(--danger-color);
   color: var(--primary-light);
@@ -90,9 +81,5 @@
 
   .header-provider-container {
     padding: 1rem;
-  }
-
-  .header-chain-icon-container {
-    padding: calc(1rem - 1px);
   }
 }
