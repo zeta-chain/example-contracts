@@ -33,12 +33,14 @@ export function ConnectedContent({
     <div className="main-container">
       <div className="content-container">
         <div className="content-container-inner">
-          <h1>Say Hello on</h1>
-          <NetworkSelector
-            selectedChain={selectedTargetChain}
-            onNetworkSelect={handleNetworkSelect}
-          />
-          <p>
+          <div className="content-container-inner-header">
+            <h1>Say Hello on</h1>
+            <NetworkSelector
+              selectedChain={selectedTargetChain}
+              onNetworkSelect={handleNetworkSelect}
+            />
+          </div>
+          <p className="content-container-inner-description">
             Emit a cross-chain <span className="highlight">HelloEvent</span>{' '}
             event on ZetaChain testnet through the Universal Hello Contract.
           </p>
