@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { loadContractArtifacts } from "./common";
 import { Command } from "commander";
 import ERC20_ABI from "@openzeppelin/contracts/build/contracts/ERC20.json";
+import { parseAbiValues } from "@zetachain/toolkit/utils";
 
 const main = async (options: any) => {
   const provider = new ethers.providers.JsonRpcProvider(options.rpc);
@@ -18,31 +19,12 @@ const main = async (options: any) => {
   let message;
 
   if (options.values && options.types) {
-    const valuesArray = options.values.map((value: any, index: any) => {
-      const type = options.types[index];
-
-      if (type === "bool") {
-        try {
-          return JSON.parse(value.toLowerCase());
-        } catch (e) {
-          throw new Error(`Invalid boolean value: ${value}`);
-        }
-      } else if (type.startsWith("uint") || type.startsWith("int")) {
-        return ethers.BigNumber.from(value);
-      } else {
-        return value;
-      }
-    });
-
-    const encodedParameters = ethers.utils.defaultAbiCoder.encode(
+    message = ethers.utils.defaultAbiCoder.encode(
       options.types,
-      valuesArray
+      parseAbiValues(JSON.stringify(options.types), options.values)
     );
-
-    message = encodedParameters;
   } else {
-    // If no values/types provided, use the message directly
-    message = options.message || "0x";
+    message = options.message;
   }
 
   const revertOptions = {
@@ -134,7 +116,7 @@ export const message = new Command("message")
     "Revert address",
     "0x0000000000000000000000000000000000000000"
   )
-  .option("-s, --revert-message <message>", "Revert message", "0x")
+  .option("-s, --revert-message <message>", "Revert message", "")
   .option("-u, --on-revert-gas-limit <limit>", "On revert gas limit", "1000000")
   .option("--call-on-revert", "Whether to call on revert", false)
   .action(main);
