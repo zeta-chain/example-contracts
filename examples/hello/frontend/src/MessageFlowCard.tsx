@@ -90,37 +90,33 @@ export function MessageFlowCard({
     }
   }, [stringValue]);
 
-  if (!supportedChain) {
-    return <div>Unsupported network</div>;
-  }
+  // if (isUserSigningTx) {
+  //   return (
+  //     <div>
+  //       <h1>
+  //         {isTxReceiptLoading
+  //           ? `Waiting for transaction receipt on ${supportedChain.name}...`
+  //           : 'Sign transaction in your wallet...'}
+  //       </h1>
+  //     </div>
+  //   );
+  // }
 
-  if (isUserSigningTx) {
-    return (
-      <div>
-        <h1>
-          {isTxReceiptLoading
-            ? `Waiting for transaction receipt on ${supportedChain.name}...`
-            : 'Sign transaction in your wallet...'}
-        </h1>
-      </div>
-    );
-  }
-
-  if (connectedChainTxHash) {
-    return (
-      <ConfirmedContent
-        selectedProvider={selectedProvider}
-        supportedChain={supportedChain}
-        connectedChainTxHash={connectedChainTxHash}
-        connectedChainTxResult={connectedChainTxResult}
-        handleSendAnotherMessage={() => {
-          setConnectedChainTxHash('');
-          setStringValue('');
-          setConnectedChainTxResult(null);
-        }}
-      />
-    );
-  }
+  // if (connectedChainTxHash) {
+  //   return (
+  //     <ConfirmedContent
+  //       selectedProvider={selectedProvider}
+  //       supportedChain={supportedChain}
+  //       connectedChainTxHash={connectedChainTxHash}
+  //       connectedChainTxResult={connectedChainTxResult}
+  //       handleSendAnotherMessage={() => {
+  //         setConnectedChainTxHash('');
+  //         setStringValue('');
+  //         setConnectedChainTxResult(null);
+  //       }}
+  //     />
+  //   );
+  // }
 
   // return (
   //   <div>
@@ -172,6 +168,11 @@ export function MessageFlowCard({
         />
       </div>
       <div className="message-separator" />
+      {!supportedChain && (
+        <span className="message-unsupported-network">
+          Select a network to send a message
+        </span>
+      )}
       <div className="message-input-footer">
         <div className="message-input-length-container">
           <span className="message-input-length">
@@ -185,7 +186,7 @@ export function MessageFlowCard({
           <Button
             type="button"
             onClick={handleEvmCall}
-            disabled={!stringValue.length}
+            disabled={!stringValue.length || !supportedChain}
             icon={<IconEnvelope />}
           >
             Send Message

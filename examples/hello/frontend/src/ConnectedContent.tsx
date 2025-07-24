@@ -1,10 +1,9 @@
 import './ConnectedContent.css';
 
-import { useState } from 'react';
-
 import { NetworkSelector } from './components/NetworkSelector';
 import type { SupportedChain } from './constants/chains';
 import { Footer } from './Footer';
+import { useSwitchChain } from './hooks/useSwitchChain';
 import { MessageFlowCard } from './MessageFlowCard';
 import type { EIP6963ProviderDetail } from './types/wallet';
 
@@ -17,16 +16,10 @@ export function ConnectedContent({
   selectedProvider,
   supportedChain,
 }: ConnectedContentProps) {
-  const [selectedTargetChain, setSelectedTargetChain] = useState<
-    SupportedChain | undefined
-  >(supportedChain);
-
-  if (!supportedChain) {
-    return <div>Unsupported network</div>;
-  }
+  const { switchChain } = useSwitchChain();
 
   const handleNetworkSelect = (chain: SupportedChain) => {
-    setSelectedTargetChain(chain);
+    switchChain(chain.chainId);
   };
 
   return (
@@ -36,7 +29,7 @@ export function ConnectedContent({
           <div className="content-container-inner-header">
             <h1>Say Hello on</h1>
             <NetworkSelector
-              selectedChain={selectedTargetChain}
+              selectedChain={supportedChain}
               onNetworkSelect={handleNetworkSelect}
             />
           </div>

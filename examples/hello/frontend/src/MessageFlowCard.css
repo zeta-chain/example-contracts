@@ -77,6 +77,16 @@
   width: 100%;
 }
 
+.message-unsupported-network {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 14px */
+  text-align: right;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
 [data-theme='light'] .message-input {
   color: var(--primary-dark);
 }
@@ -85,11 +95,13 @@
   color: var(--primary-light);
 }
 
-[data-theme='light'] .message-input-length-max {
+[data-theme='light'] .message-input-length-max,
+[data-theme='dark'] .message-unsupported-network {
   color: #a9acb0;
 }
 
-[data-theme='dark'] .message-input-length-max {
+[data-theme='dark'] .message-input-length-max,
+[data-theme='light'] .message-unsupported-network {
   color: #696e75;
 }
 
