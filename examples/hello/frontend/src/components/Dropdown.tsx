@@ -172,10 +172,11 @@ export const Dropdown = <T,>({
 
   return (
     <div className={`dropdown ${className}`} ref={dropdownRef}>
+      {/* Always keep trigger in DOM to maintain layout space */}
       <button
-        className={`dropdown-trigger ${
-          isOpen ? 'expanded' : 'collapsed'
-        } ${triggerClassName} ${disabled ? 'disabled' : ''}`}
+        className={`dropdown-trigger ${triggerClassName} ${
+          disabled ? 'disabled' : ''
+        } ${isOpen ? 'hidden' : ''}`}
         onClick={handleToggle}
         type="button"
         disabled={disabled}
@@ -187,6 +188,7 @@ export const Dropdown = <T,>({
           : defaultTriggerContent}
       </button>
 
+      {/* Show menu when open (overlays trigger) */}
       {isOpen && (
         <div
           className={`dropdown-menu ${dropdownClassName}`}
