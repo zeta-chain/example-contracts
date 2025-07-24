@@ -25,9 +25,19 @@
 [data-theme='light'] .button {
   background-color: var(--button-light);
   color: var(--primary-light);
+
+  &:disabled {
+    background-color: #e5e8ec;
+    color: #696e75;
+  }
 }
 
 [data-theme='dark'] .button {
   background-color: var(--button-dark);
   color: var(--primary-dark);
+
+  &:disabled {
+    background-color: #283442;
+    color: #a9acb0;
+  }
 }

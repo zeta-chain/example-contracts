@@ -4,7 +4,8 @@ import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { ethers, ZeroAddress } from 'ethers';
 import { useEffect, useRef, useState } from 'react';
 
-import { IconSendTitle } from './components/icons';
+import { Button } from './components/Button';
+import { IconEnvelope, IconSendTitle } from './components/icons';
 import { ConfirmedContent } from './ConfirmedContent';
 import type { SupportedChain } from './constants/chains';
 import type { EIP6963ProviderDetail } from './types/wallet';
@@ -148,6 +149,7 @@ export function MessageFlowCard({
   //     </span>
   //   </div>
   // );
+
   return (
     <div className="message-flow-container">
       <div className="message-flow-title">
@@ -180,13 +182,14 @@ export function MessageFlowCard({
           </span>
         </div>
         <div>
-          <button
+          <Button
             type="button"
             onClick={handleEvmCall}
             disabled={!stringValue.length}
+            icon={<IconEnvelope />}
           >
-            Evm Call 🚀
-          </button>
+            Send Message
+          </Button>
         </div>
       </div>
     </div>

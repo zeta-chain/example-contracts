@@ -2,6 +2,7 @@ export * from './IconAnimation';
 export * from './IconArrowRotated';
 export * from './IconDiscuss';
 export * from './IconDocs';
+export * from './IconEnvelope';
 export * from './IconExternalLink';
 export * from './IconSendTitle';
 export * from './IconThemeMoon';
