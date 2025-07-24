@@ -8,27 +8,6 @@ export interface SupportedChain {
 
 export const SUPPORTED_CHAINS: SupportedChain[] = [
   {
-    explorerUrl: 'https://sepolia.etherscan.io/tx/',
-    name: 'Ethereum Sepolia',
-    chainId: 11155111,
-    icon: '/logos/ethereum-logo.svg',
-    colorHex: '#3457D5',
-  },
-  {
-    explorerUrl: 'https://testnet.bscscan.com/tx/',
-    name: 'BSC Testnet',
-    chainId: 97,
-    icon: '/logos/bsc-logo.svg',
-    colorHex: '#E1A411',
-  },
-  {
-    explorerUrl: 'https://sepolia.basescan.org/tx/',
-    name: 'Base Sepolia',
-    chainId: 84532,
-    icon: '/logos/base-logo.svg',
-    colorHex: '#0052FF',
-  },
-  {
     explorerUrl: 'https://sepolia.arbiscan.io/tx/',
     name: 'Arbitrum Sepolia',
     chainId: 421614,
@@ -41,6 +20,27 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     chainId: 43113,
     icon: '/logos/avalanche-logo.svg',
     colorHex: '#FF394A',
+  },
+  {
+    explorerUrl: 'https://sepolia.basescan.org/tx/',
+    name: 'Base Sepolia',
+    chainId: 84532,
+    icon: '/logos/base-logo.svg',
+    colorHex: '#0052FF',
+  },
+  {
+    explorerUrl: 'https://testnet.bscscan.com/tx/',
+    name: 'BSC Testnet',
+    chainId: 97,
+    icon: '/logos/bsc-logo.svg',
+    colorHex: '#E1A411',
+  },
+  {
+    explorerUrl: 'https://sepolia.etherscan.io/tx/',
+    name: 'Ethereum Sepolia',
+    chainId: 11155111,
+    icon: '/logos/ethereum-logo.svg',
+    colorHex: '#3457D5',
   },
   {
     explorerUrl: 'https://amoy.polygonscan.com/tx/',
