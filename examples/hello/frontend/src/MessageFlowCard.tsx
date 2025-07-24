@@ -2,11 +2,13 @@ import './MessageFlowCard.css';
 
 import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { ethers, ZeroAddress } from 'ethers';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { IconSendTitle } from './components/icons';
 import { ConfirmedContent } from './ConfirmedContent';
 import type { SupportedChain } from './constants/chains';
 import type { EIP6963ProviderDetail } from './types/wallet';
+import { formatNumberWithLocale } from './utils/formatNumber';
 
 interface MessageFlowCardProps {
   selectedProvider: EIP6963ProviderDetail;
@@ -17,7 +19,7 @@ export function MessageFlowCard({
   selectedProvider,
   supportedChain,
 }: MessageFlowCardProps) {
-  const MAX_STRING_LENGTH = 20;
+  const MAX_STRING_LENGTH = 2880;
   const [isUserSigningTx, setIsUserSigningTx] = useState(false);
   const [isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
   const [stringValue, setStringValue] = useState('');
@@ -25,6 +27,7 @@ export function MessageFlowCard({
   const [connectedChainTxResult, setConnectedChainTxResult] = useState<
     number | null
   >(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleEvmCall = async () => {
     try {
@@ -75,13 +78,24 @@ export function MessageFlowCard({
     }
   };
 
+  // Auto-resize textarea based on content
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      // Reset height to auto to get the correct scrollHeight
+      textarea.style.height = 'auto';
+      // Set height to scrollHeight to fit content
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [stringValue]);
+
   if (!supportedChain) {
     return <div>Unsupported network</div>;
   }
 
   if (isUserSigningTx) {
     return (
-      <div className="main-container">
+      <div>
         <h1>
           {isTxReceiptLoading
             ? `Waiting for transaction receipt on ${supportedChain.name}...`
@@ -107,41 +121,74 @@ export function MessageFlowCard({
     );
   }
 
-  if (isUserSigningTx) {
-    return (
-      <div className="main-container">
-        <h1>Signing transaction...</h1>
-      </div>
-    );
-  }
-
+  // return (
+  //   <div>
+  //     <div>
+  //       <input
+  //         name="message-input"
+  //         type="text"
+  //         placeholder="Enter your message"
+  //         value={stringValue}
+  //         onChange={(e) => {
+  //           if (e.target.value.length <= MAX_STRING_LENGTH) {
+  //             setStringValue(e.target.value);
+  //           }
+  //         }}
+  //       />
+  //       <button
+  //         type="button"
+  //         onClick={handleEvmCall}
+  //         disabled={!stringValue.length}
+  //       >
+  //         Evm Call 🚀
+  //       </button>
+  //     </div>
+  //     <span>
+  //       {stringValue.length} / {MAX_STRING_LENGTH} characters
+  //     </span>
+  //   </div>
+  // );
   return (
-    <div className="input-container">
-      <div className="input-container-inner">
-        <input
+    <div className="message-flow-container">
+      <div className="message-flow-title">
+        <IconSendTitle />
+        <span className="message-flow-title-text">Message to Send</span>
+      </div>
+      <div className="message-input-container">
+        <textarea
+          ref={textareaRef}
           name="message-input"
-          className="call-input"
-          type="text"
+          className="message-input"
           placeholder="Enter your message"
           value={stringValue}
+          rows={1}
           onChange={(e) => {
             if (e.target.value.length <= MAX_STRING_LENGTH) {
               setStringValue(e.target.value);
             }
           }}
         />
-        <button
-          type="button"
-          className="call-button"
-          onClick={handleEvmCall}
-          disabled={!stringValue.length}
-        >
-          Evm Call 🚀
-        </button>
       </div>
-      <span className="input-counter">
-        {stringValue.length} / {MAX_STRING_LENGTH} characters
-      </span>
+      <div className="message-separator" />
+      <div className="message-input-footer">
+        <div className="message-input-length-container">
+          <span className="message-input-length">
+            {formatNumberWithLocale(stringValue.length)}{' '}
+          </span>
+          <span className="message-input-length-max">
+            / {formatNumberWithLocale(MAX_STRING_LENGTH)} characters
+          </span>
+        </div>
+        <div>
+          <button
+            type="button"
+            onClick={handleEvmCall}
+            disabled={!stringValue.length}
+          >
+            Evm Call 🚀
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

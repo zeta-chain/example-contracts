@@ -78,27 +78,20 @@ h3 {
 }
 
 input {
-  background-color: var(--input-bg);
-  border: 4px solid var(--input-border);
-  color: var(--input-text);
   font-family: 'Inter', sans-serif;
   text-align: left;
 
   &::placeholder {
-    color: var(--input-text);
     opacity: 0.5;
   }
 }
 
 button {
-  background-color: var(--button-bg);
-  color: var(--button-text);
   cursor: pointer;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  padding: 1rem 2rem;
   transition: opacity 0.2s ease-in-out;
 
   &:hover {

@@ -1,0 +1,112 @@
+.message-flow-container {
+  align-items: flex-start;
+  backdrop-filter: blur(12px);
+  border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  width: 568px;
+}
+
+.message-flow-title {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.message-flow-title-text {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 100%; /* 16px */
+}
+
+.message-input-container {
+  width: 100%;
+}
+
+.message-input {
+  background: transparent;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-weight: 400;
+  line-height: 110%;
+  outline: none;
+  resize: none;
+  text-align: left;
+  width: 100%;
+  min-height: 32px;
+  max-height: 160px;
+  box-sizing: border-box;
+}
+
+.message-input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.message-input-length-container {
+  align-items: center;
+  display: flex;
+  gap: 2px;
+}
+
+.message-input-length-max {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 14px */
+}
+
+.message-input-length {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 24px */
+}
+
+.message-separator {
+  height: 1px;
+  margin: 32px 0;
+  width: 100%;
+}
+
+[data-theme='light'] .message-input {
+  color: var(--primary-dark);
+}
+
+[data-theme='dark'] .message-input {
+  color: var(--primary-light);
+}
+
+[data-theme='light'] .message-input-length-max {
+  color: #a9acb0;
+}
+
+[data-theme='dark'] .message-input-length-max {
+  color: #696e75;
+}
+
+[data-theme='light'] .message-separator {
+  background: #e5e8ec;
+}
+
+[data-theme='dark'] .message-separator {
+  background: #283442;
+}
+
+[data-theme='light'] .message-flow-container {
+  background: #ffffffcc;
+  border: 1px solid #e5e8ec;
+}
+
+[data-theme='dark'] .message-flow-container {
+  background: #171f29cc;
+  border: 1px solid #283442;
+}

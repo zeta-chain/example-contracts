@@ -3,6 +3,7 @@ export * from './IconArrowRotated';
 export * from './IconDiscuss';
 export * from './IconDocs';
 export * from './IconExternalLink';
+export * from './IconSendTitle';
 export * from './IconThemeMoon';
 export * from './IconThemeSun';
 export * from './IconTutorials';
