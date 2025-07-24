@@ -1,3 +1,28 @@
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.content-container-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.content-container-inner h1 {
+  margin: 0;
+  font-size: 80px;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.content-container-inner p {
+  max-width: 600px;
+  font-size: 18px;
+  text-align: left;
+}
+
 .input-container {
   align-items: center;
   display: flex;
@@ -42,6 +67,10 @@
 }
 
 @media (min-width: 768px) {
+  .content-container {
+    flex-direction: row;
+  }
+
   .input-container-inner {
     align-items: center;
     display: flex;
