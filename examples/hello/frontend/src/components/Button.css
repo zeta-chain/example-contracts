@@ -41,3 +41,11 @@
     color: #a9acb0;
   }
 }
+
+.button-variant-default {
+  padding: 16px;
+}
+
+.button-variant-thin {
+  padding: 12px 24px;
+}

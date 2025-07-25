@@ -5,6 +5,7 @@ export * from './IconDiscuss';
 export * from './IconDocs';
 export * from './IconEnvelope';
 export * from './IconExternalLink';
+export * from './IconReceived';
 export * from './IconSendTitle';
 export * from './IconThemeMoon';
 export * from './IconThemeSun';

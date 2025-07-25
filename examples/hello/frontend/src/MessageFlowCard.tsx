@@ -25,9 +25,6 @@ export function MessageFlowCard({
   const [_isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
   const [stringValue, setStringValue] = useState('');
   const [connectedChainTxHash, setConnectedChainTxHash] = useState('');
-  const [connectedChainTxResult, setConnectedChainTxResult] = useState<
-    number | null
-  >(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleEvmCall = async () => {
@@ -67,10 +64,9 @@ export function MessageFlowCard({
 
       setIsTxReceiptLoading(true);
 
-      const receipt = await result.wait();
+      await result.wait();
 
       setConnectedChainTxHash(result.hash);
-      setConnectedChainTxResult(receipt?.status ?? null);
     } catch (error) {
       console.error(error);
     } finally {
@@ -110,11 +106,10 @@ export function MessageFlowCard({
         selectedProvider={selectedProvider}
         supportedChain={supportedChain}
         connectedChainTxHash={connectedChainTxHash}
-        connectedChainTxResult={connectedChainTxResult}
+        stringValue={stringValue}
         handleSendAnotherMessage={() => {
           setConnectedChainTxHash('');
           setStringValue('');
-          setConnectedChainTxResult(null);
         }}
       />
     );

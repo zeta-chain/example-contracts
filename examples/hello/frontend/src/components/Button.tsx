@@ -7,6 +7,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   className?: string;
   icon?: ReactNode;
+  variant?: 'thin' | 'default';
 }
 
 export const Button = ({
@@ -14,10 +15,22 @@ export const Button = ({
   icon,
   type = 'button',
   className,
+  variant = 'default',
   ...props
 }: ButtonProps) => {
   return (
-    <button type={type} className={clsx('button', className)} {...props}>
+    <button
+      type={type}
+      className={clsx(
+        'button',
+        {
+          'button-variant-thin': variant === 'thin',
+          'button-variant-default': variant === 'default',
+        },
+        className
+      )}
+      {...props}
+    >
       <div className="button-content">
         {icon && <span className="button-icon">{icon}</span>}
         {children}
