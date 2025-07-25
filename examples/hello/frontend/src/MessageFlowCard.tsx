@@ -5,7 +5,7 @@ import { ethers, ZeroAddress } from 'ethers';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from './components/Button';
-import { IconEnvelope, IconSendTitle } from './components/icons';
+import { IconApprove, IconEnvelope, IconSendTitle } from './components/icons';
 import { ConfirmedContent } from './ConfirmedContent';
 import type { SupportedChain } from './constants/chains';
 import type { EIP6963ProviderDetail } from './types/wallet';
@@ -22,7 +22,7 @@ export function MessageFlowCard({
 }: MessageFlowCardProps) {
   const MAX_STRING_LENGTH = 2880;
   const [isUserSigningTx, setIsUserSigningTx] = useState(false);
-  const [isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
+  const [_isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
   const [stringValue, setStringValue] = useState('');
   const [connectedChainTxHash, setConnectedChainTxHash] = useState('');
   const [connectedChainTxResult, setConnectedChainTxResult] = useState<
@@ -90,61 +90,35 @@ export function MessageFlowCard({
     }
   }, [stringValue]);
 
-  // if (isUserSigningTx) {
-  //   return (
-  //     <div>
-  //       <h1>
-  //         {isTxReceiptLoading
-  //           ? `Waiting for transaction receipt on ${supportedChain.name}...`
-  //           : 'Sign transaction in your wallet...'}
-  //       </h1>
-  //     </div>
-  //   );
-  // }
+  if (isUserSigningTx) {
+    return (
+      <div className="approve-container">
+        <IconApprove />
+        <div className="approve-content">
+          <h1 className="approve-title">Approve from Wallet</h1>
+          <p className="approve-description">
+            Awaiting approval via your wallet
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-  // if (connectedChainTxHash) {
-  //   return (
-  //     <ConfirmedContent
-  //       selectedProvider={selectedProvider}
-  //       supportedChain={supportedChain}
-  //       connectedChainTxHash={connectedChainTxHash}
-  //       connectedChainTxResult={connectedChainTxResult}
-  //       handleSendAnotherMessage={() => {
-  //         setConnectedChainTxHash('');
-  //         setStringValue('');
-  //         setConnectedChainTxResult(null);
-  //       }}
-  //     />
-  //   );
-  // }
-
-  // return (
-  //   <div>
-  //     <div>
-  //       <input
-  //         name="message-input"
-  //         type="text"
-  //         placeholder="Enter your message"
-  //         value={stringValue}
-  //         onChange={(e) => {
-  //           if (e.target.value.length <= MAX_STRING_LENGTH) {
-  //             setStringValue(e.target.value);
-  //           }
-  //         }}
-  //       />
-  //       <button
-  //         type="button"
-  //         onClick={handleEvmCall}
-  //         disabled={!stringValue.length}
-  //       >
-  //         Evm Call 🚀
-  //       </button>
-  //     </div>
-  //     <span>
-  //       {stringValue.length} / {MAX_STRING_LENGTH} characters
-  //     </span>
-  //   </div>
-  // );
+  if (connectedChainTxHash) {
+    return (
+      <ConfirmedContent
+        selectedProvider={selectedProvider}
+        supportedChain={supportedChain}
+        connectedChainTxHash={connectedChainTxHash}
+        connectedChainTxResult={connectedChainTxResult}
+        handleSendAnotherMessage={() => {
+          setConnectedChainTxHash('');
+          setStringValue('');
+          setConnectedChainTxResult(null);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="message-flow-container">

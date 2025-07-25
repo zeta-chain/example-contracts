@@ -1,4 +1,5 @@
 export * from './IconAnimation';
+export * from './IconApprove';
 export * from './IconArrowRotated';
 export * from './IconDiscuss';
 export * from './IconDocs';

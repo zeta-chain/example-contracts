@@ -20,7 +20,7 @@ const CCTX_POLLING_URL =
 
 interface ConfirmedContentProps {
   selectedProvider: EIP6963ProviderDetail;
-  supportedChain: SupportedChain;
+  supportedChain: SupportedChain | undefined;
   connectedChainTxHash: string;
   connectedChainTxResult: number | null;
   handleSendAnotherMessage: () => void;
@@ -91,19 +91,20 @@ export function ConfirmedContent({
           <span className="transaction-hash-status">
             {isConnectedChainTxSuccessful ? '✅' : '❌'}
           </span>
-          <p>{supportedChain.name} Transaction: </p>
         </div>
-        <div>
-          <a
-            className="transaction-hash-link"
-            href={`${supportedChain.explorerUrl}${connectedChainTxHash}`}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            {truncateAddress(connectedChainTxHash)}
-            <IconExternalLink size={20} />
-          </a>
-        </div>
+        {supportedChain && (
+          <div>
+            <a
+              className="transaction-hash-link"
+              href={`${supportedChain.explorerUrl}${connectedChainTxHash}`}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              {truncateAddress(connectedChainTxHash)}
+              <IconExternalLink size={20} />
+            </a>
+          </div>
+        )}
       </div>
       <div className="transaction-hash-container">
         {zetachainTxHash ? (
