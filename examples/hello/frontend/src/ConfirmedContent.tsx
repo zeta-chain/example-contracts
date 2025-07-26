@@ -1,9 +1,10 @@
 import './ConfirmedContent.css';
 
-import { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from './components/Button';
-import { IconReceived } from './components/icons';
+import { IconReceived, IconSpinner } from './components/icons';
 import {
   type SupportedChain,
   ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL,
@@ -22,6 +23,8 @@ interface ConfirmedContentProps {
   stringValue: string;
 }
 
+const MAX_STRING_LENGTH = 20;
+
 export function ConfirmedContent({
   supportedChain,
   connectedChainTxHash,
@@ -29,7 +32,12 @@ export function ConfirmedContent({
   stringValue,
 }: ConfirmedContentProps) {
   const [zetachainTxHash, setZetachainTxHash] = useState<string | null>(null);
-  const renderString = stringValue.slice(0, 24);
+  const renderString = useMemo(() => {
+    if (stringValue.length > MAX_STRING_LENGTH) {
+      return stringValue.slice(0, MAX_STRING_LENGTH) + '...';
+    }
+    return stringValue;
+  }, [stringValue]);
 
   // Poll for the ZetaChain transaction status every 10 seconds
   useEffect(() => {
@@ -65,30 +73,47 @@ export function ConfirmedContent({
   return (
     <div className="confirmed-content">
       <IconReceived />
-      <h2 className="confirmed-content-title">"{renderString}" Received</h2>
+      <h2 className="confirmed-content-title">
+        "{renderString}" {!zetachainTxHash ? 'in Transit' : 'Received'}
+      </h2>
       <div className="confirmed-content-links-container">
-        <a
-          href={`${ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL}/${zetachainTxHash}`}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="confirmed-content-link"
-        >
-          View on ZetaChain
-        </a>
+        {connectedChainTxHash && (
+          <div className="confirmed-content-link-chain">
+            {!zetachainTxHash && <IconSpinner />}
+            <a
+              href={`${ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL}${zetachainTxHash}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={clsx('confirmed-content-link', {
+                'confirmed-content-link-enabled': zetachainTxHash,
+                'confirmed-content-link-disabled': !zetachainTxHash,
+              })}
+            >
+              View on ZetaChain
+            </a>
+          </div>
+        )}
         {supportedChain && (
-          <a
-            href={`${supportedChain.explorerUrl}${connectedChainTxHash}`}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="confirmed-content-link"
-          >
-            View on {supportedChain.name}
-          </a>
+          <div className="confirmed-content-link-chain">
+            {!connectedChainTxHash && <IconSpinner />}
+            <a
+              href={`${supportedChain.explorerUrl}${connectedChainTxHash}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={clsx('confirmed-content-link', {
+                'confirmed-content-link-enabled': connectedChainTxHash,
+                'confirmed-content-link-disabled': !connectedChainTxHash,
+              })}
+            >
+              View on {supportedChain.name}
+            </a>
+          </div>
         )}
       </div>
       <Button
         type="button"
         variant="thin"
+        disabled={!connectedChainTxHash || !zetachainTxHash}
         onClick={() => {
           handleSendAnotherMessage();
           setZetachainTxHash(null);

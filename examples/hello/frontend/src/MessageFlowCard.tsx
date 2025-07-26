@@ -20,12 +20,16 @@ export function MessageFlowCard({
   selectedProvider,
   supportedChain,
 }: MessageFlowCardProps) {
-  const MAX_STRING_LENGTH = 2880;
+  const MAX_STRING_LENGTH = 2000;
   const [isUserSigningTx, setIsUserSigningTx] = useState(false);
-  const [_isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
+  const [isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
   const [stringValue, setStringValue] = useState('');
   const [connectedChainTxHash, setConnectedChainTxHash] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const getStringByteLength = (string: string) => {
+    return new TextEncoder().encode(string).length;
+  };
 
   const handleEvmCall = async () => {
     try {
@@ -86,21 +90,7 @@ export function MessageFlowCard({
     }
   }, [stringValue]);
 
-  if (isUserSigningTx) {
-    return (
-      <div className="approve-container">
-        <IconApprove />
-        <div className="approve-content">
-          <h1 className="approve-title">Approve from Wallet</h1>
-          <p className="approve-description">
-            Awaiting approval via your wallet
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (connectedChainTxHash) {
+  if (connectedChainTxHash || isTxReceiptLoading) {
     return (
       <ConfirmedContent
         selectedProvider={selectedProvider}
@@ -112,6 +102,20 @@ export function MessageFlowCard({
           setStringValue('');
         }}
       />
+    );
+  }
+
+  if (isUserSigningTx) {
+    return (
+      <div className="approve-container">
+        <IconApprove />
+        <div className="approve-content">
+          <h1 className="approve-title">Approve from Wallet</h1>
+          <p className="approve-description">
+            Awaiting approval via your wallet
+          </p>
+        </div>
+      </div>
     );
   }
 
@@ -130,7 +134,7 @@ export function MessageFlowCard({
           value={stringValue}
           rows={1}
           onChange={(e) => {
-            if (e.target.value.length <= MAX_STRING_LENGTH) {
+            if (getStringByteLength(e.target.value) <= MAX_STRING_LENGTH) {
               setStringValue(e.target.value);
             }
           }}
@@ -145,7 +149,7 @@ export function MessageFlowCard({
       <div className="message-input-footer">
         <div className="message-input-length-container">
           <span className="message-input-length">
-            {formatNumberWithLocale(stringValue.length)}{' '}
+            {formatNumberWithLocale(getStringByteLength(stringValue))}{' '}
           </span>
           <span className="message-input-length-max">
             / {formatNumberWithLocale(MAX_STRING_LENGTH)} characters
@@ -155,7 +159,11 @@ export function MessageFlowCard({
           <Button
             type="button"
             onClick={handleEvmCall}
-            disabled={!stringValue.length || !supportedChain}
+            disabled={
+              !stringValue.length ||
+              !supportedChain ||
+              getStringByteLength(stringValue) > MAX_STRING_LENGTH
+            }
             icon={<IconEnvelope />}
           >
             Send Message

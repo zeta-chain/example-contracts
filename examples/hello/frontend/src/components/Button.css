@@ -9,6 +9,10 @@
   line-height: 100%;
   padding: 16px;
   transition: all 0.2s ease;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 
 .button-content {

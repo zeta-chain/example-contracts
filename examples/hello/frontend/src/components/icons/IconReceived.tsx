@@ -19,8 +19,8 @@ const IconReceived = ({
       <rect x="16" y="34" width="20" height="20" rx="10" fill="#B0FF61" />
 
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M30.2353 42.0737L25.6414 46.66C25.3444 46.9565 24.8628 46.9565 24.5658 46.66L22 44.0984L23.0755 43.0247L25.1036 45.0494L29.1597 41L30.2353 42.0737Z"
         fill="black"
       />

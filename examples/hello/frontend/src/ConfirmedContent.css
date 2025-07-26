@@ -19,8 +19,15 @@
 }
 
 .confirmed-content-links-container {
+  align-items: center;
   display: flex;
   gap: 16px;
+}
+
+.confirmed-content-link-chain {
+  align-items: center;
+  display: flex;
+  gap: 4px;
 }
 
 .confirmed-content-link {
@@ -29,6 +36,13 @@
   font-weight: 400;
   line-height: 130%; /* 20.8px */
   text-align: center;
+  white-space: nowrap;
+}
+
+.confirmed-content-link-disabled {
+  color: #848484;
+  pointer-events: none;
+  text-decoration: none;
 }
 
 [data-theme='light'] .confirmed-content {
@@ -41,10 +55,10 @@
   border: 1px solid #283442;
 }
 
-[data-theme='light'] .confirmed-content-link {
+[data-theme='light'] .confirmed-content-link-enabled {
   color: #00a87d;
 }
 
-[data-theme='dark'] .confirmed-content-link {
+[data-theme='dark'] .confirmed-content-link-enabled {
   color: #b0ff61;
 }
