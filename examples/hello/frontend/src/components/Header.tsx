@@ -1,13 +1,12 @@
 import './Header.css';
 
 import { useWallet } from '../hooks/useWallet';
-import { truncateAddress } from '../utils/truncate';
 import { ConnectWallet } from './ConnectWallet';
-import { IconDisconnect } from './icons';
 import { ThemeToggle } from './ThemeToggle';
+import { WalletControls } from './WalletControls';
 
 export const Header = () => {
-  const { account, disconnectWallet } = useWallet();
+  const { account } = useWallet();
 
   return (
     <div className="header-container">
@@ -17,21 +16,7 @@ export const Header = () => {
             <ConnectWallet />
           </div>
         ) : (
-          <div className="header-connected-container">
-            <div className="header-wallet-icon" />
-
-            <span className="header-wallet-address lg-only">
-              {truncateAddress(account)}
-            </span>
-
-            <button
-              className="header-disconnect-button"
-              type="button"
-              onClick={disconnectWallet}
-            >
-              <IconDisconnect />
-            </button>
-          </div>
+          <WalletControls />
         )}
         <ThemeToggle />
       </div>
