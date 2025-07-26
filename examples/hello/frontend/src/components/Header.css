@@ -10,9 +10,17 @@
   z-index: 100;
 }
 
-.header-logo {
-  image-rendering: pixelated;
-  width: 100px;
+.header-wallet-icon {
+  border-radius: 100%;
+  height: 32px;
+  width: 32px;
+}
+
+.header-wallet-address {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 130%; /* 15.6px */
+  user-select: none;
 }
 
 .header-controls {
@@ -24,16 +32,10 @@
 .header-connected-container {
   align-items: center;
   display: flex;
-}
-
-.header-connected-container > div {
-  align-items: center;
-  display: flex;
-
-  span {
-    color: var(--primary-color);
-    user-select: none;
-  }
+  gap: 8px;
+  padding: 8px;
+  border-radius: 24px;
+  backdrop-filter: blur(12px);
 }
 
 .header-provider-icon,
@@ -41,24 +43,39 @@
   width: 1rem;
 }
 
-.header-provider-container {
+.header-disconnect-button {
   align-items: center;
-  background-color: var(--primary-light);
+  border-radius: 100%;
   display: flex;
-  gap: 0.5rem;
-  padding: 0.5rem;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
 }
 
-.header-disconnect-button {
-  background-color: var(--danger-color);
-  color: var(--primary-light);
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  transition: opacity 0.2s;
+[data-theme='light'] .header-connected-container {
+  background: #ffffffcc;
+  border: 1px solid #e5e8ec;
+}
 
-  &:hover {
-    opacity: 0.8;
-  }
+[data-theme='dark'] .header-connected-container {
+  background: #171f29cc;
+  border: 1px solid #283442;
+}
+
+[data-theme='light'] .header-wallet-icon {
+  background-color: #00a87d;
+}
+
+[data-theme='dark'] .header-wallet-icon {
+  background-color: #b0ff61;
+}
+
+[data-theme='light'] .header-disconnect-button {
+  background-color: #f9f9fb;
+}
+
+[data-theme='dark'] .header-disconnect-button {
+  background-color: #26303d;
 }
 
 @media (min-width: 768px) {
@@ -72,11 +89,6 @@
 
   .header-controls {
     gap: 8px;
-  }
-
-  .header-disconnect-button {
-    font-size: 1.25rem;
-    padding: 1rem 1.5rem;
   }
 
   .header-provider-container {

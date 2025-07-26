@@ -1,6 +1,7 @@
 export * from './IconAnimation';
 export * from './IconApprove';
 export * from './IconArrowRotated';
+export * from './IconDisconnect';
 export * from './IconDiscuss';
 export * from './IconDocs';
 export * from './IconEnvelope';
