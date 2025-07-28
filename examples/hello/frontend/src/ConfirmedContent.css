@@ -6,12 +6,12 @@
   flex-direction: column;
   gap: 16px;
   justify-content: center;
-  padding: 48px 32px;
-  width: 568px;
+  padding: 24px 32px;
+  width: 100%;
 }
 
 .confirmed-content-title {
-  font-size: 24px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 600;
   line-height: 130%; /* 31.2px */
@@ -21,6 +21,8 @@
 .confirmed-content-links-container {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 16px;
 }
 
@@ -31,7 +33,7 @@
 }
 
 .confirmed-content-link {
-  font-size: 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 130%; /* 20.8px */
@@ -61,4 +63,19 @@
 
 [data-theme='dark'] .confirmed-content-link-enabled {
   color: #b0ff61;
+}
+
+@media (min-width: 768px) {
+  .confirmed-content {
+    padding: 48px 32px;
+    width: 568px;
+  }
+
+  .confirmed-content-title {
+    font-size: 24px;
+  }
+
+  .confirmed-content-link {
+    font-size: 16px;
+  }
 }

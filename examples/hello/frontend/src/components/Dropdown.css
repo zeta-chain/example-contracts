@@ -115,7 +115,7 @@
   display: flex;
   gap: 12px;
   margin-bottom: 4px;
-  padding: 8px;
+  padding: 8px 12px 8px 8px;
   transition: all 0.2s ease;
   width: 100%;
 }
