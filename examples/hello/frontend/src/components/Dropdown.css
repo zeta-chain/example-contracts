@@ -253,14 +253,14 @@
   }
 
   .dropdown-option {
-    padding: 24px 24px 24px 16px;
+    padding: 12px 24px 12px 16px;
     font-size: 18px;
   }
 
   .dropdown-trigger-icon,
   .dropdown-option-icon {
-    min-width: 56px;
-    min-height: 56px;
+    min-width: 48px;
+    min-height: 48px;
   }
 
   .dropdown-trigger-icon-placeholder {
@@ -278,6 +278,6 @@
   }
 
   .dropdown-option-text {
-    font-size: 40px;
+    font-size: 36px;
   }
 }
