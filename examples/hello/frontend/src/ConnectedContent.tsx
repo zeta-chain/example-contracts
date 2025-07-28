@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import { ConfirmedContent } from './ConfirmedContent';
 import type { SupportedChain } from './constants/chains';
+import { HELLO_UNIVERSAL_CONTRACT_ADDRESS } from './constants/contracts';
 import type { EIP6963ProviderDetail } from './types/wallet';
 
 interface ConnectedContentProps {
@@ -34,11 +35,8 @@ export function ConnectedContent({
       const signer =
         (await ethersProvider.getSigner()) as ethers.AbstractSigner;
 
-      const helloUniversalContractAddress =
-        '0x61a184EB30D29eD0395d1ADF38CC7d2F966c4A82';
-
       const evmCallParams = {
-        receiver: helloUniversalContractAddress,
+        receiver: HELLO_UNIVERSAL_CONTRACT_ADDRESS,
         types: ['string'],
         values: [stringValue],
         revertOptions: {
