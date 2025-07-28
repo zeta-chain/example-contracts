@@ -77,22 +77,6 @@ export function ConfirmedContent({
         "{renderString}" {!zetachainTxHash ? 'in Transit' : 'Received'}
       </h2>
       <div className="confirmed-content-links-container">
-        {connectedChainTxHash && (
-          <div className="confirmed-content-link-chain">
-            {!zetachainTxHash && <IconSpinner />}
-            <a
-              href={`${ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL}${zetachainTxHash}`}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={clsx('confirmed-content-link', {
-                'confirmed-content-link-enabled': zetachainTxHash,
-                'confirmed-content-link-disabled': !zetachainTxHash,
-              })}
-            >
-              View on ZetaChain
-            </a>
-          </div>
-        )}
         {supportedChain && (
           <div className="confirmed-content-link-chain">
             {!connectedChainTxHash && <IconSpinner />}
@@ -106,6 +90,22 @@ export function ConfirmedContent({
               })}
             >
               View on {supportedChain.name}
+            </a>
+          </div>
+        )}
+        {connectedChainTxHash && (
+          <div className="confirmed-content-link-chain">
+            {!zetachainTxHash && <IconSpinner />}
+            <a
+              href={`${ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL}${zetachainTxHash}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={clsx('confirmed-content-link', {
+                'confirmed-content-link-enabled': zetachainTxHash,
+                'confirmed-content-link-disabled': !zetachainTxHash,
+              })}
+            >
+              View on ZetaChain
             </a>
           </div>
         )}
