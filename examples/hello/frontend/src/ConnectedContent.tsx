@@ -27,16 +27,20 @@ export function ConnectedContent({
       <div className="content-container">
         <div className="content-container-inner">
           <div className="content-container-inner-header">
-            <h1>Say Hello on</h1>
+            <h1>Say Hello from</h1>
             <NetworkSelector
               selectedChain={supportedChain}
               onNetworkSelect={handleNetworkSelect}
             />
           </div>
           <p className="content-container-inner-description">
-            Emit a cross-chain <span className="highlight">HelloEvent</span>{' '}
-            event on ZetaChain testnet through the Universal Hello Contract.
+            Make a cross-chain call with a message from{' '}
+            {supportedChain?.name || 'a supported network'} to a universal
+            contract on ZetaChain that emits a{' '}
+            <span className="highlight">HelloEvent</span>.
           </p>
+          {/* Make a cross-chain call with a message from CHAIN_NAME to a
+          universal contract on ZetaChain that emits a HelloEvent. */}
         </div>
         <MessageFlowCard
           selectedProvider={selectedProvider}
