@@ -39,7 +39,7 @@ export function ConfirmedContent({
     return stringValue;
   }, [stringValue]);
 
-  // Poll for the ZetaChain transaction status every 10 seconds
+  // Poll for the ZetaChain transaction status every 15 seconds
   useEffect(() => {
     if (!connectedChainTxHash || zetachainTxHash) {
       return;
@@ -52,7 +52,7 @@ export function ConfirmedContent({
         );
         if (response.ok) {
           const data = (await response.json()) as CrossChainTxResponse;
-          const txHash = data.CrossChainTxs[0].outbound_params[0].hash;
+          const txHash = data.CrossChainTxs?.[0]?.outbound_params?.[0]?.hash;
           if (txHash) {
             setZetachainTxHash(txHash);
           }

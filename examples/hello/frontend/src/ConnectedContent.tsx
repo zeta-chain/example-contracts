@@ -39,8 +39,6 @@ export function ConnectedContent({
             contract on ZetaChain that emits a{' '}
             <span className="highlight">HelloEvent</span>.
           </p>
-          {/* Make a cross-chain call with a message from CHAIN_NAME to a
-          universal contract on ZetaChain that emits a HelloEvent. */}
         </div>
         <MessageFlowCard
           selectedProvider={selectedProvider}

@@ -2610,10 +2610,10 @@
   resolved "https://registry.yarnpkg.com/@zetachain/standard-contracts/-/standard-contracts-2.0.1.tgz#aefd28bb81f1f05b183bd73dc62bd68e456a6ebf"
   integrity sha512-SHV9a1bSgy8litI/LRZ4VIus7Gsjy0wj3n9bZeIsEydn0C5NNZxYO4XW+P06dlEyDQjtcVJQHoQOyHkodBoVsQ==
 
-"@zetachain/toolkit@16.0.1-rc3":
-  version "16.0.1-rc3"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-16.0.1-rc3.tgz#7008c4927c9920aae2f9d3cbb688f21a62d4eead"
-  integrity sha512-DulK1dyY8tmJTikyR6GMpfOnB4bYTgcaRwemontxNL7vHWUKf7WchBF3bR3NIyyETUW8UMbkdumKgjzvue0e0w==
+"@zetachain/toolkit@16.0.1":
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-16.0.1.tgz#cfd6c9f218f932dd396f43799494b5e83c78344a"
+  integrity sha512-vLIJUElZqPTMQxPhRyNurey6PoL2PqJhNq9KOSuQzuYo72cAIjfmVbilvt+CXHsUvE5sugyovcPOiq9zuMzF1g==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@ethersproject/units" "^5.8.0"
