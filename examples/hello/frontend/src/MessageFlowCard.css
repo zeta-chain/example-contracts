@@ -4,8 +4,9 @@
   border-radius: 40px;
   display: flex;
   flex-direction: column;
+  height: fit-content;
   padding: 32px;
-  width: 568px;
+  width: 100%;
 }
 
 .approve-container {
@@ -81,20 +82,34 @@
 }
 
 .message-input-length-container {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.message-input-length-container-inner {
   align-items: center;
   display: flex;
-  gap: 2px;
+  gap: 4px;
 }
 
 .message-input-length-max {
-  font-size: 14px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: 100%; /* 14px */
 }
 
+.message-input-length-characters {
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 12px */
+}
+
 .message-input-length {
-  font-size: 24px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 100%; /* 24px */
@@ -102,7 +117,7 @@
 
 .message-separator {
   height: 1px;
-  margin: 32px 0;
+  margin: 24px 0;
   width: 100%;
 }
 
@@ -126,13 +141,15 @@
 
 [data-theme='light'] .message-input-length-max,
 [data-theme='dark'] .message-unsupported-network,
-[data-theme='dark'] .approve-description {
+[data-theme='dark'] .approve-description,
+[data-theme='dark'] .message-input-length-characters {
   color: #a9acb0;
 }
 
 [data-theme='dark'] .message-input-length-max,
 [data-theme='light'] .message-unsupported-network,
-[data-theme='light'] .approve-description {
+[data-theme='light'] .approve-description,
+[data-theme='light'] .message-input-length-characters {
   color: #696e75;
 }
 
@@ -154,4 +171,35 @@
 [data-theme='dark'] .approve-container {
   background: #171f29cc;
   border: 1px solid #283442;
+}
+
+@media (min-width: 768px) {
+  .message-input-length-container {
+    align-items: center;
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .message-input-length {
+    font-size: 24px;
+  }
+
+  .message-input-length-max {
+    font-size: 14px;
+  }
+
+  .message-input-length-characters {
+    font-size: 14px;
+  }
+
+  .message-separator {
+    margin: 32px 0;
+  }
+}
+
+@media (min-width: 1168px) {
+  .message-flow-container,
+  .approve-container {
+    flex: 1;
+  }
 }

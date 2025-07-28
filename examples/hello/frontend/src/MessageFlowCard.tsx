@@ -148,12 +148,15 @@ export function MessageFlowCard({
       )}
       <div className="message-input-footer">
         <div className="message-input-length-container">
-          <span className="message-input-length">
-            {formatNumberWithLocale(getStringByteLength(stringValue))}{' '}
-          </span>
-          <span className="message-input-length-max">
-            / {formatNumberWithLocale(MAX_STRING_LENGTH)} characters
-          </span>
+          <div className="message-input-length-container-inner">
+            <span className="message-input-length">
+              {formatNumberWithLocale(getStringByteLength(stringValue))}{' '}
+            </span>
+            <span className="message-input-length-max">
+              / {formatNumberWithLocale(MAX_STRING_LENGTH)}
+            </span>
+          </div>
+          <span className="message-input-length-characters">Characters</span>
         </div>
         <div>
           <Button

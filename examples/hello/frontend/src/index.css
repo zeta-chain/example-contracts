@@ -114,8 +114,9 @@ a {
   align-items: center;
   display: flex;
   flex-direction: column;
+  gap: 104px;
   justify-content: center;
-  margin: 88px 32px 64px;
+  margin: 88px 24px 64px;
 }
 
 .sm-only {
@@ -153,8 +154,7 @@ a {
   }
 
   .main-container {
-    gap: 32px;
-    margin: 140px 80px 64px;
+    margin: 80px 80px 64px;
   }
 
   .lg-only {
@@ -168,6 +168,7 @@ a {
 
 @media (min-width: 1168px) {
   .main-container {
-    margin: 140px 172px 64px;
+    gap: 0;
+    margin: 80px 172px 64px;
   }
 }

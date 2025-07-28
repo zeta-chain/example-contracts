@@ -15,7 +15,7 @@ export const WalletControls = () => {
     <div className="wallet-controls-container">
       <div className="wallet-controls-icon" />
 
-      <span className="wallet-controls-address lg-only">
+      <span className="wallet-controls-address">
         {truncateAddress(account)}
       </span>
 

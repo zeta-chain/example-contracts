@@ -2,8 +2,6 @@ import './Dropdown.css';
 
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 
-import { useTheme } from '../hooks/useTheme';
-
 export interface DropdownOption<T = unknown> {
   id: string | number;
   label: string;
@@ -46,7 +44,6 @@ export const Dropdown = <T,>({
 }: DropdownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
 
   const handleToggle = () => {
     if (!disabled) {
@@ -107,21 +104,15 @@ export const Dropdown = <T,>({
             style={{ backgroundColor: selectedOption.colorHex }}
           />
         ) : (
-          <div
-            className="dropdown-trigger-icon"
-            style={{
-              backgroundColor: theme === 'light' ? '#E5E8EC' : '#283442',
-            }}
-          />
+          <div className="dropdown-trigger-icon dropdown-trigger-icon-placeholder" />
         )}
         <span className="dropdown-trigger-text">
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <div className={`dropdown-arrow ${isOpen ? 'rotated' : ''}`}>
           <svg
+            className="dropdown-arrow-icon"
             xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
             viewBox="0 0 30 30"
             fill="none"
           >
@@ -153,8 +144,6 @@ export const Dropdown = <T,>({
         <div className="dropdown-checkmark">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
             viewBox="0 0 40 40"
             fill="none"
           >
