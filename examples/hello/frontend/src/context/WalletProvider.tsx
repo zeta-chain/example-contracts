@@ -1,6 +1,7 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
+
 import { useWalletConnection } from '../hooks/useWalletConnection';
 import { useWalletProviders } from '../hooks/useWalletProviders';
 import { useWalletState } from '../hooks/useWalletState';
@@ -17,25 +18,41 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     connectWallet,
     disconnectWallet,
   } = useWalletConnection(providers);
-  const { account, isSupportedChain, decimalChainId } = useWalletState(selectedProvider);
+  const { account, isSupportedChain, decimalChainId } =
+    useWalletState(selectedProvider);
+
+  const contextValue = useMemo(
+    () => ({
+      providers,
+      selectedProvider,
+      connecting,
+      reconnecting,
+      isConnected,
+      isSupportedChain,
+      decimalChainId,
+      error,
+      connectWallet,
+      disconnectWallet,
+      account,
+    }),
+    [
+      providers,
+      selectedProvider,
+      connecting,
+      reconnecting,
+      isConnected,
+      isSupportedChain,
+      decimalChainId,
+      error,
+      connectWallet,
+      disconnectWallet,
+      account,
+    ]
+  );
 
   return (
-    <WalletContext.Provider
-      value={{
-        providers,
-        selectedProvider,
-        connecting,
-        reconnecting,
-        isConnected,
-        isSupportedChain,
-        decimalChainId,
-        error,
-        connectWallet,
-        disconnectWallet,
-        account,
-      }}
-    >
+    <WalletContext.Provider value={contextValue}>
       {children}
     </WalletContext.Provider>
   );
-}; 
+};
