@@ -22,11 +22,13 @@ export const WalletSelectionModal = ({
             key={provider.info.uuid}
             className="item-button"
             onClick={() => onConnect(provider)}
+            aria-label={`Connect ${provider.info.name} wallet`}
           >
             <img
               src={provider.info.icon}
-              alt={provider.info.name}
+              alt={`${provider.info.name} wallet icon`}
               className="item-icon"
+              loading="lazy"
             />
             <span>{provider.info.name}</span>
           </button>
