@@ -49,7 +49,7 @@ export function ConfirmedContent({
     }
   }, [zetachainTxStatus]);
 
-  // Poll for the ZetaChain transaction status every 10 seconds
+  // Poll for the ZetaChain transaction status every 15 seconds
   useEffect(() => {
     if (!connectedChainTxHash || zetachainTxHash) {
       return;
