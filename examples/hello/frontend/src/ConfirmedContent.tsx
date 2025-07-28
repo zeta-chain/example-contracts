@@ -62,11 +62,11 @@ export function ConfirmedContent({
         );
         if (response.ok) {
           const data = (await response.json()) as CrossChainTxResponse;
-          const txHash = data.CrossChainTxs[0].outbound_params[0].hash;
+          const txHash = data.CrossChainTxs?.[0]?.outbound_params?.[0]?.hash;
           if (txHash) {
             setZetachainTxHash(txHash);
             setZetachainTxStatus(
-              data.CrossChainTxs[0].cctx_status.status as CrosschainCctxStatus
+              data.CrossChainTxs[0]?.cctx_status?.status as CrosschainCctxStatus
             );
           }
         }
