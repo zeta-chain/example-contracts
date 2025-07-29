@@ -1,0 +1,27 @@
+.header-container {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  left: 0;
+  padding: 1rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.header-controls {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .header-container {
+    padding: 2rem;
+  }
+
+  .header-controls {
+    gap: 8px;
+  }
+}

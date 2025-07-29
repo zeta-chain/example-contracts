@@ -1,0 +1,124 @@
+.content-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.content-container-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 128px;
+}
+
+.content-container-inner-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.content-container-inner h1 {
+  margin: 0;
+  font-size: 42px;
+  white-space: nowrap;
+  font-weight: 700;
+  line-height: 100%; /* 80px */
+  letter-spacing: -1.6px;
+  text-align: left;
+}
+
+.content-container-inner-description {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%;
+  text-align: left;
+
+  .highlight {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 4px 12px;
+  }
+}
+
+.call-input {
+  background-color: rgba(var(--primary-color-rgb), 0.8);
+  font-size: 1.25rem;
+  height: 100%;
+  padding: 0.785rem;
+  width: 100%;
+}
+
+.call-button {
+  font-size: 1rem;
+  padding: 1rem;
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
+  width: 100%;
+
+  &:disabled {
+    background-color: rgba(126, 126, 126, 0.5);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.input-counter {
+  font-size: 1.5rem;
+}
+
+[data-theme='light'] .content-container-inner-description {
+  color: #696e75;
+
+  .highlight {
+    background: #eff1f4;
+  }
+}
+
+[data-theme='dark'] .content-container-inner-description {
+  color: #a9acb0;
+
+  .highlight {
+    background: #26303d;
+  }
+}
+
+@media (min-width: 1168px) {
+  .content-container {
+    flex-direction: row;
+    gap: 32px;
+    min-height: 65vh;
+  }
+
+  .content-container-inner {
+    flex: 1;
+    margin-top: 0;
+
+    h1 {
+      font-size: 76px;
+    }
+  }
+
+  .content-container-inner-description {
+    font-size: 18px;
+  }
+
+  .input-container-inner {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .call-input {
+    font-size: 1.75rem;
+    padding: 0.785rem;
+  }
+
+  .call-button {
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    width: max-content;
+  }
+}

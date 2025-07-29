@@ -1,0 +1,9 @@
+.theme-toggle {
+  align-items: center;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  transition: all 0.2s ease-in-out;
+}
