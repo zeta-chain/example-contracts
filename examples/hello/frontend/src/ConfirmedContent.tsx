@@ -10,13 +10,11 @@ import {
   ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL,
 } from './constants/chains';
 import { type CrossChainTxResponse } from './types/cctx';
-import type { EIP6963ProviderDetail } from './types/wallet';
 
 const CCTX_POLLING_URL =
   'https://zetachain-athens.blockpi.network/lcd/v1/public/zeta-chain/crosschain/inboundHashToCctxData';
 
 interface ConfirmedContentProps {
-  selectedProvider: EIP6963ProviderDetail;
   supportedChain: SupportedChain | undefined;
   connectedChainTxHash: string;
   handleSendAnotherMessage: () => void;

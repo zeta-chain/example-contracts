@@ -43,7 +43,39 @@ export const Dropdown = <T,>({
   renderOption,
 }: DropdownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Focus management
+  useEffect(() => {
+    if (isOpen && focusedIndex >= 0 && optionRefs.current[focusedIndex]) {
+      optionRefs.current[focusedIndex]?.focus();
+    }
+  }, [focusedIndex, isOpen]);
+
+  // Handle keyboard navigation
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (!isOpen) return;
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        setFocusedIndex((prev) => (prev < options.length - 1 ? prev + 1 : 0));
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        setFocusedIndex((prev) => (prev > 0 ? prev - 1 : options.length - 1));
+        break;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        if (focusedIndex >= 0) {
+          handleSelect(options[focusedIndex]);
+        }
+        break;
+    }
+  };
 
   const handleToggle = () => {
     if (!disabled) {
@@ -167,6 +199,7 @@ export const Dropdown = <T,>({
           disabled ? 'disabled' : ''
         } ${isOpen ? 'hidden' : ''}`}
         onClick={handleToggle}
+        onKeyDown={handleKeyDown}
         type="button"
         disabled={disabled}
         aria-expanded={isOpen}
@@ -191,6 +224,9 @@ export const Dropdown = <T,>({
               <div key={option.id}>
                 {!isFirst && <div className="dropdown-option-divider" />}
                 <button
+                  ref={(el) => {
+                    optionRefs.current[index] = el;
+                  }}
                   className={`dropdown-option ${isSelected ? 'selected' : ''} ${
                     option.disabled ? 'disabled' : ''
                   } ${optionClassName}`}
@@ -199,6 +235,7 @@ export const Dropdown = <T,>({
                   disabled={option.disabled}
                   role="option"
                   aria-selected={isSelected}
+                  onMouseEnter={() => setFocusedIndex(index)}
                 >
                   {renderOption
                     ? renderOption(option, isSelected)

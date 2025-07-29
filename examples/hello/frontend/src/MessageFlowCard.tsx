@@ -93,7 +93,6 @@ export function MessageFlowCard({
   if (connectedChainTxHash || isTxReceiptLoading) {
     return (
       <ConfirmedContent
-        selectedProvider={selectedProvider}
         supportedChain={supportedChain}
         connectedChainTxHash={connectedChainTxHash}
         stringValue={stringValue}

@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react';
+import { type SVGProps, useId } from 'react';
 
 const IconSpinner = ({
   size = 16,
@@ -7,6 +7,7 @@ const IconSpinner = ({
   size?: number;
   className?: string;
 }) => {
+  const id = useId();
   return (
     <svg
       width={size}
@@ -17,7 +18,7 @@ const IconSpinner = ({
       {...otherProps}
     >
       <radialGradient
-        id="a12"
+        id={`spinner-gradient-${id}`}
         cx=".66"
         fx=".66"
         cy=".3125"
@@ -31,8 +32,7 @@ const IconSpinner = ({
         <stop offset="1" stopColor="#848484" stopOpacity="0"></stop>
       </radialGradient>
       <circle
-        // @ts-expect-error - transformOrigin is a valid prop for circle element
-        transformOrigin="center"
+        style={{ transformOrigin: 'center' }}
         fill="none"
         stroke="url(#a12)"
         strokeWidth="15"
@@ -55,8 +55,7 @@ const IconSpinner = ({
         ></animateTransform>
       </circle>
       <circle
-        // @ts-expect-error - transformOrigin is a valid prop for circle element
-        transformOrigin="center"
+        style={{ transformOrigin: 'center' }}
         fill="none"
         opacity=".2"
         stroke="#848484"

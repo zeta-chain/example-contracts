@@ -12,6 +12,8 @@ const IconSendTitle = ({
       viewBox="0 0 32 17"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Send title icon"
       {...otherProps}
     >
       <rect y="0.5" width="32" height="16" rx="2.3019" fill="#00A5C6" />
