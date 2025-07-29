@@ -8,6 +8,7 @@ const IconSpinner = ({
   className?: string;
 }) => {
   const id = useId();
+  const gradientId = `spinner-gradient-${id}`;
   return (
     <svg
       width={size}
@@ -18,7 +19,7 @@ const IconSpinner = ({
       {...otherProps}
     >
       <radialGradient
-        id={`spinner-gradient-${id}`}
+        id={gradientId}
         cx=".66"
         fx=".66"
         cy=".3125"
@@ -34,7 +35,7 @@ const IconSpinner = ({
       <circle
         style={{ transformOrigin: 'center' }}
         fill="none"
-        stroke="url(#a12)"
+        stroke={`url(#${gradientId})`}
         strokeWidth="15"
         strokeLinecap="round"
         strokeDasharray="200 1000"
