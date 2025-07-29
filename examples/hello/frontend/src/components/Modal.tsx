@@ -2,6 +2,8 @@ import './Modal.css';
 
 import { type ReactNode, useEffect } from 'react';
 
+import { IconCloseModal } from './icons/IconCloseModal';
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -43,7 +45,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
           onClick={onClose}
           aria-label="Close modal"
         >
-          Close
+          <IconCloseModal />
         </button>
       </div>
     </div>

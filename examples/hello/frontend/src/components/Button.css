@@ -1,0 +1,55 @@
+.button {
+  align-items: center;
+  border-radius: 1000px;
+  display: flex;
+  font-size: 16px;
+  font-weight: 500;
+  gap: 8px;
+  justify-content: center;
+  line-height: 100%;
+  padding: 16px;
+  transition: all 0.2s ease;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button-icon {
+  align-items: center;
+  display: flex;
+}
+
+[data-theme='light'] .button {
+  background-color: var(--button-light);
+  color: var(--primary-light);
+
+  &:disabled {
+    background-color: #e5e8ec;
+    color: #696e75;
+  }
+}
+
+[data-theme='dark'] .button {
+  background-color: var(--button-dark);
+  color: var(--primary-dark);
+
+  &:disabled {
+    background-color: #283442;
+    color: #a9acb0;
+  }
+}
+
+.button-variant-default {
+  padding: 16px;
+}
+
+.button-variant-thin {
+  padding: 12px 24px;
+}

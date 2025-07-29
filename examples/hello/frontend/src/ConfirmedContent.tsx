@@ -1,53 +1,43 @@
 import './ConfirmedContent.css';
 
+import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 
-import { IconExternalLink } from './components/IconExternalLink';
+import { Button } from './components/Button';
+import { IconReceived, IconSpinner } from './components/icons';
 import {
   type SupportedChain,
   ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL,
 } from './constants/chains';
-import {
-  type CrosschainCctxStatus,
-  crosschainCctxStatus,
-  type CrossChainTxResponse,
-} from './types/cctx';
+import { type CrossChainTxResponse } from './types/cctx';
 import type { EIP6963ProviderDetail } from './types/wallet';
-import { truncateAddress } from './utils/truncate';
 
 const CCTX_POLLING_URL =
   'https://zetachain-athens.blockpi.network/lcd/v1/public/zeta-chain/crosschain/inboundHashToCctxData';
 
 interface ConfirmedContentProps {
   selectedProvider: EIP6963ProviderDetail;
-  supportedChain: SupportedChain;
+  supportedChain: SupportedChain | undefined;
   connectedChainTxHash: string;
-  connectedChainTxResult: number | null;
   handleSendAnotherMessage: () => void;
+  stringValue: string;
 }
+
+const MAX_STRING_LENGTH = 20;
 
 export function ConfirmedContent({
   supportedChain,
   connectedChainTxHash,
-  connectedChainTxResult,
   handleSendAnotherMessage,
+  stringValue,
 }: ConfirmedContentProps) {
-  const isConnectedChainTxSuccessful = connectedChainTxResult === 1;
   const [zetachainTxHash, setZetachainTxHash] = useState<string | null>(null);
-  const [zetachainTxStatus, setZetachainTxStatus] =
-    useState<CrosschainCctxStatus | null>(null);
-
-  const zetachainTxIcon = useMemo(() => {
-    switch (zetachainTxStatus) {
-      case crosschainCctxStatus.OutboundMined:
-        return '✅';
-      case crosschainCctxStatus.Aborted:
-      case crosschainCctxStatus.Reverted:
-        return '❌';
-      default:
-        return '⏳';
+  const renderString = useMemo(() => {
+    if (stringValue.length > MAX_STRING_LENGTH) {
+      return stringValue.slice(0, MAX_STRING_LENGTH) + '...';
     }
-  }, [zetachainTxStatus]);
+    return stringValue;
+  }, [stringValue]);
 
   // Poll for the ZetaChain transaction status every 15 seconds
   useEffect(() => {
@@ -65,9 +55,6 @@ export function ConfirmedContent({
           const txHash = data.CrossChainTxs?.[0]?.outbound_params?.[0]?.hash;
           if (txHash) {
             setZetachainTxHash(txHash);
-            setZetachainTxStatus(
-              data.CrossChainTxs[0]?.cctx_status?.status as CrosschainCctxStatus
-            );
           }
         }
       } catch (error) {
@@ -84,60 +71,56 @@ export function ConfirmedContent({
   }, [connectedChainTxHash, zetachainTxHash]);
 
   return (
-    <div className="main-container">
-      <h1>{zetachainTxHash ? 'Hello tx arrived!' : 'Hello in transit...'}</h1>
-      <div className="transaction-hash-container">
-        <div>
-          <span className="transaction-hash-status">
-            {isConnectedChainTxSuccessful ? '✅' : '❌'}
-          </span>
-          <p>{supportedChain.name} Transaction: </p>
-        </div>
-        <div>
-          <a
-            className="transaction-hash-link"
-            href={`${supportedChain.explorerUrl}${connectedChainTxHash}`}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            {truncateAddress(connectedChainTxHash)}
-            <IconExternalLink size={20} />
-          </a>
-        </div>
-      </div>
-      <div className="transaction-hash-container">
-        {zetachainTxHash ? (
-          <>
-            <div>
-              <span className="transaction-hash-status">{zetachainTxIcon}</span>
-              <p>ZetaChain Transaction: </p>
-            </div>
-            <div>
-              <a
-                className="transaction-hash-link"
-                href={`${ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL}/${zetachainTxHash}`}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                {truncateAddress(zetachainTxHash)}
-                <IconExternalLink size={20} />
-              </a>
-            </div>
-          </>
-        ) : (
-          <p>⏳ Waiting for ZetaChain transaction...</p>
+    <div className="confirmed-content">
+      <IconReceived />
+      <h2 className="confirmed-content-title">
+        "{renderString}" {!zetachainTxHash ? 'in Transit' : 'Received'}
+      </h2>
+      <div className="confirmed-content-links-container">
+        {supportedChain && (
+          <div className="confirmed-content-link-chain">
+            {!connectedChainTxHash && <IconSpinner />}
+            <a
+              href={`${supportedChain.explorerUrl}${connectedChainTxHash}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={clsx('confirmed-content-link', {
+                'confirmed-content-link-enabled': connectedChainTxHash,
+                'confirmed-content-link-disabled': !connectedChainTxHash,
+              })}
+            >
+              View on {supportedChain.name}
+            </a>
+          </div>
+        )}
+        {connectedChainTxHash && (
+          <div className="confirmed-content-link-chain">
+            {!zetachainTxHash && <IconSpinner />}
+            <a
+              href={`${ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL}${zetachainTxHash}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={clsx('confirmed-content-link', {
+                'confirmed-content-link-enabled': zetachainTxHash,
+                'confirmed-content-link-disabled': !zetachainTxHash,
+              })}
+            >
+              View on ZetaChain
+            </a>
+          </div>
         )}
       </div>
-      <button
+      <Button
         type="button"
+        variant="thin"
+        disabled={!connectedChainTxHash || !zetachainTxHash}
         onClick={() => {
           handleSendAnotherMessage();
           setZetachainTxHash(null);
-          setZetachainTxStatus(null);
         }}
       >
-        Send another message
-      </button>
+        Send Another
+      </Button>
     </div>
   );
 }

@@ -1,146 +1,51 @@
 import './ConnectedContent.css';
 
-import { evmCall } from '@zetachain/toolkit/chains/evm';
-import { ethers, ZeroAddress } from 'ethers';
-import { useState } from 'react';
-
-import { ConfirmedContent } from './ConfirmedContent';
+import { NetworkSelector } from './components/NetworkSelector';
 import type { SupportedChain } from './constants/chains';
-import { HELLO_UNIVERSAL_CONTRACT_ADDRESS } from './constants/contracts';
+import { Footer } from './Footer';
+import { useSwitchChain } from './hooks/useSwitchChain';
+import { MessageFlowCard } from './MessageFlowCard';
 import type { EIP6963ProviderDetail } from './types/wallet';
 
 interface ConnectedContentProps {
   selectedProvider: EIP6963ProviderDetail;
-  supportedChain: SupportedChain;
+  supportedChain: SupportedChain | undefined;
 }
 
 export function ConnectedContent({
   selectedProvider,
   supportedChain,
 }: ConnectedContentProps) {
-  const MAX_STRING_LENGTH = 20;
-  const [isUserSigningTx, setIsUserSigningTx] = useState(false);
-  const [isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
-  const [stringValue, setStringValue] = useState('');
-  const [connectedChainTxHash, setConnectedChainTxHash] = useState('');
-  const [connectedChainTxResult, setConnectedChainTxResult] = useState<
-    number | null
-  >(null);
+  const { switchChain } = useSwitchChain();
 
-  const handleEvmCall = async () => {
-    try {
-      const ethersProvider = new ethers.BrowserProvider(
-        selectedProvider.provider
-      );
-      const signer =
-        (await ethersProvider.getSigner()) as ethers.AbstractSigner;
-
-      const evmCallParams = {
-        receiver: HELLO_UNIVERSAL_CONTRACT_ADDRESS,
-        types: ['string'],
-        values: [stringValue],
-        revertOptions: {
-          callOnRevert: false,
-          revertAddress: ZeroAddress,
-          revertMessage: '',
-          abortAddress: ZeroAddress,
-          onRevertGasLimit: 1000000,
-        },
-      };
-
-      const evmCallOptions = {
-        signer,
-        txOptions: {
-          gasLimit: 1000000,
-        },
-      };
-
-      setIsUserSigningTx(true);
-
-      const result = await evmCall(evmCallParams, evmCallOptions);
-
-      setIsTxReceiptLoading(true);
-
-      const receipt = await result.wait();
-
-      setConnectedChainTxHash(result.hash);
-      setConnectedChainTxResult(receipt?.status ?? null);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsUserSigningTx(false);
-      setIsTxReceiptLoading(false);
-    }
+  const handleNetworkSelect = (chain: SupportedChain) => {
+    switchChain(chain.chainId);
   };
-
-  if (isUserSigningTx) {
-    return (
-      <div className="main-container">
-        <h1>
-          {isTxReceiptLoading
-            ? `Waiting for transaction receipt on ${supportedChain.name}...`
-            : 'Sign transaction in your wallet...'}
-        </h1>
-      </div>
-    );
-  }
-
-  if (connectedChainTxHash) {
-    return (
-      <ConfirmedContent
-        selectedProvider={selectedProvider}
-        supportedChain={supportedChain}
-        connectedChainTxHash={connectedChainTxHash}
-        connectedChainTxResult={connectedChainTxResult}
-        handleSendAnotherMessage={() => {
-          setConnectedChainTxHash('');
-          setStringValue('');
-          setConnectedChainTxResult(null);
-        }}
-      />
-    );
-  }
 
   return (
     <div className="main-container">
-      <h1>Ready to say "Hello" on: {supportedChain.name}</h1>
-      <p>
-        This transaction will emit a cross-chain "HelloEvent" event on ZetaChain
-        testnet's Universal Hello contract.
-      </p>
-      {isUserSigningTx ? (
-        <div className="input-container">
-          <p>Signing transaction...</p>
-        </div>
-      ) : (
-        <div className="input-container">
-          <div className="input-container-inner">
-            <input
-              name="message-input"
-              className="call-input"
-              type="text"
-              placeholder="Enter your message"
-              value={stringValue}
-              onChange={(e) => {
-                if (e.target.value.length <= MAX_STRING_LENGTH) {
-                  setStringValue(e.target.value);
-                }
-              }}
+      <div className="content-container">
+        <div className="content-container-inner">
+          <div className="content-container-inner-header">
+            <h1>Say Hello from</h1>
+            <NetworkSelector
+              selectedChain={supportedChain}
+              onNetworkSelect={handleNetworkSelect}
             />
-            <button
-              type="button"
-              className="call-button"
-              onClick={handleEvmCall}
-              disabled={!stringValue.length}
-            >
-              Evm Call 🚀
-            </button>
           </div>
-          <span className="input-counter">
-            {stringValue.length} / {MAX_STRING_LENGTH} characters
-          </span>
+          <p className="content-container-inner-description">
+            Make a cross-chain call with a message from{' '}
+            {supportedChain?.name || 'a supported network'} to a universal
+            contract on ZetaChain that emits a{' '}
+            <span className="highlight">HelloEvent</span>.
+          </p>
         </div>
-      )}
+        <MessageFlowCard
+          selectedProvider={selectedProvider}
+          supportedChain={supportedChain}
+        />
+      </div>
+      <Footer />
     </div>
   );
 }

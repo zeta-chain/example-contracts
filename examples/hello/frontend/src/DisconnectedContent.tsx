@@ -1,45 +1,33 @@
-import { useState } from 'react';
+import './DisconnectedContent.css';
 
-import { WalletSelectionModal } from './components/WalletSelectionModal';
-import { useWallet } from './hooks/useWallet';
-import type { EIP6963ProviderDetail } from './types/wallet';
+import { ConnectWallet } from './components/ConnectWallet';
+import { IconAnimation } from './components/icons/IconAnimation';
+import { IconZetaChainLogo } from './components/icons/IconZetaChainLogo';
+import { Footer } from './Footer';
 
 export function DisconnectedContent() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { providers, connectWallet, error, connecting } = useWallet();
-
-  const handleConnectClick = () => {
-    if (providers.length > 0) {
-      setIsModalOpen(true);
-    } else {
-      alert('No wallet providers found. Please install a wallet extension.');
-    }
-  };
-
-  const handleSelectProvider = (provider: EIP6963ProviderDetail) => {
-    connectWallet(provider);
-    setIsModalOpen(false);
-  };
-
   return (
     <div className="main-container">
-      <h1>Say "Hello" cross-chain!</h1>
-      <p>
-        Connect your EVM wallet and trigger the Universal Hello contract already
-        live on ZetaChain testnet from any of our supported EVM chains.
-      </p>
-      <div>
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-        <button onClick={handleConnectClick} disabled={connecting}>
-          {connecting ? 'Connecting...' : 'Connect Wallet'}
-        </button>
+      <div className="hero-content-container">
+        <div className="hero-content">
+          <div className="hero-content-header">
+            <h1 className="hero-content-header-title">Call a Universal App</h1>
+            <div className="hero-content-header-logo">
+              <span className="hero-content-header-logo-text">from </span>
+              <IconZetaChainLogo />
+            </div>
+          </div>
+          <p className="hero-content-description">
+            Connect your EVM wallet and trigger the Universal Hello contract on
+            ZetaChain testnet from any currently supported EVM chain.
+          </p>
+          <ConnectWallet />
+        </div>
+        <div className="hero-content-animation">
+          <IconAnimation />
+        </div>
       </div>
-      <WalletSelectionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        providers={providers}
-        onConnect={handleSelectProvider}
-      />
+      <Footer />
     </div>
   );
 }

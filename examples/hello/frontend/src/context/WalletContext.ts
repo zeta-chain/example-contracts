@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+
 import type { EIP6963ProviderDetail } from '../types/wallet';
 
 interface WalletContextType {
@@ -31,4 +32,4 @@ export const WalletContext = createContext<WalletContextType>({
   connectWallet: async () => ({ success: false }),
   disconnectWallet: () => {},
   account: null,
-}); 
+});

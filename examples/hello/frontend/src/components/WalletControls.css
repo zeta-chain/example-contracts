@@ -1,0 +1,56 @@
+.wallet-controls-container {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 24px;
+  backdrop-filter: blur(12px);
+}
+
+.wallet-controls-icon {
+  border-radius: 100%;
+  height: 32px;
+  width: 32px;
+}
+
+.wallet-controls-address {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 130%; /* 15.6px */
+  user-select: none;
+}
+
+.wallet-controls-disconnect-button {
+  align-items: center;
+  border-radius: 100%;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+
+[data-theme='light'] .wallet-controls-container {
+  background: #ffffffcc;
+  border: 1px solid #e5e8ec;
+}
+
+[data-theme='dark'] .wallet-controls-container {
+  background: #171f29cc;
+  border: 1px solid #283442;
+}
+
+[data-theme='light'] .wallet-controls-icon {
+  background-color: #00a87d;
+}
+
+[data-theme='dark'] .wallet-controls-icon {
+  background-color: #b0ff61;
+}
+
+[data-theme='light'] .wallet-controls-disconnect-button {
+  background-color: #f9f9fb;
+}
+
+[data-theme='dark'] .wallet-controls-disconnect-button {
+  background-color: #26303d;
+}

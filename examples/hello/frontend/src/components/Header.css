@@ -1,67 +1,19 @@
 .header-container {
   align-items: center;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   left: 0;
   padding: 1rem;
   position: fixed;
   top: 0;
-  width: calc(100vw);
+  width: 100%;
   z-index: 100;
 }
 
-.header-logo {
-  image-rendering: pixelated;
-  width: 100px;
-}
-
-.header-connected-container {
+.header-controls {
   align-items: center;
   display: flex;
-}
-
-.header-connected-container > div {
-  align-items: center;
-  display: flex;
-
-  span {
-    color: var(--primary-color);
-    user-select: none;
-  }
-}
-
-.header-provider-icon,
-.header-chain-icon {
-  width: 1rem;
-}
-
-.header-provider-container {
-  align-items: center;
-  background-color: var(--primary-light);
-  display: flex;
-  gap: 0.5rem;
-  padding: 0.5rem;
-}
-
-.header-chain-icon-container {
-  align-items: center;
-  background-color: var(--primary-color);
-  border: 2px solid var(--primary-light);
-  display: flex;
-  justify-content: center;
-  padding: calc(0.5rem - 2.2px);
-}
-
-.header-disconnect-button {
-  background-color: var(--danger-color);
-  color: var(--primary-light);
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.8;
-  }
+  gap: 1rem;
 }
 
 @media (min-width: 768px) {
@@ -69,20 +21,7 @@
     padding: 2rem;
   }
 
-  .header-logo {
-    width: 160px;
-  }
-
-  .header-disconnect-button {
-    font-size: 1.25rem;
-    padding: 1rem 1.5rem;
-  }
-
-  .header-provider-container {
-    padding: 1rem;
-  }
-
-  .header-chain-icon-container {
-    padding: calc(1rem - 1px);
+  .header-controls {
+    gap: 8px;
   }
 }
