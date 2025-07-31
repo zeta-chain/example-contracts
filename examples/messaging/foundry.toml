@@ -1,0 +1,15 @@
+[profile.default]
+src = 'contracts'
+out = 'out'
+viaIR = true
+libs = ['node_modules', "dependencies"]
+test = 'test'
+cache_path  = 'cache_forge'
+verbosity = 3
+fs_permissions = [{ access = "read", path = "./node_modules" }]
+remappings = [
+  "forge-std/=dependencies/forge-std-1.9.7/src/",
+]
+
+[dependencies]
+forge-std = "1.9.7"
