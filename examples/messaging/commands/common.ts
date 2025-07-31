@@ -11,7 +11,7 @@ export const loadContractArtifacts = (
   const sourcePath = sourceName || `${contractName}.sol`;
   const artifactPath = path.join(
     __dirname,
-    `../artifacts/contracts/${sourcePath}/${contractName}.json`
+    `../out/${sourcePath}/${contractName}.json`
   );
 
   try {

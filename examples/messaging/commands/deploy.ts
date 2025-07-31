@@ -40,6 +40,6 @@ export const deploy = new Command("deploy")
   .requiredOption(
     "-t, --router <address>",
     "Router address",
-    "0xdEEa01a2b9b1eF21cBe819cABc92BD7f225Cc106"
+    "0x5BD35697D4a62DE429247cbBDCc5c47F70477775"
   )
   .action(main);

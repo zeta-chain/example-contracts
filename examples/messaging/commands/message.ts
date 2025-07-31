@@ -27,11 +27,17 @@ const main = async (options: any) => {
     message = options.message;
   }
 
+  const revertAddress =
+    !options.revertAddress ||
+    options.revertAddress === "0x0000000000000000000000000000000000000000"
+      ? options.contract
+      : options.revertAddress;
+
   const revertOptions = {
     abortAddress: options.abortAddress,
     callOnRevert: options.callOnRevert,
     onRevertGasLimit: options.onRevertGasLimit,
-    revertAddress: options.revertAddress,
+    revertAddress,
     revertMessage: ethers.utils.hexlify(
       ethers.utils.toUtf8Bytes(options.revertMessage)
     ),
@@ -111,11 +117,7 @@ export const message = new Command("message")
     "Abort address",
     "0x0000000000000000000000000000000000000000"
   )
-  .option(
-    "-o, --revert-address <address>",
-    "Revert address",
-    "0x0000000000000000000000000000000000000000"
-  )
+  .option("-o, --revert-address <address>", "Revert address")
   .option("-s, --revert-message <message>", "Revert message", "")
   .option("-u, --on-revert-gas-limit <limit>", "On revert gas limit", "1000000")
   .option("--call-on-revert", "Whether to call on revert", false)
