@@ -1,3 +1,5 @@
+import '@zetachain/wallet/ethereum';
+
 import { AppContent } from './AppContent';
 import { Header } from './components/Header';
 import { ThemeProvider } from './context/ThemeProvider';

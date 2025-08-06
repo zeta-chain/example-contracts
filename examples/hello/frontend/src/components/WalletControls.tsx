@@ -1,11 +1,17 @@
 import './WalletControls.css';
 
-import { useWallet } from '../hooks/useWallet';
+import {
+  DynamicUserProfile,
+  useDynamicContext,
+} from '@dynamic-labs/sdk-react-core';
+
+import { useDynamicWallet } from '../hooks/useDynamicWallet';
 import { truncateAddress } from '../utils/truncate';
 import { IconDisconnect } from './icons';
 
 export const WalletControls = () => {
-  const { account, disconnectWallet } = useWallet();
+  const { account, disconnectWallet } = useDynamicWallet();
+  const { setShowDynamicUserProfile } = useDynamicContext();
 
   if (!account) {
     return null;
@@ -13,11 +19,18 @@ export const WalletControls = () => {
 
   return (
     <div className="wallet-controls-container">
-      <div className="wallet-controls-icon" />
+      <button
+        type="button"
+        onClick={() => {
+          setShowDynamicUserProfile(true);
+        }}
+      >
+        <div className="wallet-controls-icon" />
 
-      <span className="wallet-controls-address">
-        {truncateAddress(account)}
-      </span>
+        <span className="wallet-controls-address">
+          {truncateAddress(account)}
+        </span>
+      </button>
 
       <button
         className="wallet-controls-disconnect-button"
@@ -26,6 +39,7 @@ export const WalletControls = () => {
       >
         <IconDisconnect />
       </button>
+      <DynamicUserProfile />
     </div>
   );
 };

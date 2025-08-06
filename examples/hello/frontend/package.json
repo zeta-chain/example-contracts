@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dynamic-labs/sdk-react-core": "^4.25.9",
     "@zetachain/toolkit": "16.0.1",
     "clsx": "^2.1.1",
     "ethers": "^6.13.2",

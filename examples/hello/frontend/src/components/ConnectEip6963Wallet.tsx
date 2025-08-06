@@ -1,4 +1,4 @@
-import './ConnectWallet.css';
+import './ConnectEip6963Wallet.css';
 
 import { useState } from 'react';
 
@@ -8,7 +8,7 @@ import { Button } from './Button';
 import { IconWallet } from './icons';
 import { WalletSelectionModal } from './WalletSelectionModal';
 
-export const ConnectWallet = () => {
+export const ConnectEip6963Wallet = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { providers, connectWallet, connecting } = useWallet();
 
