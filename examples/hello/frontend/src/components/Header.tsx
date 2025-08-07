@@ -1,23 +1,41 @@
 import './Header.css';
 
-import { useDynamicWallet } from '../hooks/useDynamicWallet';
+import { USE_DYNAMIC_WALLET } from '../constants/wallets';
+import { useWallet } from '../hooks/useWallet';
 import { ConnectDynamicWallet } from './ConnectDynamicWallet';
+import { ConnectEip6963Wallet } from './ConnectEip6963Wallet';
 import { ThemeToggle } from './ThemeToggle';
 import { WalletControls } from './WalletControls';
 
 export const Header = () => {
-  const { account } = useDynamicWallet();
+  const { isConnected } = useWallet();
+
+  console.debug('isConnected', { isConnected, USE_DYNAMIC_WALLET });
+
+  if (!USE_DYNAMIC_WALLET) {
+    return (
+      <div className="header-container">
+        <div className="header-controls">
+          {!isConnected ? (
+            <div className="lg-only">
+              <ConnectEip6963Wallet />
+            </div>
+          ) : (
+            <WalletControls />
+          )}
+          <ThemeToggle />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="header-container">
       <div className="header-controls">
-        {!account ? (
-          <div className="lg-only">
-            <ConnectDynamicWallet />
-          </div>
-        ) : (
-          <WalletControls />
-        )}
+        <div className="lg-only">
+          <ConnectDynamicWallet />
+        </div>
+        <WalletControls />
         <ThemeToggle />
       </div>
     </div>

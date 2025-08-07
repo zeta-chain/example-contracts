@@ -10,11 +10,11 @@ export function AppContent() {
   // Using Dynamic's official hooks instead of custom context
   const { primaryWallet, network } = useDynamicContext();
 
-  const { selectedProvider } = useWallet();
+  const { selectedProvider, decimalChainId: eip6963ChainId } = useWallet();
 
   // Extract values from Dynamic's official hooks
   const account = primaryWallet?.address || null;
-  const decimalChainId = network || null;
+  const decimalChainId = USE_DYNAMIC_WALLET ? network : eip6963ChainId || null;
 
   const supportedChain = SUPPORTED_CHAINS.find(
     (chain) => chain.chainId === decimalChainId

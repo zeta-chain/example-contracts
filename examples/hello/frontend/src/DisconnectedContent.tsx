@@ -1,8 +1,10 @@
 import './DisconnectedContent.css';
 
 import { ConnectDynamicWallet } from './components/ConnectDynamicWallet';
+import { ConnectEip6963Wallet } from './components/ConnectEip6963Wallet';
 import { IconAnimation } from './components/icons/IconAnimation';
 import { IconZetaChainLogo } from './components/icons/IconZetaChainLogo';
+import { USE_DYNAMIC_WALLET } from './constants/wallets';
 import { Footer } from './Footer';
 
 export function DisconnectedContent() {
@@ -21,7 +23,11 @@ export function DisconnectedContent() {
             Connect your EVM wallet and trigger the Universal Hello contract on
             ZetaChain testnet from any currently supported EVM chain.
           </p>
-          <ConnectDynamicWallet />
+          {USE_DYNAMIC_WALLET ? (
+            <ConnectDynamicWallet />
+          ) : (
+            <ConnectEip6963Wallet />
+          )}
         </div>
         <div className="hero-content-animation">
           <IconAnimation />
