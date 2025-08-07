@@ -5,7 +5,7 @@ import "@zetachain/toolkit/contracts/testing/FoundrySetup.t.sol";
 import "@zetachain/toolkit/contracts/testing/mock/ERC20Mock.sol";
 import "@zetachain/toolkit/contracts/testing/mock/ZRC20Mock.sol";
 import "../contracts/Swap.sol";
-import {SwapCompanion} from "../contracts/SwapCompanion.sol";
+import {SwapCompanion} from "./SwapCompanion.sol";
 import {console} from "forge-std/console.sol";
 
 contract SwapTest is FoundrySetup {
