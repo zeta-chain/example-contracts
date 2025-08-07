@@ -47,6 +47,7 @@
 
 .dynamic-connect-button {
   padding: 0;
+  min-width: 200px;
 }
 
 .dynamic-connect-button-content {
