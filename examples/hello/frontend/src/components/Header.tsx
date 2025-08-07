@@ -32,10 +32,9 @@ export const Header = () => {
   return (
     <div className="header-container">
       <div className="header-controls">
-        <div className="lg-only">
+        <div>
           <ConnectDynamicWallet />
         </div>
-        <WalletControls />
         <ThemeToggle />
       </div>
     </div>
