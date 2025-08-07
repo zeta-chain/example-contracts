@@ -1,20 +1,22 @@
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { useCallback } from 'react';
 
 import { useDynamicSwitchChain } from './useDynamicSwitchChain';
-import { useDynamicWallet } from './useDynamicWallet';
 import { useSwitchChain } from './useSwitchChain';
 
 export const useUniversalSwitchChain = () => {
-  // const { selectedProvider } = useWallet();
-  const { selectedProvider } = useDynamicWallet();
+  // Use Dynamic's official context
+  const { primaryWallet } = useDynamicContext();
   const eip6963SwitchChain = useSwitchChain();
   const dynamicSwitchChain = useDynamicSwitchChain();
 
-  console.debug('selectedProvider', selectedProvider);
+  // Detect if we're using Dynamic wallet - check if primaryWallet exists (means we're using Dynamic SDK)
+  const isDynamicWallet = !!primaryWallet;
 
-  // Detect if we're using Dynamic wallet by checking the provider info
-  const isDynamicWallet =
-    selectedProvider?.info?.rdns === 'com.zetachain.wallet';
+  console.debug('useUniversalSwitchChain:', {
+    isDynamicWallet,
+    primaryWallet: primaryWallet?.key,
+  });
 
   const switchChain = useCallback(
     async (chainId: number) => {

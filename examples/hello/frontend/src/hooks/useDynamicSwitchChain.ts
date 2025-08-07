@@ -1,29 +1,26 @@
-import Wallet, { switchNetwork } from '@zetachain/wallet';
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { useCallback } from 'react';
 
-import { useDynamicWalletHook } from './useDynamicWalletHook';
-import { useRerender } from './useRerender';
-
 export const useDynamicSwitchChain = () => {
-  const { isConnected } = useDynamicWalletHook();
-  const rerender = useRerender();
+  const { primaryWallet } = useDynamicContext();
 
   const switchChain = useCallback(
     async (chainId: number) => {
-      if (!isConnected || !Wallet.wallets.length) {
+      if (!primaryWallet) {
         console.error('No Dynamic wallet connected');
         return;
       }
 
-      try {
-        // Use the first connected wallet for switching networks
-        const wallet = Wallet.wallets[0];
-        console.debug('Switching to chain:', chainId);
-        switchNetwork(wallet, { networkId: chainId });
-        console.debug('Switch network call completed');
+      // Check if the wallet supports network switching
+      if (!primaryWallet.connector.supportsNetworkSwitching()) {
+        console.error('Wallet does not support network switching');
+        return;
+      }
 
-        // Force a rerender - the polling in useDynamicWallet should pick up the change
-        rerender();
+      try {
+        console.debug('Switching to chain:', chainId);
+        await primaryWallet.switchNetwork(chainId);
+        console.debug('Switch network call completed');
       } catch (error: unknown) {
         // If the chain hasn't been added to the wallet, try to add it
         if (
@@ -41,7 +38,7 @@ export const useDynamicSwitchChain = () => {
         }
       }
     },
-    [isConnected, rerender]
+    [primaryWallet]
   );
 
   return { switchChain };

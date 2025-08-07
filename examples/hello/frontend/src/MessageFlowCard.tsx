@@ -1,7 +1,8 @@
 import './MessageFlowCard.css';
 
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { evmCall } from '@zetachain/toolkit/chains/evm';
-import { ethers, ZeroAddress } from 'ethers';
+import { ZeroAddress } from 'ethers';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from './components/Button';
@@ -9,10 +10,11 @@ import { IconApprove, IconEnvelope, IconSendTitle } from './components/icons';
 import { ConfirmedContent } from './ConfirmedContent';
 import type { SupportedChain } from './constants/chains';
 import type { EIP6963ProviderDetail } from './types/wallet';
+import { getSignerAndProvider } from './utils/ethersHelpers';
 import { formatNumberWithLocale } from './utils/formatNumber';
 
 interface MessageFlowCardProps {
-  selectedProvider: EIP6963ProviderDetail;
+  selectedProvider: EIP6963ProviderDetail | null;
   supportedChain: SupportedChain | undefined;
 }
 
@@ -20,6 +22,8 @@ export function MessageFlowCard({
   selectedProvider,
   supportedChain,
 }: MessageFlowCardProps) {
+  const { primaryWallet } = useDynamicContext();
+
   const MAX_STRING_LENGTH = 2000;
   const [isUserSigningTx, setIsUserSigningTx] = useState(false);
   const [isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
@@ -33,11 +37,16 @@ export function MessageFlowCard({
 
   const handleEvmCall = async () => {
     try {
-      const ethersProvider = new ethers.BrowserProvider(
-        selectedProvider.provider
-      );
-      const signer =
-        (await ethersProvider.getSigner()) as ethers.AbstractSigner;
+      const signerAndProvider = await getSignerAndProvider({
+        selectedProvider,
+        primaryWallet,
+      });
+
+      if (!signerAndProvider) {
+        throw new Error('Failed to get signer');
+      }
+
+      const { signer } = signerAndProvider;
 
       const helloUniversalContractAddress =
         '0x61a184EB30D29eD0395d1ADF38CC7d2F966c4A82';

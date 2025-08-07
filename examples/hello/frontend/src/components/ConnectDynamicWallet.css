@@ -44,3 +44,14 @@
   background-color: #a0aec0;
   cursor: not-allowed;
 }
+
+.dynamic-connect-button {
+  padding: 0;
+}
+
+.dynamic-connect-button-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 16px;
+}

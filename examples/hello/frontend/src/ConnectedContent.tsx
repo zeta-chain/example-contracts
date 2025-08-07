@@ -8,7 +8,7 @@ import { MessageFlowCard } from './MessageFlowCard';
 import type { EIP6963ProviderDetail } from './types/wallet';
 
 interface ConnectedContentProps {
-  selectedProvider: EIP6963ProviderDetail;
+  selectedProvider: EIP6963ProviderDetail | null;
   supportedChain: SupportedChain | undefined;
 }
 
