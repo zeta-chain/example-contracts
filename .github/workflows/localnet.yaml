@@ -51,5 +51,6 @@ jobs:
         run: |
           cd "${{ matrix.example-dir }}"
           yarn
+          forge soldeer update
           chmod +x ./scripts/localnet.sh
           ./scripts/localnet.sh start
