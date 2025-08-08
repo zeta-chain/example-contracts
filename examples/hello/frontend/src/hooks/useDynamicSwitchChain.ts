@@ -18,21 +18,17 @@ export const useDynamicSwitchChain = () => {
       }
 
       try {
-        console.debug('Switching to chain:', chainId);
         await primaryWallet.switchNetwork(chainId);
-        console.debug('Switch network call completed');
       } catch (error: unknown) {
-        // If the chain hasn't been added to the wallet, try to add it
         if (
           error &&
           typeof error === 'object' &&
           'code' in error &&
           error.code === 4902
         ) {
-          console.log(
+          console.warn(
             'Chain not found, you might need to add it to the wallet'
           );
-          // You could add logic here to add the chain if needed
         } else {
           console.error('Failed to switch chain:', error);
         }

@@ -5,15 +5,15 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from './App.tsx';
+import { Eip6963WalletProvider } from './context/Eip6963WalletProvider.tsx';
 import { ThemeProvider } from './context/ThemeProvider.tsx';
-import { WalletProvider } from './context/WalletProvider.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
-      <WalletProvider>
+      <Eip6963WalletProvider>
         <App />
-      </WalletProvider>
+      </Eip6963WalletProvider>
     </ThemeProvider>
   </StrictMode>
 );

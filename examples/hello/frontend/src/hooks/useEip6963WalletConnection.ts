@@ -14,7 +14,9 @@ import { getEmptyWalletData } from '../utils/walletStorage';
 /**
  * Hook to manage wallet connections
  */
-export const useWalletConnection = (providers: EIP6963ProviderDetail[]) => {
+export const useEip6963WalletConnection = (
+  providers: EIP6963ProviderDetail[]
+) => {
   const [selectedProvider, setSelectedProvider] =
     useState<EIP6963ProviderDetail | null>(null);
   const [connecting, setConnecting] = useState(false);

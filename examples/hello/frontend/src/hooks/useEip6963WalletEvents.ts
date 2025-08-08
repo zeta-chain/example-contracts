@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 
 import type { EIP6963ProviderDetail } from '../types/wallet';
 
-interface WalletEventHandlers {
+interface Eip6963WalletEventHandlers {
   onAccountsChanged: (accounts: string[]) => void;
   onChainChanged: (chainId: string) => void;
 }
 
-export const useWalletEvents = (
+export const useEip6963WalletEvents = (
   provider: EIP6963ProviderDetail | null,
-  { onAccountsChanged, onChainChanged }: WalletEventHandlers
+  { onAccountsChanged, onChainChanged }: Eip6963WalletEventHandlers
 ) => {
   useEffect(() => {
     if (!provider) return;

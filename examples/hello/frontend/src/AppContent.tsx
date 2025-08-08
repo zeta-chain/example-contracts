@@ -4,13 +4,14 @@ import { ConnectedContent } from './ConnectedContent';
 import { SUPPORTED_CHAINS } from './constants/chains';
 import { USE_DYNAMIC_WALLET } from './constants/wallets';
 import { DisconnectedContent } from './DisconnectedContent';
-import { useWallet } from './hooks/useWallet';
+import { useEip6963Wallet } from './hooks/useEip6963Wallet';
 
 export function AppContent() {
   // Using Dynamic's official hooks instead of custom context
   const { primaryWallet, network } = useDynamicContext();
 
-  const { selectedProvider, decimalChainId: eip6963ChainId } = useWallet();
+  const { selectedProvider, decimalChainId: eip6963ChainId } =
+    useEip6963Wallet();
 
   // Extract values from Dynamic's official hooks
   const account = primaryWallet?.address || null;

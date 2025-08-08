@@ -2,9 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { SUPPORTED_CHAIN_IDS } from '../constants/chains';
 import type { EIP6963ProviderDetail } from '../types/wallet';
-import { useWalletEvents } from './useWalletEvents';
+import { useEip6963WalletEvents } from './useEip6963WalletEvents';
 
-export const useWalletState = (provider: EIP6963ProviderDetail | null) => {
+export const useEip6963WalletState = (
+  provider: EIP6963ProviderDetail | null
+) => {
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<string | null>(null);
 
@@ -30,7 +32,7 @@ export const useWalletState = (provider: EIP6963ProviderDetail | null) => {
     setChainId(newChainId);
   }, []);
 
-  useWalletEvents(provider, {
+  useEip6963WalletEvents(provider, {
     onAccountsChanged: handleAccountsChanged,
     onChainChanged: handleChainChanged,
   });

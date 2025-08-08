@@ -1,16 +1,14 @@
 import './Header.css';
 
 import { USE_DYNAMIC_WALLET } from '../constants/wallets';
-import { useWallet } from '../hooks/useWallet';
+import { useEip6963Wallet } from '../hooks/useEip6963Wallet';
 import { ConnectDynamicWallet } from './ConnectDynamicWallet';
 import { ConnectEip6963Wallet } from './ConnectEip6963Wallet';
 import { ThemeToggle } from './ThemeToggle';
 import { WalletControls } from './WalletControls';
 
 export const Header = () => {
-  const { isConnected } = useWallet();
-
-  console.debug('isConnected', { isConnected, USE_DYNAMIC_WALLET });
+  const { isConnected } = useEip6963Wallet();
 
   if (!USE_DYNAMIC_WALLET) {
     return (

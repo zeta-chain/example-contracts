@@ -1,27 +1,22 @@
 import { useCallback } from 'react';
 
-import { useWallet } from './useWallet';
+import { USE_DYNAMIC_WALLET } from '../constants/wallets';
+import { useDynamicSwitchChain } from './useDynamicSwitchChain';
+import { useEip6963SwitchChain } from './useEip6963SwitchChain';
 
 export const useSwitchChain = () => {
-  const { selectedProvider } = useWallet();
+  const eip6963SwitchChain = useEip6963SwitchChain();
+  const dynamicSwitchChain = useDynamicSwitchChain();
 
   const switchChain = useCallback(
     async (chainId: number) => {
-      if (!selectedProvider) {
-        console.error('No provider selected');
-        return;
-      }
-
-      try {
-        await selectedProvider.provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${chainId.toString(16)}` }],
-        });
-      } catch (error) {
-        console.error('Failed to switch chain:', error);
+      if (USE_DYNAMIC_WALLET) {
+        return dynamicSwitchChain.switchChain(chainId);
+      } else {
+        return eip6963SwitchChain.switchChain(chainId);
       }
     },
-    [selectedProvider]
+    [dynamicSwitchChain, eip6963SwitchChain]
   );
 
   return { switchChain };
