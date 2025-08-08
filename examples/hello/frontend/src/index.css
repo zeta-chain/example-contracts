@@ -63,10 +63,6 @@
   justify-content: center;
 }
 
-.Inter {
-  font-family: 'Inter', sans-serif;
-}
-
 h1,
 h2,
 h3 {
@@ -125,14 +121,6 @@ a {
 
 .lg-only {
   display: none;
-}
-
-.text-primary-light {
-  color: var(--primary-light);
-}
-
-.text-primary-dark {
-  color: var(--primary-dark);
 }
 
 @media (min-width: 768px) {

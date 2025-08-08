@@ -2,7 +2,7 @@ import { createContext } from 'react';
 
 import type { EIP6963ProviderDetail } from '../types/wallet';
 
-interface WalletContextType {
+interface Eip6963WalletContextType {
   providers: EIP6963ProviderDetail[];
   selectedProvider: EIP6963ProviderDetail | null;
   decimalChainId: number | null;
@@ -20,7 +20,7 @@ interface WalletContextType {
   account: string | null;
 }
 
-export const WalletContext = createContext<WalletContextType>({
+export const Eip6963WalletContext = createContext<Eip6963WalletContextType>({
   providers: [],
   selectedProvider: null,
   decimalChainId: null,

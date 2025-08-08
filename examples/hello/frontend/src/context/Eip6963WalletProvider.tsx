@@ -2,13 +2,17 @@
 
 import { type ReactNode, useMemo } from 'react';
 
-import { useWalletConnection } from '../hooks/useWalletConnection';
-import { useWalletProviders } from '../hooks/useWalletProviders';
-import { useWalletState } from '../hooks/useWalletState';
-import { WalletContext } from './WalletContext';
+import { useEip6963WalletConnection } from '../hooks/useEip6963WalletConnection';
+import { useEip6963WalletProviders } from '../hooks/useEip6963WalletProviders';
+import { useEip6963WalletState } from '../hooks/useEip6963WalletState';
+import { Eip6963WalletContext } from './Eip6963WalletContext';
 
-export const WalletProvider = ({ children }: { children: ReactNode }) => {
-  const { providers } = useWalletProviders();
+export const Eip6963WalletProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
+  const { providers } = useEip6963WalletProviders();
   const {
     selectedProvider,
     connecting,
@@ -17,9 +21,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     error,
     connectWallet,
     disconnectWallet,
-  } = useWalletConnection(providers);
+  } = useEip6963WalletConnection(providers);
   const { account, isSupportedChain, decimalChainId } =
-    useWalletState(selectedProvider);
+    useEip6963WalletState(selectedProvider);
 
   const contextValue = useMemo(
     () => ({
@@ -51,8 +55,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <WalletContext.Provider value={contextValue}>
+    <Eip6963WalletContext.Provider value={contextValue}>
       {children}
-    </WalletContext.Provider>
+    </Eip6963WalletContext.Provider>
   );
 };
