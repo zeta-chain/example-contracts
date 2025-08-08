@@ -8,8 +8,8 @@ import {
   findProviderByRdns,
   findProviderByUuid,
 } from '../utils/eip6963';
-import { getEmptyWalletData } from '../utils/walletStorage';
 import type { StoredWalletData } from '../utils/walletStorage';
+import { getEmptyWalletData } from '../utils/walletStorage';
 
 /**
  * Hook to manage wallet connections
@@ -188,4 +188,4 @@ export const useWalletConnection = (providers: EIP6963ProviderDetail[]) => {
     connectWallet,
     disconnectWallet,
   };
-}; 
+};

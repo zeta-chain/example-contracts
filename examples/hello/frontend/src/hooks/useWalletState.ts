@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useWalletEvents } from './useWalletEvents';
-import type { EIP6963ProviderDetail } from '../types/wallet';
 import { SUPPORTED_CHAIN_IDS } from '../constants/chains';
+import type { EIP6963ProviderDetail } from '../types/wallet';
+import { useWalletEvents } from './useWalletEvents';
 
 export const useWalletState = (provider: EIP6963ProviderDetail | null) => {
   const [account, setAccount] = useState<string | null>(null);
@@ -71,4 +71,4 @@ export const useWalletState = (provider: EIP6963ProviderDetail | null) => {
     decimalChainId,
     isSupportedChain,
   };
-}; 
+};

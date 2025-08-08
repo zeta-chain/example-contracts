@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import type { EIP6963ProviderDetail } from '../types/wallet';
 
 interface WalletEventHandlers {
@@ -32,4 +33,4 @@ export const useWalletEvents = (
       provider.provider.removeListener('chainChanged', handleChainChanged);
     };
   }, [provider, onAccountsChanged, onChainChanged]);
-}; 
+};
