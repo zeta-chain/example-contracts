@@ -81,33 +81,29 @@ contract Swap is
         uint256 amount,
         bytes calldata message
     ) external onlyGateway {
-        Params memory params = Params({
-            target: address(0),
-            to: bytes(""),
-            withdraw: true
-        });
         (address targetToken, bytes memory recipient, bool withdrawFlag) = abi
             .decode(message, (address, bytes, bool));
-        params.target = targetToken;
-        params.to = recipient;
-        params.withdraw = withdrawFlag;
 
         (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
             zrc20,
             amount,
-            params.target,
-            params.withdraw
+            targetToken,
+            withdrawFlag
         );
         emit TokenSwap(
             abi.encodePacked(context.sender),
-            params.to,
+            recipient,
             zrc20,
-            params.target,
+            targetToken,
             amount,
             out
         );
         withdraw(
-            params,
+            Params({
+                target: targetToken,
+                to: recipient,
+                withdraw: withdrawFlag
+            }),
             abi.encodePacked(context.sender),
             gasFee,
             gasZRC20,
