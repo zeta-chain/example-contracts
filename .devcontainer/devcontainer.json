@@ -1,0 +1,7 @@
+{
+  "name": "zetachain",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "vscode"
+}
