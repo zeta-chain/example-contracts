@@ -11,6 +11,7 @@ for dir in "$ROOT_DIR"/examples/*/; do
   (
     cd "$dir"
     yarn
+    forge soldeer update
     forge build
     example_name="$(basename "$dir")"
     mkdir -p "$ROOT_DIR/abi/examples/$example_name"
