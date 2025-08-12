@@ -8,7 +8,7 @@ import { parseAbiValues } from "@zetachain/toolkit/utils";
 export const getAbi = (name: string) => {
   const abiPath = path.resolve(
     __dirname,
-    path.join("..", "artifacts", "contracts", `${name}.sol`, `${name}.json`)
+    path.join("..", "out", `${name}.sol`, `${name}.json`)
   );
   return JSON.parse(fs.readFileSync(abiPath, "utf8"));
 };

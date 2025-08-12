@@ -10,14 +10,6 @@ while [ ! -f "$HOME/.zetachain/localnet/registry.json" ]; do sleep 1; done
 
 forge build
 
-ls artifacts
-
-ls artifacts/contracts/
-
-ls artifacts/contracts/Connected.sol/
-
-cat artifacts/contracts/Connected.sol/Connected.json
-
 ZRC20_BNB=$(jq -r '."98".chainInfo.gasZRC20' ~/.zetachain/localnet/registry.json) && echo $ZRC20_BNB
 ZRC20_ETHEREUM=$(jq -r '."11155112".chainInfo.gasZRC20' ~/.zetachain/localnet/registry.json) && echo $ZRC20_ETHEREUM
 USDC_ETHEREUM=$(jq -r '.["11155112"].contracts[] | select(.contractType == "ERC-20 USDC") | .address' ~/.zetachain/localnet/registry.json) && echo $USDC_ETHEREUM
