@@ -1,7 +1,19 @@
 {
-  "name": "zetachain",
-  "build": {
-    "dockerfile": "Dockerfile"
+  "name": "zetachain-dev",
+  "image": "ghcr.io/foundry-rs/foundry:latest",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    }
   },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "postCreateCommand": "node -v && forge --version && anvil --version",
   "remoteUser": "vscode"
 }
