@@ -24,8 +24,6 @@ contract Swap is
 {
     address public uniswapRouter;
     GatewayZEVM public gateway;
-    uint256 constant BITCOIN = 8332;
-    uint256 constant BITCOIN_TESTNET = 18334;
     uint256 public gasLimit;
 
     error InvalidAddress();
@@ -33,7 +31,6 @@ contract Swap is
     error ApprovalFailed();
     error TransferFailed(string);
     error InsufficientAmount(string);
-    error InvalidMessageLength();
 
     event TokenSwap(
         bytes sender,
@@ -89,28 +86,11 @@ contract Swap is
             to: bytes(""),
             withdraw: true
         });
-
-        if (context.chainID == BITCOIN_TESTNET || context.chainID == BITCOIN) {
-            if (message.length < 41) revert InvalidMessageLength();
-            params.target = BytesHelperLib.bytesToAddress(message, 0);
-            params.to = new bytes(message.length - 21);
-            for (uint256 i = 0; i < message.length - 21; i++) {
-                params.to[i] = message[20 + i];
-            }
-            params.withdraw = BytesHelperLib.bytesToBool(
-                message,
-                message.length - 1
-            );
-        } else {
-            (
-                address targetToken,
-                bytes memory recipient,
-                bool withdrawFlag
-            ) = abi.decode(message, (address, bytes, bool));
-            params.target = targetToken;
-            params.to = recipient;
-            params.withdraw = withdrawFlag;
-        }
+        (address targetToken, bytes memory recipient, bool withdrawFlag) = abi
+            .decode(message, (address, bytes, bool));
+        params.target = targetToken;
+        params.to = recipient;
+        params.withdraw = withdrawFlag;
 
         (uint256 out, address gasZRC20, uint256 gasFee) = handleGasAndSwap(
             zrc20,
