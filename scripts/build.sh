@@ -1,22 +1,12 @@
 #!/bin/bash
 
-ROOT_DIR="$(cd "$(dirname "$0")"/.. && pwd)"
+rm -rf abi && mkdir -p abi/examples
+rm -rf typescript-types && mkdir typescript-types
 
-rm -rf "$ROOT_DIR/abi"
-mkdir -p "$ROOT_DIR/abi/examples"
-rm -rf "$ROOT_DIR/typescript-types"
-mkdir -p "$ROOT_DIR/typescript-types"
-
-for dir in "$ROOT_DIR"/examples/*/; do
-  (
-    cd "$dir"
-    yarn
-    forge soldeer update
-    forge build
-    example_name="$(basename "$dir")"
-    mkdir -p "$ROOT_DIR/abi/examples/$example_name"
-    cp -R out/. "$ROOT_DIR/abi/examples/$example_name/"
-  )
+for dir in ./examples/*/; do
+  subdir=$(echo $dir | cut -d'/' -f2)
+  
+  cd $dir && yarn && npx hardhat compile --force && cp -r artifacts/contracts/* ../../abi/$subdir/ && cd ../../;           
 done
 
-find "$ROOT_DIR/abi" -name '*.dbg.json' -exec rm {} \;
+find ./abi/ -name '*.dbg.json' -exec rm {} \;
