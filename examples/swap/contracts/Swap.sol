@@ -66,6 +66,12 @@ contract Swap is
         gasLimit = gasLimitAmount;
     }
 
+    struct Params {
+        address target;
+        bytes to;
+        bool withdraw;
+    }
+
     /**
      * @notice Swap tokens from a connected chain to another connected chain or ZetaChain
      */
@@ -93,9 +99,11 @@ contract Swap is
             out
         );
         withdraw(
-            targetToken,
-            recipient,
-            withdrawFlag,
+            Params({
+                target: targetToken,
+                to: recipient,
+                withdraw: withdrawFlag
+            }),
             abi.encodePacked(context.sender),
             gasFee,
             gasZRC20,
@@ -140,9 +148,11 @@ contract Swap is
             out
         );
         withdraw(
-            targetToken,
-            recipient,
-            withdrawFlag,
+            Params({
+                target: targetToken,
+                to: recipient,
+                withdraw: withdrawFlag
+            }),
             abi.encodePacked(msg.sender),
             gasFee,
             gasZRC20,
@@ -201,17 +211,15 @@ contract Swap is
      * @notice Transfer tokens to the recipient on ZetaChain or withdraw to a connected chain
      */
     function withdraw(
-        address targetToken,
-        bytes memory recipient,
-        bool withdrawFlag,
+        Params memory params,
         bytes memory sender,
         uint256 gasFee,
         address gasZRC20,
         uint256 out,
         address inputToken
     ) internal {
-        if (withdrawFlag) {
-            if (gasZRC20 == targetToken) {
+        if (params.withdraw) {
+            if (gasZRC20 == params.target) {
                 if (!IZRC20(gasZRC20).approve(address(gateway), out + gasFee)) {
                     revert ApprovalFailed();
                 }
@@ -219,14 +227,14 @@ contract Swap is
                 if (!IZRC20(gasZRC20).approve(address(gateway), gasFee)) {
                     revert ApprovalFailed();
                 }
-                if (!IZRC20(targetToken).approve(address(gateway), out)) {
+                if (!IZRC20(params.target).approve(address(gateway), out)) {
                     revert ApprovalFailed();
                 }
             }
             gateway.withdraw(
-                abi.encodePacked(recipient),
+                abi.encodePacked(params.to),
                 out,
-                targetToken,
+                params.target,
                 RevertOptions({
                     revertAddress: address(this),
                     callOnRevert: true,
@@ -236,8 +244,8 @@ contract Swap is
                 })
             );
         } else {
-            bool success = IWETH9(targetToken).transfer(
-                address(uint160(bytes20(recipient))),
+            bool success = IWETH9(params.target).transfer(
+                address(uint160(bytes20(params.to))),
                 out
             );
             if (!success) {
