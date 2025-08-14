@@ -10,12 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dynamic-labs/ethereum": "^4.25.10",
+    "@dynamic-labs/sdk-react-core": "^4.25.10",
+    "@tailwindcss/vite": "^4.1.12",
     "@zetachain/toolkit": "16.0.1",
     "clsx": "^2.1.1",
     "ethers": "^6.13.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-use": "^17.6.0",
+    "tailwindcss": "^4.1.12",
     "viem": "^2.31.7"
   },
   "devDependencies": {
