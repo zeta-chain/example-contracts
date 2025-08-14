@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/index.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "ethers/components",
+    "utils": "ethers/lib/utils",
+    "ui": "ethers/components/ui",
+    "lib": "ethers/lib",
+    "hooks": "ethers/hooks"
+  },
+  "iconLibrary": "lucide"
+}
