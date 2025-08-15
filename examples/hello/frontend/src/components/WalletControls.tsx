@@ -19,6 +19,7 @@ import {
   Check,
 } from 'lucide-react';
 import { useZetaChainClient } from '../providers/UniversalKitProvider';
+import { formatNumberSignificant } from '../utils/formatNumber';
 
 type ZetaTokenBalance = {
   id: string;
@@ -174,13 +175,16 @@ export const WalletControls = () => {
                             : 'bg-black/5 dark:bg-white/5'
                         }`}
                       >
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-start flex-1 min-w-0 text-left overflow-hidden">
                           <span className="text-sm opacity-70">
                             {bal.chain_name}
                           </span>
-                          <span className="text-lg font-medium">
-                            {bal.balance} {bal.symbol}
+                          <span className="text-lg font-medium truncate block">
+                            {bal.symbol}
                           </span>
+                        </div>
+                        <div className="text-lg font-medium text-right shrink-0 pl-4">
+                          {formatNumberSignificant(Number(bal.balance), 4)}
                         </div>
                       </div>
                     );
