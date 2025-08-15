@@ -19,7 +19,13 @@ import {
   Check,
   ArrowUpRight,
   Download,
+  Handbag,
+  Vault,
   ArrowLeftRight,
+  ArrowUpDown,
+  Shuffle,
+  VenetianMask,
+  Plug,
 } from 'lucide-react';
 import { useZetaChainClient } from '../providers/UniversalKitProvider';
 import { formatNumberSignificant } from '../utils/formatNumber';
@@ -232,6 +238,33 @@ export const WalletControls = () => {
                     <Download className="size-4" />
                     Receive
                   </MainButton>
+                </div>
+              </div>
+            )}
+
+            {account && (
+              <div className="mt-6 mb-6 text-left">
+                <div className="grid grid-cols-4 gap-4">
+                  {[
+                    { label: 'Beam', icon: ArrowUpDown },
+                    { label: 'Zuno', icon: Shuffle },
+                    { label: 'Pitch Lucy', icon: VenetianMask },
+                    { label: 'Amana', icon: Vault },
+                    { label: 'Random', icon: Handbag },
+                    { label: 'Plugman', icon: Plug },
+                  ].map((item, idx) => {
+                    const IconComp = item.icon;
+                    return (
+                      <div key={idx} className="flex flex-col items-center">
+                        <div className="w-16 h-16 rounded-2xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
+                          <IconComp className="size-7 opacity-80" />
+                        </div>
+                        <span className="text-xs mt-1 opacity-80">
+                          {item.label}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
