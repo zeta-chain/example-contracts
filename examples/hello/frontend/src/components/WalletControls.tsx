@@ -332,21 +332,27 @@ export const WalletControls = () => {
                     />
                   </Button>
                 </div>
-                <div className="flex flex-col gap-2">
-                  {sortedBalances.map((bal) => {
+                <div className="flex flex-col gap-0.5">
+                  {sortedBalances.map((bal, idx) => {
                     const cidRaw = bal.chain_id;
                     const cidNum =
                       typeof cidRaw === 'string' ? Number(cidRaw) : cidRaw;
                     const isActive =
                       cidNum != null && decimalChainId === cidNum;
+                    const isFirst = idx === 0;
+                    const isLast = idx === sortedBalances.length - 1;
                     return (
                       <div
                         key={bal.id}
-                        className={`flex items-center justify-between rounded-2xl px-4 py-3 ${
-                          isActive
-                            ? 'bg-black/10 dark:bg-white/10'
-                            : 'bg-black/5 dark:bg-white/5'
-                        }`}
+                        className={`flex items-center justify-between px-4 py-3 ${
+                          isFirst && isLast
+                            ? 'rounded-2xl'
+                            : isFirst
+                            ? 'rounded-t-2xl'
+                            : isLast
+                            ? 'rounded-b-2xl'
+                            : ''
+                        } ${'bg-black/10 dark:bg-white/5'}`}
                       >
                         <div className="flex flex-col items-start flex-1 min-w-0 text-left overflow-hidden">
                           <span className="text-sm opacity-70">
