@@ -40,10 +40,12 @@ export const WalletControls = () => {
               theme === 'dark' ? 'bg-[#171f29]' : 'bg-white'
             }`}
           >
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-1">
               <Button
                 onClick={() => setShowDynamicUserProfile(true)}
                 aria-label="Settings"
+                size="icon"
+                className="shadow-none"
               >
                 <Settings />
               </Button>
@@ -53,11 +55,13 @@ export const WalletControls = () => {
                   setIsSheetOpen(false);
                 }}
                 aria-label="Disconnect"
+                size="icon"
+                className="shadow-none"
               >
                 <Power />
               </Button>
               <SheetClose asChild>
-                <Button aria-label="Close">
+                <Button aria-label="Close" size="icon" className="shadow-none">
                   <X />
                 </Button>
               </SheetClose>
