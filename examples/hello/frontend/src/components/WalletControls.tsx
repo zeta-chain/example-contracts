@@ -5,11 +5,14 @@ import { truncateAddress } from '../utils/truncate';
 import { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Button } from './Button';
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 
 export const WalletControls = () => {
   const { account } = useWallet();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { theme } = useTheme();
+  const { handleLogOut, setShowDynamicUserProfile } = useDynamicContext();
 
   if (!account) {
     return null;
@@ -32,7 +35,23 @@ export const WalletControls = () => {
             theme === 'dark' ? 'bg-[#171f29]' : 'bg-white'
           }`}
         >
-          {/* Blank sheet content - you can add whatever you want here */}
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="thin"
+              onClick={() => setShowDynamicUserProfile(true)}
+            >
+              Profile
+            </Button>
+            <Button
+              variant="thin"
+              onClick={async () => {
+                await handleLogOut();
+                setIsSheetOpen(false);
+              }}
+            >
+              Disconnect
+            </Button>
+          </div>
         </div>
       </SheetContent>
     </Sheet>
