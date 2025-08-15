@@ -17,6 +17,8 @@ import {
   RefreshCw,
   Copy,
   Check,
+  ArrowUpRight,
+  Download,
 } from 'lucide-react';
 import { useZetaChainClient } from '../providers/UniversalKitProvider';
 import { formatNumberSignificant } from '../utils/formatNumber';
@@ -203,6 +205,22 @@ export const WalletControls = () => {
                 </Button>
               </div>
             </div>
+
+            {/* Actions: Send / Receive */}
+            {account && (
+              <div className="mt-4 text-left">
+                <div className="flex items-center gap-2">
+                  <MainButton variant="thin" className="w-1/2 rounded-xl">
+                    <ArrowUpRight className="size-4" />
+                    Send
+                  </MainButton>
+                  <MainButton variant="thin" className="w-1/2 rounded-xl">
+                    <Download className="size-4" />
+                    Receive
+                  </MainButton>
+                </div>
+              </div>
+            )}
 
             {/* Compact Swap (mockup) */}
             {account && tokenOptions.length > 0 && (
