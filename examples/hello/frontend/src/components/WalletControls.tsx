@@ -10,7 +10,7 @@ import {
   DynamicUserProfile,
   useDynamicContext,
 } from '@dynamic-labs/sdk-react-core';
-import { Power, Settings, X } from 'lucide-react';
+import { CircleArrowRight, Power, Settings, X } from 'lucide-react';
 
 export const WalletControls = () => {
   const { account, disconnectWallet } = useWallet();
@@ -47,7 +47,7 @@ export const WalletControls = () => {
                 size="icon"
                 className="shadow-none"
               >
-                <Settings />
+                <Settings strokeWidth={2.2} className="size-5" />
               </Button>
               <Button
                 onClick={async () => {
@@ -58,11 +58,11 @@ export const WalletControls = () => {
                 size="icon"
                 className="shadow-none"
               >
-                <Power />
+                <Power strokeWidth={2.2} className="size-5" />
               </Button>
               <SheetClose asChild>
                 <Button aria-label="Close" size="icon" className="shadow-none">
-                  <X />
+                  <CircleArrowRight strokeWidth={2.2} className="size-5" />
                 </Button>
               </SheetClose>
             </div>
