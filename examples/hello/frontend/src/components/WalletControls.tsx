@@ -10,8 +10,23 @@ import {
   DynamicUserProfile,
   useDynamicContext,
 } from '@dynamic-labs/sdk-react-core';
-import { CircleArrowRight, Power, Settings, RefreshCw } from 'lucide-react';
-import { evmNetworks } from '../constants/chains';
+import {
+  CircleArrowRight,
+  Power,
+  Settings,
+  RefreshCw,
+  Copy,
+  Check,
+} from 'lucide-react';
+import { useZetaChainClient } from '../providers/UniversalKitProvider';
+
+type ZetaTokenBalance = {
+  id: string;
+  chain_id: number | string | null;
+  chain_name?: string;
+  symbol: string;
+  balance: string;
+};
 
 export const WalletControls = () => {
   const { account, disconnectWallet, decimalChainId } = useWallet();
@@ -20,58 +35,18 @@ export const WalletControls = () => {
   const { setShowDynamicUserProfile } = useDynamicContext();
 
   const [isLoadingAllBalances, setIsLoadingAllBalances] = useState(false);
-  const [balancesByChainId, setBalancesByChainId] = useState<
-    Record<number, string | null>
-  >({});
-
-  const formatWeiToEther = (hexWei: string): string => {
-    try {
-      const wei = BigInt(hexWei);
-      const divisor = 10n ** 18n;
-      const whole = wei / divisor;
-      const fraction = wei % divisor;
-      let fractionStr = fraction.toString().padStart(18, '0').slice(0, 4);
-      fractionStr = fractionStr.replace(/0+$/, '');
-      return fractionStr
-        ? `${whole.toString()}.${fractionStr}`
-        : whole.toString();
-    } catch {
-      return '0';
-    }
-  };
+  const [allBalances, setAllBalances] = useState<ZetaTokenBalance[]>([]);
+  const [copied, setCopied] = useState(false);
+  const client = useZetaChainClient();
 
   const fetchAllNativeBalances = async () => {
-    if (!account) return;
+    if (!account || !client) return;
     try {
       setIsLoadingAllBalances(true);
-      const results = await Promise.all(
-        evmNetworks.map(async (net) => {
-          const rpcUrl = net.rpcUrls?.[0];
-          if (!rpcUrl) return [net.chainId, null] as const;
-          try {
-            const response = await fetch(rpcUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'eth_getBalance',
-                params: [account, 'latest'],
-                id: `${net.chainId}-${Date.now()}`,
-              }),
-            });
-            if (!response.ok) throw new Error(`RPC ${net.chainId} failed`);
-            const json = (await response.json()) as { result?: string };
-            const hex = json.result ?? '0x0';
-            return [net.chainId, formatWeiToEther(hex)] as const;
-          } catch (e) {
-            console.error('Failed to fetch balance for', net.chainId, e);
-            return [net.chainId, null] as const;
-          }
-        })
-      );
-      const map: Record<number, string | null> = {};
-      for (const [cid, bal] of results) map[cid] = bal;
-      setBalancesByChainId(map);
+      const balances = await client.getBalances({ evmAddress: account });
+      setAllBalances(balances);
+    } catch (e) {
+      console.error('Failed to fetch balances via ZetaChain client', e);
     } finally {
       setIsLoadingAllBalances(false);
     }
@@ -81,7 +56,7 @@ export const WalletControls = () => {
     if (account) {
       fetchAllNativeBalances();
     } else {
-      setBalancesByChainId({});
+      setAllBalances([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
@@ -135,6 +110,34 @@ export const WalletControls = () => {
               </SheetClose>
             </div>
 
+            {/* Address with copy */}
+            <div className="mt-6 text-left">
+              <div className="flex items-center justify-between rounded-2xl px-4 py-3 bg-black/5 dark:bg-white/5">
+                <span className="text-base font-medium select-all">
+                  {truncateAddress(account)}
+                </span>
+                <Button
+                  aria-label={copied ? 'Copied' : 'Copy address'}
+                  size="icon"
+                  variant="ghost"
+                  className="shadow-none"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(account);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1500);
+                    } catch {}
+                  }}
+                >
+                  {copied ? (
+                    <Check className="size-5" />
+                  ) : (
+                    <Copy className="size-5" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
             {/* Balances */}
             {account && (
               <div className="mt-6 text-left">
@@ -156,12 +159,15 @@ export const WalletControls = () => {
                   </Button>
                 </div>
                 <div className="flex flex-col gap-2">
-                  {evmNetworks.map((net) => {
-                    const balance = balancesByChainId[net.chainId] ?? null;
-                    const isActive = decimalChainId === net.chainId;
+                  {allBalances.map((bal) => {
+                    const cidRaw = bal.chain_id;
+                    const cidNum =
+                      typeof cidRaw === 'string' ? Number(cidRaw) : cidRaw;
+                    const isActive =
+                      cidNum != null && decimalChainId === cidNum;
                     return (
                       <div
-                        key={net.chainId}
+                        key={bal.id}
                         className={`flex items-center justify-between rounded-2xl px-4 py-3 ${
                           isActive
                             ? 'bg-black/10 dark:bg-white/10'
@@ -170,10 +176,10 @@ export const WalletControls = () => {
                       >
                         <div className="flex flex-col">
                           <span className="text-sm opacity-70">
-                            {net.chainName}
+                            {bal.chain_name}
                           </span>
                           <span className="text-lg font-medium">
-                            {balance ?? '—'} {net.nativeCurrency.symbol}
+                            {bal.balance} {bal.symbol}
                           </span>
                         </div>
                       </div>
