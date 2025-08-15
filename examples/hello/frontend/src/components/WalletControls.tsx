@@ -62,6 +62,13 @@ export const WalletControls = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 
+  const sortedBalances = allBalances.slice().sort((a, b) => {
+    const aVal = Number(a.balance) || 0;
+    const bVal = Number(b.balance) || 0;
+    if ((aVal === 0) !== (bVal === 0)) return aVal === 0 ? 1 : -1;
+    return bVal - aVal;
+  });
+
   if (!account) {
     return null;
   }
@@ -163,7 +170,7 @@ export const WalletControls = () => {
                   </Button>
                 </div>
                 <div className="flex flex-col gap-2">
-                  {allBalances.map((bal) => {
+                  {sortedBalances.map((bal) => {
                     const cidRaw = bal.chain_id;
                     const cidNum =
                       typeof cidRaw === 'string' ? Number(cidRaw) : cidRaw;
