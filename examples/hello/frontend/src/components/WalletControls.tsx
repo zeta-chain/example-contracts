@@ -132,6 +132,8 @@ export const WalletControls = () => {
   ] as { label: string; icon: any }[]);
   const [removedItems, setRemovedItems] = useState<string[]>([]);
   const [exitingLabels, setExitingLabels] = useState<Set<string>>(new Set());
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
 
   const handleIconClick = (label: string) => {
     if (exitingLabels.has(label)) return;
@@ -317,11 +319,64 @@ export const WalletControls = () => {
                   <div className="mt-4">
                     <div className="flex flex-col gap-2">
                       {removedItems.map((name, idx) => (
-                        <EnterRow key={`${name}-${idx}`}>
-                          <div className="w-full h-40 rounded-2xl px-4 bg-black/10 dark:bg-white/5 flex items-center justify-center">
-                            <span className="text-sm opacity-80">{name}</span>
-                          </div>
-                        </EnterRow>
+                        <div
+                          key={`${name}-${idx}`}
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            e.dataTransfer.dropEffect = 'move';
+                            if (overIndex !== idx) setOverIndex(idx);
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            if (dragIndex == null || dragIndex === idx) {
+                              setOverIndex(null);
+                              return;
+                            }
+                            setRemovedItems((prev) => {
+                              const next = prev.slice();
+                              const [moved] = next.splice(dragIndex, 1);
+                              next.splice(idx, 0, moved);
+                              return next;
+                            });
+                            setDragIndex(null);
+                            setOverIndex(null);
+                          }}
+                          onDragEnter={() => {
+                            if (overIndex !== idx) setOverIndex(idx);
+                          }}
+                          onDragLeave={() => {
+                            setOverIndex((current) =>
+                              current === idx ? null : current
+                            );
+                          }}
+                        >
+                          <EnterRow>
+                            <div
+                              draggable
+                              onDragStart={(e) => {
+                                e.dataTransfer.effectAllowed = 'move';
+                                try {
+                                  e.dataTransfer.setData(
+                                    'text/plain',
+                                    String(idx)
+                                  );
+                                } catch {}
+                                setDragIndex(idx);
+                              }}
+                              onDragEnd={() => {
+                                setDragIndex(null);
+                                setOverIndex(null);
+                              }}
+                              className={`w-full h-40 rounded-2xl px-4 bg-black/10 dark:bg-white/5 flex items-center justify-center cursor-grab active:cursor-grabbing transition-shadow ${
+                                overIndex === idx
+                                  ? 'ring-1 ring-black/20 dark:ring-white/20'
+                                  : ''
+                              }`}
+                            >
+                              <span className="text-sm opacity-80">{name}</span>
+                            </div>
+                          </EnterRow>
+                        </div>
                       ))}
                     </div>
                   </div>
