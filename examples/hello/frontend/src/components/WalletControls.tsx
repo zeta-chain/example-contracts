@@ -2,7 +2,7 @@ import './WalletControls.css';
 
 import { useWallet } from '../hooks/useWallet';
 import { truncateAddress } from '../utils/truncate';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from './ui/sheet';
 import { Button } from './ui/button';
@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useZetaChainClient } from '../providers/UniversalKitProvider';
 import { formatNumberSignificant } from '../utils/formatNumber';
+import { Button as MainButton } from './Button';
 
 type ZetaTokenBalance = {
   id: string;
@@ -68,6 +69,32 @@ export const WalletControls = () => {
     if ((aVal === 0) !== (bVal === 0)) return aVal === 0 ? 1 : -1;
     return bVal - aVal;
   });
+
+  // --- Simple compact swap mockup state ---
+  const tokenOptions = useMemo(() => {
+    return sortedBalances.map((t) => ({
+      id: t.id,
+      label: `${t.symbol}${t.chain_name ? ` (${t.chain_name})` : ''}`,
+    }));
+  }, [sortedBalances]);
+
+  const [sourceTokenId, setSourceTokenId] = useState<string | undefined>();
+  const [targetTokenId, setTargetTokenId] = useState<string | undefined>();
+  const [amountIn, setAmountIn] = useState<string>('');
+
+  useEffect(() => {
+    if (tokenOptions.length > 0) {
+      setSourceTokenId((prev) => prev ?? tokenOptions[0]?.id);
+      setTargetTokenId(
+        (prev) => prev ?? tokenOptions[1]?.id ?? tokenOptions[0]?.id
+      );
+    } else {
+      setSourceTokenId(undefined);
+      setTargetTokenId(undefined);
+    }
+  }, [tokenOptions]);
+
+  const amountOut = amountIn; // mock: 1:1 just to show output field populated
 
   if (!account) {
     return null;
@@ -176,6 +203,64 @@ export const WalletControls = () => {
                 </Button>
               </div>
             </div>
+
+            {/* Compact Swap (mockup) */}
+            {account && tokenOptions.length > 0 && (
+              <div className="mt-4 text-left">
+                <div className="rounded-2xl px-3 py-3 bg-black/5 dark:bg-white/5">
+                  <div className="text-sm font-semibold mb-2 opacity-80">
+                    Swap
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        inputMode="decimal"
+                        pattern="^[0-9]*[.]?[0-9]*$"
+                        className="w-1/2 rounded-xl px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
+                        placeholder="0.0"
+                        value={amountIn}
+                        onChange={(e) => setAmountIn(e.target.value)}
+                      />
+                      <select
+                        className="w-1/2 rounded-xl px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
+                        value={sourceTokenId}
+                        onChange={(e) => setSourceTokenId(e.target.value)}
+                      >
+                        {tokenOptions.map((opt) => (
+                          <option key={opt.id} value={opt.id}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        readOnly
+                        className="w-1/2 rounded-xl px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none opacity-70"
+                        placeholder="0.0"
+                        value={amountOut}
+                      />
+                      <select
+                        className="w-1/2 rounded-xl px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
+                        value={targetTokenId}
+                        onChange={(e) => setTargetTokenId(e.target.value)}
+                      >
+                        {tokenOptions.map((opt) => (
+                          <option key={opt.id} value={opt.id}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex justify-end mt-1">
+                      <MainButton disabled variant="thin">
+                        Swap
+                      </MainButton>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Balances */}
             {account && (
