@@ -7,17 +7,16 @@ import { useTheme } from '../hooks/useTheme';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { Button } from './Button';
 import {
-  DynamicConnectButton,
-  DynamicWidget,
   DynamicUserProfile,
   useDynamicContext,
 } from '@dynamic-labs/sdk-react-core';
+import { Power, Settings } from 'lucide-react';
 
 export const WalletControls = () => {
   const { account, disconnectWallet } = useWallet();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { theme } = useTheme();
-  const { handleLogOut, setShowDynamicUserProfile } = useDynamicContext();
+  const { setShowDynamicUserProfile } = useDynamicContext();
 
   if (!account) {
     return null;
@@ -45,18 +44,18 @@ export const WalletControls = () => {
               <Button
                 variant="thin"
                 onClick={() => setShowDynamicUserProfile(true)}
-              >
-                Profile
-              </Button>
+                aria-label="Settings"
+                icon={<Settings size={16} />}
+              />
               <Button
                 variant="thin"
                 onClick={async () => {
                   await disconnectWallet();
                   setIsSheetOpen(false);
                 }}
-              >
-                Disconnect
-              </Button>
+                aria-label="Disconnect"
+                icon={<Power size={16} />}
+              />
             </div>
           </div>
         </SheetContent>
