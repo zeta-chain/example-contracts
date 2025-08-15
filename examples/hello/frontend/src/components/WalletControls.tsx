@@ -87,7 +87,35 @@ export const WalletControls = () => {
         </SheetTrigger>
         <SheetContent
           className="border-none z-[9999] bg-transparent shadow-none p-4 [&>button]:top-10 [&>button]:right-10"
-          onInteractOutside={(e) => e.preventDefault()}
+          onInteractOutside={(e) => {
+            // Allow overlay clicks to close the sheet by default, but if the
+            // interaction originates from Dynamic's user profile (which renders
+            // inside a ShadowDOM host with class "dynamic-shadow-dom"), prevent
+            // the close and stop propagation.
+            const originalEvent: any = (e as any)?.detail?.originalEvent ?? e;
+            const composedPath: any[] = originalEvent?.composedPath?.() ?? [];
+
+            const isWithinDynamicUserProfile = composedPath.some(
+              (node: any) => {
+                if (!node) return false;
+                // If the path includes a ShadowRoot, check its host
+                if (node instanceof ShadowRoot) {
+                  const host: any = (node as any).host;
+                  return Boolean(
+                    host?.classList?.contains?.('dynamic-shadow-dom')
+                  );
+                }
+                return Boolean(
+                  node?.classList?.contains?.('dynamic-shadow-dom')
+                );
+              }
+            );
+
+            if (isWithinDynamicUserProfile) {
+              originalEvent?.stopPropagation?.();
+              e.preventDefault();
+            }
+          }}
         >
           <div
             className={`rounded-3xl p-4 h-full w-full overflow-y-auto ${
