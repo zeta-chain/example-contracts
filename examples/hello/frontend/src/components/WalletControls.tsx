@@ -2,7 +2,7 @@ import './WalletControls.css';
 
 import { useWallet } from '../hooks/useWallet';
 import { truncateAddress } from '../utils/truncate';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from './ui/sheet';
 import { Button } from './ui/button';
@@ -40,8 +40,26 @@ type ZetaTokenBalance = {
   balance: string;
 };
 
+// Simple enter animation wrapper for newly added rows
+const EnterRow = ({ children }: { children: ReactNode }) => {
+  const [isReady, setIsReady] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setIsReady(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return (
+    <div
+      className={`transition-all duration-300 ease-out ${
+        isReady ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
+      }`}
+    >
+      {children}
+    </div>
+  );
+};
+
 export const WalletControls = () => {
-  const { account, disconnectWallet, decimalChainId } = useWallet();
+  const { account, disconnectWallet } = useWallet();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { theme } = useTheme();
   const { setShowDynamicUserProfile } = useDynamicContext();
@@ -102,6 +120,33 @@ export const WalletControls = () => {
   const [targetTokenId, setTargetTokenId] = useState<string | undefined>();
   const [amountIn, setAmountIn] = useState<string>('');
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
+
+  // --- Icon grid interaction state ---
+  const [gridItems, setGridItems] = useState([
+    { label: 'Beam', icon: ArrowUpDown },
+    { label: 'Zuno', icon: Shuffle },
+    { label: 'Pitch Lucy', icon: VenetianMask },
+    { label: 'Amana', icon: Vault },
+    { label: 'Random', icon: Handbag },
+    { label: 'Plugman', icon: Plug },
+  ] as { label: string; icon: any }[]);
+  const [removedItems, setRemovedItems] = useState<string[]>([]);
+  const [exitingLabels, setExitingLabels] = useState<Set<string>>(new Set());
+
+  const handleIconClick = (label: string) => {
+    if (exitingLabels.has(label)) return;
+    setExitingLabels((prev) => new Set(prev).add(label));
+    // Allow a short exit animation before removing from the grid
+    setTimeout(() => {
+      setGridItems((prev) => prev.filter((it) => it.label !== label));
+      setRemovedItems((prev) => [...prev, label]);
+      setExitingLabels((prev) => {
+        const next = new Set(prev);
+        next.delete(label);
+        return next;
+      });
+    }, 180);
+  };
 
   useEffect(() => {
     if (tokenOptions.length > 0) {
@@ -245,19 +290,18 @@ export const WalletControls = () => {
             {account && (
               <div className="mt-6 mb-6 text-left">
                 <div className="grid grid-cols-4 gap-4">
-                  {[
-                    { label: 'Beam', icon: ArrowUpDown },
-                    { label: 'Zuno', icon: Shuffle },
-                    { label: 'Pitch Lucy', icon: VenetianMask },
-                    { label: 'Amana', icon: Vault },
-                    { label: 'Random', icon: Handbag },
-                    { label: 'Plugman', icon: Plug },
-                  ].map((item, idx) => {
+                  {gridItems.map((item) => {
                     const IconComp = item.icon;
+                    const isExiting = exitingLabels.has(item.label);
                     return (
                       <div
-                        key={idx}
-                        className="flex flex-col items-center group cursor-pointer select-none"
+                        key={item.label}
+                        className={`flex flex-col items-center group cursor-pointer select-none transition-all duration-200 ease-out ${
+                          isExiting
+                            ? 'opacity-0 scale-95 -translate-y-0.5 pointer-events-none'
+                            : 'opacity-100 scale-100 translate-y-0'
+                        }`}
+                        onClick={() => handleIconClick(item.label)}
                       >
                         <div className="w-16 h-16 rounded-2xl bg-black/10 dark:bg-white/10 flex items-center justify-center transition-all duration-150 ring-1 ring-transparent group-hover:ring-black/20 dark:group-hover:ring-white/20 group-hover:bg-black/20 dark:group-hover:bg-white/20 group-hover:scale-[1.03]">
                           <IconComp className="size-7 opacity-80 transition-opacity transition-transform duration-150 group-hover:opacity-100 group-hover:scale-105" />
@@ -269,6 +313,19 @@ export const WalletControls = () => {
                     );
                   })}
                 </div>
+                {removedItems.length > 0 && (
+                  <div className="mt-4">
+                    <div className="flex flex-col gap-2">
+                      {removedItems.map((name, idx) => (
+                        <EnterRow key={`${name}-${idx}`}>
+                          <div className="w-full h-40 rounded-2xl px-4 bg-black/10 dark:bg-white/5 flex items-center justify-center">
+                            <span className="text-sm opacity-80">{name}</span>
+                          </div>
+                        </EnterRow>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -370,11 +427,6 @@ export const WalletControls = () => {
                 </div>
                 <div className="flex flex-col gap-0.5">
                   {sortedBalances.map((bal, idx) => {
-                    const cidRaw = bal.chain_id;
-                    const cidNum =
-                      typeof cidRaw === 'string' ? Number(cidRaw) : cidRaw;
-                    const isActive =
-                      cidNum != null && decimalChainId === cidNum;
                     const isFirst = idx === 0;
                     const isLast = idx === sortedBalances.length - 1;
                     return (
