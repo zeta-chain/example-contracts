@@ -6,10 +6,15 @@ import { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { Button } from './Button';
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import {
+  DynamicConnectButton,
+  DynamicWidget,
+  DynamicUserProfile,
+  useDynamicContext,
+} from '@dynamic-labs/sdk-react-core';
 
 export const WalletControls = () => {
-  const { account } = useWallet();
+  const { account, disconnectWallet } = useWallet();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { theme } = useTheme();
   const { handleLogOut, setShowDynamicUserProfile } = useDynamicContext();
@@ -19,41 +24,44 @@ export const WalletControls = () => {
   }
 
   return (
-    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-      <SheetTrigger asChild>
-        <div className="wallet-controls-container">
-          <div className="wallet-controls-icon" />
+    <>
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetTrigger asChild>
+          <div className="wallet-controls-container">
+            <div className="wallet-controls-icon" />
 
-          <span className="wallet-controls-address">
-            {truncateAddress(account)}
-          </span>
-        </div>
-      </SheetTrigger>
-      <SheetContent className="border-none z-[9999] bg-transparent shadow-none p-4 [&>button]:top-10 [&>button]:right-10">
-        <div
-          className={`rounded-3xl p-4 h-full w-full ${
-            theme === 'dark' ? 'bg-[#171f29]' : 'bg-white'
-          }`}
-        >
-          <div className="flex justify-end gap-2">
-            <Button
-              variant="thin"
-              onClick={() => setShowDynamicUserProfile(true)}
-            >
-              Profile
-            </Button>
-            <Button
-              variant="thin"
-              onClick={async () => {
-                await handleLogOut();
-                setIsSheetOpen(false);
-              }}
-            >
-              Disconnect
-            </Button>
+            <span className="wallet-controls-address">
+              {truncateAddress(account)}
+            </span>
           </div>
-        </div>
-      </SheetContent>
-    </Sheet>
+        </SheetTrigger>
+        <SheetContent className="border-none z-[9999] bg-transparent shadow-none p-4 [&>button]:top-10 [&>button]:right-10">
+          <div
+            className={`rounded-3xl p-4 h-full w-full ${
+              theme === 'dark' ? 'bg-[#171f29]' : 'bg-white'
+            }`}
+          >
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="thin"
+                onClick={() => setShowDynamicUserProfile(true)}
+              >
+                Profile
+              </Button>
+              <Button
+                variant="thin"
+                onClick={async () => {
+                  await disconnectWallet();
+                  setIsSheetOpen(false);
+                }}
+              >
+                Disconnect
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+      <DynamicUserProfile />
+    </>
   );
 };
