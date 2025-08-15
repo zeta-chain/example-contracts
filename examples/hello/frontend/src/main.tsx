@@ -6,11 +6,14 @@ import { createRoot } from 'react-dom/client';
 
 import App from './App.tsx';
 import { WalletProvider } from './context/WalletProvider.tsx';
+import { UniversalKitProvider } from './providers/UniversalKitProvider.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WalletProvider>
-      <App />
+      <UniversalKitProvider>
+        <App />
+      </UniversalKitProvider>
     </WalletProvider>
   </StrictMode>
 );

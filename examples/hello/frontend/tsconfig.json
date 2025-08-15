@@ -2,8 +2,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "ethers": ["./node_modules/ethers"],
-      "ethers/*": ["./node_modules/ethers/*"]
+      "ethers": [
+        "./node_modules/ethers"
+      ],
+      "ethers/*": [
+        "./node_modules/ethers/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "files": [],
