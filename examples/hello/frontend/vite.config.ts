@@ -14,6 +14,7 @@ export default defineConfig({
     alias: {
       // Force ethers to resolve to a single instance from the frontend's node_modules
       ethers: resolve(__dirname, 'node_modules/ethers'),
+      '@': resolve(__dirname, 'src'),
     },
     dedupe: ['ethers'],
   },

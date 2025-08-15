@@ -11,11 +11,11 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "ethers/components",
-    "utils": "ethers/lib/utils",
-    "ui": "ethers/components/ui",
-    "lib": "ethers/lib",
-    "hooks": "ethers/hooks"
+    "components": "@/components",
+    "utils": "@/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
   },
   "iconLibrary": "lucide"
 }
