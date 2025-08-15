@@ -19,10 +19,12 @@ import {
   Check,
   ArrowUpRight,
   Download,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { useZetaChainClient } from '../providers/UniversalKitProvider';
 import { formatNumberSignificant } from '../utils/formatNumber';
 import { Button as MainButton } from './Button';
+import { IconSpinner } from './icons';
 
 type ZetaTokenBalance = {
   id: string;
@@ -83,6 +85,7 @@ export const WalletControls = () => {
   const [sourceTokenId, setSourceTokenId] = useState<string | undefined>();
   const [targetTokenId, setTargetTokenId] = useState<string | undefined>();
   const [amountIn, setAmountIn] = useState<string>('');
+  const [isSwapping, setIsSwapping] = useState<boolean>(false);
 
   useEffect(() => {
     if (tokenOptions.length > 0) {
@@ -97,6 +100,7 @@ export const WalletControls = () => {
   }, [tokenOptions]);
 
   const amountOut = amountIn; // mock: 1:1 just to show output field populated
+  const canSwap = amountIn.trim() !== '' && !isSwapping;
 
   if (!account) {
     return null;
@@ -271,7 +275,25 @@ export const WalletControls = () => {
                       </select>
                     </div>
                     <div className="flex justify-end mt-1">
-                      <MainButton disabled variant="thin">
+                      <MainButton
+                        variant="thin"
+                        disabled={!canSwap}
+                        onClick={() => {
+                          if (!canSwap) return;
+                          setIsSwapping(true);
+                          setTimeout(() => {
+                            setIsSwapping(false);
+                            setAmountIn('');
+                          }, 3000);
+                        }}
+                        icon={
+                          isSwapping ? (
+                            <IconSpinner size={16} />
+                          ) : (
+                            <ArrowLeftRight className="size-4" />
+                          )
+                        }
+                      >
                         Swap
                       </MainButton>
                     </div>
