@@ -45,12 +45,13 @@ export const WalletControls = () => {
             <IconDisconnect />
           </button>
         </SheetTrigger>
-        <SheetContent
-          className={`border-l shadow-xl z-[9999] ${
-            theme === 'dark' ? 'bg-[#171f29]' : 'bg-white'
-          }`}
-        >
-          <div className="p-4">
+        <SheetContent className="border-l z-[9999] bg-transparent shadow-none [&>button]:top-6 [&>button]:right-6">
+          <div
+            className={`rounded-lg p-4 h-full w-full ${
+              theme === 'dark' ? 'bg-[#171f29]' : 'bg-white'
+            }`}
+            style={{ margin: '1rem' }}
+          >
             {/* Blank sheet content - you can add whatever you want here */}
           </div>
         </SheetContent>
