@@ -75,10 +75,20 @@ export const WalletControls = () => {
   });
 
   // --- Simple compact swap mockup state ---
+  const formatChainName = (raw?: string) => {
+    if (!raw) return '';
+    return raw
+      .split('_')
+      .map((w) => (w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w))
+      .join(' ');
+  };
+
   const tokenOptions = useMemo(() => {
     return sortedBalances.map((t) => ({
       id: t.id,
-      label: `${t.symbol}${t.chain_name ? ` (${t.chain_name})` : ''}`,
+      label: `${t.symbol}${
+        t.chain_name ? ` (${formatChainName(t.chain_name)})` : ''
+      }`,
     }));
   }, [sortedBalances]);
 
@@ -340,7 +350,7 @@ export const WalletControls = () => {
                       >
                         <div className="flex flex-col items-start flex-1 min-w-0 text-left overflow-hidden">
                           <span className="text-sm opacity-70">
-                            {bal.chain_name}
+                            {formatChainName(bal.chain_name)}
                           </span>
                           <span className="text-lg font-medium truncate block">
                             {bal.symbol}
