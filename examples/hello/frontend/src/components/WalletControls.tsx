@@ -3,23 +3,12 @@ import './WalletControls.css';
 import { useWallet } from '../hooks/useWallet';
 import { truncateAddress } from '../utils/truncate';
 import { IconDisconnect } from './icons';
-import {
-  DynamicConnectButton,
-  DynamicWidget,
-  useDynamicContext,
-} from '@dynamic-labs/sdk-react-core';
 import { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from './ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
 export const WalletControls = () => {
-  const { account, disconnectWallet } = useWallet();
+  const { account } = useWallet();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { theme } = useTheme();
 
@@ -45,12 +34,11 @@ export const WalletControls = () => {
             <IconDisconnect />
           </button>
         </SheetTrigger>
-        <SheetContent className="border-l z-[9999] bg-transparent shadow-none [&>button]:top-6 [&>button]:right-6">
+        <SheetContent className="border-none z-[9999] bg-transparent shadow-none p-4 [&>button]:top-10 [&>button]:right-10">
           <div
-            className={`rounded-lg p-4 h-full w-full ${
+            className={`rounded-3xl p-4 h-full w-full ${
               theme === 'dark' ? 'bg-[#171f29]' : 'bg-white'
             }`}
-            style={{ margin: '1rem' }}
           >
             {/* Blank sheet content - you can add whatever you want here */}
           </div>
