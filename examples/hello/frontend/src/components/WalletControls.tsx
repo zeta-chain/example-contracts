@@ -78,7 +78,10 @@ export const WalletControls = () => {
             </span>
           </div>
         </SheetTrigger>
-        <SheetContent className="border-none z-[9999] bg-transparent shadow-none p-4 [&>button]:top-10 [&>button]:right-10">
+        <SheetContent
+          className="border-none z-[9999] bg-transparent shadow-none p-4 [&>button]:top-10 [&>button]:right-10"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <div
             className={`rounded-3xl p-4 h-full w-full overflow-y-auto ${
               theme === 'dark' ? 'bg-[#171f29]' : 'bg-white'
