@@ -32,11 +32,13 @@
 [data-theme='light'] .wallet-controls-container {
   background: #ffffffcc;
   border: 1px solid #e5e8ec;
+  padding-right: 16px;
 }
 
 [data-theme='dark'] .wallet-controls-container {
   background: #171f29cc;
   border: 1px solid #283442;
+  padding-right: 16px;
 }
 
 [data-theme='light'] .wallet-controls-icon {
