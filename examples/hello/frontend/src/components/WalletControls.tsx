@@ -208,7 +208,7 @@ export const WalletControls = () => {
             {account && tokenOptions.length > 0 && (
               <div className="mt-4 text-left">
                 <div className="rounded-2xl px-3 py-3 bg-black/5 dark:bg-white/5">
-                  <div className="text-sm font-semibold mb-2 opacity-80">
+                  <div className="text-sm text-left font-semibold mb-2 opacity-80 mb-4">
                     Swap
                   </div>
                   <div className="flex flex-col gap-2">
@@ -216,13 +216,13 @@ export const WalletControls = () => {
                       <input
                         inputMode="decimal"
                         pattern="^[0-9]*[.]?[0-9]*$"
-                        className="w-1/2 rounded-xl px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
+                        className="w-1/2 rounded-lg px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
                         placeholder="0.0"
                         value={amountIn}
                         onChange={(e) => setAmountIn(e.target.value)}
                       />
                       <select
-                        className="w-1/2 rounded-xl px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
+                        className="w-1/2 rounded-lg px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
                         value={sourceTokenId}
                         onChange={(e) => setSourceTokenId(e.target.value)}
                       >
@@ -236,12 +236,12 @@ export const WalletControls = () => {
                     <div className="flex items-center gap-2">
                       <input
                         readOnly
-                        className="w-1/2 rounded-xl px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none opacity-70"
+                        className="w-1/2 rounded-lg px-3 py-2 text-sm bg-transparent dark:border-white/10 focus:outline-none opacity-70"
                         placeholder="0.0"
                         value={amountOut}
                       />
                       <select
-                        className="w-1/2 rounded-xl px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
+                        className="w-1/2 rounded-lg px-3 py-2 text-sm bg-transparent border border-black/10 dark:border-white/10 focus:outline-none"
                         value={targetTokenId}
                         onChange={(e) => setTargetTokenId(e.target.value)}
                       >
