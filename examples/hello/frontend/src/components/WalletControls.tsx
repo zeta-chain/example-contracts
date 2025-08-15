@@ -4,13 +4,13 @@ import { useWallet } from '../hooks/useWallet';
 import { truncateAddress } from '../utils/truncate';
 import { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from './ui/sheet';
 import { Button } from './Button';
 import {
   DynamicUserProfile,
   useDynamicContext,
 } from '@dynamic-labs/sdk-react-core';
-import { Power, Settings } from 'lucide-react';
+import { Power, Settings, X } from 'lucide-react';
 
 export const WalletControls = () => {
   const { account, disconnectWallet } = useWallet();
@@ -56,6 +56,13 @@ export const WalletControls = () => {
                 aria-label="Disconnect"
                 icon={<Power size={16} />}
               />
+              <SheetClose asChild>
+                <Button
+                  variant="thin"
+                  aria-label="Close"
+                  icon={<X size={16} />}
+                />
+              </SheetClose>
             </div>
           </div>
         </SheetContent>
