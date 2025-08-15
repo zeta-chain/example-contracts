@@ -13,6 +13,7 @@
     "@dynamic-labs/ethereum": "^4.25.10",
     "@dynamic-labs/sdk-react-core": "^4.25.10",
     "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.12",
     "@zetachain/toolkit": "16.0.1",
     "class-variance-authority": "^0.7.1",

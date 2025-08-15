@@ -5,7 +5,7 @@ import { truncateAddress } from '../utils/truncate';
 import { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from './ui/sheet';
-import { Button } from './Button';
+import { Button } from './ui/button';
 import {
   DynamicUserProfile,
   useDynamicContext,
@@ -42,26 +42,24 @@ export const WalletControls = () => {
           >
             <div className="flex justify-end gap-2">
               <Button
-                variant="thin"
                 onClick={() => setShowDynamicUserProfile(true)}
                 aria-label="Settings"
-                icon={<Settings size={16} />}
-              />
+              >
+                <Settings />
+              </Button>
               <Button
-                variant="thin"
                 onClick={async () => {
                   await disconnectWallet();
                   setIsSheetOpen(false);
                 }}
                 aria-label="Disconnect"
-                icon={<Power size={16} />}
-              />
+              >
+                <Power />
+              </Button>
               <SheetClose asChild>
-                <Button
-                  variant="thin"
-                  aria-label="Close"
-                  icon={<X size={16} />}
-                />
+                <Button aria-label="Close">
+                  <X />
+                </Button>
               </SheetClose>
             </div>
           </div>
