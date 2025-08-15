@@ -255,11 +255,14 @@ export const WalletControls = () => {
                   ].map((item, idx) => {
                     const IconComp = item.icon;
                     return (
-                      <div key={idx} className="flex flex-col items-center">
-                        <div className="w-16 h-16 rounded-2xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                          <IconComp className="size-7 opacity-80" />
+                      <div
+                        key={idx}
+                        className="flex flex-col items-center group cursor-pointer select-none"
+                      >
+                        <div className="w-16 h-16 rounded-2xl bg-black/10 dark:bg-white/10 flex items-center justify-center transition-all duration-150 ring-1 ring-transparent group-hover:ring-black/20 dark:group-hover:ring-white/20 group-hover:bg-black/20 dark:group-hover:bg-white/20 group-hover:scale-[1.03]">
+                          <IconComp className="size-7 opacity-80 transition-opacity transition-transform duration-150 group-hover:opacity-100 group-hover:scale-105" />
                         </div>
-                        <span className="text-xs mt-1 opacity-80">
+                        <span className="text-xs mt-1 opacity-80 transition-opacity duration-150 group-hover:opacity-100">
                           {item.label}
                         </span>
                       </div>
