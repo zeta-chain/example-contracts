@@ -14,14 +14,18 @@ const main = async (opts: any) => {
     const factory = new ethers.ContractFactory(abi, bytecode, signer);
 
     const contract = await factory.deploy(opts.gateway);
-    await contract.deployed();
+    const tx = contract.deployTransaction;
+    const predictedAddress = ethers.utils.getContractAddress({
+      from: signer.address,
+      nonce: tx.nonce,
+    });
 
     console.log(
       JSON.stringify({
-        contractAddress: contract.address,
+        contractAddress: predictedAddress,
         deployer: signer.address,
         network: networkInfo,
-        transactionHash: contract.deployTransaction?.hash,
+        transactionHash: tx?.hash,
       })
     );
   } catch (err) {
