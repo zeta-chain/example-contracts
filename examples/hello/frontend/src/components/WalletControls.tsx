@@ -3,6 +3,23 @@ import './WalletControls.css';
 import { useWallet } from '../hooks/useWallet';
 import { truncateAddress } from '../utils/truncate';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { useTheme } from '../hooks/useTheme';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from './ui/sheet';
 import { Button } from './ui/button';
@@ -52,6 +69,36 @@ const EnterRow = ({ children }: { children: ReactNode }) => {
       className={`transition-all duration-300 ease-out ${
         isReady ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
       }`}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Sortable row wrapper using dnd-kit
+const SortableRow = ({ id, children }: { id: string; children: ReactNode }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 5 : undefined,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="touch-none"
     >
       {children}
     </div>
@@ -132,8 +179,14 @@ export const WalletControls = () => {
   ] as { label: string; icon: any }[]);
   const [removedItems, setRemovedItems] = useState<string[]>([]);
   const [exitingLabels, setExitingLabels] = useState<Set<string>>(new Set());
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
-  const [overIndex, setOverIndex] = useState<number | null>(null);
+  // dnd-kit handles reordering animations and drag indices
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 150, tolerance: 5 },
+    }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } })
+  );
 
   const handleIconClick = (label: string) => {
     if (exitingLabels.has(label)) return;
@@ -317,68 +370,43 @@ export const WalletControls = () => {
                 </div>
                 {removedItems.length > 0 && (
                   <div className="mt-4">
-                    <div className="flex flex-col gap-2">
-                      {removedItems.map((name, idx) => (
-                        <div
-                          key={`${name}-${idx}`}
-                          onDragOver={(e) => {
-                            e.preventDefault();
-                            e.dataTransfer.dropEffect = 'move';
-                            if (overIndex !== idx) setOverIndex(idx);
-                          }}
-                          onDrop={(e) => {
-                            e.preventDefault();
-                            if (dragIndex == null || dragIndex === idx) {
-                              setOverIndex(null);
-                              return;
-                            }
-                            setRemovedItems((prev) => {
-                              const next = prev.slice();
-                              const [moved] = next.splice(dragIndex, 1);
-                              next.splice(idx, 0, moved);
-                              return next;
-                            });
-                            setDragIndex(null);
-                            setOverIndex(null);
-                          }}
-                          onDragEnter={() => {
-                            if (overIndex !== idx) setOverIndex(idx);
-                          }}
-                          onDragLeave={() => {
-                            setOverIndex((current) =>
-                              current === idx ? null : current
-                            );
-                          }}
-                        >
-                          <EnterRow>
-                            <div
-                              draggable
-                              onDragStart={(e) => {
-                                e.dataTransfer.effectAllowed = 'move';
-                                try {
-                                  e.dataTransfer.setData(
-                                    'text/plain',
-                                    String(idx)
-                                  );
-                                } catch {}
-                                setDragIndex(idx);
-                              }}
-                              onDragEnd={() => {
-                                setDragIndex(null);
-                                setOverIndex(null);
-                              }}
-                              className={`w-full h-40 rounded-2xl px-4 bg-black/10 dark:bg-white/5 flex items-center justify-center cursor-grab active:cursor-grabbing transition-shadow ${
-                                overIndex === idx
-                                  ? 'ring-1 ring-black/20 dark:ring-white/20'
-                                  : ''
-                              }`}
-                            >
-                              <span className="text-sm opacity-80">{name}</span>
-                            </div>
-                          </EnterRow>
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={(event: DragEndEvent) => {
+                        const { active, over } = event;
+                        if (!over || active.id === over.id) return;
+                        const oldIndex = removedItems.findIndex(
+                          (n) => n === active.id
+                        );
+                        const newIndex = removedItems.findIndex(
+                          (n) => n === over.id
+                        );
+                        if (oldIndex === -1 || newIndex === -1) return;
+                        setRemovedItems((items) =>
+                          arrayMove(items, oldIndex, newIndex)
+                        );
+                      }}
+                    >
+                      <SortableContext
+                        items={removedItems}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        <div className="flex flex-col gap-2">
+                          {removedItems.map((name) => (
+                            <SortableRow key={name} id={name}>
+                              <EnterRow>
+                                <div className="w-full h-40 rounded-2xl px-4 bg-black/10 dark:bg-white/5 flex items-center justify-center">
+                                  <span className="text-sm opacity-80">
+                                    {name}
+                                  </span>
+                                </div>
+                              </EnterRow>
+                            </SortableRow>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </SortableContext>
+                    </DndContext>
                   </div>
                 )}
               </div>
