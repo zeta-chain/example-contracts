@@ -52,5 +52,6 @@ jobs:
           cd "${{ matrix.example-dir }}"
           yarn
           forge soldeer update
+          anvil --version
           chmod +x ./scripts/localnet.sh
           ./scripts/localnet.sh start
