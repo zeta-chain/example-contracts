@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { ethers } from "ethers";
-import { loadContractArtifacts } from "../../swap/commands/common";
+import { getAbi } from "../../swap/commands/common";
 
 const main = async (opts: any) => {
   const provider = new ethers.providers.JsonRpcProvider(opts.rpc);
@@ -10,7 +10,7 @@ const main = async (opts: any) => {
   const networkInfo = network.name ?? network.chainId;
 
   try {
-    const { abi, bytecode } = loadContractArtifacts(opts.name);
+    const { abi, bytecode } = getAbi(opts.name);
     const factory = new ethers.ContractFactory(abi, bytecode, signer);
     const baseNonce = await signer.getTransactionCount("pending");
     const predictedImplementationAddress = ethers.utils.getContractAddress({
@@ -25,10 +25,7 @@ const main = async (opts: any) => {
       [opts.gateway, opts.uniswapRouter, opts.gasLimit, signer.address]
     );
 
-    const { abi: proxyAbi, bytecode: proxyBytecode } = loadContractArtifacts(
-      "ERC1967Proxy",
-      "ERC1967Proxy.sol"
-    );
+    const { abi: proxyAbi, bytecode: proxyBytecode } = getAbi("ERC1967Proxy");
 
     const proxyFactory = new ethers.ContractFactory(
       proxyAbi,
