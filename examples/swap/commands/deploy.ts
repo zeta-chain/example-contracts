@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { ethers } from "ethers";
-import { loadContractArtifacts } from "./common";
+import { loadContractArtifacts } from "../../swap/commands/common";
 
 const main = async (opts: any) => {
   const provider = new ethers.providers.JsonRpcProvider(opts.rpc);
@@ -12,8 +12,13 @@ const main = async (opts: any) => {
   try {
     const { abi, bytecode } = loadContractArtifacts(opts.name);
     const factory = new ethers.ContractFactory(abi, bytecode, signer);
-    const implementation = await factory.deploy();
-    await implementation.deployed();
+    const baseNonce = await signer.getTransactionCount("pending");
+    const predictedImplementationAddress = ethers.utils.getContractAddress({
+      from: signer.address,
+      nonce: baseNonce,
+    });
+    const implementation = await factory.deploy({ nonce: baseNonce });
+    const implTx = implementation.deployTransaction;
 
     const initData = new ethers.utils.Interface(abi).encodeFunctionData(
       "initialize",
@@ -30,16 +35,28 @@ const main = async (opts: any) => {
       proxyBytecode,
       signer
     );
-    const proxy = await proxyFactory.deploy(implementation.address, initData);
-    await proxy.deployed();
+    const predictedProxyAddress = ethers.utils.getContractAddress({
+      from: signer.address,
+      nonce: baseNonce + 1,
+    });
+    const proxy = await proxyFactory.deploy(
+      predictedImplementationAddress,
+      initData,
+      {
+        nonce: baseNonce + 1,
+        gasLimit: ethers.BigNumber.from(opts.txGasLimit || 4000000),
+      }
+    );
+    const proxyTx = proxy.deployTransaction;
 
     console.log(
       JSON.stringify({
-        contractAddress: proxy.address,
-        implementationAddress: implementation.address,
+        contractAddress: predictedProxyAddress,
+        implementationAddress: predictedImplementationAddress,
         deployer: signer.address,
         network: networkInfo,
-        transactionHash: proxy.deployTransaction?.hash,
+        transactionHash: proxyTx?.hash,
+        implementationTransactionHash: implTx?.hash,
       })
     );
   } catch (err) {
@@ -71,8 +88,14 @@ export const deploy = new Command("deploy")
     "0x6c533f7fe93fae114d0954697069df33c9b74fd7"
   )
   .option("--gas-limit <number>", "Gas limit for the transaction", "1000000")
+  .option(
+    "--tx-gas-limit <number>",
+    "Gas limit override for deployment transactions",
+    "4000000"
+  )
   .action((opts) => {
     opts.gasLimit = Number(opts.gasLimit);
+    if (opts.txGasLimit) opts.txGasLimit = Number(opts.txGasLimit);
     main(opts).catch((err) => {
       console.error("Unhandled error:", err);
       process.exit(1);
