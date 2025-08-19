@@ -17,7 +17,7 @@ no-log-ix-name = []
 idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
 
 [dependencies]
-anchor-lang = { version = "=0.30.0" }
-anchor-spl = { version = "=0.30.0" }
-spl-associated-token-account = "3.0.2"
-solana-program = "=1.18.15"
+anchor-lang = { version = "=0.31.1" }
+anchor-spl = { version = "=0.31.1" }
+spl-associated-token-account = "6.0.0"
+gateway = { git = "https://github.com/zeta-chain/protocol-contracts-solana/", version = "0.1.0", features = ["cpi", "no-entrypoint"] }
