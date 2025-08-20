@@ -32,7 +32,7 @@ export const ConnectWallet = () => {
         onClick={handleConnectClick}
         disabled={connecting}
       >
-        {connecting ? 'Connecting...' : 'Connect Wallet'}
+        {connecting ? 'Connecting...' : 'Sign In'}
       </Button>
       <WalletSelectionModal
         isOpen={isModalOpen}
