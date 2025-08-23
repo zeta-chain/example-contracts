@@ -1,7 +1,7 @@
 import '@zetachain/wallet/ethereum';
 
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum';
-import { SdkViewSectionType, SdkViewType } from '@dynamic-labs/sdk-api';
+import { SdkViewSectionType, SdkViewType } from '@dynamic-labs/sdk-api-core';
 import {
   DynamicContextProvider,
   DynamicUserProfile,
