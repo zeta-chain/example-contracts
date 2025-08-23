@@ -1,0 +1,5 @@
+{
+  "name": "Foundry Dev",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "postCreateCommand": "/bin/bash -lc 'curl -L https://foundry.paradigm.xyz | bash && foundryup -i 1.2.3 && forge --version && cast --version && anvil --version'"
+}
