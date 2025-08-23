@@ -1,6 +1,7 @@
 import '@zetachain/wallet/ethereum';
 
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum';
+import { SdkViewSectionType, SdkViewType } from '@dynamic-labs/sdk-api';
 import {
   DynamicContextProvider,
   DynamicUserProfile,
@@ -14,29 +15,6 @@ import { useTheme } from './hooks/useTheme';
 function App() {
   const { theme } = useTheme();
 
-  const cssOverrides = `
-    .login-with-email-form,
-    .divider, 
-    .social-sign-in {
-      display: none;
-    }
-    
-    /* Hide all wallet buttons by default */
-    .login-with-email-wallet-list__container .wallet-list-item__tile {
-      display: none;
-    }
-    
-    /* Show only the Universal Sign In wallet */
-    .login-with-email-wallet-list__container .wallet-list-item__tile:has(img[alt="universalsigninevm"]) {
-      display: flex;
-    }
-    
-    /* Hide the "View all wallets" button */
-    .login-with-email-wallet-list__container .list-item-button {
-      display: none;
-    }
-  `;
-
   return (
     <DynamicContextProvider
       settings={{
@@ -44,8 +22,15 @@ function App() {
         walletConnectors: [EthereumWalletConnectors],
         overrides: {
           evmNetworks,
+          views: [
+            {
+              type: SdkViewType.Login,
+              sections: [{ type: SdkViewSectionType.Wallet }],
+            },
+          ],
         },
-        cssOverrides,
+        walletsFilter: (wallets) =>
+          wallets.filter((w) => w.key === 'universalsigninevm'),
       }}
       theme={theme}
     >
