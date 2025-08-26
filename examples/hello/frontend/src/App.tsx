@@ -1,7 +1,6 @@
 import '@zetachain/wallet/ethereum';
 
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum';
-import { SdkViewSectionType, SdkViewType } from '@dynamic-labs/sdk-api-core';
 import {
   DynamicContextProvider,
   DynamicUserProfile,
@@ -22,15 +21,7 @@ function App() {
         walletConnectors: [EthereumWalletConnectors],
         overrides: {
           evmNetworks,
-          views: [
-            {
-              type: SdkViewType.Login,
-              sections: [{ type: SdkViewSectionType.Wallet }],
-            },
-          ],
         },
-        walletsFilter: (wallets) =>
-          wallets.filter((w) => w.key === 'universalsigninevm'),
       }}
       theme={theme}
     >
