@@ -1,8 +1,5 @@
-import {
-  getSigner,
-  getWeb3Provider,
-  useUniversalSignInContext,
-} from '@zetachain/wallet/react';
+import { getSigner, getWeb3Provider } from '@zetachain/wallet';
+import { useUniversalSignInContext } from '@zetachain/wallet/react';
 import { ethers } from 'ethers';
 
 import type { EIP6963ProviderDetail } from '../types/wallet';
