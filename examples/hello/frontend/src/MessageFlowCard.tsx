@@ -1,7 +1,7 @@
 import './MessageFlowCard.css';
 
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { evmCall } from '@zetachain/toolkit/chains/evm';
+import { useUniversalSignInContext } from '@zetachain/wallet/react';
 import { ZeroAddress } from 'ethers';
 import { useEffect, useRef, useState } from 'react';
 
@@ -23,7 +23,7 @@ export function MessageFlowCard({
   selectedProvider,
   supportedChain,
 }: MessageFlowCardProps) {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet } = useUniversalSignInContext();
 
   const MAX_STRING_LENGTH = 2000;
   const [isUserSigningTx, setIsUserSigningTx] = useState(false);

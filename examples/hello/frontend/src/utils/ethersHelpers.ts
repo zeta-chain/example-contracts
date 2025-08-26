@@ -1,12 +1,15 @@
-import { getSigner, getWeb3Provider } from '@dynamic-labs/ethers-v6';
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import {
+  getSigner,
+  getWeb3Provider,
+  useUniversalSignInContext,
+} from '@zetachain/wallet/react';
 import { ethers } from 'ethers';
 
 import type { EIP6963ProviderDetail } from '../types/wallet';
 
 interface GetSignerAndProviderArgs {
   selectedProvider: EIP6963ProviderDetail | null;
-  primaryWallet: ReturnType<typeof useDynamicContext>['primaryWallet'];
+  primaryWallet: ReturnType<typeof useUniversalSignInContext>['primaryWallet'];
 }
 
 interface GetSignerAndProviderResult {

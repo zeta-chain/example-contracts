@@ -1,8 +1,8 @@
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import { useUniversalSignInContext } from '@zetachain/wallet/react';
 import { useCallback } from 'react';
 
 export const useDynamicSwitchChain = () => {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet } = useUniversalSignInContext();
 
   const switchChain = useCallback(
     async (chainId: number) => {

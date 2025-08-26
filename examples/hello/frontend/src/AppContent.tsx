@@ -1,4 +1,4 @@
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import { useUniversalSignInContext } from '@zetachain/wallet/react';
 
 import { ConnectedContent } from './ConnectedContent';
 import { SUPPORTED_CHAINS } from './constants/chains';
@@ -7,8 +7,8 @@ import { DisconnectedContent } from './DisconnectedContent';
 import { useEip6963Wallet } from './hooks/useEip6963Wallet';
 
 export function AppContent() {
-  // Using Dynamic's official hooks instead of custom context
-  const { primaryWallet, network } = useDynamicContext();
+  // Using Universal Sign-In context
+  const { primaryWallet, network } = useUniversalSignInContext();
 
   const { selectedProvider, decimalChainId: eip6963ChainId } =
     useEip6963Wallet();

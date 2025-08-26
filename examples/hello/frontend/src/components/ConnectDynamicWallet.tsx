@@ -2,15 +2,15 @@ import './ConnectDynamicWallet.css';
 
 import {
   DynamicWidget,
-  useDynamicContext,
+  useUniversalSignInContext,
   useWalletOptions,
-} from '@dynamic-labs/sdk-react-core';
+} from '@zetachain/wallet/react';
 
 import { Button } from './Button';
 import { IconWallet } from './icons';
 
 export const ConnectDynamicWallet = () => {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet } = useUniversalSignInContext();
   const { selectWalletOption } = useWalletOptions();
 
   if (!primaryWallet?.address) {
