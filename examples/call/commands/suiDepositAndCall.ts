@@ -152,7 +152,7 @@ export const suiDepositAndCall = async (
   const abiCoder = AbiCoder.defaultAbiCoder();
   const payloadABI = abiCoder.encode(params.types, params.values as any);
   const payloadBytes = getBytes(payloadABI);
-
+  
   const target = `${gatewayPackage}::gateway::deposit_and_call`;
   const gateway = tx.object(gatewayObject);
   const receiver = tx.pure.string(params.receiver);
