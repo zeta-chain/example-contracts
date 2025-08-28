@@ -143,12 +143,11 @@ export const suiDepositAndCall = async (
   const tx = new Transaction();
   const abiCoder = AbiCoder.defaultAbiCoder();
   const payloadABI = abiCoder.encode(params.types, params.values as any);
-  const payloadBytes = getBytes(payloadABI);
 
   const target = `${gatewayPackage}::gateway::deposit_and_call`;
   const gateway = tx.object(gatewayObject);
   const receiver = tx.pure.string(params.receiver);
-  const payload = tx.pure.vector("u8", payloadBytes);
+  const payload = tx.pure.vector("u8", getBytes(payloadABI));
 
   const coinType = params.token ?? SUI_GAS_COIN_TYPE;
 
