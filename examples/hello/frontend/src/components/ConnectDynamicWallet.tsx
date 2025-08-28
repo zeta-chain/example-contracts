@@ -2,8 +2,8 @@ import './ConnectDynamicWallet.css';
 
 import {
   DynamicWidget,
+  useConnectUniversalSignIn,
   useUniversalSignInContext,
-  useWalletOptions,
 } from '@zetachain/wallet/react';
 
 import { Button } from './Button';
@@ -11,13 +11,13 @@ import { IconWallet } from './icons';
 
 export const ConnectDynamicWallet = () => {
   const { primaryWallet } = useUniversalSignInContext();
-  const { selectWalletOption } = useWalletOptions();
+  const { connectUniversalSignIn } = useConnectUniversalSignIn();
 
   if (!primaryWallet?.address) {
     return (
       <Button
         className="dynamic-connect-button"
-        onClick={() => selectWalletOption('universalsigninevm')}
+        onClick={connectUniversalSignIn}
       >
         <div className="dynamic-connect-button-content">
           <IconWallet />
