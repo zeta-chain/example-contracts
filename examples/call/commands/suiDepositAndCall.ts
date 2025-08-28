@@ -3,7 +3,7 @@
 import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
 import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
 import { Transaction } from "@mysten/sui/transactions";
-import { AbiCoder, getBytes } from "ethers";
+import { utils } from "ethers";
 import { mainnet, testnet } from "@zetachain/protocol-contracts";
 import { Command } from "commander";
 import { bech32 } from "bech32";
@@ -141,13 +141,13 @@ export const suiDepositAndCall = async (
     : DEFAULT_GAS_BUDGET;
 
   const tx = new Transaction();
-  const abiCoder = AbiCoder.defaultAbiCoder();
+  const abiCoder = new utils.AbiCoder();
   const payloadABI = abiCoder.encode(params.types, params.values as any);
 
   const target = `${gatewayPackage}::gateway::deposit_and_call`;
   const gateway = tx.object(gatewayObject);
   const receiver = tx.pure.string(params.receiver);
-  const payload = tx.pure.vector("u8", getBytes(payloadABI));
+  const payload = tx.pure.vector("u8", utils.arrayify(payloadABI));
 
   const coinType = params.token ?? SUI_GAS_COIN_TYPE;
 
