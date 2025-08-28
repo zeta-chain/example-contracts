@@ -13,17 +13,9 @@ export type SuiChainId = "101" | "103" | "104"; // mainnet, testnet, localnet
 export interface SuiDepositAndCallParams {
   amount: string;
   receiver: string;
-  token?: string; // defaults to SUI
+  token?: string;
   types: string[];
   values: Array<string | bigint | boolean>;
-}
-
-export interface SuiDepositAndCallOptions {
-  chainId: SuiChainId;
-  signer: Ed25519Keypair;
-  gasLimit?: string; // bigint string
-  gatewayPackage?: string; // optional explicit override
-  gatewayObject?: string; // optional explicit override
 }
 
 const DEFAULT_GAS_BUDGET = 10_000_000n;
@@ -127,7 +119,7 @@ const getKeypairFromPrivateKey = (privateKey: string): Ed25519Keypair => {
 
 export const suiDepositAndCall = async (
   params: SuiDepositAndCallParams,
-  options: SuiDepositAndCallOptions
+  options: any
 ) => {
   if (!params.amount) throw new Error("amount is required");
   if (!params.receiver) throw new Error("receiver is required");
@@ -152,7 +144,7 @@ export const suiDepositAndCall = async (
   const abiCoder = AbiCoder.defaultAbiCoder();
   const payloadABI = abiCoder.encode(params.types, params.values as any);
   const payloadBytes = getBytes(payloadABI);
-  
+
   const target = `${gatewayPackage}::gateway::deposit_and_call`;
   const gateway = tx.object(gatewayObject);
   const receiver = tx.pure.string(params.receiver);
