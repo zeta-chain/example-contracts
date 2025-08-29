@@ -8,7 +8,13 @@ import { mainnet, testnet } from "@zetachain/protocol-contracts";
 import { Command } from "commander";
 import { bech32 } from "bech32";
 
-export type SuiChainId = "101" | "103" | "104"; // mainnet, testnet, localnet
+export const SUI_CHAIN_ID_TO_NETWORK = {
+  "103": "testnet",
+  "104": "localnet",
+  "105": "mainnet",
+} as const;
+
+export type SuiChainId = keyof typeof SUI_CHAIN_ID_TO_NETWORK;
 
 export interface SuiDepositAndCallParams {
   amount: string;
@@ -41,15 +47,6 @@ const toSmallestUnit = (amount: string, decimals = 9): bigint => {
   return BigInt(whole) * multiplier + BigInt(paddedFraction);
 };
 
-const getNetworkByChainId = (
-  chainId: SuiChainId
-): "mainnet" | "testnet" | "localnet" => {
-  if (chainId === "101") return "mainnet";
-  if (chainId === "103") return "testnet";
-  if (chainId === "104") return "localnet";
-  throw new Error(`Unsupported Sui chainId: ${chainId}`);
-};
-
 const getGatewayAddressFromChainId = (chainIdNumber: number): string | null => {
   const networks = [...testnet, ...mainnet];
   const match = networks.find(
@@ -63,7 +60,7 @@ const resolveGatewayAndClient = (
   gatewayPackage?: string,
   gatewayObject?: string
 ) => {
-  const network = getNetworkByChainId(chainId);
+  const network = SUI_CHAIN_ID_TO_NETWORK[chainId];
   const client = new SuiClient({ url: getFullnodeUrl(network) });
 
   if (gatewayPackage && gatewayObject) {
