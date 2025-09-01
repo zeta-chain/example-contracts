@@ -3,6 +3,9 @@ name: Universal Contracts Analytics
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   count-contracts:
     runs-on: ubuntu-latest
