@@ -18,26 +18,32 @@ jobs:
           set -euo pipefail
 
           # Base search query; quote the import path to avoid parse errors
-          BASE_QUERY='"@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol" in:file type:code'
+          BASE_QUERY='"@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol" in:file'
+          echo "Base query: $BASE_QUERY"
 
           PER_PAGE=100
           TMP=$(mktemp)
           trap 'rm -f "$TMP"' EXIT
           : > "$TMP"
+          echo "Using per_page=$PER_PAGE"
+          echo "Temp file: $TMP"
 
           fetch_repos() {
             local query="$1"
             local out="$2"
             local page=1
+            echo "Fetching repos for query: $query"
             while :; do
               local encoded
               encoded=$(jq -rn --arg q "$query" '$q|@uri')
               local resp
+              local url="https://api.github.com/search/code?q=${encoded}&per_page=${PER_PAGE}&page=${page}"
+              echo "Requesting page ${page}: ${url}"
               resp=$(curl -sS \
                 -H "Accept: application/vnd.github+json" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
                 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/search/code?q=${encoded}&per_page=${PER_PAGE}&page=${page}")
+                "$url")
 
               # If the API returns an error with a message, surface it for debugging
               local message
@@ -48,14 +54,20 @@ jobs:
 
               local items_len
               items_len=$(echo "$resp" | jq '(.items // []) | length')
+              echo "Items on page ${page}: ${items_len}"
               if [ "$items_len" -eq 0 ]; then
+                echo "No items returned; stopping pagination for this query."
                 break
               fi
 
               echo "$resp" | jq -r '.items[].repository.html_url' >> "$out"
+              local page_repos
+              page_repos=$(echo "$resp" | jq -r '.items[].repository.html_url' | sort -u | wc -l | tr -d ' ')
+              echo "Collected ${page_repos} repo URLs from page ${page}."
 
               # Stop if fewer than PER_PAGE items returned
               if [ "$items_len" -lt "$PER_PAGE" ]; then
+                echo "Last page reached (items < per_page)."
                 break
               fi
 
@@ -64,15 +76,22 @@ jobs:
           }
 
           # Try excluding forks first
+          echo "First pass: excluding forks (fork:false)"
           fetch_repos "$BASE_QUERY fork:false" "$TMP"
           COUNT=$(sort -u "$TMP" | grep -c . || true)
+          echo "Unique repositories after first pass: $COUNT"
 
           # Fallback: include forks if excluding forks returns zero
           if [ "$COUNT" -eq 0 ]; then
+            echo "No results without forks; retrying including forks."
             : > "$TMP"
             fetch_repos "$BASE_QUERY" "$TMP"
             COUNT=$(sort -u "$TMP" | grep -c . || true)
+            echo "Unique repositories after including forks: $COUNT"
           fi
+
+          echo "Listing up to 50 unique repositories:"
+          sort -u "$TMP" | sed -n '1,50p'
 
           echo "Repositories using GatewayZEVM.sol: $COUNT"
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
