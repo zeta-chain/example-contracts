@@ -1,6 +1,8 @@
 name: Universal Contracts Analytics
 
 on:
+  schedule:
+    - cron: "0 0 * * *" # scheduled to run every day at midnight
   workflow_dispatch:
 
 permissions:
