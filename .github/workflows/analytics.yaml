@@ -17,8 +17,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Base search query; looks for import occurrences
-          BASE_QUERY='@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol in:file'
+          # Base search query; quote the import path to avoid parse errors
+          BASE_QUERY='"@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol" in:file type:code'
 
           PER_PAGE=100
           TMP=$(mktemp)
