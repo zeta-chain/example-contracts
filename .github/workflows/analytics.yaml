@@ -15,10 +15,42 @@ jobs:
       - name: Count repos using GitHub Code Search
         id: count
         run: |
-          COUNT=$(curl -s -H "Accept: application/vnd.github+json" \
-               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-               "https://api.github.com/search/code?q=@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol+in:file" \
-            | jq -r '.items[].repository.html_url' | sort -u | wc -l)
+          set -euo pipefail
+
+          # Build search query; include fork:false to exclude forks (remove if undesired)
+          QUERY='@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol in:file fork:false'
+          # URL-encode the query using jq
+          ENCODED_QUERY=$(jq -rn --arg q "$QUERY" '$q|@uri')
+
+          PER_PAGE=100
+          PAGE=1
+          TMP=$(mktemp)
+          trap 'rm -f "$TMP"' EXIT
+          : > "$TMP"
+
+          while :; do
+            RESP=$(curl -sS \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/search/code?q=${ENCODED_QUERY}&per_page=${PER_PAGE}&page=${PAGE}")
+
+            ITEMS_LEN=$(echo "$RESP" | jq '.items | length')
+            if [ -z "$ITEMS_LEN" ] || [ "$ITEMS_LEN" -eq 0 ]; then
+              break
+            fi
+
+            echo "$RESP" | jq -r '.items[].repository.html_url' >> "$TMP"
+
+            # Stop if this page returned fewer than PER_PAGE items
+            if [ "$ITEMS_LEN" -lt "$PER_PAGE" ]; then
+              break
+            fi
+
+            PAGE=$((PAGE+1))
+          done
+
+          COUNT=$(sort -u "$TMP" | grep -c . || true)
           echo "Repositories using GatewayZEVM.sol: $COUNT"
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
 
