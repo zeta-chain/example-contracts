@@ -40,5 +40,5 @@ jobs:
             --arg event "universal_contracts_count" \
             --arg distinct_id "github_actions/${{ github.repository }}" \
             --argjson count "$COUNT" \
-            '{api_key:$api_key, event:$event, distinct_id:$distinct_id, properties:{count:$count, repository:$repo, workflow:$workflow, run_id:$run_id, sha:$sha}}' \
+            '{api_key:$api_key, event:$event, distinct_id:$distinct_id, properties:{count:$count}}' \
           | curl -s -f -X POST "$HOST/i/v0/e/" -H "Content-Type: application/json" --data-binary @-
