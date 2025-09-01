@@ -24,7 +24,6 @@ jobs:
         if: ${{ success() && steps.count.outputs.count != '' }}
         env:
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
-          # Optional: set org/repo Variable POSTHOG_HOST to override region (e.g. https://eu.i.posthog.com)
           POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
         run: |
           if [ -z "$POSTHOG_API_KEY" ]; then
@@ -38,12 +37,8 @@ jobs:
           # Build JSON with jq to ensure valid formatting and numeric count
           jq -n \
             --arg api_key "$POSTHOG_API_KEY" \
-            --arg event "universal_contracts.count_contracts" \
+            --arg event "universal_contracts_count" \
             --arg distinct_id "github_actions/${{ github.repository }}" \
-            --arg repo "${{ github.repository }}" \
-            --arg workflow "${{ github.workflow }}" \
-            --arg run_id "${{ github.run_id }}" \
-            --arg sha "${{ github.sha }}" \
             --argjson count "$COUNT" \
             '{api_key:$api_key, event:$event, distinct_id:$distinct_id, properties:{count:$count, repository:$repo, workflow:$workflow, run_id:$run_id, sha:$sha}}' \
           | curl -s -f -X POST "$HOST/i/v0/e/" -H "Content-Type: application/json" --data-binary @-
