@@ -75,23 +75,13 @@ jobs:
             done
           }
 
-          # Try excluding forks first
-          echo "First pass: excluding forks (fork:false)"
+          # Execute search (forks excluded)
+          echo "Executing search query (forks excluded)"
           fetch_repos "$BASE_QUERY fork:false" "$TMP"
           COUNT=$(sort -u "$TMP" | grep -c . || true)
-          echo "Unique repositories after first pass: $COUNT"
+          echo "Unique repositories: $COUNT"
 
-          # Fallback: include forks if excluding forks returns zero
-          if [ "$COUNT" -eq 0 ]; then
-            echo "No results without forks; retrying including forks."
-            : > "$TMP"
-            fetch_repos "$BASE_QUERY" "$TMP"
-            COUNT=$(sort -u "$TMP" | grep -c . || true)
-            echo "Unique repositories after including forks: $COUNT"
-          fi
-
-          echo "Listing up to 50 unique repositories:"
-          sort -u "$TMP" | sed -n '1,50p'
+          sort -u "$TMP" 
 
           echo "Repositories using GatewayZEVM.sol: $COUNT"
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
