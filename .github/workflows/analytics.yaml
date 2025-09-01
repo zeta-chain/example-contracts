@@ -15,4 +15,4 @@ jobs:
           curl -s -H "Accept: application/vnd.github+json" \
                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                "https://api.github.com/search/code?q=@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol+in:file" \
-          | jq -r '.items[].repository.html_url' | sort -u
+          | jq -r '.items[].repository.html_url' | sort -u && echo "Done"
