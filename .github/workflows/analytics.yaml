@@ -45,4 +45,14 @@ jobs:
             --arg sha "${{ github.sha }}" \
             --argjson count "$COUNT" \
             '{api_key:$api_key, event:$event, distinct_id:$distinct_id, properties:{count:$count, repository:$repo, workflow:$workflow, run_id:$run_id, sha:$sha}}' \
-          | curl -s -f -X POST "$HOST/i/v0/e/" -H "Content-Type: application/json" --data-binary @-
+          > payload.json
+
+          # Post to PostHog; capture status and body without failing the job
+          HTTP_CODE=$(curl -sS -o response.json -w "%{http_code}" -X POST "$HOST/i/v0/e/" -H "Content-Type: application/json" --data-binary @payload.json)
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "PostHog capture succeeded ($HTTP_CODE)."
+          else
+            echo "PostHog capture returned HTTP $HTTP_CODE; not failing the job." >&2
+            echo "Response body:" >&2
+            cat response.json >&2 || true
+          fi
