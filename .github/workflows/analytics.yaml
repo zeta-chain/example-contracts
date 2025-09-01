@@ -1,0 +1,18 @@
+name: Universal Contracts Analytics
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  count-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run curl and list repos
+        run: |
+          curl -s -H "Accept: application/vnd.github+json" \
+               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+               "https://api.github.com/search/code?q=@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol+in:file" \
+          | jq -r '.items[].repository.html_url' | sort -u
