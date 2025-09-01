@@ -75,9 +75,9 @@ jobs:
             done
           }
 
-          # Execute search (forks excluded)
-          echo "Executing search query (forks excluded)"
-          fetch_repos "$BASE_QUERY fork:false" "$TMP"
+          # Execute search (including forks)
+          echo "Executing search query (including forks)"
+          fetch_repos "$BASE_QUERY" "$TMP"
           COUNT=$(sort -u "$TMP" | grep -c . || true)
           echo "Unique repositories: $COUNT"
 
