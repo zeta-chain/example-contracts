@@ -33,12 +33,12 @@ public entry fun on_call<SOURCE_COIN, TARGET_COIN>(
     transfer::public_transfer(coins_out, receiver)
 }
 
-public fun hello(name: String): String {
+public fun hello(name: String): vector<u8> {
     let mut out = b"hello ";
 
     let name_bytes = ascii::into_bytes(name);
 
     vector::append(&mut out, name_bytes);
 
-    ascii::string(out)
+    out
 }
