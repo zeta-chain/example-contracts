@@ -188,7 +188,7 @@ export const suiDepositAndCall = async (
   return result;
 };
 
-export const suiDepositAndCallCommand = new Command("deposit-and-call")
+export const suiDepositAndCallCommand = new Command("sui-deposit-and-call")
   .summary("Deposit tokens from Sui and call a contract on ZetaChain")
   .requiredOption("--chain-id <chainId>", "Sui chain id: 101, 103, or 104")
   .requiredOption("--receiver <receiver>", "Receiver address on ZetaChain")
