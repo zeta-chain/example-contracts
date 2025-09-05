@@ -103,7 +103,7 @@ jobs:
           # Build JSON with jq to ensure valid formatting and numeric count
           jq -n \
             --arg api_key "$POSTHOG_API_KEY" \
-            --arg event "universal_contracts_count" \
+            --arg event "Universal contract count" \
             --arg distinct_id "github_actions/${{ github.repository }}" \
             --argjson count "$COUNT" \
             '{api_key:$api_key, event:$event, distinct_id:$distinct_id, properties:{count:$count}}' \
