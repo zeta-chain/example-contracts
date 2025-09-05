@@ -1,0 +1,11 @@
+.dynamic-connect-button {
+  padding: 0;
+  min-width: 200px;
+}
+
+.dynamic-connect-button-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 16px;
+}

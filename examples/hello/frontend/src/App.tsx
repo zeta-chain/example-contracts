@@ -1,13 +1,17 @@
+import { UniversalSignInContextProvider } from '@zetachain/wallet/react';
+
 import { AppContent } from './AppContent';
 import { Header } from './components/Header';
-import { ThemeProvider } from './context/ThemeProvider';
+import { useTheme } from './hooks/useTheme';
 
 function App() {
+  const { theme } = useTheme();
+
   return (
-    <ThemeProvider>
+    <UniversalSignInContextProvider environment="sandbox" theme={theme}>
       <Header />
       <AppContent />
-    </ThemeProvider>
+    </UniversalSignInContextProvider>
   );
 }
 
