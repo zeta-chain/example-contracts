@@ -10073,10 +10073,10 @@ yoctocolors-cjs@^2.1.2:
   resolved "https://registry.npmjs.org/yoctocolors-cjs/-/yoctocolors-cjs-2.1.2.tgz#f4b905a840a37506813a7acaa28febe97767a242"
   integrity sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==
 
-zetachain@6.3.0-rc1:
-  version "6.3.0-rc1"
-  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.3.0-rc1.tgz#4d2905928ba2d3e9c0c235dc8c55707cbb6588e8"
-  integrity sha512-9pAV/ea23UjMy1fLwQpAbBbX1VHtESphBeYZ2OmhwGLJS6OUTeN2MszaDclURUYClFclXUPuXP9M7LIwG71sdQ==
+zetachain@^6.3.0:
+  version "6.3.0"
+  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.3.0.tgz#0044876dcc03243d23c4b8b957319f8566299309"
+  integrity sha512-lxhRF+iljJfz0qaCmDe432Pq1kngniloaOPUDw0tWYlsruv+6DYYsQ0AP/5L1O7RPTszAbl+0nhP1hJLcR4lRg==
   dependencies:
     "@zetachain/localnet" "12.0.3"
     "@zetachain/toolkit" "16.1.1"
