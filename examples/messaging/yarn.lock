@@ -3789,10 +3789,10 @@
   resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-2.0.1.tgz#aefd28bb81f1f05b183bd73dc62bd68e456a6ebf"
   integrity sha512-SHV9a1bSgy8litI/LRZ4VIus7Gsjy0wj3n9bZeIsEydn0C5NNZxYO4XW+P06dlEyDQjtcVJQHoQOyHkodBoVsQ==
 
-"@zetachain/toolkit@16.1.1":
-  version "16.1.1"
-  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.1.1.tgz#55f7edd3a25768198055cfeae914d399d2ae93ad"
-  integrity sha512-SzjsIq9dKQd5BcnGY/LFMbfSwwjjCfliehEFpDWTyAHiHao0z5OW4/WEkn61WqI3mpnjQsBZREnhiT6gl/y9DA==
+"@zetachain/toolkit@16.1.2":
+  version "16.1.2"
+  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.1.2.tgz#e191b9ff8039a4f7390eba7f289dbf6f642e1d5f"
+  integrity sha512-tr6kZZNrz8xX1q41hRXDh1+rM5obX6TCChYsmkCKl/JF6G0SwNLHM/1s+i7Ykz1MusZKfW6vf0ARrKhuYpHibg==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@ethersproject/units" "^5.8.0"
@@ -10301,13 +10301,13 @@ yoctocolors-cjs@^2.1.2:
   resolved "https://registry.npmjs.org/yoctocolors-cjs/-/yoctocolors-cjs-2.1.2.tgz#f4b905a840a37506813a7acaa28febe97767a242"
   integrity sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==
 
-zetachain@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.3.0.tgz#0044876dcc03243d23c4b8b957319f8566299309"
-  integrity sha512-lxhRF+iljJfz0qaCmDe432Pq1kngniloaOPUDw0tWYlsruv+6DYYsQ0AP/5L1O7RPTszAbl+0nhP1hJLcR4lRg==
+zetachain@6.3.1:
+  version "6.3.1"
+  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.3.1.tgz#db0a021d6799d882b0be76725ce71886b62dbf5e"
+  integrity sha512-TYr0j3IdbVfsxdo0NyxXaKEPG91Kegegv7z79JdpI0yKdIcbEFC2BkXsW798Faih2u0d4Bpi27lOuDv2/vRuiA==
   dependencies:
     "@zetachain/localnet" "12.0.3"
-    "@zetachain/toolkit" "16.1.1"
+    "@zetachain/toolkit" "16.1.2"
     commander "^13.1.0"
     fs-extra "^11.3.0"
     inquirer "^12.3.2"
