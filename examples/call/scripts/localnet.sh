@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-yarn zetachain localnet start --force-kill --exit-on-error &
+yarn zetachain localnet start --force-kill --exit-on-error --no-analytics &
 
 while [ ! -f "$HOME/.zetachain/localnet/registry.json" ]; do sleep 1; done
 
@@ -28,7 +28,7 @@ UNIVERSAL=$(forge create Universal \
   --json \
   --constructor-args $GATEWAY_ZETACHAIN | jq -r .deployedTo) && echo $UNIVERSAL
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
 CONNECTED=$(forge create Connected \
   --rpc-url $RPC \
@@ -37,7 +37,7 @@ CONNECTED=$(forge create Connected \
   --json \
   --constructor-args $GATEWAY_ETHEREUM | jq -r .deployedTo) && echo $CONNECTED
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
 npx tsx ./commands connected deposit \
   --rpc $RPC \
@@ -47,7 +47,7 @@ npx tsx ./commands connected deposit \
   --name Connected \
   --amount 0.1
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
 npx tsx ./commands connected call \
   --rpc $RPC \
@@ -58,7 +58,7 @@ npx tsx ./commands connected call \
   --values hello \
   --name Connected
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
 npx tsx ./commands connected deposit-and-call \
   --rpc $RPC \
@@ -70,7 +70,7 @@ npx tsx ./commands connected deposit-and-call \
   --amount 0.1 \
   --name Connected
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
 npx tsx ./commands universal withdraw \
   --amount 1 \
@@ -91,7 +91,7 @@ npx tsx ./commands universal call \
   --name Universal \
   --zrc20 $ZRC20_ETHEREUM
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
 npx tsx ./commands universal withdraw-and-call \
   --amount 1 \
@@ -104,6 +104,6 @@ npx tsx ./commands universal withdraw-and-call \
   --name Universal \
   --zrc20 $ZRC20_ETHEREUM 
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
-yarn zetachain localnet stop
+yarn zetachain localnet stop --no-analytics

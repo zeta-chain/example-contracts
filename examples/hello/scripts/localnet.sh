@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-yarn zetachain localnet start --force-kill --exit-on-error &
+yarn zetachain localnet start --force-kill --exit-on-error --no-analytics &
 
 while [ ! -f "$HOME/.zetachain/localnet/registry.json" ]; do sleep 1; done
 
@@ -29,8 +29,9 @@ yarn zetachain evm call \
   --types string \
   --values alice \
   --yes \
+  --no-analytics \
   --private-key "$PRIVATE_KEY"
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
-yarn zetachain localnet stop
+yarn zetachain localnet stop --no-analytics

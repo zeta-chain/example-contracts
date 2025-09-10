@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-yarn zetachain localnet start --force-kill --exit-on-error &
+yarn zetachain localnet start --force-kill --exit-on-error --no-analytics &
 
 while [ ! -f "$HOME/.zetachain/localnet/registry.json" ]; do sleep 1; done
 
@@ -36,10 +36,11 @@ npx zetachain evm deposit-and-call \
   --types address bytes bool \
   --receiver $UNIVERSAL \
   --private-key $PRIVATE_KEY \
+  --no-analytics \
   --values $ZRC20_BNB $RECIPIENT true \
   --yes
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
 npx zetachain evm deposit-and-call \
   --rpc http://localhost:8545 \
@@ -48,10 +49,11 @@ npx zetachain evm deposit-and-call \
   --amount 0.001 \
   --types address bytes bool \
   --receiver $UNIVERSAL \
+  --no-analytics \
   --private-key $PRIVATE_KEY \
   --values $WZETA $RECIPIENT false \
   --yes
 
-yarn zetachain localnet check
+yarn zetachain localnet check --no-analytics
 
-yarn zetachain localnet stop
+yarn zetachain localnet stop --no-analytics

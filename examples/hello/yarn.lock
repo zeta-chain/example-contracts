@@ -1836,6 +1836,11 @@
   resolved "https://registry.npmjs.org/@oxlint/win32-x64/-/win32-x64-1.6.0.tgz#4136819bcd4018f474620bf9cd6d788c292bb7ba"
   integrity sha512-jOj3L/gfLc0IwgOTkZMiZ5c673i/hbAmidlaylT0gE6H18hln9HxPgp5GCf4E4y6mwEJlW8QC5hQi221+9otdA==
 
+"@posthog/core@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@posthog/core/-/core-1.0.2.tgz#8e6125d271348f646f51269c0b7b9bbf6549f984"
+  integrity sha512-hWk3rUtJl2crQK0WNmwg13n82hnTwB99BT99/XI5gZSvIlYZ1TPmMZE8H2dhJJ98J/rm9vYJ/UXNzw3RV5HTpQ==
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.npmjs.org/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -3059,10 +3064,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@12.0.2":
-  version "12.0.2"
-  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-12.0.2.tgz#8316586456795c71855e98e1fdff9fb64dd2d3b6"
-  integrity sha512-wEARR907MIMXWr51v2N9EMtEyWRXS6Y9Zp/XwB4mljqe64P9amy5CR2E4fSoa3uT8svBWvgWot3STMjMb5QS0w==
+"@zetachain/localnet@12.0.3":
+  version "12.0.3"
+  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-12.0.3.tgz#0fe16056bddbd43d7ac67affd03913e1c19aed7b"
+  integrity sha512-X/wojUMi8Pw5r8hULNaIeexEYv40HfyQPjKW71YZ0PfkpkNz18iGNjMn0ZVGgRtJT/ToxOh4gS1udooqwlbkGg==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
@@ -3168,10 +3173,10 @@
   resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-2.0.1.tgz#aefd28bb81f1f05b183bd73dc62bd68e456a6ebf"
   integrity sha512-SHV9a1bSgy8litI/LRZ4VIus7Gsjy0wj3n9bZeIsEydn0C5NNZxYO4XW+P06dlEyDQjtcVJQHoQOyHkodBoVsQ==
 
-"@zetachain/toolkit@16.1.0":
-  version "16.1.0"
-  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.1.0.tgz#028759063a411e346e92c21219dff8f47678cc30"
-  integrity sha512-CzrjT6WrHMVRIyX6MabJ9cwbY2DbRSXv9f83qvOLVW2jfnFoWjaKYlI9t0U+QuR5LX3YYc4pOtYCQihGhS6i8Q==
+"@zetachain/toolkit@16.1.2":
+  version "16.1.2"
+  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.1.2.tgz#e191b9ff8039a4f7390eba7f289dbf6f642e1d5f"
+  integrity sha512-tr6kZZNrz8xX1q41hRXDh1+rM5obX6TCChYsmkCKl/JF6G0SwNLHM/1s+i7Ykz1MusZKfW6vf0ARrKhuYpHibg==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@ethersproject/units" "^5.8.0"
@@ -7392,6 +7397,13 @@ possible-typed-array-names@^1.0.0:
   resolved "https://registry.npmjs.org/possible-typed-array-names/-/possible-typed-array-names-1.1.0.tgz#93e3582bc0e5426586d9d07b79ee40fc841de4ae"
   integrity sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==
 
+posthog-node@^5.8.1:
+  version "5.8.2"
+  resolved "https://registry.npmjs.org/posthog-node/-/posthog-node-5.8.2.tgz#413aa0f89561454d8f1d40b0c8f1c5bbc5e47007"
+  integrity sha512-z3XRvYwnc3T/1999FKzv16YTpxERQqLunULl2vkOPfgbCXUGNyJWLgcbTcED2ZIDE11jjZhrSph4De6OSMLphw==
+  dependencies:
+    "@posthog/core" "1.0.2"
+
 prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
@@ -8884,6 +8896,11 @@ uuid@^10.0.0:
   resolved "https://registry.npmjs.org/uuid/-/uuid-10.0.0.tgz#5a95aa454e6e002725c79055fd42aaba30ca6294"
   integrity sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==
 
+uuid@^11.1.0:
+  version "11.1.0"
+  resolved "https://registry.npmjs.org/uuid/-/uuid-11.1.0.tgz#9549028be1753bb934fc96e2bca09bb4105ae912"
+  integrity sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==
+
 uuid@^8.0.0, uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
@@ -9485,20 +9502,22 @@ yoctocolors-cjs@^2.1.2:
   resolved "https://registry.npmjs.org/yoctocolors-cjs/-/yoctocolors-cjs-2.1.2.tgz#f4b905a840a37506813a7acaa28febe97767a242"
   integrity sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==
 
-zetachain@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.2.0.tgz#9a85dcf5c8d60e93db3be6fec95619680fc4282d"
-  integrity sha512-cqTRBCIwdARVLDte4ToWVEuZtRAkr5OHNEARqAHHkVq46FqtYbawvzhvwqxwUrvGyd5NyjJiG9V8wxrZGdjyVQ==
+zetachain@6.3.1:
+  version "6.3.1"
+  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.3.1.tgz#db0a021d6799d882b0be76725ce71886b62dbf5e"
+  integrity sha512-TYr0j3IdbVfsxdo0NyxXaKEPG91Kegegv7z79JdpI0yKdIcbEFC2BkXsW798Faih2u0d4Bpi27lOuDv2/vRuiA==
   dependencies:
-    "@zetachain/localnet" "12.0.2"
-    "@zetachain/toolkit" "16.1.0"
+    "@zetachain/localnet" "12.0.3"
+    "@zetachain/toolkit" "16.1.2"
     commander "^13.1.0"
     fs-extra "^11.3.0"
     inquirer "^12.3.2"
     marked "^15.0.6"
     marked-terminal "^7.2.1"
     node-fetch "^3.3.2"
+    posthog-node "^5.8.1"
     simple-git "^3.27.0"
+    uuid "^11.1.0"
 
 zod@3.22.4:
   version "3.22.4"
