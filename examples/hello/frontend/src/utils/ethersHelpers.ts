@@ -1,12 +1,12 @@
+import { type PrimaryWallet } from '@zetachain/wallet';
 import { getSigner, getWeb3Provider } from '@zetachain/wallet/ethers';
-import { useUniversalSignInContext } from '@zetachain/wallet/react';
 import { ethers } from 'ethers';
 
 import type { EIP6963ProviderDetail } from '../types/wallet';
 
 interface GetSignerAndProviderArgs {
   selectedProvider: EIP6963ProviderDetail | null;
-  primaryWallet: ReturnType<typeof useUniversalSignInContext>['primaryWallet'];
+  primaryWallet: PrimaryWallet;
 }
 
 interface GetSignerAndProviderResult {
@@ -25,8 +25,8 @@ export const getSignerAndProvider = async ({
       const signer = await getSigner(primaryWallet);
 
       return {
-        signer: signer as ethers.AbstractSigner,
-        provider: provider as ethers.BrowserProvider,
+        signer: signer,
+        provider: provider,
       };
     } catch (error) {
       console.error('Failed to get Dynamic signer/provider:', error);
