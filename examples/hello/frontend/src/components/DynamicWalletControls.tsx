@@ -18,7 +18,6 @@ export const DynamicWalletControls = () => {
   }
 
   const handleClick = () => {
-    // Open the Dynamic user profile modal
     setShowDynamicUserProfile(true);
   };
 
