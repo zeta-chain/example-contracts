@@ -4,10 +4,10 @@ import './fonts.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import App from './App.tsx';
-import { USE_DYNAMIC_WALLET } from './constants/wallets.ts';
-import { Eip6963WalletProvider } from './context/Eip6963WalletProvider.tsx';
-import { ThemeProvider } from './context/ThemeProvider.tsx';
+import App from './App';
+import { USE_DYNAMIC_WALLET } from './constants/wallets';
+import { Eip6963WalletProvider } from './context/Eip6963WalletProvider';
+import { ThemeProvider } from './context/ThemeProvider';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
