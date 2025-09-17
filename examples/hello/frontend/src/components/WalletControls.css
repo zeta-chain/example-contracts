@@ -29,6 +29,16 @@
   width: 32px;
 }
 
+.wallet-controls-clickable {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  color: inherit;
+}
+
+.wallet-controls-clickable:hover {
+  opacity: 0.8;
+}
+
 [data-theme='light'] .wallet-controls-container {
   background: #ffffffcc;
   border: 1px solid #e5e8ec;
