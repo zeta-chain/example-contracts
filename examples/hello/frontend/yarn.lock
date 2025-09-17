@@ -3038,6 +3038,13 @@
   dependencies:
     merge-options "^3.0.4"
 
+"@react-native-async-storage/async-storage@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-2.2.0.tgz#a3aa565253e46286655560172f4e366e8969f5ad"
+  integrity sha512-gvRvjR5JAaUZF8tv2Kcq/Gbt3JHwbKFYfmb445rhOj6NUMx3qPLixmDx5pZAyb9at1bYvJ4/eTUipU5aki45xw==
+  dependencies:
+    merge-options "^3.0.4"
+
 "@react-native-community/cli-clean@13.6.4":
   version "13.6.4"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-clean/-/cli-clean-13.6.4.tgz#53c07c6f2834a971dc40eab290edcf8ccc5d1e00"
@@ -5230,15 +5237,16 @@
     web3 "^4.15.0"
     zod "^3.24.2"
 
-"@zetachain/wallet@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@zetachain/wallet/-/wallet-1.0.1.tgz#67919e58aedf44afedbde1fd7bc8c75fd5c6363b"
-  integrity sha512-IX72sfXyOTJhM1CgR/0T5QZYk1jkSQ99zPLiLuDfg8u0+k0MBV4WacWIRuuVxe/Pg09zeY2KYv0c0pAcrmXJbw==
+"@zetachain/wallet@1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@zetachain/wallet/-/wallet-1.0.10.tgz#ed7c139f001a080be09387b7da697f4823dff9ba"
+  integrity sha512-o0Q/cbU2zPoymL/63UaQw3KBMSSh029AVCfZHwTDULLmTAKyI8Jwoo3Mpt4N3dGYZk61qTA48LMgxrwg2db/yg==
   dependencies:
     "@dynamic-labs/ethereum" "4.29.4"
     "@dynamic-labs/ethers-v6" "4.29.4"
     "@dynamic-labs/global-wallet-client" "4.15.0"
     "@dynamic-labs/sdk-react-core" "4.29.4"
+    "@react-native-async-storage/async-storage" "^2.2.0"
     "@wallet-standard/wallet" "^1.1.0"
     react "^19.1.1"
     react-dom "^19.1.1"
