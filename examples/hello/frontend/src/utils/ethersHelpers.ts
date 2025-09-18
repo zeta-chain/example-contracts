@@ -6,7 +6,7 @@ import type { EIP6963ProviderDetail } from '../types/wallet';
 
 interface GetSignerAndProviderArgs {
   selectedProvider: EIP6963ProviderDetail | null;
-  primaryWallet: PrimaryWallet;
+  primaryWallet: PrimaryWallet | null;
 }
 
 interface GetSignerAndProviderResult {

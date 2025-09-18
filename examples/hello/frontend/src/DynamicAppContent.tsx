@@ -24,6 +24,7 @@ export function DynamicAppContent() {
     <ConnectedContent
       selectedProvider={null}
       supportedChain={supportedChain}
+      primaryWallet={primaryWallet}
     />
   );
 }

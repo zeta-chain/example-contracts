@@ -1,7 +1,7 @@
 import './MessageFlowCard.css';
 
 import { evmCall } from '@zetachain/toolkit/chains/evm';
-import { useUniversalSignInContext } from '@zetachain/wallet/react';
+import { type PrimaryWallet } from '@zetachain/wallet';
 import { ZeroAddress } from 'ethers';
 import { useEffect, useRef, useState } from 'react';
 
@@ -17,13 +17,14 @@ import { formatNumberWithLocale } from './utils/formatNumber';
 interface MessageFlowCardProps {
   selectedProvider: EIP6963ProviderDetail | null;
   supportedChain: SupportedChain | undefined;
+  primaryWallet?: PrimaryWallet | null; // Dynamic wallet from context
 }
 
 export function MessageFlowCard({
   selectedProvider,
   supportedChain,
+  primaryWallet = null,
 }: MessageFlowCardProps) {
-  const { primaryWallet } = useUniversalSignInContext();
 
   const MAX_STRING_LENGTH = 2000;
   const [isUserSigningTx, setIsUserSigningTx] = useState(false);
