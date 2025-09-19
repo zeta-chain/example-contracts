@@ -31,12 +31,15 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
     <div
       className="modal-overlay"
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
     >
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2 id="modal-title" className="subheading modal-title">
+      <div 
+        className="modal-content" 
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <h2 id="modal-title" className="modal-title">
           {title}
         </h2>
         {children}

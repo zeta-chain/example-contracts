@@ -1,13 +1,23 @@
+import { UniversalSignInContextProvider } from '@zetachain/wallet/react';
+
 import { AppContent } from './AppContent';
 import { Header } from './components/Header';
-import { ThemeProvider } from './context/ThemeProvider';
+import { USE_DYNAMIC_WALLET } from './constants/wallets';
+import { useTheme } from './hooks/useTheme';
 
 function App() {
-  return (
-    <ThemeProvider>
+  const { theme } = useTheme();
+
+  return USE_DYNAMIC_WALLET ? (
+    <UniversalSignInContextProvider environment="sandbox" theme={theme}>
       <Header />
       <AppContent />
-    </ThemeProvider>
+    </UniversalSignInContextProvider>
+  ) : (
+    <>
+      <Header />
+      <AppContent />
+    </>
   );
 }
 

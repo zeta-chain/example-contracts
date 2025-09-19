@@ -8,13 +8,15 @@ import {
   findProviderByRdns,
   findProviderByUuid,
 } from '../utils/eip6963';
-import { getEmptyWalletData } from '../utils/walletStorage';
 import type { StoredWalletData } from '../utils/walletStorage';
+import { getEmptyWalletData } from '../utils/walletStorage';
 
 /**
  * Hook to manage wallet connections
  */
-export const useWalletConnection = (providers: EIP6963ProviderDetail[]) => {
+export const useEip6963WalletConnection = (
+  providers: EIP6963ProviderDetail[]
+) => {
   const [selectedProvider, setSelectedProvider] =
     useState<EIP6963ProviderDetail | null>(null);
   const [connecting, setConnecting] = useState(false);
@@ -188,4 +190,4 @@ export const useWalletConnection = (providers: EIP6963ProviderDetail[]) => {
     connectWallet,
     disconnectWallet,
   };
-}; 
+};
