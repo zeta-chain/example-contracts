@@ -57,7 +57,7 @@
     "@solana/spl-memo": "^0.2.5",
     "@solana/web3.js": "^1.95.8",
     "@zetachain/protocol-contracts": "13.0.0",
-    "@zetachain/standard-contracts": "4.0.0-rc5",
+    "@zetachain/standard-contracts": "4.0.0-rc7",
     "@zetachain/toolkit": "^16.0.0",
     "commander": "^14.0.1",
     "validator": "^13.12.0",
