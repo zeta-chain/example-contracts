@@ -2,6 +2,8 @@
 src = 'contracts'
 out = 'out'
 viaIR = true
+optimizer = true
+optimizer_runs = 200
 libs = ['node_modules', "dependencies"]
 evm_version = "paris"
 test = 'test'
