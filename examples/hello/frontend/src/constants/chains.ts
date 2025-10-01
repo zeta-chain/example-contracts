@@ -2,6 +2,7 @@ export interface SupportedChain {
   explorerUrl: string;
   name: string;
   chainId: number;
+  chainType: 'EVM' | 'SOL';
   icon: string;
   colorHex: string;
 }
@@ -11,6 +12,7 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     explorerUrl: 'https://sepolia.arbiscan.io/tx/',
     name: 'Arbitrum Sepolia',
     chainId: 421614,
+    chainType: 'EVM',
     icon: '/logos/arbitrum-logo.svg',
     colorHex: '#28446A',
   },
@@ -18,6 +20,7 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     explorerUrl: 'https://testnet.snowtrace.io/tx/',
     name: 'Avalanche Fuji',
     chainId: 43113,
+    chainType: 'EVM',
     icon: '/logos/avalanche-logo.svg',
     colorHex: '#FF394A',
   },
@@ -25,6 +28,7 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     explorerUrl: 'https://sepolia.basescan.org/tx/',
     name: 'Base Sepolia',
     chainId: 84532,
+    chainType: 'EVM',
     icon: '/logos/base-logo.svg',
     colorHex: '#0052FF',
   },
@@ -32,6 +36,7 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     explorerUrl: 'https://testnet.bscscan.com/tx/',
     name: 'BSC Testnet',
     chainId: 97,
+    chainType: 'EVM',
     icon: '/logos/bsc-logo.svg',
     colorHex: '#E1A411',
   },
@@ -39,6 +44,7 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     explorerUrl: 'https://sepolia.etherscan.io/tx/',
     name: 'Ethereum Sepolia',
     chainId: 11155111,
+    chainType: 'EVM',
     icon: '/logos/ethereum-logo.svg',
     colorHex: '#3457D5',
   },
@@ -46,8 +52,17 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     explorerUrl: 'https://amoy.polygonscan.com/tx/',
     name: 'Polygon Amoy',
     chainId: 80002,
+    chainType: 'EVM',
     icon: '/logos/polygon-logo.svg',
     colorHex: '#692BD7',
+  },
+  {
+    explorerUrl: 'https://solscan.io/tx/',
+    name: 'Solana Devnet',
+    chainId: 901,
+    chainType: 'SOL',
+    icon: '/logos/solana-logo.svg',
+    colorHex: '#9945FF',
   },
 ];
 
