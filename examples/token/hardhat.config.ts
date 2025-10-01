@@ -2,7 +2,6 @@ import "@nomicfoundation/hardhat-toolbox";
 import { HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 
-import "@zetachain/standard-contracts/tasks/token";
 import "@zetachain/localnet/tasks";
 import "@zetachain/toolkit/tasks";
 import { getHardhatConfig } from "@zetachain/toolkit/utils";
@@ -22,6 +21,7 @@ const config: HardhatUserConfig = {
             enabled: true,
             runs: 1000,
           },
+          viaIR: true,
         },
         version: "0.8.26",
       },
