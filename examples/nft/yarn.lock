@@ -3401,10 +3401,10 @@
     "@zetachain/networks" "^10.0.0"
     ethers "6.13.5"
 
-"@zetachain/standard-contracts@4.0.0-rc8":
-  version "4.0.0-rc8"
-  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-4.0.0-rc8.tgz#26294ec4f76fb264e12faa5e15b6aa21defc1674"
-  integrity sha512-4c1lKdtqaFcFpTGhpka+LflMxGRqaz8uTqQ9CxwjKihkxPZ0T3KV7IZy4KSvKS4EMMj0EdQnfapklPYAm7S8kw==
+"@zetachain/standard-contracts@4.0.0-rc9":
+  version "4.0.0-rc9"
+  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-4.0.0-rc9.tgz#b29e819ac901313d2d325616bca53019003b2c71"
+  integrity sha512-9vfnpNlPR3M+2MO17ah2MUxpuHbIYAgICy/0yIJgSY0RlAz85nj8LCiiDY1y5a4kIODgvXa6qTE5km/bKPpj4g==
   dependencies:
     commander "^14.0.1"
     ethers "^5.4.7"
