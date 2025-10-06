@@ -1,7 +1,8 @@
 import './MessageFlowCard.css';
 
 import { evmCall } from '@zetachain/toolkit/chains/evm';
-import { type PrimaryWallet } from '@zetachain/wallet';
+import { solanaCall } from '@zetachain/toolkit/chains/solana';
+import { isSolanaWallet, type PrimaryWallet } from '@zetachain/wallet';
 import { ZeroAddress } from 'ethers';
 import { useEffect, useRef, useState } from 'react';
 
@@ -25,7 +26,6 @@ export function MessageFlowCard({
   supportedChain,
   primaryWallet = null,
 }: MessageFlowCardProps) {
-
   const MAX_STRING_LENGTH = 2000;
   const [isUserSigningTx, setIsUserSigningTx] = useState(false);
   const [isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
@@ -37,48 +37,76 @@ export function MessageFlowCard({
     return new TextEncoder().encode(string).length;
   };
 
-  const handleEvmCall = async () => {
+  const handleCall = async () => {
     try {
-      const signerAndProvider = await getSignerAndProvider({
-        selectedProvider,
-        primaryWallet,
-      });
-
-      if (!signerAndProvider) {
-        throw new Error('Failed to get signer');
+      if (!primaryWallet) {
+        throw new Error('No primary wallet');
       }
 
-      const { signer } = signerAndProvider;
-
-      const evmCallParams = {
+      const callParams = {
         receiver: HELLO_UNIVERSAL_CONTRACT_ADDRESS,
         types: ['string'],
         values: [stringValue],
         revertOptions: {
           callOnRevert: false,
-          revertAddress: ZeroAddress,
+          revertAddress: primaryWallet.address,
           revertMessage: '',
           abortAddress: ZeroAddress,
           onRevertGasLimit: 1000000,
         },
       };
 
-      const evmCallOptions = {
-        signer,
-        txOptions: {
-          gasLimit: 1000000,
-        },
-      };
+      if (primaryWallet?.chain === 'EVM') {
+        const signerAndProvider = await getSignerAndProvider({
+          selectedProvider,
+          primaryWallet,
+        });
 
-      setIsUserSigningTx(true);
+        if (!signerAndProvider) {
+          throw new Error('Failed to get signer');
+        }
 
-      const result = await evmCall(evmCallParams, evmCallOptions);
+        const { signer } = signerAndProvider;
 
-      setIsTxReceiptLoading(true);
+        const evmCallOptions = {
+          signer,
+          txOptions: {
+            gasLimit: 1000000,
+          },
+        };
 
-      await result.wait();
+        setIsUserSigningTx(true);
 
-      setConnectedChainTxHash(result.hash);
+        const result = await evmCall(callParams, evmCallOptions);
+
+        setIsTxReceiptLoading(true);
+
+        await result.wait();
+
+        setConnectedChainTxHash(result.hash);
+      } else if (
+        primaryWallet?.chain === 'SOL' &&
+        isSolanaWallet(primaryWallet)
+      ) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const signer = await (primaryWallet as any).getSigner();
+
+        console.debug('SOL_SIGNER', {
+          signer,
+          publicKey: signer.publicKey,
+        });
+
+        const solanaCallOptions = {
+          signer,
+          chainId: '901',
+        };
+
+        const result = await solanaCall(callParams, solanaCallOptions);
+
+        setIsTxReceiptLoading(true);
+
+        setConnectedChainTxHash(result);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -168,7 +196,7 @@ export function MessageFlowCard({
         <div>
           <Button
             type="button"
-            onClick={handleEvmCall}
+            onClick={handleCall}
             disabled={
               !stringValue.length ||
               !supportedChain ||
