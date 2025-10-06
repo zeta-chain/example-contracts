@@ -91,11 +91,6 @@ export function MessageFlowCard({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const signer = await (primaryWallet as any).getSigner();
 
-        console.debug('SOL_SIGNER', {
-          signer,
-          publicKey: signer.publicKey,
-        });
-
         const solanaCallOptions = {
           signer,
           chainId: '901',
