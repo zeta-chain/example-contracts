@@ -2,7 +2,8 @@ import './MessageFlowCard.css';
 
 import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { solanaCall } from '@zetachain/toolkit/chains/solana';
-import { isSolanaWallet, type PrimaryWallet } from '@zetachain/wallet';
+import { type PrimaryWallet } from '@zetachain/wallet';
+import { getSolanaWalletAdapter } from '@zetachain/wallet/solana';
 import { ZeroAddress } from 'ethers';
 import { useEffect, useRef, useState } from 'react';
 
@@ -84,12 +85,8 @@ export function MessageFlowCard({
         await result.wait();
 
         setConnectedChainTxHash(result.hash);
-      } else if (
-        primaryWallet?.chain === 'SOL' &&
-        isSolanaWallet(primaryWallet)
-      ) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const signer = await (primaryWallet as any).getSigner();
+      } else if (primaryWallet?.chain === 'SOL') {
+        const signer = await getSolanaWalletAdapter(primaryWallet);
 
         const solanaCallOptions = {
           signer,
