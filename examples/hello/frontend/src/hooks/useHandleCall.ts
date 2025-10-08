@@ -89,6 +89,7 @@ async function handleEvmCall(
 async function handleSolanaCall(
   callParams: CallParams,
   primaryWallet: PrimaryWallet,
+  chainId: string,
   callbacks: {
     onSigningStart?: UseHandleCallParams['onSigningStart'];
     onTransactionSubmitted?: UseHandleCallParams['onTransactionSubmitted'];
@@ -99,7 +100,7 @@ async function handleSolanaCall(
 
   const solanaCallOptions = {
     signer: walletAdapter,
-    chainId: '901',
+    chainId,
   };
 
   callbacks.onSigningStart?.();
@@ -181,7 +182,12 @@ export function useHandleCall({
         if (!primaryWallet) {
           throw new Error('Solana transactions require primaryWallet');
         }
-        await handleSolanaCall(callParams, primaryWallet, callbacks);
+        await handleSolanaCall(
+          callParams,
+          primaryWallet,
+          String(supportedChain.chainId),
+          callbacks
+        );
       } else {
         throw new Error(`Unsupported chain: ${walletType}`);
       }
