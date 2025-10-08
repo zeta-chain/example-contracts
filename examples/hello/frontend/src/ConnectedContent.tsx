@@ -16,7 +16,8 @@ import type { EIP6963ProviderDetail } from './types/wallet';
 interface ConnectedContentProps {
   selectedProvider: EIP6963ProviderDetail | null;
   supportedChain: SupportedChain | undefined;
-  primaryWallet?: PrimaryWallet | null; // Dynamic wallet from context
+  primaryWallet?: PrimaryWallet | null;
+  account?: string | null;
 }
 
 const DynamicConnectedContent = ({
@@ -83,7 +84,7 @@ const DynamicConnectedContent = ({
 const Eip6963ConnectedContent = ({
   selectedProvider,
   supportedChain,
-  primaryWallet,
+  account,
 }: ConnectedContentProps) => {
   const { switchChain } = useSwitchChain();
 
@@ -112,7 +113,7 @@ const Eip6963ConnectedContent = ({
         <MessageFlowCard
           selectedProvider={selectedProvider}
           supportedChain={supportedChain}
-          primaryWallet={primaryWallet}
+          account={account}
         />
       </div>
       <Footer />
@@ -124,6 +125,7 @@ export function ConnectedContent({
   selectedProvider,
   supportedChain,
   primaryWallet,
+  account,
 }: ConnectedContentProps) {
   return USE_DYNAMIC_WALLET ? (
     <DynamicConnectedContent
@@ -135,7 +137,7 @@ export function ConnectedContent({
     <Eip6963ConnectedContent
       selectedProvider={selectedProvider}
       supportedChain={supportedChain}
-      primaryWallet={primaryWallet}
+      account={account}
     />
   );
 }
