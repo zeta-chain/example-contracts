@@ -28,7 +28,6 @@ export const NetworkSelector = ({
         id: chain.chainId,
         label: chain.name,
         value: chain,
-        chainType: chain.chainType,
         icon: <img src={chain.icon} alt={chain.name} />,
         colorHex: chain.colorHex,
       })),
