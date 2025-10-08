@@ -90,6 +90,7 @@ async function handleSolanaCall(
   callParams: CallParams,
   primaryWallet: PrimaryWallet,
   callbacks: {
+    onSigningStart?: UseHandleCallParams['onSigningStart'];
     onTransactionSubmitted?: UseHandleCallParams['onTransactionSubmitted'];
     onTransactionConfirmed?: UseHandleCallParams['onTransactionConfirmed'];
   }
@@ -100,6 +101,8 @@ async function handleSolanaCall(
     signer: walletAdapter,
     chainId: '901',
   };
+
+  callbacks.onSigningStart?.();
 
   const result = await solanaCall(callParams, solanaCallOptions);
 
