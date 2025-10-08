@@ -141,6 +141,12 @@ export function useHandleCall({
       return;
     }
 
+    if (walletType !== supportedChain.chainType) {
+      const error = new Error('Wallet type does not match network chainType');
+      onError?.(error);
+      return;
+    }
+
     const callParams: CallParams = {
       receiver,
       types: ['string'],
