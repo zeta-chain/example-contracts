@@ -1,8 +1,6 @@
 import './MessageFlowCard.css';
 
-import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { type PrimaryWallet } from '@zetachain/wallet';
-import { ZeroAddress } from 'ethers';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from './components/Button';
@@ -10,22 +8,23 @@ import { IconApprove, IconEnvelope, IconSendTitle } from './components/icons';
 import { ConfirmedContent } from './ConfirmedContent';
 import type { SupportedChain } from './constants/chains';
 import { HELLO_UNIVERSAL_CONTRACT_ADDRESS } from './constants/contracts';
+import { useHandleCall } from './hooks/useHandleCall';
 import type { EIP6963ProviderDetail } from './types/wallet';
-import { getSignerAndProvider } from './utils/ethersHelpers';
 import { formatNumberWithLocale } from './utils/formatNumber';
 
 interface MessageFlowCardProps {
   selectedProvider: EIP6963ProviderDetail | null;
   supportedChain: SupportedChain | undefined;
   primaryWallet?: PrimaryWallet | null; // Dynamic wallet from context
+  account?: string | null; // EIP6963 account for non-dynamic route
 }
 
 export function MessageFlowCard({
   selectedProvider,
   supportedChain,
   primaryWallet = null,
+  account = null,
 }: MessageFlowCardProps) {
-
   const MAX_STRING_LENGTH = 2000;
   const [isUserSigningTx, setIsUserSigningTx] = useState(false);
   const [isTxReceiptLoading, setIsTxReceiptLoading] = useState(false);
@@ -37,55 +36,22 @@ export function MessageFlowCard({
     return new TextEncoder().encode(string).length;
   };
 
-  const handleEvmCall = async () => {
-    try {
-      const signerAndProvider = await getSignerAndProvider({
-        selectedProvider,
-        primaryWallet,
-      });
-
-      if (!signerAndProvider) {
-        throw new Error('Failed to get signer');
-      }
-
-      const { signer } = signerAndProvider;
-
-      const evmCallParams = {
-        receiver: HELLO_UNIVERSAL_CONTRACT_ADDRESS,
-        types: ['string'],
-        values: [stringValue],
-        revertOptions: {
-          callOnRevert: false,
-          revertAddress: ZeroAddress,
-          revertMessage: '',
-          abortAddress: ZeroAddress,
-          onRevertGasLimit: 1000000,
-        },
-      };
-
-      const evmCallOptions = {
-        signer,
-        txOptions: {
-          gasLimit: 1000000,
-        },
-      };
-
-      setIsUserSigningTx(true);
-
-      const result = await evmCall(evmCallParams, evmCallOptions);
-
-      setIsTxReceiptLoading(true);
-
-      await result.wait();
-
-      setConnectedChainTxHash(result.hash);
-    } catch (error) {
-      console.error(error);
-    } finally {
+  const { handleCall } = useHandleCall({
+    primaryWallet,
+    selectedProvider,
+    supportedChain,
+    receiver: HELLO_UNIVERSAL_CONTRACT_ADDRESS,
+    message: stringValue,
+    account,
+    onSigningStart: () => setIsUserSigningTx(true),
+    onTransactionSubmitted: () => setIsTxReceiptLoading(true),
+    onTransactionConfirmed: (txHash: string) => setConnectedChainTxHash(txHash),
+    onError: (error: Error) => console.error('Transaction error:', error),
+    onComplete: () => {
       setIsUserSigningTx(false);
       setIsTxReceiptLoading(false);
-    }
-  };
+    },
+  });
 
   // Auto-resize textarea based on content
   useEffect(() => {
@@ -168,7 +134,7 @@ export function MessageFlowCard({
         <div>
           <Button
             type="button"
-            onClick={handleEvmCall}
+            onClick={handleCall}
             disabled={
               !stringValue.length ||
               !supportedChain ||

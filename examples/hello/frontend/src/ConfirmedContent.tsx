@@ -79,7 +79,7 @@ export function ConfirmedContent({
           <div className="confirmed-content-link-chain">
             {!connectedChainTxHash && <IconSpinner />}
             <a
-              href={`${supportedChain.explorerUrl}${connectedChainTxHash}`}
+              href={supportedChain.explorerUrl(connectedChainTxHash)}
               target="_blank"
               rel="noreferrer noopener"
               className={clsx('confirmed-content-link', {
@@ -95,7 +95,9 @@ export function ConfirmedContent({
           <div className="confirmed-content-link-chain">
             {!zetachainTxHash && <IconSpinner />}
             <a
-              href={`${ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL}${zetachainTxHash}`}
+              href={ZETACHAIN_ATHENS_BLOCKSCOUT_EXPLORER_URL(
+                zetachainTxHash || ''
+              )}
               target="_blank"
               rel="noreferrer noopener"
               className={clsx('confirmed-content-link', {

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { SUPPORTED_CHAINS, type SupportedChain } from '../constants/chains';
+import { USE_DYNAMIC_WALLET } from '../constants/wallets';
 import { Dropdown, type DropdownOption } from './Dropdown';
 
 interface NetworkSelectorProps {
@@ -21,7 +22,9 @@ export const NetworkSelector = ({
   // Convert chains to dropdown options
   const options: DropdownOption<SupportedChain>[] = useMemo(
     () =>
-      SUPPORTED_CHAINS.map((chain) => ({
+      SUPPORTED_CHAINS.filter(
+        (chain) => USE_DYNAMIC_WALLET || chain.chainType === 'EVM'
+      ).map((chain) => ({
         id: chain.chainId,
         label: chain.name,
         value: chain,

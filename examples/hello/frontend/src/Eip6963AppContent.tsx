@@ -4,7 +4,7 @@ import { DisconnectedContent } from './DisconnectedContent';
 import { useEip6963Wallet } from './hooks/useEip6963Wallet';
 
 export function Eip6963AppContent() {
-  const { selectedProvider, decimalChainId } = useEip6963Wallet();
+  const { selectedProvider, decimalChainId, account } = useEip6963Wallet();
 
   const supportedChain = SUPPORTED_CHAINS.find(
     (chain) => chain.chainId === decimalChainId
@@ -20,6 +20,7 @@ export function Eip6963AppContent() {
     <ConnectedContent
       selectedProvider={selectedProvider}
       supportedChain={supportedChain}
+      account={account}
     />
   );
 }
