@@ -35,10 +35,14 @@ const DynamicConnectedContent = ({
       (wallet) => wallet.chain === 'SOL'
     )?.id;
     const evmWallet = userWallets.find((wallet) => wallet.chain === 'EVM')?.id;
+    const bitcoinWallet = userWallets.find(
+      (wallet) => wallet.chain === 'BTC'
+    )?.id;
 
     return {
       EVM: evmWallet || '',
       SOL: solanaWallet || '',
+      BTC: bitcoinWallet || '',
     };
   }, [userWallets]);
 

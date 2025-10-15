@@ -1,6 +1,14 @@
+import {
+  bitcoinMemoCall,
+  finalizeBitcoinMemoCall,
+} from '@zetachain/toolkit/chains/bitcoin';
 import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { solanaCall } from '@zetachain/toolkit/chains/solana';
 import { type PrimaryWallet } from '@zetachain/wallet';
+import {
+  isBitcoinWallet,
+  type PrimaryWalletWithBitcoinSigner,
+} from '@zetachain/wallet/bitcoin';
 import { getSolanaWalletAdapter } from '@zetachain/wallet/solana';
 import { ZeroAddress } from 'ethers';
 import { useCallback } from 'react';
@@ -113,6 +121,97 @@ async function handleSolanaCall(
 }
 
 /**
+ * Handles Bitcoin-specific call logic using PSBT signing
+ */
+async function handleBitcoinCall(
+  receiver: string,
+  message: string,
+  primaryWallet: PrimaryWallet,
+  gatewayAddress: string,
+  callbacks: {
+    onSigningStart?: UseHandleCallParams['onSigningStart'];
+    onTransactionSubmitted?: UseHandleCallParams['onTransactionSubmitted'];
+    onTransactionConfirmed?: UseHandleCallParams['onTransactionConfirmed'];
+  }
+): Promise<void> {
+  if (!primaryWallet || !isBitcoinWallet(primaryWallet)) {
+    throw new Error('Wallet does not support Bitcoin');
+  }
+
+  const btcWallet = primaryWallet as PrimaryWalletWithBitcoinSigner;
+
+  // Step 1: Build the unsigned PSBT
+  // For depositAndCall operations:
+  // - Send: depositAmount (2000 sats to mint as ZRC20) + depositFee buffer
+  // - depositFee buffer (2x estimated) handles wallet fee rate increases
+  // - ZetaChain deducts actual depositFee, remaining becomes ZRC20 deposit
+  // - Reasonable network fees (~500-1000 sats at 2-3 sats/vB)
+
+  const psbtInfo = await bitcoinMemoCall({
+    userAddress: btcWallet.address,
+    fromAddress: btcWallet.address,
+    gatewayAddress,
+    data: message,
+    receiver,
+  });
+
+  callbacks.onSigningStart?.();
+
+  // Step 2: Sign the PSBT with the wallet
+  const signedPsbtResponse = await btcWallet.signPsbt({
+    allowedSighash: [1], // SIGHASH_ALL
+    unsignedPsbtBase64: psbtInfo.psbtBase64,
+    signature: [
+      {
+        address: psbtInfo.signingAddress,
+        signingIndexes: psbtInfo.signingIndexes,
+      },
+    ],
+  });
+
+  if (!signedPsbtResponse) {
+    throw new Error('Failed to sign PSBT - wallet returned undefined');
+  }
+
+  console.log('Signed PSBT response:', signedPsbtResponse);
+
+  // Handle different response formats from different wallets
+  // - String directly: "cHNidP8B..."
+  // - { psbt: string }
+  // - { signedPsbt: string } (Phantom format)
+  let signedPsbtBase64: string | undefined;
+
+  if (typeof signedPsbtResponse === 'string') {
+    signedPsbtBase64 = signedPsbtResponse;
+  } else if (signedPsbtResponse && typeof signedPsbtResponse === 'object') {
+    // Try different property names wallets might use
+    const responseObj = signedPsbtResponse as {
+      signedPsbt?: string;
+      psbt?: string;
+    };
+    signedPsbtBase64 = responseObj.signedPsbt || responseObj.psbt;
+  }
+
+  if (!signedPsbtBase64) {
+    console.error('Invalid signed PSBT response:', signedPsbtResponse);
+    throw new Error(
+      'Invalid signed PSBT response - expected string, { psbt: string }, or { signedPsbt: string }'
+    );
+  }
+
+  callbacks.onTransactionSubmitted?.();
+
+  // Step 3: Finalize and broadcast the signed PSBT
+  const result = await finalizeBitcoinMemoCall(signedPsbtBase64);
+
+  console.log('Bitcoin transaction broadcast:', {
+    txid: result.txid,
+  });
+
+  callbacks.onTransactionConfirmed?.(result.txid);
+}
+
+/**
  * Custom hook for handling cross-chain calls with proper type safety
  * and separation of concerns between chain-specific logic and UI state management.
  */
@@ -186,6 +285,17 @@ export function useHandleCall({
           callParams,
           primaryWallet,
           String(supportedChain.chainId),
+          callbacks
+        );
+      } else if (walletType === 'BTC') {
+        if (!primaryWallet) {
+          throw new Error('Bitcoin transactions require primaryWallet');
+        }
+        await handleBitcoinCall(
+          receiver, // Universal Contract address (20 bytes)
+          message,
+          primaryWallet,
+          'bc1qm24wp577nk8aacckv8np465z3dvmu7ry45el6y', // TODO: Get gateway from config
           callbacks
         );
       } else {

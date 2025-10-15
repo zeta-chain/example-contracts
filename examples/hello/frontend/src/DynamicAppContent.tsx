@@ -14,13 +14,17 @@ export function DynamicAppContent() {
       return network;
     }
 
+    if (primaryWallet?.chain === 'BTC') {
+      return 8332;
+    }
+
     // Solana Devnet id from `network` property
     if (network === '103') {
       return 901;
     }
 
     return null;
-  }, [network]);
+  }, [network, primaryWallet?.chain]);
 
   const supportedChain = SUPPORTED_CHAINS.find(
     (chain) => chain.chainId === decimalChainId
