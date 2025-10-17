@@ -70,9 +70,10 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     colorHex: '#9945FF',
   },
   {
-    explorerUrl: (txHash: string) => `https://mempool.space/tx/${txHash}`,
-    name: 'Bitcoin',
-    chainId: 8332,
+    explorerUrl: (txHash: string) =>
+      `https://mempool.space/signet/tx/${txHash}`,
+    name: 'Bitcoin Signet',
+    chainId: 18333,
     chainType: 'BTC',
     icon: '/logos/bitcoin-logo.svg',
     colorHex: '#F7931A',

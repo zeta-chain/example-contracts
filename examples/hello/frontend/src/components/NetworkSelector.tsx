@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { SUPPORTED_CHAINS, type SupportedChain } from '../constants/chains';
 import { USE_DYNAMIC_WALLET } from '../constants/wallets';
+import { useUnisatWallet } from '../context/UnisatWalletProvider';
 import { Dropdown, type DropdownOption } from './Dropdown';
 
 interface NetworkSelectorProps {
@@ -19,12 +20,19 @@ export const NetworkSelector = ({
   disabled = false,
   className = '',
 }: NetworkSelectorProps) => {
+  const { connect: connectUnisatWallet, switchChain: switchUnisatChain } =
+    useUnisatWallet();
+
   // Convert chains to dropdown options
   const options: DropdownOption<SupportedChain>[] = useMemo(
     () =>
-      SUPPORTED_CHAINS.filter(
-        (chain) => USE_DYNAMIC_WALLET || chain.chainType === 'EVM'
-      ).map((chain) => ({
+      SUPPORTED_CHAINS.filter((chain) => {
+        if (USE_DYNAMIC_WALLET) {
+          return chain.chainType === 'EVM' || chain.chainType === 'SOL';
+        } else {
+          return chain.chainType === 'EVM' || chain.chainType === 'BTC';
+        }
+      }).map((chain) => ({
         id: chain.chainId,
         label: chain.name,
         value: chain,
@@ -46,6 +54,11 @@ export const NetworkSelector = ({
   );
 
   const handleSelect = (option: DropdownOption<SupportedChain>) => {
+    if (option.value.chainType === 'BTC') {
+      connectUnisatWallet();
+      switchUnisatChain('BITCOIN_SIGNET');
+    }
+
     onNetworkSelect?.(option.value);
   };
 

@@ -1,19 +1,18 @@
 import {
-  bitcoinMemoCall,
-  finalizeBitcoinMemoCall,
+  broadcastCommitAndBuildRevealPsbt,
+  buildBitcoinInscriptionCallCommitPsbt,
+  finalizeBitcoinInscriptionCallReveal,
 } from '@zetachain/toolkit/chains/bitcoin';
 import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { solanaCall } from '@zetachain/toolkit/chains/solana';
 import { type PrimaryWallet } from '@zetachain/wallet';
-import {
-  isBitcoinWallet,
-  type PrimaryWalletWithBitcoinSigner,
-} from '@zetachain/wallet/bitcoin';
 import { getSolanaWalletAdapter } from '@zetachain/wallet/solana';
 import { ZeroAddress } from 'ethers';
 import { useCallback } from 'react';
 
 import type { SupportedChain } from '../constants/chains';
+import { USE_DYNAMIC_WALLET } from '../constants/wallets';
+import { useUnisatWallet } from '../context/UnisatWalletProvider';
 import type { EIP6963ProviderDetail } from '../types/wallet';
 import { getSignerAndProvider } from '../utils/ethersHelpers';
 
@@ -121,12 +120,12 @@ async function handleSolanaCall(
 }
 
 /**
- * Handles Bitcoin-specific call logic using PSBT signing
+ * Handles Bitcoin-specific call logic using Unisat + Signet
  */
 async function handleBitcoinCall(
   receiver: string,
   message: string,
-  primaryWallet: PrimaryWallet,
+  unisatWallet: ReturnType<typeof useUnisatWallet>,
   gatewayAddress: string,
   callbacks: {
     onSigningStart?: UseHandleCallParams['onSigningStart'];
@@ -134,81 +133,89 @@ async function handleBitcoinCall(
     onTransactionConfirmed?: UseHandleCallParams['onTransactionConfirmed'];
   }
 ): Promise<void> {
-  if (!primaryWallet || !isBitcoinWallet(primaryWallet)) {
-    throw new Error('Wallet does not support Bitcoin');
+  const { paymentAccount, signPSBT, getChain } = unisatWallet;
+
+  if (!paymentAccount) {
+    throw new Error('No payment account found. Please connect Unisat wallet.');
   }
 
-  const btcWallet = primaryWallet as PrimaryWalletWithBitcoinSigner;
+  const chain = await getChain();
 
-  // Step 1: Build the unsigned PSBT
-  // For depositAndCall operations:
-  // - Send: depositAmount (2000 sats to mint as ZRC20) + depositFee buffer
-  // - depositFee buffer (2x estimated) handles wallet fee rate increases
-  // - ZetaChain deducts actual depositFee, remaining becomes ZRC20 deposit
-  // - Reasonable network fees (~500-1000 sats at 2-3 sats/vB)
+  if (chain.enum !== 'BITCOIN_SIGNET') {
+    throw new Error('Unisat wallet is not connected to Signet');
+  }
 
-  const psbtInfo = await bitcoinMemoCall({
-    userAddress: btcWallet.address,
-    fromAddress: btcWallet.address,
-    gatewayAddress,
-    data: message,
+  // Use Signet testnet
+  const bitcoinApi = 'https://mempool.space/signet/api';
+  const network = 'signet';
+
+  console.log('Building commit PSBT...', {
+    paymentAccount,
     receiver,
+    message,
   });
+
+  const commitResult = await buildBitcoinInscriptionCallCommitPsbt({
+    bitcoinApi,
+    fromAddress: paymentAccount.address,
+    gatewayAddress,
+    network,
+    publicKey: paymentAccount.publicKey,
+    receiver,
+    types: ['string'],
+    values: [message],
+  });
+
+  console.log('Commit PSBT built:', commitResult);
 
   callbacks.onSigningStart?.();
 
-  // Step 2: Sign the PSBT with the wallet
-  const signedPsbtResponse = await btcWallet.signPsbt({
-    allowedSighash: [1], // SIGHASH_ALL
-    unsignedPsbtBase64: psbtInfo.psbtBase64,
-    signature: [
-      {
-        address: psbtInfo.signingAddress,
-        signingIndexes: psbtInfo.signingIndexes,
-      },
-    ],
+  // Sign commit PSBT with Unisat
+  const signedCommitPsbt = await signPSBT(commitResult.commitPsbtBase64, [
+    {
+      address: paymentAccount.address,
+      signingIndexes: commitResult.signingIndexes,
+    },
+  ]);
+
+  console.log('Commit PSBT signed, broadcasting...');
+
+  // Broadcast commit and build reveal
+  const revealResult = await broadcastCommitAndBuildRevealPsbt({
+    bitcoinApi,
+    commitData: commitResult.commitData,
+    depositFee: commitResult.depositFee,
+    fromAddress: paymentAccount.address,
+    gatewayAddress,
+    network,
+    revealFee: commitResult.revealFee,
+    signedCommitPsbtBase64: signedCommitPsbt,
   });
 
-  if (!signedPsbtResponse) {
-    throw new Error('Failed to sign PSBT - wallet returned undefined');
-  }
+  console.log('Commit broadcasted:', revealResult.commitTxid);
+  console.log('Signing reveal PSBT...');
 
-  console.log('Signed PSBT response:', signedPsbtResponse);
-
-  // Handle different response formats from different wallets
-  // - String directly: "cHNidP8B..."
-  // - { psbt: string }
-  // - { signedPsbt: string } (Phantom format)
-  let signedPsbtBase64: string | undefined;
-
-  if (typeof signedPsbtResponse === 'string') {
-    signedPsbtBase64 = signedPsbtResponse;
-  } else if (signedPsbtResponse && typeof signedPsbtResponse === 'object') {
-    // Try different property names wallets might use
-    const responseObj = signedPsbtResponse as {
-      signedPsbt?: string;
-      psbt?: string;
-    };
-    signedPsbtBase64 = responseObj.signedPsbt || responseObj.psbt;
-  }
-
-  if (!signedPsbtBase64) {
-    console.error('Invalid signed PSBT response:', signedPsbtResponse);
-    throw new Error(
-      'Invalid signed PSBT response - expected string, { psbt: string }, or { signedPsbt: string }'
-    );
-  }
+  // Sign reveal PSBT with Unisat
+  const signedRevealPsbt = await signPSBT(revealResult.revealPsbtBase64, [
+    {
+      address: paymentAccount.address,
+      signingIndexes: revealResult.signingIndexes,
+    },
+  ]);
 
   callbacks.onTransactionSubmitted?.();
 
-  // Step 3: Finalize and broadcast the signed PSBT
-  const result = await finalizeBitcoinMemoCall(signedPsbtBase64);
+  console.log('Reveal PSBT signed, broadcasting...');
 
-  console.log('Bitcoin transaction broadcast:', {
-    txid: result.txid,
-  });
+  // Finalize and broadcast reveal
+  const finalResult = await finalizeBitcoinInscriptionCallReveal(
+    signedRevealPsbt,
+    bitcoinApi
+  );
 
-  callbacks.onTransactionConfirmed?.(result.txid);
+  console.log('Reveal broadcasted:', finalResult.revealTxid);
+
+  callbacks.onTransactionConfirmed?.(finalResult.revealTxid);
 }
 
 /**
@@ -228,11 +235,24 @@ export function useHandleCall({
   onError,
   onComplete,
 }: UseHandleCallParams): UseHandleCallReturn {
+  // Always call the hook - will only be used when USE_DYNAMIC_WALLET is false
+  const unisatWallet = useUnisatWallet();
+
   const handleCall = useCallback(async () => {
-    const walletType = primaryWallet?.chain || 'EVM'; // Default to 'EVM' for EIP6963 route
-    const walletAddress = primaryWallet?.address || account;
+    const walletType =
+      primaryWallet?.chain || supportedChain?.chainType || 'EVM';
+    const walletAddress =
+      primaryWallet?.address ||
+      account ||
+      unisatWallet?.paymentAccount?.address;
 
     if (!walletAddress) {
+      const error = new Error('No wallet address available');
+      onError?.(error);
+      return;
+    }
+
+    if (!walletAddress && !unisatWallet?.paymentAccount) {
       const error = new Error('No wallet address available');
       onError?.(error);
       return;
@@ -288,14 +308,17 @@ export function useHandleCall({
           callbacks
         );
       } else if (walletType === 'BTC') {
-        if (!primaryWallet) {
-          throw new Error('Bitcoin transactions require primaryWallet');
+        if (USE_DYNAMIC_WALLET) {
+          throw new Error('Bitcoin not supported with Dynamic wallet yet');
+        }
+        if (!unisatWallet?.paymentAccount) {
+          throw new Error('Bitcoin transactions require Unisat wallet');
         }
         await handleBitcoinCall(
           receiver, // Universal Contract address (20 bytes)
           message,
-          primaryWallet,
-          'bc1qm24wp577nk8aacckv8np465z3dvmu7ry45el6y', // TODO: Get gateway from config
+          unisatWallet,
+          'tb1qy9pqmk2pd9sv63g27jt8r657wy0d9ueeh0nqur', // Signet gateway address
           callbacks
         );
       } else {
@@ -314,6 +337,7 @@ export function useHandleCall({
     receiver,
     message,
     account,
+    unisatWallet,
     onSigningStart,
     onTransactionSubmitted,
     onTransactionConfirmed,
