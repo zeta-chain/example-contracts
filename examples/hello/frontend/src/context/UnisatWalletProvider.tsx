@@ -196,7 +196,7 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
       // Convert base64 PSBT to hex for Unisat
       const psbtHex = hexlify(
         Uint8Array.from(atob(psbtBase64), (c) => c.charCodeAt(0))
-      );
+      ).slice(2);
 
       // Convert inputsToSign to Unisat's format
       const toSignInputs = inputsToSign.flatMap(({ address, signingIndexes }) =>
@@ -211,7 +211,7 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // Convert hex back to base64 for our functions
       const signedPsbtBase64 = btoa(
-        String.fromCharCode(...getBytes(signedPsbtHex))
+        String.fromCharCode(...getBytes('0x' + signedPsbtHex))
       );
 
       return signedPsbtBase64;
