@@ -246,12 +246,6 @@ export function useHandleCall({
       return;
     }
 
-    if (!walletAddress && !unisatWallet?.paymentAccount) {
-      const error = new Error('No wallet address available');
-      onError?.(error);
-      return;
-    }
-
     if (!supportedChain) {
       const error = new Error('Unsupported chain');
       onError?.(error);
