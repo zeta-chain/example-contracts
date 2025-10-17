@@ -10,7 +10,10 @@ import { getSolanaWalletAdapter } from '@zetachain/wallet/solana';
 import { ZeroAddress } from 'ethers';
 import { useCallback } from 'react';
 
-import type { SupportedChain } from '../constants/chains';
+import {
+  BITCOIN_GATEWAY_ADDRESS_SIGNET,
+  type SupportedChain,
+} from '../constants/chains';
 import { USE_DYNAMIC_WALLET } from '../constants/wallets';
 import { useUnisatWallet } from '../context/UnisatWalletProvider';
 import type { EIP6963ProviderDetail } from '../types/wallet';
@@ -306,7 +309,7 @@ export function useHandleCall({
           receiver, // Universal Contract address (20 bytes)
           message,
           unisatWallet,
-          'tb1qy9pqmk2pd9sv63g27jt8r657wy0d9ueeh0nqur', // Signet gateway address
+          BITCOIN_GATEWAY_ADDRESS_SIGNET,
           callbacks
         );
       } else {

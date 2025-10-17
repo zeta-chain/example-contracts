@@ -80,6 +80,9 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
   },
 ];
 
+export const BITCOIN_GATEWAY_ADDRESS_SIGNET =
+  'tb1qy9pqmk2pd9sv63g27jt8r657wy0d9ueeh0nqur';
+
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(
   (chain) => chain.chainId
 );
