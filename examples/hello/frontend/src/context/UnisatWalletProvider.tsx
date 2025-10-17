@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import { USE_DYNAMIC_WALLET } from '../constants/wallets';
 
@@ -126,32 +132,6 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  useEffect(() => {
-    const unisat = getUnisat();
-    if (!unisat) return;
-
-    const handleAccountsChanged = (accounts: unknown) => {
-      const accountsArray = accounts as string[];
-      if (accountsArray.length === 0) {
-        disconnect();
-      } else {
-        handleAccountUpdate(accountsArray[0]);
-      }
-    };
-
-    const handleNetworkChanged = (network: unknown) => {
-      console.log('Network changed to:', network);
-    };
-
-    unisat.on('accountsChanged', handleAccountsChanged);
-    unisat.on('networkChanged', handleNetworkChanged);
-
-    return () => {
-      unisat.removeListener('accountsChanged', handleAccountsChanged);
-      unisat.removeListener('networkChanged', handleNetworkChanged);
-    };
-  }, []);
-
   const connect = async () => {
     const unisat = getUnisat();
     if (!unisat) {
@@ -180,10 +160,30 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const disconnect = () => {
+  const disconnect = useCallback(() => {
     setAccounts([]);
     setConnected(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    const unisat = getUnisat();
+    if (!unisat) return;
+
+    const handleAccountsChanged = (accounts: unknown) => {
+      const accountsArray = accounts as string[];
+      if (accountsArray.length === 0) {
+        disconnect();
+      } else {
+        handleAccountUpdate(accountsArray[0]);
+      }
+    };
+
+    unisat.on('accountsChanged', handleAccountsChanged);
+
+    return () => {
+      unisat.removeListener('accountsChanged', handleAccountsChanged);
+    };
+  }, [disconnect]);
 
   const signPSBT = async (
     psbtBase64: string,
@@ -210,7 +210,9 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
       });
 
       // Convert hex back to base64 for our functions
-      const signedPsbtBase64 = Buffer.from(signedPsbtHex, 'hex').toString('base64');
+      const signedPsbtBase64 = Buffer.from(signedPsbtHex, 'hex').toString(
+        'base64'
+      );
 
       return signedPsbtBase64;
     } catch (error) {
