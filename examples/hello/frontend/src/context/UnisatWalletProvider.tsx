@@ -34,7 +34,6 @@ export interface UnisatWalletContextType {
   connecting: boolean;
   accounts: UnisatBitcoinAccount[];
   rdns: string;
-  ordinalsAccount: UnisatBitcoinAccount | null;
   paymentAccount: UnisatBitcoinAccount | null;
   connect: () => Promise<void>;
   disconnect: () => void;
@@ -82,7 +81,6 @@ const StubUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
     connecting: false,
     accounts: [],
     rdns: '',
-    ordinalsAccount: null,
     paymentAccount: null,
     connect: async () => {
       throw new Error('Unisat wallet not available with Dynamic wallet');
@@ -251,8 +249,6 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const ordinalsAccount =
-    accounts.find((acc) => acc.type === 'ordinals') || null;
   const paymentAccount = accounts.find((acc) => acc.type === 'payment') || null;
 
   const rdns = 'io.unisat';
@@ -265,7 +261,6 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
         connected,
         connecting,
         disconnect,
-        ordinalsAccount,
         paymentAccount,
         rdns,
         signPSBT,
