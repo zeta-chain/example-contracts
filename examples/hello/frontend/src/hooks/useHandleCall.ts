@@ -163,8 +163,6 @@ async function handleBitcoinCall(
     values: [message],
   });
 
-  console.log('Commit PSBT built:', commitResult);
-
   callbacks.onSigningStart?.();
 
   // Sign commit PSBT with Unisat
@@ -174,8 +172,6 @@ async function handleBitcoinCall(
       signingIndexes: commitResult.signingIndexes,
     },
   ]);
-
-  console.log('Commit PSBT signed, broadcasting...');
 
   // Broadcast commit and build reveal
   const revealResult = await broadcastCommitAndBuildRevealPsbt({
@@ -189,9 +185,6 @@ async function handleBitcoinCall(
     signedCommitPsbtBase64: signedCommitPsbt,
   });
 
-  console.log('Commit broadcasted:', revealResult.commitTxid);
-  console.log('Signing reveal PSBT...');
-
   // Sign reveal PSBT with Unisat
   const signedRevealPsbt = await signPSBT(revealResult.revealPsbtBase64, [
     {
@@ -202,15 +195,11 @@ async function handleBitcoinCall(
 
   callbacks.onTransactionSubmitted?.();
 
-  console.log('Reveal PSBT signed, broadcasting...');
-
   // Finalize and broadcast reveal
   const finalResult = await finalizeBitcoinInscriptionCallReveal(
     signedRevealPsbt,
     bitcoinApi
   );
-
-  console.log('Reveal broadcasted:', finalResult.revealTxid);
 
   callbacks.onTransactionConfirmed?.(finalResult.revealTxid);
 }
@@ -316,7 +305,6 @@ export function useHandleCall({
         throw new Error(`Unsupported chain: ${walletType}`);
       }
     } catch (error) {
-      console.error('Transaction error:', error);
       onError?.(error instanceof Error ? error : new Error('Unknown error'));
     } finally {
       onComplete?.();
