@@ -149,12 +149,6 @@ async function handleBitcoinCall(
   const bitcoinApi = 'https://mempool.space/signet/api';
   const network = 'signet';
 
-  console.log('Building commit PSBT...', {
-    paymentAccount,
-    receiver,
-    message,
-  });
-
   const commitResult = await buildBitcoinInscriptionCallCommitPsbt({
     bitcoinApi,
     fromAddress: paymentAccount.address,
