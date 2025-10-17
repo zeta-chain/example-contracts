@@ -1,3 +1,4 @@
+import { getBytes, hexlify } from 'ethers';
 import React, {
   createContext,
   useCallback,
@@ -195,7 +196,9 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       // Convert base64 PSBT to hex for Unisat
-      const psbtHex = Buffer.from(psbtBase64, 'base64').toString('hex');
+      const psbtHex = hexlify(
+        Uint8Array.from(atob(psbtBase64), (c) => c.charCodeAt(0))
+      );
 
       // Convert inputsToSign to Unisat's format
       const toSignInputs = inputsToSign.flatMap(({ address, signingIndexes }) =>
@@ -209,8 +212,8 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
       });
 
       // Convert hex back to base64 for our functions
-      const signedPsbtBase64 = Buffer.from(signedPsbtHex, 'hex').toString(
-        'base64'
+      const signedPsbtBase64 = btoa(
+        String.fromCharCode(...getBytes(signedPsbtHex))
       );
 
       return signedPsbtBase64;
