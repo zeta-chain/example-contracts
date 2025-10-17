@@ -8,20 +8,22 @@ import { useEip6963Wallet } from './hooks/useEip6963Wallet';
 export function Eip6963AppContent() {
   const { selectedProvider, decimalChainId, account } = useEip6963Wallet();
 
-  const walletChain = SUPPORTED_CHAINS.find(
+  // Find the EVM chain from wallet
+  const evmChain = SUPPORTED_CHAINS.find(
     (chain) => chain.chainId === decimalChainId
   );
 
-  const [selectedChain, setSelectedChain] = useState<SupportedChain | undefined>(
-    walletChain
-  );
+  // Track selected chain separately to support non-EVM chains (SOL, BTC)
+  const [selectedChain, setSelectedChain] = useState<
+    SupportedChain | undefined
+  >(evmChain);
 
-  // Sync selected chain with wallet chain when wallet changes (for EVM chains)
+  // Sync with EVM wallet changes (when user switches chains in MetaMask, etc.)
   useEffect(() => {
-    if (walletChain?.chainType === 'EVM') {
-      setSelectedChain(walletChain);
+    if (evmChain && evmChain.chainType === 'EVM') {
+      setSelectedChain(evmChain);
     }
-  }, [walletChain]);
+  }, [evmChain]);
 
   const isDisconnected = !selectedProvider;
 
