@@ -151,7 +151,6 @@ const ActualUnisatWalletProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       await handleAccountUpdate(accounts[0]);
-      console.log('Connected to Unisat:', accounts[0]);
     } catch (error) {
       console.error('Failed to connect to Unisat:', error);
       alert('Failed to connect to Unisat wallet');
