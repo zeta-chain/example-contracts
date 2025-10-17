@@ -53,10 +53,15 @@ export const NetworkSelector = ({
     [selectedChain, options]
   );
 
-  const handleSelect = (option: DropdownOption<SupportedChain>) => {
+  const handleSelect = async (option: DropdownOption<SupportedChain>) => {
     if (option.value.chainType === 'BTC') {
-      connectUnisatWallet();
-      switchUnisatChain('BITCOIN_SIGNET');
+      try {
+        await connectUnisatWallet();
+        await switchUnisatChain('BITCOIN_SIGNET');
+      } catch (error) {
+        console.error('Failed to connect/switch Unisat wallet:', error);
+        return; // Don't update selection if connection failed
+      }
     }
 
     onNetworkSelect?.(option.value);
