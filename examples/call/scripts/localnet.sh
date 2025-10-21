@@ -10,13 +10,13 @@ while [ ! -f "$HOME/.zetachain/localnet/registry.json" ]; do sleep 1; done
 
 forge build
 
-ZRC20_BNB=$(jq -r '."98".chainInfo.gasZRC20' ~/.zetachain/localnet/registry.json) && echo $ZRC20_BNB
-ZRC20_ETHEREUM=$(jq -r '."11155112".chainInfo.gasZRC20' ~/.zetachain/localnet/registry.json) && echo $ZRC20_ETHEREUM
-USDC_ETHEREUM=$(jq -r '.["11155112"].contracts[] | select(.contractType == "ERC-20 USDC") | .address' ~/.zetachain/localnet/registry.json) && echo $USDC_ETHEREUM
+ZRC20_BNB=$(jq -r '."98".zrc20Tokens[] | select(.coinType == "gas" and .originChainId == "98") | .address' ~/.zetachain/localnet/registry.json) && echo $ZRC20_BNB
+ZRC20_ETHEREUM=$(jq -r '."11155112".zrc20Tokens[] | select(.coinType == "gas" and .originChainId == "11155112") | .address' ~/.zetachain/localnet/registry.json) && echo $ZRC20_ETHEREUM
+USDC_ETHEREUM=$(jq -r '."11155112".zrc20Tokens[] | select(.symbol == "USDC.ETH") | .address' ~/.zetachain/localnet/registry.json) && echo $USDC_ETHEREUM
 GATEWAY_ETHEREUM=$(jq -r '.["11155112"].contracts[] | select(.contractType == "gateway") | .address' ~/.zetachain/localnet/registry.json) && echo $GATEWAY_ETHEREUM
 GATEWAY_BNB=$(jq -r '."98".contracts[] | select(.contractType == "gateway") | .address' ~/.zetachain/localnet/registry.json) && echo $GATEWAY_BNB
 GATEWAY_ZETACHAIN=$(jq -r '.["31337"].contracts[] | select(.contractType == "gateway") | .address' ~/.zetachain/localnet/registry.json) && echo $GATEWAY_ZETACHAIN
-WZETA=$(jq -r '.["31337"].contracts[] | select(.contractType == "wzeta") | .address' ~/.zetachain/localnet/registry.json) && echo $WZETA
+WZETA=$(jq -r '."31337".contracts[] | select(.contractType == "zetaToken") | .address' ~/.zetachain/localnet/registry.json) && echo $WZETA
 PRIVATE_KEY=$(jq -r '.private_keys[0]' ~/.zetachain/localnet/anvil.json) && echo $PRIVATE_KEY
 RECIPIENT=$(cast wallet address $PRIVATE_KEY) && echo $RECIPIENT
 RPC=http://localhost:8545
