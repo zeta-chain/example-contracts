@@ -3297,10 +3297,10 @@
     typescript "5.5.4"
     zod "3.22.4"
 
-"@zetachain/localnet@12.0.3":
-  version "12.0.3"
-  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-12.0.3.tgz#0fe16056bddbd43d7ac67affd03913e1c19aed7b"
-  integrity sha512-X/wojUMi8Pw5r8hULNaIeexEYv40HfyQPjKW71YZ0PfkpkNz18iGNjMn0ZVGgRtJT/ToxOh4gS1udooqwlbkGg==
+"@zetachain/localnet@^13.0.0":
+  version "13.0.0"
+  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-13.0.0.tgz#25ab7ff7d788f675c7fd70bce9ad1f27f28595b0"
+  integrity sha512-5Yw8NhYQb8BNhXbSm39GR/frl5/OE80JRmGqTe4hkF/55QnjaIgGfiTntRM6wYiS7ICyjm+kOVXMGTz/+vszeA==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
@@ -3334,6 +3334,7 @@
     js-sha256 "^0.11.0"
     simple-git "^3.27.0"
     sudo-prompt "^9.2.1"
+    table "^6.9.0"
     wait-on "^7.2.0"
     winston "^3.17.0"
     zod "^3.24.2"
@@ -9890,12 +9891,12 @@ yoctocolors-cjs@^2.1.2:
   resolved "https://registry.npmjs.org/yoctocolors-cjs/-/yoctocolors-cjs-2.1.2.tgz#f4b905a840a37506813a7acaa28febe97767a242"
   integrity sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==
 
-zetachain@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.npmjs.org/zetachain/-/zetachain-6.4.0.tgz#64d3a916977feb4e0fd898869ebe56e41f7e423e"
-  integrity sha512-XuXVYhqfQVCnaCbuvC/WYeqg/EymklTwVDe9V0KpBaCUQVqvpzJnoQBt7CCLJ3gD+xNRWWz4qoxIuJI7T3GMtA==
+zetachain@7.0.0-rc1:
+  version "7.0.0-rc1"
+  resolved "https://registry.npmjs.org/zetachain/-/zetachain-7.0.0-rc1.tgz#e7cae2bfb6b6b091ecdde6a14c9fb32889d01602"
+  integrity sha512-D22ipEdHRwAd2Ma2JfMSSp0t2dCItzAHo4sAKIyW9/s7N0oVPMxYNkdmBrE1q7UWW2JK77i+QnbeMKyw/QBxnA==
   dependencies:
-    "@zetachain/localnet" "12.0.3"
+    "@zetachain/localnet" "^13.0.0"
     "@zetachain/toolkit" "16.1.2"
     axios "^1.7.7"
     commander "^13.1.0"
