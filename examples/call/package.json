@@ -62,6 +62,6 @@
     "@zetachain/protocol-contracts-solana": "2.0.0-rc1",
     "bech32": "^2.0.0",
     "ethers": "5.4.7",
-    "zetachain": "7.0.0-rc3"
+    "zetachain": "7.0.0"
   }
 }
