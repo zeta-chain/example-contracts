@@ -11,9 +11,7 @@ contract UniversalTest is FoundrySetup {
 
     function setUp() public override {
         super.setUp();
-        universal = new Universal(
-            payable(address(zetaSetup.wrapGatewayZEVM()))
-        );
+        universal = new Universal();
         // console.log("Custody",  evmSetup.wrapGatewayEVM(5).custody());
         // console.log("Connector",  evmSetup.wrapGatewayEVM(5).zetaConnector());
         // console.log("Zeta token",  evmSetup.zetaToken(5));

@@ -1,29 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
+import {RevertContext, RevertOptions, AbortContext} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
+import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IZRC20.sol";
 
 contract Universal is UniversalContract {
-    GatewayZEVM public immutable gateway;
-
     event HelloEvent(string, string);
     event RevertEvent(string, RevertContext);
     event AbortEvent(string, AbortContext);
 
     error TransferFailed();
-    error Unauthorized();
-
-    modifier onlyGateway() {
-        if (msg.sender != address(gateway)) revert Unauthorized();
-        _;
-    }
-
-    constructor(address payable gatewayAddress) {
-        gateway = GatewayZEVM(gatewayAddress);
-    }
 
     function call(
         bytes memory receiver,
