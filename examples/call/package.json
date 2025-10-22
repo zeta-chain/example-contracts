@@ -58,7 +58,7 @@
     "@solana/spl-token": "^0.4.13",
     "@solana/web3.js": "^1.95.8",
     "@zetachain/networks": "13.0.0-rc1",
-    "@zetachain/protocol-contracts": "^14.0.1",
+    "@zetachain/protocol-contracts": "14.1.0-rc1",
     "@zetachain/protocol-contracts-solana": "2.0.0-rc1",
     "bech32": "^2.0.0",
     "ethers": "5.4.7",

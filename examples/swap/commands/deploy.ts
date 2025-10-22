@@ -22,7 +22,7 @@ const main = async (opts: any) => {
 
     const initData = new ethers.utils.Interface(abi).encodeFunctionData(
       "initialize",
-      [opts.gateway, opts.uniswapRouter, opts.gasLimit, signer.address]
+      [opts.uniswapRouter, opts.gasLimit, signer.address]
     );
 
     const { abi: proxyAbi, bytecode: proxyBytecode } = getAbi("ERC1967Proxy");

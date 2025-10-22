@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {RevertContext, RevertOptions, AbortContext} from "@zetachain/protocol-contracts/contracts/Revert.sol";
 import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IZRC20.sol";
 
 contract Universal is UniversalContract {
     event HelloEvent(string, string);

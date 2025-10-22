@@ -6,9 +6,6 @@ import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {BytesHelperLib} from "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 
-import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IWZETA.sol";
-
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
