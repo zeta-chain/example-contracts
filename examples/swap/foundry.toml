@@ -9,6 +9,8 @@ verbosity = 3
 fs_permissions = [{ access = "read", path = "./node_modules" }]
 remappings = [
   "forge-std/=dependencies/forge-std-1.9.7/src/",
+  "@zetachain/protocol-contracts/=node_modules/@zetachain/protocol-contracts/",
+  "@zetachain/toolkit/=node_modules/@zetachain/toolkit/",
 ]
 
 [dependencies]
