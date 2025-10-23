@@ -18,6 +18,7 @@ interface ConnectedContentProps {
   supportedChain: SupportedChain | undefined;
   primaryWallet?: PrimaryWallet | null;
   account?: string | null;
+  onChainSelect?: (chain: SupportedChain) => void;
 }
 
 const DynamicConnectedContent = ({
@@ -85,11 +86,15 @@ const Eip6963ConnectedContent = ({
   selectedProvider,
   supportedChain,
   account,
+  onChainSelect,
 }: ConnectedContentProps) => {
   const { switchChain } = useSwitchChain();
 
   const handleNetworkSelect = (chain: SupportedChain) => {
-    switchChain(chain.chainId);
+    onChainSelect?.(chain);
+    if (chain.chainType === 'EVM') {
+      switchChain(chain.chainId);
+    }
   };
 
   return (
@@ -126,6 +131,7 @@ export function ConnectedContent({
   supportedChain,
   primaryWallet,
   account,
+  onChainSelect,
 }: ConnectedContentProps) {
   return USE_DYNAMIC_WALLET ? (
     <DynamicConnectedContent
@@ -138,6 +144,7 @@ export function ConnectedContent({
       selectedProvider={selectedProvider}
       supportedChain={supportedChain}
       account={account}
+      onChainSelect={onChainSelect}
     />
   );
 }

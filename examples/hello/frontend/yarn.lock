@@ -663,6 +663,13 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
 
+"@bitcoinerlab/secp256k1@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@bitcoinerlab/secp256k1/-/secp256k1-1.2.0.tgz#429d043ef4218b9c71915b50172e9aa4a2a8fea4"
+  integrity sha512-jeujZSzb3JOZfmJYI0ph1PVpCRV5oaexCgy+RvCXV8XlY+XFB/2n3WOcvBsKLsOw78KYgnQrQWb2HrKE4be88Q==
+  dependencies:
+    "@noble/curves" "^1.7.0"
+
 "@coinbase/wallet-sdk@4.3.7":
   version "4.3.7"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-4.3.7.tgz#e67d47238714a6f288d59d1b83c7c2c9656fecba"
@@ -2447,7 +2454,7 @@
   resolved "https://registry.yarnpkg.com/@noble/ciphers/-/ciphers-1.3.0.tgz#f64b8ff886c240e644e5573c097f86e5b43676dc"
   integrity sha512-2I0gnIVPtfnMw9ee9h1dJG7tp81+8Ob3OJb3Mv37rx5L40/b0i7djjCVvGOVqc9AEIQyvyu1i6ypKdFw8R8gQw==
 
-"@noble/curves@1.2.0", "@noble/curves@1.4.0", "@noble/curves@1.4.2", "@noble/curves@1.8.0", "@noble/curves@1.8.1", "@noble/curves@1.8.2", "@noble/curves@1.9.1", "@noble/curves@1.9.2", "@noble/curves@1.9.7", "@noble/curves@^1.3.0", "@noble/curves@^1.4.2", "@noble/curves@^1.6.0", "@noble/curves@^1.8.0", "@noble/curves@^1.9.1", "@noble/curves@^1.9.4", "@noble/curves@~1.4.0", "@noble/curves@~1.8.1", "@noble/curves@~1.9.0":
+"@noble/curves@1.2.0", "@noble/curves@1.4.0", "@noble/curves@1.4.2", "@noble/curves@1.8.0", "@noble/curves@1.8.1", "@noble/curves@1.8.2", "@noble/curves@1.9.1", "@noble/curves@1.9.2", "@noble/curves@1.9.7", "@noble/curves@^1.3.0", "@noble/curves@^1.4.2", "@noble/curves@^1.6.0", "@noble/curves@^1.7.0", "@noble/curves@^1.8.0", "@noble/curves@^1.9.1", "@noble/curves@^1.9.4", "@noble/curves@~1.4.0", "@noble/curves@~1.8.1", "@noble/curves@~1.9.0":
   version "1.9.7"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.9.7.tgz#79d04b4758a43e4bca2cbdc62e7771352fa6b951"
   integrity sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==
@@ -4739,11 +4746,12 @@
   resolved "https://registry.yarnpkg.com/@zetachain/standard-contracts/-/standard-contracts-2.0.1.tgz#aefd28bb81f1f05b183bd73dc62bd68e456a6ebf"
   integrity sha512-SHV9a1bSgy8litI/LRZ4VIus7Gsjy0wj3n9bZeIsEydn0C5NNZxYO4XW+P06dlEyDQjtcVJQHoQOyHkodBoVsQ==
 
-"@zetachain/toolkit@16.1.4":
-  version "16.1.4"
-  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-16.1.4.tgz#2ab375a589ab0ff8e1d791e61de723e0355702f1"
-  integrity sha512-wR6ffBHaR9+BWA1rP/5XgswX/+NXZHZi9CM/ytct4iXj4zUGDn6SaZlSV2+rnkhX6C0ZLs9gnMfcNco2/IsKCg==
+"@zetachain/toolkit@16.2.0":
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/@zetachain/toolkit/-/toolkit-16.2.0.tgz#66b1ccb5c065ec869af7cb26e6e63b3fbaf2a061"
+  integrity sha512-kfLnwyNSdTUwFQqEIF0qlqcjU1hOZ6+SmazAFUqboZqIAUn8VSW83gz8RPpMHPYTxXknY6p3D8lCUpj3bpVV1A==
   dependencies:
+    "@bitcoinerlab/secp256k1" "^1.2.0"
     "@coral-xyz/anchor" "^0.30.1"
     "@ethersproject/units" "^5.8.0"
     "@inquirer/prompts" "^2.1.1"

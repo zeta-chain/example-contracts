@@ -2,7 +2,7 @@ export interface SupportedChain {
   explorerUrl: (txHash: string) => string;
   name: string;
   chainId: number;
-  chainType: 'EVM' | 'SOL';
+  chainType: 'EVM' | 'SOL' | 'BTC';
   icon: string;
   colorHex: string;
 }
@@ -69,7 +69,19 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     icon: '/logos/solana-logo.svg',
     colorHex: '#9945FF',
   },
+  {
+    explorerUrl: (txHash: string) =>
+      `https://mempool.space/signet/tx/${txHash}`,
+    name: 'Bitcoin Signet',
+    chainId: 18333,
+    chainType: 'BTC',
+    icon: '/logos/bitcoin-logo.svg',
+    colorHex: '#F7931A',
+  },
 ];
+
+export const BITCOIN_GATEWAY_ADDRESS_SIGNET =
+  'tb1qy9pqmk2pd9sv63g27jt8r657wy0d9ueeh0nqur';
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(
   (chain) => chain.chainId
