@@ -1,8 +1,6 @@
 #!/bin/bash
 
-set -e
-set -x
-set -o pipefail
+set -exo pipefail
 
 yarn zetachain localnet start --force-kill --exit-on-error --no-analytics &
 

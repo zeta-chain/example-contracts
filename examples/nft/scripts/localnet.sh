@@ -1,8 +1,6 @@
 #!/bin/bash
 
-set -e
-set -x
-set -o pipefail
+set -exo pipefail
 
 yarn zetachain localnet start --anvil "--code-size-limit 1000000 -q" --force-kill --exit-on-error --no-analytics &
 
