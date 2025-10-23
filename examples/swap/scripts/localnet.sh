@@ -2,7 +2,7 @@
 
 set -exo pipefail
 
-# yarn zetachain localnet start --force-kill --exit-on-error --no-analytics &
+yarn zetachain localnet start --force-kill --exit-on-error --no-analytics &
 
 while [ ! -f "$HOME/.zetachain/localnet/registry.json" ]; do sleep 1; done
 
@@ -54,4 +54,4 @@ npx zetachain evm deposit-and-call \
 
 yarn zetachain localnet check --no-analytics
 
-# yarn zetachain localnet stop --no-analytics
+yarn zetachain localnet stop --no-analytics
