@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@zetachain/toolkit": "16.1.4",
+    "@zetachain/toolkit": "16.2.0",
     "@zetachain/wallet": "1.0.13",
     "clsx": "^2.1.1",
     "ethers": "^6.13.2",
