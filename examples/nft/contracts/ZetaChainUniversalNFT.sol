@@ -46,7 +46,7 @@ contract ZetaChainUniversalNFT is
         __Ownable_init(initialOwner);
         __ERC721Burnable_init();
         __UUPSUpgradeable_init();
-        __UniversalNFTCore_init(gatewayAddress, gas, uniswapRouterAddress); // Initialize universal NFT core
+        __UniversalNFTCore_init(gas); // Initialize universal NFT core
     }
 
     function safeMint(

@@ -106,4 +106,6 @@ yarn zetachain localnet check --no-analytics
 NFT_ID=$(npx tsx commands mint --rpc "$RPC" --private-key "$PRIVATE_KEY" --contract "$CONTRACT_BNB" --token-uri https://example.com/nft/metadata/1 | jq -r '.tokenId')
 npx tsx commands transfer-and-call --rpc "$RPC" --private-key "$PRIVATE_KEY" --contract "$CONTRACT_BNB" --token-id "$NFT_ID" --function "hello(bytes)" --payload 0x123 --receiver "$HELLO"
 
+yarn zetachain localnet check --no-analytics
+
 yarn zetachain localnet stop --no-analytics

@@ -43,7 +43,7 @@ contract ZetaChainUniversalToken is
         __ERC20Pausable_init();
         __Ownable_init(initialOwner);
         __UUPSUpgradeable_init();
-        __UniversalTokenCore_init(gatewayAddress, gas, uniswapRouterAddress); // Initialize the Universal Token core contract
+        __UniversalTokenCore_init(gas); // Initialize the Universal Token core contract
     }
 
     function pause() public onlyOwner {
