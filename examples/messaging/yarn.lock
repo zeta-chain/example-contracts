@@ -3539,10 +3539,14 @@
     "@zetachain/networks" "^15.0.0"
     ethers "6.13.5"
 
-"@zetachain/standard-contracts@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-3.0.0.tgz#3235a2b3bad7a4703f9d91b8bfcc78e5e8251b2c"
-  integrity sha512-nXgMEOEp2vyCxsfUIyBNpRZaYJP36B6yd+3Amo4rDLK8SlEyEx4pCxAZeIXSlG7OMYJYhDECGBO/cjqfSN8+SQ==
+"@zetachain/standard-contracts@4.1.0-rc1":
+  version "4.1.0-rc1"
+  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-4.1.0-rc1.tgz#395507c94109c0e12eeebdaccee34a51e6d3c039"
+  integrity sha512-PE516y0vIlQe7qSvL2Sg7tiY7hZ5mEHHSYwoWrJNMLWSU7pT4Hwu3IUBmD+SGhoIqwMEUbjhofzHaXqHbECqjw==
+  dependencies:
+    commander "^14.0.1"
+    ethers "^5.4.7"
+    validator "^13.15.15"
 
 "@zetachain/standard-contracts@^2.0.1":
   version "2.0.1"
@@ -4714,6 +4718,11 @@ commander@^13.1.0:
   version "13.1.0"
   resolved "https://registry.npmjs.org/commander/-/commander-13.1.0.tgz#776167db68c78f38dcce1f9b8d7b8b9a488abf46"
   integrity sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==
+
+commander@^14.0.1:
+  version "14.0.1"
+  resolved "https://registry.npmjs.org/commander/-/commander-14.0.1.tgz#2f9225c19e6ebd0dc4404dd45821b2caa17ea09b"
+  integrity sha512-2JkV3gUZUVrbNA+1sjBOYLsMZ5cEEl8GTFP2a4AVz5hvasAMCQ1D2l2le/cX+pV4N6ZU17zjUahLpIXRrnWL8A==
 
 commander@^2.20.3:
   version "2.20.3"
@@ -9621,7 +9630,7 @@ valibot@^0.36.0:
   resolved "https://registry.npmjs.org/valibot/-/valibot-0.36.0.tgz#74e746694b1abcc1879e4393db551d4ce1e10578"
   integrity sha512-CjF1XN4sUce8sBK9TixrDqFM7RwNkuXdJu174/AwmQUB62QbCQADg5lLe8ldBalFgtj1uKj+pKwDJiNo4Mn+eQ==
 
-validator@^13.12.0:
+validator@^13.12.0, validator@^13.15.15:
   version "13.15.15"
   resolved "https://registry.npmjs.org/validator/-/validator-13.15.15.tgz#246594be5671dc09daa35caec5689fcd18c6e7e4"
   integrity sha512-BgWVbCI72aIQy937xbawcs+hrVaN/CZ2UwutgaJ36hGqRrLNM+f5LUT/YPRbo8IV/ASeFzXszezV+y2+rq3l8A==
