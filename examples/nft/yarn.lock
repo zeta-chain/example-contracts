@@ -68,6 +68,13 @@
   resolved "https://registry.npmjs.org/@balena/dockerignore/-/dockerignore-1.0.2.tgz#9ffe4726915251e8eb69f44ef3547e0da2c03e0d"
   integrity sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==
 
+"@bitcoinerlab/secp256k1@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/@bitcoinerlab/secp256k1/-/secp256k1-1.2.0.tgz#429d043ef4218b9c71915b50172e9aa4a2a8fea4"
+  integrity sha512-jeujZSzb3JOZfmJYI0ph1PVpCRV5oaexCgy+RvCXV8XlY+XFB/2n3WOcvBsKLsOw78KYgnQrQWb2HrKE4be88Q==
+  dependencies:
+    "@noble/curves" "^1.7.0"
+
 "@bytecodealliance/preview2-shim@0.17.0":
   version "0.17.0"
   resolved "https://registry.npmjs.org/@bytecodealliance/preview2-shim/-/preview2-shim-0.17.0.tgz#9bc1cadbb9f86c446c6f579d3431c08a06a6672e"
@@ -1422,7 +1429,7 @@
   dependencies:
     "@noble/hashes" "1.8.0"
 
-"@noble/curves@^1.6.0":
+"@noble/curves@^1.6.0", "@noble/curves@^1.7.0":
   version "1.9.7"
   resolved "https://registry.npmjs.org/@noble/curves/-/curves-1.9.7.tgz#79d04b4758a43e4bca2cbdc62e7771352fa6b951"
   integrity sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==
@@ -3161,19 +3168,6 @@
     "@zetachain/networks" "^15.0.0"
     ethers "6.13.5"
 
-"@zetachain/protocol-contracts@^14.0.1":
-  version "14.0.1"
-  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-14.0.1.tgz#a1b2b4615266ca71d18fe76af92cc1a6cf3bc5f0"
-  integrity sha512-Z5KIYwrlYi9iJ8+BAUaaaTdcXL9Y82SDDWld/glBwkBM/x44V4Kwk+Cnxvak953P5lBzSNyKYg2HpRyp7whrsA==
-  dependencies:
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    "@safe-global/api-kit" "^4.0.0"
-    "@safe-global/protocol-kit" "^6.1.0"
-    "@safe-global/types-kit" "^3.0.0"
-    "@zetachain/networks" "^15.0.0"
-    ethers "6.13.5"
-
 "@zetachain/standard-contracts@4.1.0-rc1":
   version "4.1.0-rc1"
   resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-4.1.0-rc1.tgz#395507c94109c0e12eeebdaccee34a51e6d3c039"
@@ -3237,11 +3231,12 @@
     web3 "^4.15.0"
     zod "^3.24.2"
 
-"@zetachain/toolkit@16.1.5-rc2":
-  version "16.1.5-rc2"
-  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.1.5-rc2.tgz#456412b9d8b33353d5157f25cd587a34e07963b7"
-  integrity sha512-obPCUTEiTHOqTGWPThvvFjuXzIO+Jc0N2kwWKTThzTtW5F1QBLWQkAq60GTbVQU0/+u9+Fuk2KW+TzRblB/Vrw==
+"@zetachain/toolkit@16.2.1-rc2":
+  version "16.2.1-rc2"
+  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.2.1-rc2.tgz#dc1915a49efd7e34554c13b983647306de21502c"
+  integrity sha512-zRF/Aff/lI9RDgJSJBXY6g2uW7AfVgAaYN6wZM1d7kRDmdJ0t5iSbVJ8lviYNjSEhCMd/Hlwjp9Zpg7AJqdBBA==
   dependencies:
+    "@bitcoinerlab/secp256k1" "^1.2.0"
     "@coral-xyz/anchor" "^0.30.1"
     "@ethersproject/units" "^5.8.0"
     "@inquirer/prompts" "^2.1.1"
@@ -3258,7 +3253,7 @@
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
     "@uniswap/v3-periphery" "^1.4.4"
     "@zetachain/networks" "14.0.0-rc1"
-    "@zetachain/protocol-contracts" "^14.0.1"
+    "@zetachain/protocol-contracts" "14.1.0-rc1"
     "@zetachain/protocol-contracts-solana" "^5.0.0"
     "@zetachain/protocol-contracts-ton" "1.0.0-rc4"
     "@zetachain/standard-contracts" "^2.0.1"

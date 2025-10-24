@@ -34,9 +34,7 @@ contract ZetaChainUniversalToken is
         address initialOwner,
         string memory name,
         string memory symbol,
-        address payable gatewayAddress, // Include EVM gateway address
-        uint256 gas, // Set gas limit for universal Token transfers
-        address uniswapRouterAddress // Uniswap v2 router address for gas token swaps
+        uint256 gas // Set gas limit for universal Token transfers
     ) public initializer {
         __ERC20_init(name, symbol);
         __ERC20Burnable_init();

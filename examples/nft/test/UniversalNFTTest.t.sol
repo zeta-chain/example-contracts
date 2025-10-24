@@ -25,9 +25,7 @@ contract UniversalNFTTest is FoundrySetup {
             owner,
             "ZetaNFT",
             "ZNFT",
-            payable(address(zetaSetup.wrapGatewayZEVM())),
-            500000,
-            address(zetaSetup.uniswapV2Router())
+            500000
         );
         address zProxy = address(new ERC1967Proxy(address(zImpl), zInit));
         zNFT = ZetaChainUniversalNFT(payable(zProxy));
@@ -39,8 +37,8 @@ contract UniversalNFTTest is FoundrySetup {
             owner,
             "EthNFT",
             "ENFT",
-            payable(address(evmSetup.wrapGatewayEVM(chainIdETH))),
-            500000
+            500000,
+            payable(address(evmSetup.wrapGatewayEVM(chainIdETH)))
         );
         address ethProxy = address(new ERC1967Proxy(address(ethImpl), ethInit));
         ethNFT = EVMUniversalNFTTest.EVMUniversalNFT(payable(ethProxy));
@@ -52,8 +50,8 @@ contract UniversalNFTTest is FoundrySetup {
             owner,
             "BnbNFT",
             "BNFT",
-            payable(address(evmSetup.wrapGatewayEVM(chainIdBNB))),
-            500000
+            500000,
+            payable(address(evmSetup.wrapGatewayEVM(chainIdBNB)))
         );
         address bnbProxy = address(new ERC1967Proxy(address(bnbImpl), bnbInit));
         bnbNFT = EVMUniversalNFTTest.EVMUniversalNFT(payable(bnbProxy));
