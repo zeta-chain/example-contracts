@@ -21,9 +21,7 @@ contract CallTest is FoundrySetup {
         connected = new Connected(
             payable(address(evmSetup.wrapGatewayEVM(chainIdETH)))
         );
-        universal = new Universal(
-            payable(address(zetaSetup.wrapGatewayZEVM()))
-        );
+        universal = new Universal();
         console.log("universal", address(universal));
         console.log("connected", address(connected));
     }

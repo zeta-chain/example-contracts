@@ -15,6 +15,7 @@ const config: HardhatUserConfig = {
     compilers: [
       {
         settings: {
+          evmVersion: "cancun",
           optimizer: {
             enabled: true,
             runs: 1000,

@@ -27,7 +27,6 @@ contract SwapTest is FoundrySetup {
         Swap sImpl = new Swap();
         bytes memory sInitData = abi.encodeWithSelector(
             Swap.initialize.selector,
-            payable(address(zetaSetup.wrapGatewayZEVM())),
             zetaSetup.uniswapV2Router(),
             500000,
             owner
@@ -268,5 +267,3 @@ contract SwapTest is FoundrySetup {
         assertGt(address(bob).balance, 0);
     }
 }
-
-// forge test --match-path "contracts\examples\swap\test\SwapTest.t.sol" -vvvv
