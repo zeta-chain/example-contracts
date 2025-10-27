@@ -3410,23 +3410,10 @@
     "@zetachain/networks" "^10.0.0"
     ethers "6.13.5"
 
-"@zetachain/protocol-contracts@14.1.0":
+"@zetachain/protocol-contracts@14.1.0", "@zetachain/protocol-contracts@^14.1.0":
   version "14.1.0"
   resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-14.1.0.tgz#989e64d335ae00268788a097e20dc9a50510b48a"
   integrity sha512-jW9Agw3OemzenC8sesrMOQo47p0GDnzh6q6zp9n4XSVDheuNMf0rLzQdZkJO31Y0NN2tZxne14sPGYxlGheaOQ==
-  dependencies:
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    "@safe-global/api-kit" "^4.0.0"
-    "@safe-global/protocol-kit" "^6.1.0"
-    "@safe-global/types-kit" "^3.0.0"
-    "@zetachain/networks" "^15.0.0"
-    ethers "6.13.5"
-
-"@zetachain/protocol-contracts@14.1.0-rc1":
-  version "14.1.0-rc1"
-  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-14.1.0-rc1.tgz#7ca1a4a581baa09e466a620f25b6695f39348925"
-  integrity sha512-Z0oH/3cP70RA/RL/fmXOHPjDDD1QhJPGZuf9OVk5zpi3EYNVVHL1Y/iOmIiPxz01fU84U7WwJjg/WF/Ty9ZUTA==
   dependencies:
     "@openzeppelin/contracts" "^5.0.2"
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
