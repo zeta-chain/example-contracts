@@ -22,7 +22,7 @@ const main = async (opts: any) => {
 
     const initData = new ethers.utils.Interface(abi).encodeFunctionData(
       "initialize",
-      [opts.uniswapRouter, opts.gasLimit, signer.address]
+      [opts.gasLimit, signer.address]
     );
 
     const { abi: proxyAbi, bytecode: proxyBytecode } = getAbi("ERC1967Proxy");
@@ -74,16 +74,6 @@ export const deploy = new Command("deploy")
   )
   .requiredOption("-k, --private-key <key>", "Private key")
   .option("-n, --name <name>", "Contract name", "Swap")
-  .requiredOption(
-    "-u, --uniswap-router <address>",
-    "Uniswap V2 Router address (default: testnet)",
-    "0x2ca7d64A7EFE2D62A725E2B35Cf7230D6677FfEe"
-  )
-  .option(
-    "-g, --gateway <address>",
-    "Gateway address (default: testnet)",
-    "0x6c533f7fe93fae114d0954697069df33c9b74fd7"
-  )
   .option("--gas-limit <number>", "Gas limit for the transaction", "1000000")
   .option(
     "--tx-gas-limit <number>",

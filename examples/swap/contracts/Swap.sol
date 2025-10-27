@@ -40,13 +40,15 @@ contract Swap is
     }
 
     function initialize(
-        address uniswapRouterAddress,
         uint256 gasLimitAmount,
         address owner
     ) external initializer {
         __UUPSUpgradeable_init();
         __Ownable_init(owner);
-        uniswapRouter = uniswapRouterAddress;
+        (bool active, bytes memory uniswapRouterBytes) = registry
+          .getContractInfo(block.chainid, "uniswapV2Router02");
+        if (!active) revert InvalidAddress();
+        uniswapRouter = address(uint160(bytes20(uniswapRouterBytes)));
         gasLimit = gasLimitAmount;
     }
 
