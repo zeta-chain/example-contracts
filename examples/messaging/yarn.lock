@@ -68,6 +68,13 @@
   resolved "https://registry.npmjs.org/@balena/dockerignore/-/dockerignore-1.0.2.tgz#9ffe4726915251e8eb69f44ef3547e0da2c03e0d"
   integrity sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==
 
+"@bitcoinerlab/secp256k1@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/@bitcoinerlab/secp256k1/-/secp256k1-1.2.0.tgz#429d043ef4218b9c71915b50172e9aa4a2a8fea4"
+  integrity sha512-jeujZSzb3JOZfmJYI0ph1PVpCRV5oaexCgy+RvCXV8XlY+XFB/2n3WOcvBsKLsOw78KYgnQrQWb2HrKE4be88Q==
+  dependencies:
+    "@noble/curves" "^1.7.0"
+
 "@bytecodealliance/preview2-shim@0.17.0":
   version "0.17.0"
   resolved "https://registry.npmjs.org/@bytecodealliance/preview2-shim/-/preview2-shim-0.17.0.tgz#9bc1cadbb9f86c446c6f579d3431c08a06a6672e"
@@ -1763,7 +1770,7 @@
   dependencies:
     "@noble/hashes" "1.8.0"
 
-"@noble/curves@^1.6.0":
+"@noble/curves@^1.6.0", "@noble/curves@^1.7.0":
   version "1.9.7"
   resolved "https://registry.npmjs.org/@noble/curves/-/curves-1.9.7.tgz#79d04b4758a43e4bca2cbdc62e7771352fa6b951"
   integrity sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==
@@ -3377,37 +3384,10 @@
   dependencies:
     "@wallet-standard/base" "^1.1.0"
 
-"@zetachain/localnet@7.1.0":
-  version "7.1.0"
-  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-7.1.0.tgz#f754fbdf068ae756f74512baa2b7ad20dc6b2132"
-  integrity sha512-v3JGJ4ywaZ69DTUlOrO8c/owPa1SHS7cptoZf0FHsR31cY8NV6ZR8Q/WnQjRElJS2SlQgWe3HJ6D0KQtHSLNgA==
-  dependencies:
-    "@coral-xyz/anchor" "^0.30.1"
-    "@inquirer/prompts" "^5.5.0"
-    "@mysten/sui" "^0.0.0-experimental-20250131013137"
-    "@solana/spl-token" "^0.4.12"
-    "@solana/web3.js" "^1.95.4"
-    "@uniswap/v2-core" "^1.0.1"
-    "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@zetachain/protocol-contracts" "12.0.0-rc1"
-    ansis "^3.3.2"
-    bip39 "^3.1.0"
-    bs58 "^6.0.0"
-    concurrently "^8.2.2"
-    ed25519-hd-key "^1.3.0"
-    elliptic "6.5.7"
-    ethers "^6.13.2"
-    fs-extra "^11.3.0"
-    hardhat "^2.22.8"
-    js-sha256 "^0.11.0"
-    simple-git "^3.27.0"
-    sudo-prompt "^9.2.1"
-    wait-on "^7.2.0"
-
-"@zetachain/localnet@^13.1.0":
-  version "13.1.0"
-  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-13.1.0.tgz#d92f38e0da895e0c3e2e853d0e5f3d23ccbb984f"
-  integrity sha512-utE5CVrLzxKR9EgqhYhcEKJVhJPOiUXTXKLXhrk6QgjEYBK49jbus2HQ+6WdPj3cqaEWXGz7FZ58JxcmCWjNwg==
+"@zetachain/localnet@13.1.1":
+  version "13.1.1"
+  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-13.1.1.tgz#947e292efe4892bb19de25188f132f51886f7a21"
+  integrity sha512-Irjrdh0wfGPUKkosVVlLrMP9+U/Iocs/uLcIaQxfdrhSby67BCs8xsFmmWtlt4+gbANcj0UxGLKdm26AOzAstA==
   dependencies:
     "@coral-xyz/anchor" "^0.30.1"
     "@inquirer/prompts" "^5.5.0"
@@ -3445,6 +3425,33 @@
     wait-on "^7.2.0"
     winston "^3.17.0"
     zod "^3.24.2"
+
+"@zetachain/localnet@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.npmjs.org/@zetachain/localnet/-/localnet-7.1.0.tgz#f754fbdf068ae756f74512baa2b7ad20dc6b2132"
+  integrity sha512-v3JGJ4ywaZ69DTUlOrO8c/owPa1SHS7cptoZf0FHsR31cY8NV6ZR8Q/WnQjRElJS2SlQgWe3HJ6D0KQtHSLNgA==
+  dependencies:
+    "@coral-xyz/anchor" "^0.30.1"
+    "@inquirer/prompts" "^5.5.0"
+    "@mysten/sui" "^0.0.0-experimental-20250131013137"
+    "@solana/spl-token" "^0.4.12"
+    "@solana/web3.js" "^1.95.4"
+    "@uniswap/v2-core" "^1.0.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
+    "@zetachain/protocol-contracts" "12.0.0-rc1"
+    ansis "^3.3.2"
+    bip39 "^3.1.0"
+    bs58 "^6.0.0"
+    concurrently "^8.2.2"
+    ed25519-hd-key "^1.3.0"
+    elliptic "6.5.7"
+    ethers "^6.13.2"
+    fs-extra "^11.3.0"
+    hardhat "^2.22.8"
+    js-sha256 "^0.11.0"
+    simple-git "^3.27.0"
+    sudo-prompt "^9.2.1"
+    wait-on "^7.2.0"
 
 "@zetachain/networks@14.0.0-rc1":
   version "14.0.0-rc1"
@@ -3526,10 +3533,10 @@
     "@zetachain/networks" "^10.0.0"
     ethers "6.13.5"
 
-"@zetachain/protocol-contracts@^14.0.1":
-  version "14.0.1"
-  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-14.0.1.tgz#a1b2b4615266ca71d18fe76af92cc1a6cf3bc5f0"
-  integrity sha512-Z5KIYwrlYi9iJ8+BAUaaaTdcXL9Y82SDDWld/glBwkBM/x44V4Kwk+Cnxvak953P5lBzSNyKYg2HpRyp7whrsA==
+"@zetachain/protocol-contracts@14.1.0":
+  version "14.1.0"
+  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-14.1.0.tgz#989e64d335ae00268788a097e20dc9a50510b48a"
+  integrity sha512-jW9Agw3OemzenC8sesrMOQo47p0GDnzh6q6zp9n4XSVDheuNMf0rLzQdZkJO31Y0NN2tZxne14sPGYxlGheaOQ==
   dependencies:
     "@openzeppelin/contracts" "^5.0.2"
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
@@ -3539,19 +3546,19 @@
     "@zetachain/networks" "^15.0.0"
     ethers "6.13.5"
 
-"@zetachain/standard-contracts@4.1.0-rc1":
-  version "4.1.0-rc1"
-  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-4.1.0-rc1.tgz#395507c94109c0e12eeebdaccee34a51e6d3c039"
-  integrity sha512-PE516y0vIlQe7qSvL2Sg7tiY7hZ5mEHHSYwoWrJNMLWSU7pT4Hwu3IUBmD+SGhoIqwMEUbjhofzHaXqHbECqjw==
-  dependencies:
-    commander "^14.0.1"
-    ethers "^5.4.7"
-    validator "^13.15.15"
-
 "@zetachain/standard-contracts@^2.0.1":
   version "2.0.1"
   resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-2.0.1.tgz#aefd28bb81f1f05b183bd73dc62bd68e456a6ebf"
   integrity sha512-SHV9a1bSgy8litI/LRZ4VIus7Gsjy0wj3n9bZeIsEydn0C5NNZxYO4XW+P06dlEyDQjtcVJQHoQOyHkodBoVsQ==
+
+"@zetachain/standard-contracts@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-4.1.0.tgz#20a03959c609139bf07af74b0f54087f56bee527"
+  integrity sha512-I4Huf2nIo610y+ApDLLwT8ZP1j34Y0KhyAMFbpFNelcNy9wW1APSdOgmK4S/neHgjv+XzbZfcaYgRhUuwYDbcA==
+  dependencies:
+    commander "^14.0.1"
+    ethers "^5.4.7"
+    validator "^13.15.15"
 
 "@zetachain/toolkit@16.1.2":
   version "16.1.2"
@@ -3602,11 +3609,12 @@
     web3 "^4.15.0"
     zod "^3.24.2"
 
-"@zetachain/toolkit@16.1.5-rc2":
-  version "16.1.5-rc2"
-  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.1.5-rc2.tgz#456412b9d8b33353d5157f25cd587a34e07963b7"
-  integrity sha512-obPCUTEiTHOqTGWPThvvFjuXzIO+Jc0N2kwWKTThzTtW5F1QBLWQkAq60GTbVQU0/+u9+Fuk2KW+TzRblB/Vrw==
+"@zetachain/toolkit@^16.2.2":
+  version "16.2.2"
+  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.2.2.tgz#b17ad2a00d40c05ea6281d193325a8bf98cecbb3"
+  integrity sha512-PCrGlNdnO5PO/o5UdEKo0ruXiCSIAWzOCQDdShEY3aMfhishZ7j1sIQtif/dsr/oGvfFztA0X89MYR8xYQ+vRA==
   dependencies:
+    "@bitcoinerlab/secp256k1" "^1.2.0"
     "@coral-xyz/anchor" "^0.30.1"
     "@ethersproject/units" "^5.8.0"
     "@inquirer/prompts" "^2.1.1"
@@ -3623,7 +3631,7 @@
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
     "@uniswap/v3-periphery" "^1.4.4"
     "@zetachain/networks" "14.0.0-rc1"
-    "@zetachain/protocol-contracts" "^14.0.1"
+    "@zetachain/protocol-contracts" "14.1.0"
     "@zetachain/protocol-contracts-solana" "^5.0.0"
     "@zetachain/protocol-contracts-ton" "1.0.0-rc4"
     "@zetachain/standard-contracts" "^2.0.1"
@@ -10226,13 +10234,13 @@ yoctocolors-cjs@^2.1.2:
   resolved "https://registry.npmjs.org/yoctocolors-cjs/-/yoctocolors-cjs-2.1.2.tgz#f4b905a840a37506813a7acaa28febe97767a242"
   integrity sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==
 
-zetachain@7.2.0-rc1:
-  version "7.2.0-rc1"
-  resolved "https://registry.npmjs.org/zetachain/-/zetachain-7.2.0-rc1.tgz#5ade23c40b812d5b2d322b06be7030b082a1c288"
-  integrity sha512-NHNKaBXs2H86HGaY5JbMO+OUW1LH7rTatoey05K5tJP4WkMU0zCamq6DLb+M69gXh5MwO9RqJqiK3z4ZtFPNvw==
+zetachain@^7.2.0:
+  version "7.2.0"
+  resolved "https://registry.npmjs.org/zetachain/-/zetachain-7.2.0.tgz#9e54ac0a5213b2cfcffef3235a830c6354a2a3fe"
+  integrity sha512-8j3xGOdPRnCJ659uaWYR2tvT2AnnA/CFysR994l/lY2a/o/emU7uV3fQZisxI2u1Hw6uiS1iEI7ornEtDX0zAA==
   dependencies:
     "@modelcontextprotocol/sdk" "1.17.4"
-    "@zetachain/localnet" "^13.1.0"
+    "@zetachain/localnet" "13.1.1"
     "@zetachain/toolkit" "16.1.2"
     axios "^1.7.7"
     commander "^13.1.0"
