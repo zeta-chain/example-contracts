@@ -35,9 +35,7 @@ contract ZetaChainUniversalNFT is
         address initialOwner,
         string memory name,
         string memory symbol,
-        address payable gatewayAddress, // Include EVM gateway address
-        uint256 gas, // Set gas limit for universal NFT calls
-        address uniswapRouterAddress // Uniswap v2 router address for gas token swaps
+        uint256 gas // Set gas limit for universal NFT calls
     ) public initializer {
         __ERC721_init(name, symbol);
         __ERC721Enumerable_init();
@@ -46,7 +44,7 @@ contract ZetaChainUniversalNFT is
         __Ownable_init(initialOwner);
         __ERC721Burnable_init();
         __UUPSUpgradeable_init();
-        __UniversalNFTCore_init(gatewayAddress, gas, uniswapRouterAddress); // Initialize universal NFT core
+        __UniversalNFTCore_init(gas); // Initialize universal NFT core
     }
 
     function safeMint(
