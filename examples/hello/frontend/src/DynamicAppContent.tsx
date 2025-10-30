@@ -19,6 +19,10 @@ export function DynamicAppContent() {
       return 901;
     }
 
+    if (network === '503') {
+      return 105;
+    }
+
     return null;
   }, [network]);
 
