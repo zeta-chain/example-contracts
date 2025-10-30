@@ -2,8 +2,7 @@ export interface SupportedChain {
   explorerUrl: (txHash: string) => string;
   name: string;
   chainId: number;
-  chainType: 'EVM' | 'SOL' | 'BTC';
-  icon: string;
+  chainType: 'EVM' | 'SOL' | 'BTC' | 'SUI';
   colorHex: string;
 }
 
@@ -13,7 +12,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     name: 'Arbitrum Sepolia',
     chainId: 421614,
     chainType: 'EVM',
-    icon: '/logos/arbitrum-logo.svg',
     colorHex: '#28446A',
   },
   {
@@ -22,7 +20,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     name: 'Avalanche Fuji',
     chainId: 43113,
     chainType: 'EVM',
-    icon: '/logos/avalanche-logo.svg',
     colorHex: '#FF394A',
   },
   {
@@ -31,7 +28,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     name: 'Base Sepolia',
     chainId: 84532,
     chainType: 'EVM',
-    icon: '/logos/base-logo.svg',
     colorHex: '#0052FF',
   },
   {
@@ -39,7 +35,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     name: 'BSC Testnet',
     chainId: 97,
     chainType: 'EVM',
-    icon: '/logos/bsc-logo.svg',
     colorHex: '#E1A411',
   },
   {
@@ -48,7 +43,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     name: 'Ethereum Sepolia',
     chainId: 11155111,
     chainType: 'EVM',
-    icon: '/logos/ethereum-logo.svg',
     colorHex: '#3457D5',
   },
   {
@@ -57,7 +51,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     name: 'Polygon Amoy',
     chainId: 80002,
     chainType: 'EVM',
-    icon: '/logos/polygon-logo.svg',
     colorHex: '#692BD7',
   },
   {
@@ -66,7 +59,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     name: 'Solana Devnet',
     chainId: 901,
     chainType: 'SOL',
-    icon: '/logos/solana-logo.svg',
     colorHex: '#9945FF',
   },
   {
@@ -75,7 +67,6 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     name: 'Bitcoin Signet',
     chainId: 18333,
     chainType: 'BTC',
-    icon: '/logos/bitcoin-logo.svg',
     colorHex: '#F7931A',
   },
 ];
