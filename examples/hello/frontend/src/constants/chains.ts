@@ -69,6 +69,13 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     chainType: 'BTC',
     colorHex: '#F7931A',
   },
+  {
+    explorerUrl: (txHash: string) => `https://suiscan.xyz/devnet/tx/${txHash}`,
+    name: 'Sui Devnet',
+    chainId: 105,
+    chainType: 'SUI',
+    colorHex: '#4DA2FF',
+  },
 ];
 
 export const BITCOIN_GATEWAY_ADDRESS_SIGNET =
