@@ -19,8 +19,8 @@ export function DynamicAppContent() {
       return 901;
     }
 
-    if (network === '503') {
-      return 105;
+    if (network === '502') {
+      return 103;
     }
 
     return null;

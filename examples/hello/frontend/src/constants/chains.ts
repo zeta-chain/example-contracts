@@ -70,9 +70,9 @@ export const SUPPORTED_CHAINS: SupportedChain[] = [
     colorHex: '#F7931A',
   },
   {
-    explorerUrl: (txHash: string) => `https://suiscan.xyz/devnet/tx/${txHash}`,
-    name: 'Sui Devnet',
-    chainId: 105,
+    explorerUrl: (txHash: string) => `https://suiscan.xyz/testnet/tx/${txHash}`,
+    name: 'Sui Testnet',
+    chainId: 103,
     chainType: 'SUI',
     colorHex: '#4DA2FF',
   },
