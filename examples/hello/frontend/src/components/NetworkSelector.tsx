@@ -28,7 +28,11 @@ export const NetworkSelector = ({
     () =>
       SUPPORTED_CHAINS.filter((chain) => {
         if (USE_DYNAMIC_WALLET) {
-          return chain.chainType === 'EVM' || chain.chainType === 'SOL';
+          return (
+            chain.chainType === 'EVM' ||
+            chain.chainType === 'SOL' ||
+            chain.chainType === 'SUI'
+          );
         } else {
           return chain.chainType === 'EVM' || chain.chainType === 'BTC';
         }
@@ -36,7 +40,6 @@ export const NetworkSelector = ({
         id: chain.chainId,
         label: chain.name,
         value: chain,
-        icon: <img src={chain.icon} alt={chain.name} />,
         colorHex: chain.colorHex,
       })),
     []

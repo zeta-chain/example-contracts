@@ -5,8 +5,10 @@ import {
 } from '@zetachain/toolkit/chains/bitcoin';
 import { evmCall } from '@zetachain/toolkit/chains/evm';
 import { solanaCall } from '@zetachain/toolkit/chains/solana';
+import { prepareSuiDepositAndCall } from '@zetachain/toolkit/chains/sui';
 import { type PrimaryWallet } from '@zetachain/wallet';
 import { getSolanaWalletAdapter } from '@zetachain/wallet/solana';
+import { getSuiWallet, getSuiWalletClient } from '@zetachain/wallet/sui';
 import { ZeroAddress } from 'ethers';
 import { useCallback } from 'react';
 
@@ -120,6 +122,43 @@ async function handleSolanaCall(
   callbacks.onTransactionSubmitted?.();
 
   callbacks.onTransactionConfirmed?.(result);
+}
+
+/**
+ * Handles Sui-specific call logic
+ */
+async function handleSuiCall(
+  callParams: CallParams,
+  primaryWallet: PrimaryWallet,
+  callbacks: {
+    onSigningStart?: UseHandleCallParams['onSigningStart'];
+    onTransactionSubmitted?: UseHandleCallParams['onTransactionSubmitted'];
+    onTransactionConfirmed?: UseHandleCallParams['onTransactionConfirmed'];
+  }
+): Promise<void> {
+  const suiWallet = getSuiWallet(primaryWallet);
+  const walletClient = await getSuiWalletClient(primaryWallet);
+
+  callbacks.onSigningStart?.();
+
+  const { transaction } = await prepareSuiDepositAndCall(
+    { ...callParams, amount: '0.001' },
+    {
+      chainId: '103',
+    }
+  );
+
+  const signedTransaction = await suiWallet.signTransaction(transaction);
+
+  const executionResult = await walletClient.executeTransactionBlock({
+    options: {},
+    signature: signedTransaction.signature,
+    transactionBlock: signedTransaction.bytes,
+  });
+
+  callbacks.onTransactionSubmitted?.();
+
+  callbacks.onTransactionConfirmed?.(executionResult.digest);
 }
 
 /**
@@ -277,6 +316,11 @@ export function useHandleCall({
           selectedProvider,
           callbacks
         );
+      } else if (walletType === 'SUI') {
+        if (!primaryWallet) {
+          throw new Error('Sui transactions require primaryWallet');
+        }
+        await handleSuiCall(callParams, primaryWallet, callbacks);
       } else if (walletType === 'SOL') {
         if (!primaryWallet) {
           throw new Error('Solana transactions require primaryWallet');
