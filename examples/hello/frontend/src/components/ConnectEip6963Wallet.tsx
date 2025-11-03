@@ -1,16 +1,16 @@
-import './ConnectWallet.css';
+import './ConnectEip6963Wallet.css';
 
 import { useState } from 'react';
 
-import { useWallet } from '../hooks/useWallet';
+import { useEip6963Wallet } from '../hooks/useEip6963Wallet';
 import type { EIP6963ProviderDetail } from '../types/wallet';
 import { Button } from './Button';
 import { IconWallet } from './icons';
 import { WalletSelectionModal } from './WalletSelectionModal';
 
-export const ConnectWallet = () => {
+export const ConnectEip6963Wallet = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { providers, connectWallet, connecting } = useWallet();
+  const { providers, connectWallet, connecting } = useEip6963Wallet();
 
   const handleConnectClick = () => {
     if (providers.length > 0) {

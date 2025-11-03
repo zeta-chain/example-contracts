@@ -25,16 +25,9 @@ contract UniversalTokenTest is FoundrySetup {
             owner,
             "TestToken",
             "TTK",
-            payable(address(zetaSetup.wrapGatewayZEVM())),
-            500000,
-            address(zetaSetup.uniswapV2Router())
+            500000
         );
-        address proxy = address(
-            new ERC1967Proxy(
-                address(impl),
-                initData
-            )
-        );
+        address proxy = address(new ERC1967Proxy(address(impl), initData));
         zToken = ZetaChainUniversalToken(payable(proxy));
 
         // Ethereum Setup
@@ -44,14 +37,11 @@ contract UniversalTokenTest is FoundrySetup {
             owner,
             "TestEthToken",
             "TET",
-            payable(address(evmSetup.wrapGatewayEVM(chainIdETH))),
-            500000
+            500000,
+            payable(address(evmSetup.wrapGatewayEVM(chainIdETH)))
         );
         address ethProxy = address(
-            new ERC1967Proxy(
-                address(ethImpl),
-                ethInitData
-            )
+            new ERC1967Proxy(address(ethImpl), ethInitData)
         );
         ethToken = EVMUniversalTokenTest.EVMUniversalToken(payable(ethProxy));
 
@@ -62,17 +52,14 @@ contract UniversalTokenTest is FoundrySetup {
             owner,
             "TestBnbToken",
             "TBT",
-            payable(address(evmSetup.wrapGatewayEVM(chainIdBNB))),
-            500000
+            500000,
+            payable(address(evmSetup.wrapGatewayEVM(chainIdBNB)))
         );
         address bnbProxy = address(
-            new ERC1967Proxy(
-                address(bnbImpl),
-                bnbInitData
-            )
+            new ERC1967Proxy(address(bnbImpl), bnbInitData)
         );
         bnbToken = EVMUniversalTokenTest.EVMUniversalToken(payable(bnbProxy));
-        
+
         zToken.setConnected(eth_eth.zrc20, abi.encodePacked(address(ethToken)));
         zToken.setConnected(bnb_bnb.zrc20, abi.encodePacked(address(bnbToken)));
         ethToken.setUniversal(address(zToken));
@@ -90,12 +77,11 @@ contract UniversalTokenTest is FoundrySetup {
         console.log("Alice ETH balance:", ethToken.balanceOf(alice));
 
         vm.prank(alice);
-        ethToken.transferCrossChain(
-            address(0),
-            bob,
-            50 ether
+        ethToken.transferCrossChain(address(0), bob, 50 ether);
+        console.log(
+            "Alice ETH balance after transfer:",
+            ethToken.balanceOf(alice)
         );
-        console.log("Alice ETH balance after transfer:", ethToken.balanceOf(alice));
         console.log("Bob ETH balance after transfer:", zToken.balanceOf(bob));
 
         assertEq(ethToken.balanceOf(alice), 50 ether);
@@ -111,13 +97,15 @@ contract UniversalTokenTest is FoundrySetup {
         console.log("Alice Zeta balance:", zToken.balanceOf(alice));
 
         vm.prank(alice);
-        zToken.transferCrossChain{value: 1 ether}(
-            eth_eth.zrc20,
-            bob,
-            50 ether
+        zToken.transferCrossChain{value: 1 ether}(eth_eth.zrc20, bob, 50 ether);
+        console.log(
+            "Alice Zeta balance after transfer:",
+            zToken.balanceOf(alice)
         );
-        console.log("Alice Zeta balance after transfer:", zToken.balanceOf(alice));
-        console.log("Bob Zeta balance after transfer:", ethToken.balanceOf(bob));
+        console.log(
+            "Bob Zeta balance after transfer:",
+            ethToken.balanceOf(bob)
+        );
 
         assertEq(zToken.balanceOf(alice), 50 ether);
         assertEq(ethToken.balanceOf(bob), 50 ether);
@@ -137,14 +125,16 @@ contract UniversalTokenTest is FoundrySetup {
             bob,
             50 ether
         );
-       
-        console.log("Alice BNB balance after transfer:", bnbToken.balanceOf(alice));
+
+        console.log(
+            "Alice BNB balance after transfer:",
+            bnbToken.balanceOf(alice)
+        );
         console.log("Bob ETH balance after transfer:", ethToken.balanceOf(bob));
 
         assertEq(bnbToken.balanceOf(alice), 50 ether);
         assertEq(ethToken.balanceOf(bob), 50 ether);
     }
 }
-
 
 // forge test --match-path "contracts/examples/token/test/UniversalTokenTest.t.sol" -vvv

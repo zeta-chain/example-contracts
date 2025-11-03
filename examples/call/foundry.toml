@@ -3,7 +3,6 @@ src = 'contracts'
 out = 'out'
 viaIR = true
 libs = ['node_modules', "dependencies"]
-evm_version = "paris"
 test = 'test'
 cache_path  = 'cache_forge'
 verbosity = 3

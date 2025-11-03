@@ -2,9 +2,6 @@ import "@nomicfoundation/hardhat-toolbox";
 import { HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 
-import "./tasks/deploy";
-import "@zetachain/localnet/tasks";
-import "@zetachain/toolkit/tasks";
 import { getHardhatConfig } from "@zetachain/toolkit/utils";
 
 dotenv.config();

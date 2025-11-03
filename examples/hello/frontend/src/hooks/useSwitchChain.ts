@@ -1,27 +1,16 @@
 import { useCallback } from 'react';
 
-import { useWallet } from './useWallet';
+import { useEip6963SwitchChain } from './useEip6963SwitchChain';
 
+// Hook for EIP6963 wallets
 export const useSwitchChain = () => {
-  const { selectedProvider } = useWallet();
+  const eip6963SwitchChain = useEip6963SwitchChain();
 
   const switchChain = useCallback(
     async (chainId: number) => {
-      if (!selectedProvider) {
-        console.error('No provider selected');
-        return;
-      }
-
-      try {
-        await selectedProvider.provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${chainId.toString(16)}` }],
-        });
-      } catch (error) {
-        console.error('Failed to switch chain:', error);
-      }
+      return eip6963SwitchChain.switchChain(chainId);
     },
-    [selectedProvider]
+    [eip6963SwitchChain]
   );
 
   return { switchChain };

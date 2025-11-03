@@ -6,15 +6,10 @@ import {SwapHelperLib} from "@zetachain/toolkit/contracts/SwapHelperLib.sol";
 import {BytesHelperLib} from "@zetachain/toolkit/contracts/BytesHelperLib.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 
-import {RevertContext, RevertOptions} from "@zetachain/protocol-contracts/contracts/Revert.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IGatewayZEVM.sol";
-import "@zetachain/protocol-contracts/contracts/zevm/interfaces/IWZETA.sol";
-import {GatewayZEVM} from "@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol";
-
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@zetachain/protocol-contracts/contracts/zevm/interfaces/UniversalContract.sol";
 
 contract Swap is
     UniversalContract,
@@ -23,11 +18,9 @@ contract Swap is
     OwnableUpgradeable
 {
     address public uniswapRouter;
-    GatewayZEVM public gateway;
     uint256 public gasLimit;
 
     error InvalidAddress();
-    error Unauthorized();
     error ApprovalFailed();
     error TransferFailed(string);
     error InsufficientAmount(string);
@@ -41,28 +34,21 @@ contract Swap is
         uint256 outputAmount
     );
 
-    modifier onlyGateway() {
-        if (msg.sender != address(gateway)) revert Unauthorized();
-        _;
-    }
-
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
     function initialize(
-        address payable gatewayAddress,
-        address uniswapRouterAddress,
         uint256 gasLimitAmount,
         address owner
     ) external initializer {
-        if (gatewayAddress == address(0) || uniswapRouterAddress == address(0))
-            revert InvalidAddress();
         __UUPSUpgradeable_init();
         __Ownable_init(owner);
-        uniswapRouter = uniswapRouterAddress;
-        gateway = GatewayZEVM(gatewayAddress);
+        (bool active, bytes memory uniswapRouterBytes) = registry
+          .getContractInfo(block.chainid, "uniswapV2Router02");
+        if (!active) revert InvalidAddress();
+        uniswapRouter = address(uint160(bytes20(uniswapRouterBytes)));
         gasLimit = gasLimitAmount;
     }
 
@@ -80,7 +66,7 @@ contract Swap is
         address zrc20,
         uint256 amount,
         bytes calldata message
-    ) external onlyGateway {
+    ) external override onlyGateway {
         (address targetToken, bytes memory recipient, bool withdrawFlag) = abi
             .decode(message, (address, bytes, bool));
 

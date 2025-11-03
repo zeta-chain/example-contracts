@@ -35,8 +35,8 @@ contract EVMUniversalNFT is
         address initialOwner,
         string memory name,
         string memory symbol,
-        address payable gatewayAddress, // Include EVM gateway address
-        uint256 gas // Set gas limit for universal NFT transfers
+        uint256 gas, // Set gas limit for universal NFT transfers
+        address payable gatewayAddress // Include EVM gateway address
     ) public initializer {
         __ERC721_init(name, symbol);
         __ERC721Enumerable_init();

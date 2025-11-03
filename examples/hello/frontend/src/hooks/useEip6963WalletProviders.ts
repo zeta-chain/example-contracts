@@ -9,7 +9,7 @@ import {
 /**
  * Hook to discover and manage EIP-6963 wallet providers
  */
-export const useWalletProviders = () => {
+export const useEip6963WalletProviders = () => {
   const [providers, setProviders] = useState<EIP6963ProviderDetail[]>([]);
 
   // Handler for provider announcements
@@ -52,4 +52,4 @@ export const useWalletProviders = () => {
   }, [handleAnnounceProvider]);
 
   return { providers };
-}; 
+};

@@ -37,6 +37,8 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.2.3
 
       - name: Install Anchor (Solana)
         uses: metadaoproject/setup-anchor@v3.1
@@ -52,5 +54,6 @@ jobs:
           cd "${{ matrix.example-dir }}"
           yarn
           forge soldeer update
+          anvil --version
           chmod +x ./scripts/localnet.sh
           ./scripts/localnet.sh start

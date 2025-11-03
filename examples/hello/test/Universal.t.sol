@@ -11,17 +11,10 @@ contract UniversalTest is FoundrySetup {
 
     function setUp() public override {
         super.setUp();
-        universal = new Universal(
-            payable(address(zetaSetup.wrapGatewayZEVM()))
-        );
-        // console.log("Custody",  evmSetup.wrapGatewayEVM(5).custody());
-        // console.log("Connector",  evmSetup.wrapGatewayEVM(5).zetaConnector());
-        // console.log("Zeta token",  evmSetup.zetaToken(5));
-        // console.log("TSS",  evmSetup.wrapGatewayEVM(5).tssAddress());
+        universal = new Universal();
     }
 
     function test_crosschain_call_emitsHelloEvent() public {
-        // Simulate call from EVM -> ZetaChain through wrapGatewayZEVM
         bytes memory encodedMessage = abi.encode(message);
 
         RevertOptions memory revertOptions = RevertOptions({
@@ -42,8 +35,3 @@ contract UniversalTest is FoundrySetup {
         );
     }
 }
-
-// Run test with Foundry:
-//  forge test --match-path "contracts\examples\hello\test\Universal.t.sol" -vvv
-
-//

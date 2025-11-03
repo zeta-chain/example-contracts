@@ -1,19 +1,24 @@
 import './Header.css';
 
-import { useWallet } from '../hooks/useWallet';
-import { ConnectWallet } from './ConnectWallet';
+import { useUniversalSignInContext } from '@zetachain/wallet/react';
+
+import { USE_DYNAMIC_WALLET } from '../constants/wallets';
+import { useEip6963Wallet } from '../hooks/useEip6963Wallet';
+import { ConnectDynamicWallet } from './ConnectDynamicWallet';
+import { ConnectEip6963Wallet } from './ConnectEip6963Wallet';
+import { DynamicWalletControls } from './DynamicWalletControls';
 import { ThemeToggle } from './ThemeToggle';
 import { WalletControls } from './WalletControls';
 
-export const Header = () => {
-  const { account } = useWallet();
+const Eip6963Header = () => {
+  const { isConnected } = useEip6963Wallet();
 
   return (
     <div className="header-container">
       <div className="header-controls">
-        {!account ? (
+        {!isConnected ? (
           <div className="lg-only">
-            <ConnectWallet />
+            <ConnectEip6963Wallet />
           </div>
         ) : (
           <WalletControls />
@@ -22,4 +27,28 @@ export const Header = () => {
       </div>
     </div>
   );
+};
+
+const DynamicHeader = () => {
+  const { primaryWallet } = useUniversalSignInContext();
+  const isDynamicConnected = !!primaryWallet?.address;
+
+  return (
+    <div className="header-container">
+      <div className="header-controls">
+        {!isDynamicConnected ? (
+          <div className="lg-only">
+            <ConnectDynamicWallet />
+          </div>
+        ) : (
+          <DynamicWalletControls />
+        )}
+        <ThemeToggle />
+      </div>
+    </div>
+  );
+};
+
+export const Header = () => {
+  return USE_DYNAMIC_WALLET ? <DynamicHeader /> : <Eip6963Header />;
 };

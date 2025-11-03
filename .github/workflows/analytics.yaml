@@ -1,0 +1,110 @@
+name: Universal Contracts Analytics
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # scheduled to run every day at midnight
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  count-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Count repos using GitHub Code Search
+        id: count
+        run: |
+          set -euo pipefail
+
+          # Base search query; quote the import path to avoid parse errors
+          BASE_QUERY='"@zetachain/protocol-contracts/contracts/zevm/GatewayZEVM.sol" in:file'
+          echo "Base query: $BASE_QUERY"
+
+          PER_PAGE=100
+          TMP=$(mktemp)
+          trap 'rm -f "$TMP"' EXIT
+          : > "$TMP"
+          echo "Using per_page=$PER_PAGE"
+          echo "Temp file: $TMP"
+
+          fetch_repos() {
+            local query="$1"
+            local out="$2"
+            local page=1
+            echo "Fetching repos for query: $query"
+            while :; do
+              local encoded
+              encoded=$(jq -rn --arg q "$query" '$q|@uri')
+              local resp
+              local url="https://api.github.com/search/code?q=${encoded}&per_page=${PER_PAGE}&page=${page}"
+              echo "Requesting page ${page}: ${url}"
+              resp=$(curl -sS \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                "$url")
+
+              # If the API returns an error with a message, surface it for debugging
+              local message
+              message=$(echo "$resp" | jq -r '.message // empty')
+              if [ -n "$message" ]; then
+                echo "GitHub API message: $message" >&2
+              fi
+
+              local items_len
+              items_len=$(echo "$resp" | jq '(.items // []) | length')
+              echo "Items on page ${page}: ${items_len}"
+              if [ "$items_len" -eq 0 ]; then
+                echo "No items returned; stopping pagination for this query."
+                break
+              fi
+
+              echo "$resp" | jq -r '.items[].repository.html_url' >> "$out"
+              local page_repos
+              page_repos=$(echo "$resp" | jq -r '.items[].repository.html_url' | sort -u | wc -l | tr -d ' ')
+              echo "Collected ${page_repos} repo URLs from page ${page}."
+
+              # Stop if fewer than PER_PAGE items returned
+              if [ "$items_len" -lt "$PER_PAGE" ]; then
+                echo "Last page reached (items < per_page)."
+                break
+              fi
+
+              page=$((page+1))
+            done
+          }
+
+          # Execute search (including forks)
+          echo "Executing search query (including forks)"
+          fetch_repos "$BASE_QUERY" "$TMP"
+          COUNT=$(sort -u "$TMP" | grep -c . || true)
+          echo "Unique repositories: $COUNT"
+
+          sort -u "$TMP" 
+
+          echo "Repositories using GatewayZEVM.sol: $COUNT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Send count to PostHog
+        if: ${{ success() && steps.count.outputs.count != '' }}
+        env:
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+        run: |
+          if [ -z "$POSTHOG_API_KEY" ]; then
+            echo "POSTHOG_API_KEY is not set; skipping PostHog capture." >&2
+            exit 0
+          fi
+
+          HOST="${POSTHOG_HOST:-https://us.i.posthog.com}"
+          COUNT="${{ steps.count.outputs.count }}"
+
+          # Build JSON with jq to ensure valid formatting and numeric count
+          jq -n \
+            --arg api_key "$POSTHOG_API_KEY" \
+            --arg event "Universal contract count" \
+            --arg distinct_id "github_actions/${{ github.repository }}" \
+            --argjson count "$COUNT" \
+            '{api_key:$api_key, event:$event, distinct_id:$distinct_id, properties:{count:$count}}' \
+          | curl -s -f -X POST "$HOST/i/v0/e/" -H "Content-Type: application/json" --data-binary @-

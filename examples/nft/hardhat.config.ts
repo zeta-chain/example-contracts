@@ -2,9 +2,6 @@ import "@nomicfoundation/hardhat-toolbox";
 import { HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 
-import "@zetachain/standard-contracts/tasks/nft";
-import "@zetachain/localnet/tasks";
-import "@zetachain/toolkit/tasks";
 import { getHardhatConfig } from "@zetachain/toolkit/utils";
 
 import "@nomiclabs/hardhat-ethers";
@@ -18,15 +15,16 @@ const config: HardhatUserConfig = {
     compilers: [
       {
         settings: {
+          evmVersion: "cancun",
           optimizer: {
             enabled: true,
             runs: 1000,
           },
+          viaIR: true,
         },
         version: "0.8.26",
       },
     ],
   },
 };
-
 export default config;
