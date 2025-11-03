@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{sysvar, sysvar::instructions::get_instruction_relative};
 use std::mem::size_of;
 
-declare_id!("GhVHQQt9R3tHKjsewDphTsXLwnoTkdaZNzTovEgWfTGP");
+declare_id!("4f3rZyG62cMfHeBLteSn8fWUnTLnSdtiYrGQdiL8wYx3");
 
 // NOTE: this is just example contract that can be called from gateway in execute function for testing withdraw and call
 #[program]
