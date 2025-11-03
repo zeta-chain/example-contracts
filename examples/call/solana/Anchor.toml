@@ -11,5 +11,5 @@ connected = "4f3rZyG62cMfHeBLteSn8fWUnTLnSdtiYrGQdiL8wYx3"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
