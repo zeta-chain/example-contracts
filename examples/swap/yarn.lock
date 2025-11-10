@@ -3135,16 +3135,6 @@
     "@ton/ton" "^15.1.0"
     ethers "^6.13.2"
 
-"@zetachain/protocol-contracts@13.0.0":
-  version "13.0.0"
-  resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-13.0.0.tgz#dc194144b21bd333c6939cb7b6fa60f103bf8735"
-  integrity sha512-gqylJeCI4rt6VYVpyr+5wXaUVHmLpr7WiGO6weJX2sOlwOlUk4+HSeRUgI3muK+k3CrY6igCETx/EP3UGMLf+Q==
-  dependencies:
-    "@openzeppelin/contracts" "^5.0.2"
-    "@openzeppelin/contracts-upgradeable" "^5.0.2"
-    "@zetachain/networks" "^10.0.0"
-    ethers "6.13.5"
-
 "@zetachain/protocol-contracts@13.1.0-rc3":
   version "13.1.0-rc3"
   resolved "https://registry.npmjs.org/@zetachain/protocol-contracts/-/protocol-contracts-13.1.0-rc3.tgz#23e637dd53147701033f50079ce0b93f8c14cf37"
@@ -3186,11 +3176,12 @@
   resolved "https://registry.npmjs.org/@zetachain/standard-contracts/-/standard-contracts-2.0.1.tgz#aefd28bb81f1f05b183bd73dc62bd68e456a6ebf"
   integrity sha512-SHV9a1bSgy8litI/LRZ4VIus7Gsjy0wj3n9bZeIsEydn0C5NNZxYO4XW+P06dlEyDQjtcVJQHoQOyHkodBoVsQ==
 
-"@zetachain/toolkit@16.1.2":
-  version "16.1.2"
-  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.1.2.tgz#e191b9ff8039a4f7390eba7f289dbf6f642e1d5f"
-  integrity sha512-tr6kZZNrz8xX1q41hRXDh1+rM5obX6TCChYsmkCKl/JF6G0SwNLHM/1s+i7Ykz1MusZKfW6vf0ARrKhuYpHibg==
+"@zetachain/toolkit@16.3.0":
+  version "16.3.0"
+  resolved "https://registry.npmjs.org/@zetachain/toolkit/-/toolkit-16.3.0.tgz#ab35c451fd4f3a7e08a750a547a164ef418ffa48"
+  integrity sha512-pAvUgSM3K/LfGwPOoNIWOrXZj+ApyagCq0bidknlN5AEURzeL6qzJyiDfFGD0DmIcNb8YItl1BTwpQaHDwBe7g==
   dependencies:
+    "@bitcoinerlab/secp256k1" "^1.2.0"
     "@coral-xyz/anchor" "^0.30.1"
     "@ethersproject/units" "^5.8.0"
     "@inquirer/prompts" "^2.1.1"
@@ -3207,7 +3198,7 @@
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
     "@uniswap/v3-periphery" "^1.4.4"
     "@zetachain/networks" "14.0.0-rc1"
-    "@zetachain/protocol-contracts" "13.0.0"
+    "@zetachain/protocol-contracts" "14.1.0"
     "@zetachain/protocol-contracts-solana" "^5.0.0"
     "@zetachain/protocol-contracts-ton" "1.0.0-rc4"
     "@zetachain/standard-contracts" "^2.0.1"
@@ -3220,7 +3211,7 @@
     dayjs "^1.11.13"
     dotenv "16.0.3"
     ecpair "^2.1.0"
-    envfile "^6.18.0"
+    envfile "^7.1.0"
     ethers "^6.13.2"
     eventemitter3 "^5.0.1"
     form-data "^4.0.0"
@@ -9796,14 +9787,14 @@ yoctocolors-cjs@^2.1.2:
   resolved "https://registry.npmjs.org/yoctocolors-cjs/-/yoctocolors-cjs-2.1.2.tgz#f4b905a840a37506813a7acaa28febe97767a242"
   integrity sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==
 
-zetachain@^7.2.0:
-  version "7.2.0"
-  resolved "https://registry.npmjs.org/zetachain/-/zetachain-7.2.0.tgz#9e54ac0a5213b2cfcffef3235a830c6354a2a3fe"
-  integrity sha512-8j3xGOdPRnCJ659uaWYR2tvT2AnnA/CFysR994l/lY2a/o/emU7uV3fQZisxI2u1Hw6uiS1iEI7ornEtDX0zAA==
+zetachain@7.4.0:
+  version "7.4.0"
+  resolved "https://registry.npmjs.org/zetachain/-/zetachain-7.4.0.tgz#1ad6709f27f397a79196ff37780aa244a5cbb18a"
+  integrity sha512-maUJGAPqjsHGO4ZQCaDnmlOZ8vzNUZfT36BRp4JebIPlYnMbSLzGmbmqbleSGrlmzEcfY83I4BvtuKdukJhLGg==
   dependencies:
     "@modelcontextprotocol/sdk" "1.17.4"
     "@zetachain/localnet" "13.1.1"
-    "@zetachain/toolkit" "16.1.2"
+    "@zetachain/toolkit" "16.3.0"
     axios "^1.7.7"
     commander "^13.1.0"
     cors "^2.8.5"
