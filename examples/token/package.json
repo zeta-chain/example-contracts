@@ -61,6 +61,6 @@
     "@zetachain/standard-contracts": "4.1.0",
     "@zetachain/toolkit": "^16.2.2",
     "validator": "^13.12.0",
-    "zetachain": "^7.2.0"
+    "zetachain": "7.4.0"
   }
 }
