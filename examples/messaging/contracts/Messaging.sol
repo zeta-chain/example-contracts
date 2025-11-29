@@ -13,7 +13,7 @@ contract Example is Messaging {
         address payable _gateway,
         address owner,
         address _router
-    ) Messaging(_gateway, owner, _router) {}
+    ) Messaging(owner, _gateway, _router) {}
 
     function onMessageReceive(
         bytes memory data,
