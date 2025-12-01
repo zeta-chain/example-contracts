@@ -11,8 +11,8 @@ const main = async (options: any) => {
   const contractFactory = new ethers.ContractFactory(abi, bytecode, signer);
 
   const contract = await contractFactory.deploy(
+    signer.address,
     options.gateway,
-    signer.address, // owner
     options.router
   );
 
