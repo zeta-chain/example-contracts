@@ -63,6 +63,6 @@
     "@zetachain/toolkit": "^16.2.2",
     "commander": "^13.1.0",
     "validator": "^13.12.0",
-    "zetachain": "^7.2.0"
+    "zetachain": "7.4.0"
   }
 }

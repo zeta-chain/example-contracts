@@ -57,6 +57,6 @@
     "@solana/web3.js": "^1.95.8",
     "@zetachain/protocol-contracts": "14.1.0-rc1",
     "@zetachain/toolkit": "^16.2.2",
-    "zetachain": "^7.2.0"
+    "zetachain": "7.4.0"
   }
 }
